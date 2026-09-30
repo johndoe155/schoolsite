@@ -1,0 +1,2387 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bodija International College — Curriculum Resources</title>
+  <meta name="description" content="Access curriculum textbooks, past exams, and study guides." />
+
+  <!-- Fonts: Playfair Display (Serif) & Inter (Sans) for modern legibility -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@600;700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- PDF.js for rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    // Configure worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            lux: {
+              navy: '#0b1220',
+              charcoal: '#0f1724',
+              gold: '#c59b53',
+              'gold-light': '#d4af6a',
+              cream: '#f7f5f2',
+              surface: 'rgba(255, 255, 255, 0.03)',
+              'surface-hover': 'rgba(255, 255, 255, 0.08)',
+              border: 'rgba(255, 255, 255, 0.08)',
+            }
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards',
+            'in-dialog': 'inDialog 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(16px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            inDialog: {
+              '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+              '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Base Styles */
+    :root {
+      --header-height: 80px;
+    }
+    
+    body {
+      background-color: #0b1220;
+      background-image: radial-gradient(circle at 15% 0%, #1a2333 0%, #0b1220 75%);
+      color: #f7f5f2;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Accessibility: Focus Rings */
+    :focus-visible {
+      outline: 2px solid #c59b53;
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1220; }
+    ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4a5568; }
+
+    /* PDF Viewer Scrollbar */
+    .pdf-scroll::-webkit-scrollbar { width: 10px; }
+    .pdf-scroll::-webkit-scrollbar-track { background: #1a202c; }
+    .pdf-scroll::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 5px; border: 2px solid #1a202c; }
+
+    /* Utilities */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+
+    /* Card Hover Lift */
+    .resource-card {
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, background-color 0.2s;
+    }
+    .resource-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.4);
+      background-color: var(--lux-surface-hover);
+    }
+
+    /* PDF Page Styles */
+    .pdf-page-container {
+      margin: 0 auto 24px auto;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease;
+      position: relative;
+      background-color: white;
+      min-height: 400px; /* Skeleton height */
+    }
+    
+    .thumbnail-btn.active {
+      border-color: #c59b53; /* lux-gold */
+      opacity: 1;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .resource-card:hover { transform: none; }
+      .animate-fade-up, .animate-in-dialog { animation: none; opacity: 1; transform: none; }
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+
+    /* ── Admin Upload System ──────────────────────────────────────── */
+
+    /* Modal overlay base */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .admin-modal.open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .admin-modal.visible { opacity: 1; }
+
+    /* Modal panel entrance */
+    .admin-modal__panel {
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      opacity: 0;
+    }
+    .admin-modal.visible .admin-modal__panel {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* Drag-drop file zone */
+    .upload-dropzone {
+      border: 2px dashed rgba(197, 155, 83, 0.3);
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .upload-dropzone:hover,
+    .upload-dropzone.drag-over {
+      border-color: rgba(197, 155, 83, 0.8);
+      background-color: rgba(197, 155, 83, 0.05);
+    }
+
+    /* Native file input hidden, label is the trigger */
+    input[type="file"].sr-only-upload {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border-width: 0;
+    }
+
+    /* Form input consistent theming */
+    .admin-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 0.5rem;
+      padding: 0.625rem 1rem;
+      color: #f7f5f2;
+      font-size: 0.875rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      outline: none;
+    }
+    .admin-input:focus {
+      border-color: rgba(197, 155, 83, 0.7);
+      background: rgba(255,255,255,0.08);
+    }
+    .admin-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* Select arrow override */
+    select.admin-input { appearance: none; cursor: pointer; }
+
+    /* Error banner */
+    .admin-error {
+      background: rgba(220, 38, 38, 0.1);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.8125rem;
+      color: #fca5a5;
+      display: none;
+    }
+    .admin-error.visible { display: flex; align-items: center; gap: 0.5rem; }
+
+    /* Progress bar */
+    .upload-progress-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #c59b53, #d4af6a);
+      border-radius: 9999px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* Nav auth button group */
+    #auth-nav-staff { display: none; align-items: center; gap: 1.5rem; }
+    #auth-nav-staff.visible { display: flex; }
+  </style>
+  <!-- ── BIC Shared Nav + Menu + Footer CSS ── -->
+  <style>
+    :root {
+      --bic-ink:          #18140F;
+      --bic-ink-60:       rgba(24,20,15,.6);
+      --bic-ink-12:       rgba(24,20,15,.12);
+      --bic-ebony:        #141210;
+      --bic-ebony-2:      #1E1A14;
+      --bic-ebony-border: rgba(255,255,255,.08);
+      --bic-ebony-muted:  rgba(230,218,196,.6);
+      --bic-parchment:    #F3EFE5;
+      --bic-surface:      #FDFAF5;
+      --bic-gold:         #B07D3F;
+      --bic-gold-light:   #C8963E;
+      --bic-gold-pale:    rgba(176,125,63,.10);
+      --bic-gold-border:  rgba(176,125,63,.22);
+      --bic-font-display: 'Cormorant Garamond', Georgia, serif;
+      --bic-font-sc:      'Cormorant SC', Georgia, serif;
+      --bic-font-body:    'DM Sans', system-ui, sans-serif;
+      --bic-max:          1120px;
+      --bic-gutter:       clamp(20px, 4vw, 56px);
+      --bic-e2:           0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
+      --bic-r-sm:         6px;
+      --bic-dur-fast:     200ms;
+      --bic-dur-mid:      360ms;
+      --z-hamburger:      10002;
+      --z-overlay:        10003;
+      --z-panel:          10004;
+    }
+    .bic-site-nav {
+      position: fixed; inset-x: 0; top: 0; z-index: 9000;
+      padding: 0 var(--bic-gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+      width: 100%; 
+      background: rgba(243,239,229,.92);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      border-bottom: 1px solid var(--bic-ink-12);
+      transition: background var(--bic-dur-mid) ease, box-shadow var(--bic-dur-mid) ease;
+    }
+    .bic-site-nav.scrolled { background: rgba(253,250,245,.97); box-shadow: var(--bic-e2); }
+    .bic-nav-brand { display: flex; align-items: center; gap: 14px; }
+    .bic-nav-logo { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--bic-gold-border); background: var(--bic-surface); flex-shrink: 0; }
+    .bic-nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .bic-nav-wordmark { display: flex; flex-direction: column; gap: 1px; }
+    .bic-nav-wordmark strong { font-family: var(--bic-font-sc); font-size: 14px; font-weight: 500; letter-spacing: .06em; color: var(--bic-ink); line-height: 1.2; }
+    .bic-nav-wordmark span { font-size: 11px; color: var(--bic-ink-60); letter-spacing: .04em; }
+    @media (max-width: 767px) {
+  .bic-site-nav {
+    padding-left: calc(16px + 56px + 2px); /* left-edge + button width + gap */
+  }
+}
+.bic-nav-brand {
+  margin-left: 10%;
+}
+    #hamburger {
+      font-family: var(--bic-font-sc) !important;
+      font-size: 20px !important; font-weight: 600 !important;
+      letter-spacing: .12em !important; color: var(--bic-gold) !important;
+      cursor: pointer; padding: 8px 16px !important;
+      border: 1.5px solid var(--bic-gold-border) !important;
+      border-radius: var(--bic-r-sm) !important;
+      background: transparent !important; background-image: none !important;
+      text-shadow: none !important; -webkit-text-fill-color: unset !important;
+      -webkit-background-clip: unset !important; background-clip: unset !important;
+      transition: background var(--bic-dur-fast), border-color var(--bic-dur-fast), transform var(--bic-dur-fast) !important;
+      user-select: none; display: inline-block; line-height: 1;
+    }
+    #hamburger:hover, #hamburger:focus-visible {
+      background: var(--bic-gold-pale) !important; border-color: var(--bic-gold) !important;
+      transform: translateY(-1px) !important; filter: none !important;
+    }
+    #hamburger:active { transform: translateY(0) !important; }
+    #hamburger:focus { outline: none !important; }
+    #hamburger:focus-visible { outline: 2px solid var(--bic-gold) !important; outline-offset: 3px !important; box-shadow: none !important; }
+    #hamburger::after { display: none !important; }
+    .bic-nav-auth { display: flex; align-items: center; gap: 10px; }
+    .bic-nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 999px;
+      font-size: 13px; font-weight: 500; letter-spacing: .03em;
+      font-family: var(--bic-font-body);
+      color: var(--bic-ink); background: transparent;
+      border: 1.5px solid var(--bic-ink-12);
+      text-decoration: none;
+      transition: border-color var(--bic-dur-mid), color var(--bic-dur-mid);
+      white-space: nowrap;
+    }
+    .bic-nav-cta:hover { border-color: var(--bic-gold); color: var(--bic-gold); }
+    .bic-nav-cta:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
+    .mobile-menu { display: none !important; }
+    .mobile-menu.open { display: block !important; }
+    .mobile-menu__overlay {
+      position: fixed; inset: 0; z-index: var(--z-overlay);
+      background: rgba(18,14,10,.55); opacity: 0;
+      transition: opacity 260ms cubic-bezier(.2,.9,.3,1);
+      backdrop-filter: blur(4px); transform: none !important;
+    }
+    .mobile-menu__overlay.overlay-in { opacity: 1; }
+    .mobile-menu__panel {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: min(380px, 90vw) !important; max-width: none !important; height: 100vh;
+      z-index: var(--z-panel);
+      background: var(--bic-ebony) !important; background-image: none !important;
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 360ms cubic-bezier(.2,.9,.3,1);
+      overflow-y: auto; box-shadow: 4px 0 24px rgba(0,0,0,.4);
+    }
+    .mobile-menu__panel.panel-in { transform: translateX(0); }
+    .mobile-menu__inner {
+      padding: 28px 32px 48px; display: flex; flex-direction: column; min-height: 100%;
+      transform: none !important; opacity: 1 !important; transition: none !important;
+    }
+    .mobile-menu__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 32px; border-bottom: 1px solid var(--bic-ebony-border);
+      margin-bottom: 32px;
+    }
+    .bic-logo-mark { font-family: var(--bic-font-sc); font-size: 18px; font-weight: 500; color: var(--bic-gold); letter-spacing: .1em; }
+    .mobile-menu__close {
+      background: none !important; border: none !important; cursor: pointer;
+      color: var(--bic-ebony-muted) !important; padding: 4px; border-radius: 50%;
+      outline: none !important; box-shadow: none !important;
+      transition: color var(--bic-dur-fast);
+    }
+    .mobile-menu__close:hover { color: #fff !important; }
+    .mobile-menu__close svg circle { display: none !important; }
+    .mobile-menu__nav { display: flex; flex-direction: column; gap: 0; }
+    .menu-item {
+      font-family: var(--bic-font-display) !important; font-size: clamp(22px,5vw,28px) !important;
+      font-weight: 400 !important; color: rgba(230,218,196,.8) !important;
+      padding: 10px 0 !important; letter-spacing: -.01em !important;
+      border-bottom: 1px solid rgba(255,255,255,.04) !important;
+      transition: color var(--bic-dur-fast), padding-left var(--bic-dur-fast) !important;
+      display: block !important; line-height: 1.2 !important; text-decoration: none !important;
+      -webkit-font-smoothing: antialiased; transform: none !important;
+    }
+    .menu-item:hover, .menu-item:focus { color: #fff !important; padding-left: 8px !important; outline: none !important; }
+    .bic-menu-footer-text {
+      margin-top: auto; padding-top: 32px;
+      font-size: 12px; color: rgba(230,218,196,.35); letter-spacing: .05em;
+      font-family: var(--bic-font-body);
+    }
+    .brand-btn--fixed {
+      position: fixed !important; top: 14px !important; left: var(--bic-gutter) !important;
+      z-index: var(--z-hamburger) !important; display: none;
+      font-family: var(--bic-font-sc) !important; font-size: 20px !important;
+      font-weight: 600 !important; letter-spacing: .12em !important; color: var(--bic-gold) !important;
+      cursor: pointer !important; padding: 8px 16px !important;
+      border: 1.5px solid var(--bic-gold-border) !important; border-radius: var(--bic-r-sm) !important;
+      background: rgba(243,239,229,.92) !important; background-image: none !important;
+      text-shadow: none !important; -webkit-text-fill-color: unset !important;
+      -webkit-background-clip: unset !important; background-clip: unset !important;
+      transform: none !important; filter: none !important; will-change: auto !important; line-height: 1;
+    }
+    .brand-btn--fixed::after { display: none !important; }
+    .brand-btn--fixed:hover { background: var(--bic-gold-pale) !important; border-color: var(--bic-gold) !important; }
+    @media (min-width: 768px) { .brand-btn--fixed { display: inline-block !important; } }
+    @media (max-width: 767px) {
+      #hamburger { position: fixed !important; top: 14px !important; left: 16px !important; z-index: var(--z-hamburger) !important; }
+      .brand-btn--fixed { display: none !important; }
+    }
+    .bic-site-footer {
+      background: var(--bic-ebony-2); color: #F4EFE2;
+      padding: clamp(48px,8vw,88px) 0 40px;
+      font-family: var(--bic-font-body); -webkit-font-smoothing: antialiased; margin-top: 0;
+    }
+    .bic-footer-wrap { max-width: var(--bic-max); margin: 0 auto; padding: 0 var(--bic-gutter); }
+    .bic-footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 56px; }
+    @media (min-width: 860px) { .bic-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; } }
+    .bic-footer-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .bic-footer-logo { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(176,125,63,.3); flex-shrink: 0; }
+    .bic-footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .bic-footer-wordmark strong { font-family: var(--bic-font-sc); font-size: 15px; font-weight: 500; display: block; letter-spacing: .04em; color: #F4EFE2; }
+    .bic-footer-wordmark small { font-size: 12px; color: var(--bic-ebony-muted); }
+    .bic-footer-addr { font-style: normal; font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--bic-ebony-muted); max-width: 240px; margin-bottom: 24px; }
+    .bic-footer-addr a { color: inherit; text-decoration: none; transition: color var(--bic-dur-fast); }
+    .bic-footer-addr a:hover { color: var(--bic-gold); }
+    .bic-social-row { display: flex; gap: 10px; }
+    .bic-social-link { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: var(--bic-ebony-muted); transition: all var(--bic-dur-fast); text-decoration: none; }
+    .bic-social-link:hover { border-color: var(--bic-gold); color: var(--bic-gold); transform: translateY(-2px); }
+    .bic-social-link:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
+    .bic-footer-col-title { font-family: var(--bic-font-sc); font-size: 11px; font-weight: 500; letter-spacing: .18em; color: var(--bic-gold); margin-bottom: 20px; display: block; }
+    .bic-footer-body { font-size: 14px; font-weight: 300; color: var(--bic-ebony-muted); line-height: 1.75; }
+    .bic-footer-discover { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; font-weight: 500; color: #F4EFE2; letter-spacing: .03em; transition: color var(--bic-dur-fast); text-decoration: none; }
+    .bic-footer-discover:hover { color: var(--bic-gold); }
+    .bic-footer-discover svg { transition: transform var(--bic-dur-fast); }
+    .bic-footer-discover:hover svg { transform: translateX(4px); }
+    .bic-footer-city-list { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
+    .bic-footer-city { font-family: var(--bic-font-display); font-size: 2.2rem; font-weight: 300; letter-spacing: -.02em; line-height: 1; color: rgba(255,255,255,.22); }
+    .bic-footer-city.active { color: rgba(255,255,255,.8); }
+    .bic-footer-tagline { font-family: var(--bic-font-display); font-size: clamp(2.5rem,6vw,5rem); font-weight: 400; letter-spacing: -.03em; line-height: .95; color: rgba(255,255,255,.12); text-align: right; user-select: none; }
+    .bic-footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,.07); display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: space-between; }
+    @media (min-width: 600px) { .bic-footer-bottom { flex-direction: row; } }
+    .bic-footer-copy { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.3); }
+    .bic-adm-trigger { display: inline-flex; color: rgba(255,255,255,.3); font-size: 12px; cursor: pointer; text-decoration: none; transition: color var(--bic-dur-fast); font-family: var(--bic-font-body); }
+    .bic-adm-trigger:hover { color: rgba(255,255,255,.6); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-lux-gold text-lux-navy px-4 py-2 font-bold rounded">
+    Skip to content
+  </a>
+
+  <!-- ── BIC Site Nav ── -->
+  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
+    <span id="hamburger"
+          role="button"
+          tabindex="0"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+
+    <div class="bic-nav-brand" aria-label="Bodija International College home">
+      <div class="bic-nav-wordmark">
+        <strong>Bodija Int'l College</strong>
+        <span>Digital Library</span>
+      </div>
+    </div>
+
+    <div class="bic-nav-auth">
+      <!-- Staff auth controls (preserved) -->
+      <div id="auth-nav-guest">
+        <button
+          onclick="AdminSystem.openLogin()"
+          style="padding:9px 18px;border-radius:999px;border:1px solid rgba(24,20,15,.2);background:transparent;color:var(--bic-ink);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--bic-font-body);transition:all 200ms;"
+          onmouseover="this.style.borderColor='var(--bic-gold)';this.style.color='var(--bic-gold)'"
+          onmouseout="this.style.borderColor='rgba(24,20,15,.2)';this.style.color='var(--bic-ink)'"
+        >Staff Login</button>
+      </div>
+      <div id="auth-nav-staff">
+        <button
+          onclick="AdminSystem.openUpload()"
+          style="display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:var(--bic-gold-pale);border:1px solid var(--bic-gold-border);color:var(--bic-gold);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--bic-font-body);"
+        >
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          Upload
+        </button>
+        <button
+          onclick="AdminSystem.logout()"
+          style="font-size:12px;color:var(--bic-ink-60);background:none;border:none;cursor:pointer;font-family:var(--bic-font-body);padding:4px 8px;"
+        >Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── BIC Mobile Menu ── -->
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile navigation menu">
+    <div class="mobile-menu__overlay" data-overlay></div>
+    <aside class="mobile-menu__panel" role="document" aria-hidden="true">
+      <div class="mobile-menu__inner">
+        <header class="mobile-menu__header">
+          <span class="bic-logo-mark">BIC</span>
+          <button class="mobile-menu__close" aria-label="Close menu" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </header>
+        <nav class="mobile-menu__nav" role="navigation" aria-label="Main navigation">
+          <a href="http://127.0.0.1:4040" class="menu-item">Home</a>
+          <a href="http://127.0.0.1:2020" class="menu-item">Updates</a>
+          <a href="http://127.0.0.1:3030" class="menu-item">Our Programs</a>
+          <a href="http://127.0.0.1:6060" class="menu-item">Get In Touch</a>
+          <a href="/index.html" class="menu-item">Digital Library</a>
+        </nav>
+        <p class="bic-menu-footer-text">Bodija International College &middot; Ibadan, Oyo State</p>
+      </div>
+    </aside>
+  </div>
+
+
+      <nav class="hidden mobile-menu__nav" role="navigation" aria-label="Main menu">
+        <a href="http://127.0.0.1:8080" class="menu-item">Home</a>
+        <a href="/NewsPage.html" class="menu-item">Updates</a>
+        <a href="/prototypes.html" class="menu-item">Our Programs</a>
+        <a href="/prottt.html" class="menu-item">Get In Touch</a>
+        <a href="#contact" class="menu-item">Digital Library</a>
+      </nav>
+    </div><!-- /.mobile-menu__inner -->
+  </aside><!-- /.mobile-menu__panel -->
+</div><!-- /#mobileMenu -->
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="flex-grow px-4 sm:px-6 lg:px-8 py-8 lg:py-12" style="padding-top: calc(68px + 2rem);">
+    <div class="max-w-7xl mx-auto space-y-12">
+
+      <!-- Hero Section -->
+      <section class="relative text-center max-w-3xl mx-auto space-y-6">
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif text-lux-cream leading-tight">
+          Explore our <span class="text-lux-gold italic">curriculum</span> <br> & archives.
+        </h2>
+        <p class="text-lg text-white/60 max-w-xl mx-auto leading-relaxed">
+          Access thousands of textbooks, past exam papers, and supplementary study materials from anywhere.
+        </p>
+        
+        <!-- Search Bar -->
+        <form id="search-form" class="relative max-w-xl mx-auto group">
+          <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-white/40 group-focus-within:text-lux-gold transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input 
+            type="text" 
+            id="q" 
+            class="w-full bg-white/5 border border-white/10 text-white placeholder-white/30 rounded-full py-4 pl-12 pr-16 focus:bg-white/10 focus:border-lux-gold/50 focus:ring-0 transition-all shadow-lg"
+            placeholder="Search by title, subject, or year..."
+            autocomplete="off"
+            aria-label="Search resources"
+          >
+          <button type="submit" class="absolute right-2 top-2 bottom-2 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-semibold px-5 rounded-full transition-colors text-sm">
+            Find
+          </button>
+        </form>
+      </section>
+
+      <!-- Filters & Toolbar -->
+      <section class="glass-panel rounded-2xl p-4 md:p-6" aria-label="Filtering options">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          
+          <!-- Filter Chips Area -->
+          <div class="flex-1 space-y-3">
+            <div class="flex items-center gap-2 text-sm text-white/50 mb-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+              <span class="font-medium tracking-wider uppercase text-xs">Active Filters</span>
+            </div>
+            <div id="active-filters" class="flex flex-wrap gap-2 min-h-[32px]">
+              <span class="text-sm text-white/30 italic py-1" id="no-filters-msg">No filters applied</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex flex-wrap gap-3 items-end">
+            <!-- Type -->
+            <div class="relative min-w-[140px]">
+              <label for="filter-type" class="block text-xs text-white/40 font-medium mb-1 ml-1">Type</label>
+              <select id="filter-type" data-key="type" class="w-full appearance-none bg-lux-charcoal border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:border-lux-gold focus:ring-1 focus:ring-lux-gold transition-colors cursor-pointer">
+                <option value="">All Types</option>
+                <option value="Textbook">Textbook</option>
+                <option value="Exam Paper">Past Exam</option>
+                <option value="Study Guide">Study Guide</option>
+              </select>
+              <div class="pointer-events-none absolute right-3 bottom-3 text-white/40">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+
+            <!-- Subject -->
+            <div class="relative min-w-[140px]">
+              <label for="filter-subject" class="block text-xs text-white/40 font-medium mb-1 ml-1">Subject</label>
+              <select id="filter-subject" data-key="subject" class="w-full appearance-none bg-lux-charcoal border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:border-lux-gold focus:ring-1 focus:ring-lux-gold transition-colors cursor-pointer">
+                <option value="">All Subjects</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="History">History</option>
+                <option value="Literature">Literature</option>
+                <option value="Chemistry">Chemistry</option>
+              </select>
+              <div class="pointer-events-none absolute right-3 bottom-3 text-white/40">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+
+            <!-- Clear Button -->
+            <button id="clear-all" class="hidden mb-[2px] px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-sm font-medium transition-colors">
+              Clear
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status Bar -->
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-serif text-lux-cream" id="results-heading">Latest Resources</h3>
+        <span id="results-count" class="text-sm text-white/50 bg-white/5 px-3 py-1 rounded-full font-mono">0 items</span>
+      </div>
+
+      <!-- Live Region for A11y -->
+      <div id="aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+      <!-- Results Grid -->
+      <div id="results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 pb-12">
+        <!-- Content injected via JS -->
+      </div>
+      
+    </div>
+  </main>
+
+  <!-- ── BIC Site Footer ── -->
+  <footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="bic-footer-wrap">
+      <div class="bic-footer-grid">
+        <div>
+          <div class="bic-footer-logo-row">
+            <div class="bic-footer-logo"><img src="images/logo.png" alt="Bodija International College" loading="lazy" /></div>
+            <div class="bic-footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home &middot; Digital Library</small>
+            </div>
+          </div>
+          <address class="bic-footer-addr">
+            1-5, Tunde Lakanmi Crescent<br>Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632">+234 816 606 1632</a>
+          </address>
+          <div class="bic-social-row" aria-label="Follow us on social media">
+            <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <span class="bic-footer-col-title">Our Mission</span>
+          <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="bic-footer-discover">Discover our values <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <div class="bic-footer-city-list" aria-label="Location">
+            <div class="bic-footer-city">Bodija</div>
+            <div class="bic-footer-city active">Ibadan</div>
+            <div class="bic-footer-city">Oyo State</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
+          <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>
+        </div>
+      </div>
+      <div class="bic-footer-bottom">
+        <span class="bic-footer-copy">&copy; <span id="year"></span> Bodija International College. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PREMIUM PDF LIGHTBOX -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+    
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-lux-navy/80 backdrop-blur-md" id="lightbox-backdrop"></div>
+    
+    <!-- Modal Container -->
+    <div class="absolute inset-0 flex items-center justify-center p-0 md:p-6 lg:p-8">
+      <div class="bg-[#1a1d21] w-full h-full md:rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 origin-center border border-white/10" id="lightbox-content">
+        
+        <!-- Top Toolbar -->
+        <div class="h-16 shrink-0 bg-[#0f1115] border-b border-white/5 flex items-center justify-between px-4 lg:px-6 relative z-10">
+          
+          <!-- Left: Title -->
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-lux-gold/10 text-lux-gold">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l5.414 5.414a1 1 0 01.586 1.414V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <div class="min-w-0">
+              <h3 id="lightbox-title" class="text-sm md:text-base font-medium text-white truncate">Document Viewer</h3>
+              <p class="text-[11px] text-white/40 uppercase tracking-widest hidden md:block">Read Only Preview</p>
+            </div>
+          </div>
+
+          <!-- Center: Pagination (Desktop) -->
+          <div class="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-[#25282e] rounded-lg p-1 border border-white/5">
+             <button id="prev-page" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-white/70 transition-colors disabled:opacity-30">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+             </button>
+             <span class="text-xs font-mono text-white/90 w-24 text-center">
+               <span id="page-num">1</span> / <span id="page-count">--</span>
+             </span>
+             <button id="next-page" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-white/70 transition-colors disabled:opacity-30">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+             </button>
+          </div>
+
+          <!-- Right: Actions -->
+          <div class="flex items-center gap-2 md:gap-4">
+             <button id="toggle-sidebar" class="hidden md:flex p-2 rounded-lg text-white/50 hover:bg-white/5 hover:text-white transition-colors" title="Toggle Thumbnails">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+             </button>
+             <div class="w-px h-6 bg-white/10 hidden md:block"></div>
+             <a id="download-btn" href="#" class="hidden md:flex items-center gap-2 px-4 py-2 bg-lux-gold text-lux-navy text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-lux-gold-light transition-colors" download>
+                <span>Download</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+             </a>
+             <button id="lightbox-close" class="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/70 hover:text-red-400 transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 flex overflow-hidden relative">
+          
+          <!-- Sidebar (Thumbnails) -->
+          <div id="pdf-sidebar" class="w-0 md:w-64 bg-[#131519] border-r border-white/5 flex-shrink-0 transition-all duration-300 overflow-y-auto hidden md:block">
+             <div class="p-4 space-y-4" id="thumbnail-container">
+                <!-- Thumbnails injected here -->
+             </div>
+          </div>
+
+          <!-- Main Scroll Container -->
+          <div id="pdf-scroll-container" class="flex-1 overflow-y-auto overflow-x-hidden bg-[#2d323b] relative p-4 md:p-8 pdf-scroll flex justify-center">
+             
+             <!-- PDF Canvas Wrapper -->
+             <div id="pdf-wrapper" class="w-full max-w-3xl transition-transform duration-200 origin-top">
+                <!-- Pages injected here -->
+             </div>
+
+             <!-- Floating Loading State -->
+             <div id="pdf-loader" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-3 bg-black/60 backdrop-blur px-8 py-6 rounded-xl">
+               <div class="w-8 h-8 border-2 border-lux-gold border-t-transparent rounded-full animate-spin"></div>
+               <p class="text-white/80 text-sm font-medium">Rendering PDF...</p>
+             </div>
+
+             <!-- Error State -->
+             <div id="pdf-error" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center max-w-sm">
+                <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-white font-serif text-xl mb-2">Preview Unavailable</h3>
+                <p class="text-white/50 text-sm mb-6">We couldn't render this document directly. It might be password protected or corrupted.</p>
+                <a id="error-download" href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-lux-gold text-lux-navy font-bold rounded hover:bg-lux-gold-light transition-colors">
+                  Download File
+                </a>
+             </div>
+
+          </div>
+
+          <!-- Bottom Floating Controls (Zoom) -->
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1d21]/90 backdrop-blur border border-white/10 rounded-full px-4 py-2 flex items-center gap-4 shadow-xl z-20">
+             <button id="zoom-out" class="text-white/70 hover:text-white transition-colors p-1" title="Zoom Out">
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+             </button>
+             <span id="zoom-level" class="text-xs font-mono text-white w-12 text-center">100%</span>
+             <button id="zoom-in" class="text-white/70 hover:text-white transition-colors p-1" title="Zoom In">
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+             </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ADMIN LOGIN MODAL
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="admin-login-modal" class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-lux-navy/80 backdrop-blur-md" id="login-modal-backdrop"></div>
+
+    <!-- Panel -->
+    <div class="admin-modal__panel relative w-full max-w-md mx-4">
+      <div class="glass-panel rounded-2xl p-8 shadow-2xl border border-white/10">
+
+        <!-- Header -->
+        <div class="flex items-start justify-between mb-8">
+          <div>
+            <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-lux-gold/10 mb-4">
+              <svg class="w-5 h-5 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <h2 id="login-modal-title" class="font-serif text-2xl text-lux-cream">Staff Portal</h2>
+            <p class="text-white/40 text-sm mt-1">Restricted to authorised personnel only.</p>
+          </div>
+          <button onclick="AdminSystem.closeLogin()" class="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-colors mt-1" aria-label="Close">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" onsubmit="AdminSystem.handleLogin(event)" class="space-y-5" novalidate>
+
+          <!-- Passcode -->
+          <div>
+            <label for="admin-passcode" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Passcode</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="admin-passcode"
+                name="passcode"
+                autocomplete="current-password"
+                required
+                placeholder="Enter staff passcode"
+                class="admin-input pr-12"
+              >
+              <button
+                type="button"
+                onclick="AdminSystem.togglePasscodeVisibility()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors p-1"
+                aria-label="Toggle visibility"
+                tabindex="-1"
+              >
+                <svg id="eye-icon-login" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div id="login-error" class="admin-error" role="alert">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span id="login-error-text">Incorrect passcode.</span>
+          </div>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            id="login-submit-btn"
+            class="w-full py-3 px-6 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-900/20"
+          >
+            <span id="login-btn-text">Log in</span>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ADMIN UPLOAD MODAL
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="admin-upload-modal" class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-lux-navy/80 backdrop-blur-md" id="upload-modal-backdrop"></div>
+
+    <!-- Panel -->
+    <div class="admin-modal__panel relative w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="glass-panel rounded-2xl shadow-2xl border border-white/10">
+
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between px-8 py-6 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-lux-gold/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            </div>
+            <div>
+              <h2 id="upload-modal-title" class="font-serif text-xl text-lux-cream">Upload Resource</h2>
+              <p class="text-white/40 text-xs mt-0.5">Add a PDF to the library catalog</p>
+            </div>
+          </div>
+          <button onclick="AdminSystem.closeUpload()" class="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-colors" aria-label="Close">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- ── Upload Form ── -->
+        <div id="upload-form-container" class="px-8 py-6 space-y-6">
+          <form id="upload-form" onsubmit="AdminSystem.handleUpload(event)" novalidate class="space-y-6">
+
+            <!-- Drag-drop zone -->
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Document <span class="text-lux-gold/70">(PDF only, max 10 MB)</span></label>
+              <div
+                id="upload-dropzone"
+                class="upload-dropzone rounded-xl p-8 text-center cursor-pointer relative"
+                onclick="document.getElementById('file-upload-input').click()"
+              >
+                <input
+                  type="file"
+                  id="file-upload-input"
+                  name="file"
+                  accept="application/pdf"
+                  required
+                  class="sr-only-upload"
+                  onchange="AdminSystem.handleFileSelect(this)"
+                >
+                <!-- Idle state -->
+                <div id="dropzone-idle">
+                  <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-lux-gold/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                  </div>
+                  <p class="text-white/60 text-sm">Click to select or drag & drop a PDF</p>
+                  <p class="text-white/25 text-xs mt-1">PDF format · Maximum 10 MB</p>
+                </div>
+                <!-- Selected state -->
+                <div id="dropzone-selected" class="hidden">
+                  <div class="w-12 h-12 rounded-full bg-lux-gold/10 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l5.414 5.414a1 1 0 01.586 1.414V19a2 2 0 01-2 2z"/></svg>
+                  </div>
+                  <p id="selected-filename" class="text-lux-gold text-sm font-medium"></p>
+                  <p id="selected-filesize" class="text-white/30 text-xs mt-0.5"></p>
+                  <button type="button" onclick="AdminSystem.clearFileSelection(event)" class="text-xs text-white/30 hover:text-red-400 mt-2 transition-colors underline">Remove file</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Metadata grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Title (full width) -->
+              <div class="sm:col-span-2">
+                <label for="upload-title" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Title <span class="text-red-400">*</span></label>
+                <input type="text" id="upload-title" name="title" required placeholder="e.g. Advanced Calculus: Early Transcendentals" class="admin-input">
+              </div>
+
+              <!-- Subject -->
+              <div>
+                <label for="upload-subject" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Subject <span class="text-red-400">*</span></label>
+                <input type="text" id="upload-subject" name="subject" required placeholder="e.g. Mathematics" class="admin-input">
+              </div>
+
+              <!-- Type -->
+              <div class="relative">
+                <label for="upload-type" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Type <span class="text-red-400">*</span></label>
+                <select id="upload-type" name="type" required class="admin-input pr-8">
+                  <option value="Textbook">Textbook</option>
+                  <option value="Exam Paper">Past Exam</option>
+                  <option value="Study Guide">Study Guide</option>
+                  <option value="Syllabus">Syllabus</option>
+                </select>
+                <div class="pointer-events-none absolute right-3 bottom-3 text-white/30">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+
+              <!-- Year -->
+              <div>
+                <label for="upload-year" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Academic Year <span class="text-red-400">*</span></label>
+                <input type="number" id="upload-year" name="year" required min="1990" max="2030" placeholder="e.g. 2024" class="admin-input">
+              </div>
+
+              <!-- Author -->
+              <div>
+                <label for="upload-author" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Author <span class="text-white/25">(optional)</span></label>
+                <input type="text" id="upload-author" name="author" placeholder="e.g. J. Stewart" class="admin-input">
+              </div>
+            </div>
+
+            <!-- Progress bar (hidden until upload starts) -->
+            <div id="upload-progress-wrap" class="hidden">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs text-white/40">Uploading…</span>
+                <span id="upload-progress-pct" class="text-xs font-mono text-lux-gold">0%</span>
+              </div>
+              <div class="w-full bg-white/5 rounded-full overflow-hidden h-[3px]">
+                <div id="upload-progress-bar" class="upload-progress-bar"></div>
+              </div>
+            </div>
+
+            <!-- Error -->
+            <div id="upload-error" class="admin-error" role="alert">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span id="upload-error-text">Upload failed.</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 pt-2 border-t border-white/5">
+              <button type="button" onclick="AdminSystem.closeUpload()" class="px-5 py-2.5 rounded-lg border border-white/10 text-white/60 hover:bg-white/5 text-sm font-medium transition-colors">
+                Cancel
+              </button>
+              <button type="submit" id="upload-submit-btn" class="px-6 py-2.5 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-bold rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-amber-900/20 text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                <span id="upload-btn-text">Upload PDF</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- ── Upload Success State ── -->
+        <div id="upload-success-container" class="hidden px-8 py-12 text-center">
+          <div class="w-20 h-20 rounded-full bg-lux-gold/10 border border-lux-gold/20 flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3 class="font-serif text-2xl text-lux-cream mb-2">Upload Complete</h3>
+          <p class="text-white/50 text-sm mb-6">The document has been saved and is now visible in the catalog.</p>
+          <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg px-5 py-3 mb-8 text-left">
+            <svg class="w-8 h-8 text-lux-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l5.414 5.414a1 1 0 01.586 1.414V19a2 2 0 01-2 2z"/></svg>
+            <div class="min-w-0">
+              <p id="success-filename" class="text-sm font-medium text-white truncate max-w-xs"></p>
+              <a id="success-view-link" href="#" target="_blank" class="text-xs text-lux-gold hover:text-lux-gold-light transition-colors mt-0.5 inline-block">View document ↗</a>
+            </div>
+          </div>
+          <div class="flex justify-center gap-3">
+            <button onclick="AdminSystem.resetUploadForm()" class="px-5 py-2.5 rounded-lg border border-white/10 text-white/70 hover:bg-white/5 text-sm font-medium transition-colors">
+              Upload Another
+            </button>
+            <button onclick="AdminSystem.closeUpload()" class="px-5 py-2.5 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-bold rounded-lg text-sm transition-all">
+              View Catalog
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <div class="bg-lux-gold text-lux-navy px-6 py-3 rounded-lg shadow-lg shadow-black/30 font-medium flex items-center gap-3">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span id="toast-msg">Action successful</span>
+    </div>
+  </div>
+  
+<script>
+    // menu.js
+// Extracted from prototypes.html (keeps original behavior and exports).
+(function () {
+  'use strict';
+
+  function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+  function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+  function getFocusable(container) {
+    if (!container) return [];
+    return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+      .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var menu = document.getElementById('mobileMenu');
+    if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+    var overlay = menu.querySelector('[data-overlay]');
+    var panel = menu.querySelector('.mobile-menu__panel');
+    var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+    var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+    var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+    function parseTime(s) {
+      if (!s) return 0;
+      var str = String(s).trim();
+      if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+      if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+      var n = parseFloat(str);
+      return isFinite(n) ? n : 0;
+    }
+
+    var rootStyles = getComputedStyle(document.documentElement);
+    var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+    var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+    var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+    var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+    var timeouts = [];
+    var lastFocused = null;
+
+    function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+    function preventScroll(enable){
+      if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+      else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+    }
+
+    function onKeyDown(e){
+      if (!menu.classList.contains('open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+      if (e.key === 'Tab') {
+        if (!panel) return;
+        var focusable = getFocusable(panel);
+        if (!focusable.length) { e.preventDefault(); return; }
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function focusTrap(e){
+      if (!menu.classList.contains('open')) return;
+      if (!panel) return;
+      if (panel.contains(e.target)) return;
+      e.stopPropagation();
+      var f = getFocusable(panel);
+      if (f.length) f[0].focus(); else panel.focus();
+    }
+
+    // Ensure menu is appended to body to avoid ancestor stacking contexts
+    if (menu && menu.parentElement !== document.body) {
+      document.body.appendChild(menu);
+      overlay = menu.querySelector('[data-overlay]');
+      panel = menu.querySelector('.mobile-menu__panel');
+    }
+
+    // store for restoring open buttons state
+    var openerStateMap = new WeakMap();
+
+    function disableOpenButtons() {
+      openButtons.forEach(function(b){
+        if (!b) return;
+        var prev = {
+          tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+          pointerEvents: b.style.pointerEvents || null,
+          ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+        };
+        openerStateMap.set(b, prev);
+        try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+        b.style.pointerEvents = 'none';
+        try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+      });
+    }
+
+    function restoreOpenButtons() {
+      openButtons.forEach(function(b){
+        if (!b) return;
+        var prev = openerStateMap.get(b) || {};
+        if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+        else b.setAttribute('tabindex', prev.tabindex);
+        if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+        else b.style.pointerEvents = prev.pointerEvents;
+        if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+        else b.setAttribute('aria-hidden', prev.ariaHidden);
+        openerStateMap.delete(b);
+      });
+    }
+
+    function openMobileMenu(){
+      if (menu.classList.contains('open')) return;
+      lastFocused = document.activeElement;
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      if (panel) panel.setAttribute('aria-hidden', 'false');
+
+      // disable hamburgers / openers while menu is open
+      disableOpenButtons();
+
+      if (overlay) overlay.classList.remove('overlay-in');
+      if (panel) panel.classList.remove('panel-in');
+      void (overlay && overlay.offsetWidth);
+      if (overlay) overlay.classList.add('overlay-in');
+
+      var t = setTimeout(function(){
+        if (panel) {
+          panel.classList.add('panel-in');
+          var closeBtn = panel.querySelector('.mobile-menu__close');
+          if (closeBtn) closeBtn.focus({ preventScroll: true });
+        }
+      }, PANEL_DELAY);
+      timeouts.push(t);
+
+      document.addEventListener('focus', focusTrap, true);
+      document.addEventListener('keydown', onKeyDown);
+      if (overlay) overlay.addEventListener('click', overlayClick);
+      preventScroll(true);
+      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+    }
+
+    function closeMobileMenu(){
+      if (!menu.classList.contains('open')) return;
+      clearAllTimeouts();
+      if (panel) panel.classList.remove('panel-in');
+
+      var t1 = setTimeout(function(){
+        var tHold = setTimeout(function(){
+          if (overlay) overlay.classList.remove('overlay-in');
+          var tHide = setTimeout(function(){
+            menu.classList.remove('open');
+            menu.setAttribute('aria-hidden', 'true');
+            if (panel) panel.setAttribute('aria-hidden', 'true');
+
+            // restore hamburgers / openers to previous state
+            restoreOpenButtons();
+
+            preventScroll(false);
+            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+          }, OVERLAY_DUR);
+          timeouts.push(tHide);
+        }, OVERLAY_HOLD);
+        timeouts.push(tHold);
+      }, PANEL_DUR);
+      timeouts.push(t1);
+
+      document.removeEventListener('focus', focusTrap, true);
+      document.removeEventListener('keydown', onKeyDown);
+      if (overlay) overlay.removeEventListener('click', overlayClick);
+      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+    }
+
+    function overlayClick(){ closeMobileMenu(); }
+
+    // Attach listeners to openers
+    openButtons.forEach(function(btn){
+      if (!btn) return;
+      btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+      btn.addEventListener('keydown', function(ev){
+        var k = ev.key;
+        if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+      });
+    });
+
+    // Attach close buttons
+    externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+    // Expose globals (keeps parity with prototype)
+    window.openMobileMenu = openMobileMenu;
+    window.closeMobileMenu = closeMobileMenu;
+    window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+    // Preload background image if present
+    (function preloadBg(){
+      if (!panel) return;
+      var style = getComputedStyle(panel);
+      var bg = style.getPropertyValue('background-image') || '';
+      var url = '';
+      var start = bg.indexOf('url(');
+      var end = bg.lastIndexOf(')');
+      if (start !== -1 && end !== -1 && end > start) {
+        url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+      }
+      if (url) { var img = new Image(); img.src = url; }
+    })();
+
+  }); // DOMContentLoaded end
+
+})();
+  </script>
+  <!-- Application Logic -->
+  <script>
+    /**
+     * MOCK DATA
+     * Updated: Now pointing to unique /assets/ locations for all items.
+     */
+    
+    const MOCK_DB = [
+
+    ];
+
+    /**
+     * APP LOGIC
+     */
+    const App = (() => {
+      // Core Elements
+      const grid = document.getElementById('results-grid');
+      const countLabel = document.getElementById('results-count');
+      const announcer = document.getElementById('aria-announcer');
+      const searchInput = document.getElementById('q');
+      const typeFilter = document.getElementById('filter-type');
+      const subjectFilter = document.getElementById('filter-subject');
+      const activeFiltersContainer = document.getElementById('active-filters');
+      const noFiltersMsg = document.getElementById('no-filters-msg');
+      const clearBtn = document.getElementById('clear-all');
+
+      // Lightbox & PDF Elements
+      const lightbox = document.getElementById('lightbox');
+      const lightboxContent = document.getElementById('lightbox-content');
+      const lightboxTitle = document.getElementById('lightbox-title');
+      const lightboxClose = document.getElementById('lightbox-close');
+      const downloadBtn = document.getElementById('download-btn');
+      
+      // PDF Viewer Logic Elements
+      const pdfWrapper = document.getElementById('pdf-wrapper');
+      const pdfScrollContainer = document.getElementById('pdf-scroll-container');
+      const pdfLoader = document.getElementById('pdf-loader');
+      const pdfError = document.getElementById('pdf-error');
+      const errorDownloadLink = document.getElementById('error-download');
+      
+      // Sidebar / Controls
+      const sidebar = document.getElementById('pdf-sidebar');
+      const sidebarToggle = document.getElementById('toggle-sidebar');
+      const thumbContainer = document.getElementById('thumbnail-container');
+      const pageNumDisplay = document.getElementById('page-num');
+      const pageCountDisplay = document.getElementById('page-count');
+      const btnNext = document.getElementById('next-page');
+      const btnPrev = document.getElementById('prev-page');
+      const zoomInBtn = document.getElementById('zoom-in');
+      const zoomOutBtn = document.getElementById('zoom-out');
+      const zoomLevelDisplay = document.getElementById('zoom-level');
+
+      // State
+      let state = {
+        query: '',
+        filters: { type: '', subject: '' },
+        items: [...MOCK_DB]
+      };
+
+      // PDF State
+      let pdfState = {
+        doc: null,
+        scale: 1.2,
+        currentPage: 1,
+        isRendering: false,
+        pageObserver: null
+      };
+
+      // --- Rendering Resources ---
+
+      function createSkeleton() {
+        return `
+          <div class="resource-card bg-lux-surface border border-lux-border rounded-xl overflow-hidden p-4 space-y-4 animate-pulse">
+            <div class="aspect-[3/4] bg-white/5 rounded-lg w-full"></div>
+            <div class="space-y-2">
+              <div class="h-4 bg-white/10 rounded w-3/4"></div>
+              <div class="h-3 bg-white/10 rounded w-1/2"></div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderItems(items) {
+        if (items.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full py-16 text-center">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 mb-4">
+                <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <h3 class="text-xl font-serif text-white mb-2">No resources found</h3>
+              <p class="text-white/50">Try adjusting your filters or search terms.</p>
+            </div>
+          `;
+          countLabel.textContent = `0 items`;
+          return;
+        }
+
+        grid.innerHTML = items.map((item, index) => {
+          const delay = index * 50; 
+          return `
+            <article 
+              class="resource-card group relative bg-lux-surface border border-lux-border rounded-2xl overflow-hidden flex flex-col h-full animate-fade-up opacity-0"
+              style="animation-delay: ${delay}ms"
+            >
+              <div class="relative aspect-[4/3] overflow-hidden bg-lux-navy">
+                <img 
+                  src="${item.thumb}" 
+                  alt="Cover of ${item.title}" 
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                >
+                <div class="absolute inset-0 bg-gradient-to-t from-lux-charcoal via-transparent to-transparent opacity-60"></div>
+                <span class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border border-white/10">
+                  ${item.type}
+                </span>
+              </div>
+              <div class="p-5 flex flex-col flex-grow">
+                <div class="mb-4 flex-grow">
+                  <h3 class="font-serif text-lg leading-snug text-lux-cream group-hover:text-lux-gold transition-colors line-clamp-2 mb-2" title="${item.title}">
+                    ${item.title}
+                  </h3>
+                  <p class="text-sm text-white/50">${item.author} • ${item.year}</p>
+                  <p class="text-xs text-white/30 mt-1">${item.subject}</p>
+                </div>
+                <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/5">
+                  <button 
+                    onclick="App.openPreview('${item.title}', '${item.pdf}')"
+                    class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-lux-gold"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    Preview
+                  </button>
+                  <a 
+                    href="${item.pdf}"
+                    download
+                    onclick="App.downloadItem('${item.title}')"
+                    class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-bold bg-lux-gold text-lux-navy hover:bg-lux-gold-light shadow-lg shadow-amber-900/20 transition-all hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        countLabel.textContent = `${items.length} result${items.length !== 1 ? 's' : ''}`;
+        announcer.textContent = `${items.length} results found.`;
+      }
+
+      // --- PDF Rendering Logic ---
+
+      async function loadPdfDocument(url) {
+        resetPdfState();
+        pdfLoader.classList.remove('hidden');
+        pdfError.classList.add('hidden');
+        
+        try {
+          const loadingTask = pdfjsLib.getDocument(url);
+          pdfState.doc = await loadingTask.promise;
+          
+          pageCountDisplay.textContent = pdfState.doc.numPages;
+          
+          setupPagesDOM();
+          renderThumbnails(); // Optional: Render first few thumbnails
+          setupIntersectionObserver();
+          
+          pdfLoader.classList.add('hidden');
+        } catch (error) {
+          console.error("PDF Load Error:", error);
+          pdfLoader.classList.add('hidden');
+          pdfError.classList.remove('hidden');
+          errorDownloadLink.href = url;
+        }
+      }
+
+      function resetPdfState() {
+        if (pdfState.pageObserver) pdfState.pageObserver.disconnect();
+        pdfWrapper.innerHTML = '';
+        thumbContainer.innerHTML = '';
+        pdfState.doc = null;
+        pdfState.currentPage = 1;
+        pageNumDisplay.textContent = '1';
+        pageCountDisplay.textContent = '--';
+      }
+
+      function setupPagesDOM() {
+        // Create skeleton divs for all pages to establish scroll height
+        for (let i = 1; i <= pdfState.doc.numPages; i++) {
+          const pageContainer = document.createElement('div');
+          pageContainer.id = `page-container-${i}`;
+          pageContainer.className = 'pdf-page-container';
+          pageContainer.dataset.pageNumber = i;
+          
+          // Set aspect ratio if available (mocked for now, updated on first render)
+          pageContainer.style.width = '100%';
+          
+          pdfWrapper.appendChild(pageContainer);
+        }
+      }
+
+      function setupIntersectionObserver() {
+        const options = {
+          root: pdfScrollContainer,
+          rootMargin: '200px', // Pre-load pages before they appear
+          threshold: 0.1
+        };
+
+        pdfState.pageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const pageNum = parseInt(entry.target.dataset.pageNumber);
+              renderPageIntoContainer(pageNum, entry.target);
+            }
+          });
+          
+          // Update current page display based on center-most element
+          updateCurrentPageIndicator();
+        }, options);
+
+        const pages = document.querySelectorAll('.pdf-page-container');
+        pages.forEach(p => pdfState.pageObserver.observe(p));
+      }
+
+      async function renderPageIntoContainer(pageNum, container) {
+        if (container.dataset.loaded === 'true') return;
+        
+        try {
+          const page = await pdfState.doc.getPage(pageNum);
+          const viewport = page.getViewport({ scale: pdfState.scale * 1.5 }); // High Res for sharpness
+          
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          
+          // Scale down visually using CSS for sharpness
+          canvas.style.width = '100%';
+          canvas.style.height = 'auto';
+          
+          container.style.aspectRatio = `${viewport.width} / ${viewport.height}`;
+          container.style.minHeight = 'auto';
+          container.innerHTML = ''; // Clear skeleton
+          container.appendChild(canvas);
+          
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          
+          await page.render(renderContext).promise;
+          container.dataset.loaded = 'true';
+        } catch (err) {
+          console.error("Page render error:", err);
+        }
+      }
+
+      // --- Interaction & Controls ---
+
+      function updateCurrentPageIndicator() {
+        // Find the page closest to the center of the scroll container
+        const pages = document.querySelectorAll('.pdf-page-container');
+        let closestPage = 1;
+        let minDistance = Infinity;
+        const containerCenter = pdfScrollContainer.clientHeight / 2;
+
+        pages.forEach(page => {
+          const rect = page.getBoundingClientRect();
+          const containerRect = pdfScrollContainer.getBoundingClientRect();
+          const pageCenter = rect.top - containerRect.top + (rect.height / 2);
+          const distance = Math.abs(containerCenter - pageCenter);
+          
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestPage = parseInt(page.dataset.pageNumber);
+          }
+        });
+
+        if (closestPage !== pdfState.currentPage) {
+          pdfState.currentPage = closestPage;
+          pageNumDisplay.textContent = closestPage;
+          
+          // Update active thumbnail
+          document.querySelectorAll('.thumbnail-btn').forEach(btn => btn.classList.remove('active'));
+          const activeThumb = document.getElementById(`thumb-${closestPage}`);
+          if (activeThumb) {
+            activeThumb.classList.add('active');
+            activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      }
+
+      function renderThumbnails() {
+        // Only render generic placeholders for list for performance
+        // Real renders would happen if we wanted high fidelity thumbnails
+        for (let i = 1; i <= pdfState.doc.numPages; i++) {
+          const btn = document.createElement('button');
+          btn.id = `thumb-${i}`;
+          btn.className = 'thumbnail-btn w-full aspect-[3/4] bg-white/5 border border-white/10 hover:border-white/30 rounded mb-4 transition-all opacity-50 relative flex items-center justify-center group';
+          btn.innerHTML = `
+             <span class="text-white/30 font-mono text-sm group-hover:text-white">${i}</span>
+          `;
+          btn.onclick = () => scrollToPage(i);
+          thumbContainer.appendChild(btn);
+        }
+      }
+
+      function scrollToPage(num) {
+        if (num < 1 || num > pdfState.doc.numPages) return;
+        const target = document.getElementById(`page-container-${num}`);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+
+      function handleZoom(direction) {
+        const newScale = direction === 'in' 
+          ? Math.min(pdfState.scale + 0.2, 3.0) 
+          : Math.max(pdfState.scale - 0.2, 0.5);
+          
+        if (newScale === pdfState.scale) return;
+        
+        pdfState.scale = newScale;
+        zoomLevelDisplay.textContent = `${Math.round(pdfState.scale * 100)}%`;
+        
+        // CSS Transform Zoom for performance
+        // This is a "preview" zoom, real re-rendering would require clearing all canvases
+        pdfWrapper.style.transform = `scale(${pdfState.scale})`;
+        
+        // Adjust container width to prevent horizontal overflow mess if zooming out
+        if(pdfState.scale < 1) {
+            pdfWrapper.style.width = '100%';
+        }
+      }
+
+      // --- Core UI Logic ---
+
+      function filterItems() {
+        const { query, filters } = state;
+        const sourceData = state.items;
+        const q = query.toLowerCase().trim();
+        
+        const filtered = sourceData.filter(item => {
+          const matchesQuery = !q || 
+                               (item.title && item.title.toLowerCase().includes(q)) || 
+                               (item.subject && item.subject.toLowerCase().includes(q)) ||
+                               (item.author && item.author.toLowerCase().includes(q));
+          const matchesType = !filters.type || String(item.type) === String(filters.type);
+          const matchesSubject = !filters.subject || String(item.subject) === String(filters.subject);
+          return matchesQuery && matchesType && matchesSubject;
+        });
+
+        // Smooth transition: fade out, show skeletons, then render new items
+        grid.style.opacity = '0.5';
+        grid.style.transition = 'opacity 0.2s ease';
+        
+        setTimeout(() => {
+          renderItems(filtered);
+          grid.style.opacity = '1';
+        }, 200);
+      }
+
+      function updateActiveChips() {
+        const chips = [];
+        if (state.filters.type) chips.push({ key: 'type', value: state.filters.type });
+        if (state.filters.subject) chips.push({ key: 'subject', value: state.filters.subject });
+
+        activeFiltersContainer.innerHTML = '';
+
+        if (chips.length === 0) {
+          activeFiltersContainer.appendChild(noFiltersMsg);
+          clearBtn.classList.add('hidden');
+        } else {
+          clearBtn.classList.remove('hidden');
+          chips.forEach(chip => {
+            const btn = document.createElement('button');
+            btn.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-lux-gold text-lux-navy hover:bg-white hover:text-lux-navy transition-colors animate-fade-up';
+            btn.innerHTML = `<span>${chip.value}</span><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            btn.onclick = () => {
+              const selectId = chip.key === 'type' ? 'filter-type' : 'filter-subject';
+              document.getElementById(selectId).value = "";
+              handleFilterChange(chip.key, "");
+            };
+            activeFiltersContainer.appendChild(btn);
+          });
+        }
+      }
+
+      function handleFilterChange(key, value) {
+        state.filters[key] = value;
+        updateActiveChips();
+        filterItems();
+      }
+
+      // --- Toast Notification ---
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        const msg = document.getElementById('toast-msg');
+        msg.textContent = message;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+      }
+
+      // --- Lightbox Open/Close ---
+      function openPreview(title, pdfUrl) {
+        lightboxTitle.textContent = title;
+        downloadBtn.href = pdfUrl;
+        
+        lightbox.classList.remove('hidden');
+        // Force reflow
+        void lightbox.offsetWidth;
+        
+        lightbox.classList.remove('opacity-0');
+        lightboxContent.classList.remove('scale-95');
+        lightboxContent.classList.add('scale-100', 'animate-in-dialog');
+        
+        document.body.style.overflow = 'hidden';
+        
+        loadPdfDocument(pdfUrl);
+      }
+
+      function closePreview() {
+        lightbox.classList.add('opacity-0');
+        lightboxContent.classList.remove('scale-100', 'animate-in-dialog');
+        lightboxContent.classList.add('scale-95');
+        
+        setTimeout(() => {
+          lightbox.classList.add('hidden');
+          document.body.style.overflow = '';
+          resetPdfState();
+        }, 300);
+      }
+
+      // --- Event Listeners ---
+      searchInput.addEventListener('input', (e) => {
+        state.query = e.target.value;
+        filterItems();
+      });
+
+      document.getElementById('search-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        filterItems();
+      });
+
+      [typeFilter, subjectFilter].forEach(sel => {
+        sel.addEventListener('change', (e) => {
+          const key = e.target.id === 'filter-type' ? 'type' : 'subject';
+          handleFilterChange(key, e.target.value);
+        });
+      });
+
+      clearBtn.addEventListener('click', () => {
+        state.filters = { type: '', subject: '' };
+        typeFilter.value = "";
+        subjectFilter.value = "";
+        updateActiveChips();
+        filterItems();
+      });
+
+      lightboxClose.addEventListener('click', closePreview);
+      
+      lightbox.addEventListener('click', (e) => {
+        const backdrop = document.getElementById('lightbox-backdrop');
+        if (e.target === backdrop) closePreview();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closePreview();
+      });
+
+      // PDF Toolbar Listeners
+      sidebarToggle.addEventListener('click', () => {
+        const isHidden = sidebar.classList.contains('w-0');
+        if (isHidden) {
+          sidebar.classList.remove('w-0', 'border-none');
+          sidebar.classList.add('w-64');
+          sidebarToggle.classList.add('text-lux-gold', 'bg-white/10');
+        } else {
+          sidebar.classList.add('w-0', 'border-none');
+          sidebar.classList.remove('w-64');
+          sidebarToggle.classList.remove('text-lux-gold', 'bg-white/10');
+        }
+      });
+
+      btnNext.addEventListener('click', () => scrollToPage(pdfState.currentPage + 1));
+      btnPrev.addEventListener('click', () => scrollToPage(pdfState.currentPage - 1));
+      
+      zoomInBtn.addEventListener('click', () => handleZoom('in'));
+      zoomOutBtn.addEventListener('click', () => handleZoom('out'));
+
+      // Public API
+      return {
+        downloadItem: (title) => showToast(`Starting download: ${title}`),
+        openPreview,
+        addItem(asset) {
+          // Prepend a newly uploaded asset to the live state and re-render
+          state.items.unshift(asset);
+          MOCK_DB.unshift(asset);
+          filterItems();
+        },
+        init: async () => {
+          // Show skeleton while loading
+          grid.innerHTML = Array(4).fill(createSkeleton()).join('');
+          try {
+            const res = await fetch('/api/assets');
+            if (res.ok) {
+              const serverAssets = await res.json();
+              if (Array.isArray(serverAssets) && serverAssets.length > 0) {
+                // Merge: server assets first, then any MOCK_DB items not already present
+                const serverIds = new Set(serverAssets.map(a => String(a.id)));
+                const mockOnly = MOCK_DB.filter(m => !serverIds.has(String(m.id)));
+                state.items = [...serverAssets, ...mockOnly];
+              } else {
+                state.items = [...MOCK_DB];
+              }
+            } else {
+              state.items = [...MOCK_DB];
+            }
+          } catch {
+            // Server not running — fall back to MOCK_DB silently
+            state.items = [...MOCK_DB];
+          }
+          renderItems(state.items);
+        }
+      };
+    })();
+
+    // Init on load
+    document.addEventListener('DOMContentLoaded', () => App.init());
+  </script>
+  <!-- ══════════════════════════════════════════════════════════════
+       ADMIN SYSTEM — Auth · Upload · Modal Control
+  ══════════════════════════════════════════════════════════════ -->
+  <script>
+    const AdminSystem = (() => {
+      'use strict';
+
+      // ── State ────────────────────────────────────────────────────────
+      let authToken = null;
+
+      // ── DOM refs ─────────────────────────────────────────────────────
+      const loginModal  = document.getElementById('admin-login-modal');
+      const uploadModal = document.getElementById('admin-upload-modal');
+
+      // ── Modal helpers ────────────────────────────────────────────────
+      function openModal(modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        void modal.offsetWidth; // force reflow for transition
+        modal.classList.add('visible');
+      }
+
+      function closeModal(modal, onClosed) {
+        modal.classList.remove('visible');
+        setTimeout(() => {
+          modal.classList.remove('open');
+          document.body.style.overflow = '';
+          if (onClosed) onClosed();
+        }, 320);
+      }
+
+      // ── Backdrop clicks ──────────────────────────────────────────────
+      document.getElementById('login-modal-backdrop').addEventListener('click', () => closeLogin());
+      document.getElementById('upload-modal-backdrop').addEventListener('click', () => closeUpload());
+
+      // Escape key closes whichever modal is open
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (loginModal.classList.contains('open'))  closeLogin();
+        if (uploadModal.classList.contains('open')) closeUpload();
+      });
+
+      // ── Login ─────────────────────────────────────────────────────────
+      function openLogin() {
+        openModal(loginModal);
+        setTimeout(() => document.getElementById('admin-passcode').focus(), 350);
+      }
+
+      function closeLogin() {
+        closeModal(loginModal, () => {
+          document.getElementById('login-form').reset();
+          hideError('login-error');
+        });
+      }
+
+      function togglePasscodeVisibility() {
+        const input = document.getElementById('admin-passcode');
+        const icon  = document.getElementById('eye-icon-login');
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        icon.innerHTML = isHidden
+          ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`
+          : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+      }
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        const passcode = document.getElementById('admin-passcode').value;
+        const btn      = document.getElementById('login-submit-btn');
+        const btnText  = document.getElementById('login-btn-text');
+
+        hideError('login-error');
+        setLoading(btn, btnText, 'Verifying…', true);
+
+        try {
+          const res  = await fetch('/api/staff/login', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ passcode })
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) throw new Error(data.error || 'Login failed.');
+
+          authToken = data.token;
+          setAuthUI(true);
+          closeLogin();
+          // Small delay so the modal close animation completes first
+          setTimeout(() => openUpload(), 400);
+
+        } catch (err) {
+          showError('login-error', 'login-error-text', err.message);
+        } finally {
+          setLoading(btn, btnText, 'Log in', false);
+        }
+      }
+
+      // ── Upload ────────────────────────────────────────────────────────
+      function openUpload() {
+        if (!authToken) { openLogin(); return; }
+        resetUploadForm();
+        openModal(uploadModal);
+      }
+
+      function closeUpload() {
+        closeModal(uploadModal, resetUploadForm);
+      }
+
+      function handleFileSelect(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        document.getElementById('dropzone-idle').classList.add('hidden');
+        document.getElementById('dropzone-selected').classList.remove('hidden');
+        document.getElementById('selected-filename').textContent = file.name;
+        document.getElementById('selected-filesize').textContent = formatBytes(file.size);
+      }
+
+      function clearFileSelection(e) {
+        e.stopPropagation();
+        document.getElementById('file-upload-input').value = '';
+        document.getElementById('dropzone-idle').classList.remove('hidden');
+        document.getElementById('dropzone-selected').classList.add('hidden');
+      }
+
+      async function handleUpload(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('file-upload-input');
+        const btn       = document.getElementById('upload-submit-btn');
+        const btnText   = document.getElementById('upload-btn-text');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+          showError('upload-error', 'upload-error-text', 'Please select a PDF file first.');
+          return;
+        }
+
+        const file = fileInput.files[0];
+
+        // Client-side validation
+        if (file.type !== 'application/pdf') {
+          showError('upload-error', 'upload-error-text', 'Only PDF files are accepted.');
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          showError('upload-error', 'upload-error-text', 'File exceeds the 10 MB limit.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file',    file);
+        formData.append('title',   document.getElementById('upload-title').value.trim());
+        formData.append('subject', document.getElementById('upload-subject').value.trim());
+        formData.append('type',    document.getElementById('upload-type').value);
+        formData.append('year',    document.getElementById('upload-year').value);
+        formData.append('author',  document.getElementById('upload-author').value.trim());
+
+        hideError('upload-error');
+        setLoading(btn, btnText, 'Uploading…', true);
+        showProgress(true);
+
+        // Animate progress bar (XHR gives real progress; fetch does not — we simulate)
+        let fakeProgress = 0;
+        const progressBar = document.getElementById('upload-progress-bar');
+        const progressPct = document.getElementById('upload-progress-pct');
+        const progressTick = setInterval(() => {
+          fakeProgress = Math.min(fakeProgress + Math.random() * 15, 88);
+          progressBar.style.width  = fakeProgress + '%';
+          progressPct.textContent  = Math.round(fakeProgress) + '%';
+        }, 250);
+
+        try {
+          const res  = await fetch('/upload', { method: 'POST', body: formData });
+          const data = await res.json();
+
+          clearInterval(progressTick);
+          progressBar.style.width = '100%';
+          progressPct.textContent = '100%';
+
+          if (!res.ok || data.message !== 'File uploaded successfully') {
+            throw new Error(data.error || 'Upload failed.');
+          }
+
+          // Show success panel
+          document.getElementById('upload-form-container').classList.add('hidden');
+          document.getElementById('upload-success-container').classList.remove('hidden');
+          document.getElementById('success-filename').textContent = data.asset._filename;
+          document.getElementById('success-view-link').href       = data.asset.pdf;
+
+          // Inject the new item into the live catalog
+          App.addItem(data.asset);
+
+        } catch (err) {
+          clearInterval(progressTick);
+          showProgress(false);
+          showError('upload-error', 'upload-error-text', err.message);
+        } finally {
+          setLoading(btn, btnText, 'Upload PDF', false);
+        }
+      }
+
+      function resetUploadForm() {
+        const form = document.getElementById('upload-form');
+        if (form) form.reset();
+        document.getElementById('dropzone-idle').classList.remove('hidden');
+        document.getElementById('dropzone-selected').classList.add('hidden');
+        document.getElementById('upload-form-container').classList.remove('hidden');
+        document.getElementById('upload-success-container').classList.add('hidden');
+        showProgress(false);
+        hideError('upload-error');
+        const bar = document.getElementById('upload-progress-bar');
+        if (bar) bar.style.width = '0%';
+      }
+
+      // ── Drag-and-drop on the dropzone ────────────────────────────────
+      const dropzone = document.getElementById('upload-dropzone');
+      dropzone.addEventListener('dragover',  (e) => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+      dropzone.addEventListener('dragleave', ()  => dropzone.classList.remove('drag-over'));
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const input = document.getElementById('file-upload-input');
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          input.files = dt.files;
+          handleFileSelect(input);
+        }
+      });
+
+      // ── Auth UI toggle ───────────────────────────────────────────────
+      function setAuthUI(loggedIn) {
+        const guest = document.getElementById('auth-nav-guest');
+        const staff = document.getElementById('auth-nav-staff');
+        if (loggedIn) {
+          guest.style.display = 'none';
+          staff.classList.add('visible');
+        } else {
+          guest.style.display = '';
+          staff.classList.remove('visible');
+        }
+      }
+
+      function logout() {
+        authToken = null;
+        setAuthUI(false);
+      }
+
+      // ── Helpers ──────────────────────────────────────────────────────
+      function showError(containerId, textId, msg) {
+        const el = document.getElementById(containerId);
+        document.getElementById(textId).textContent = msg;
+        el.classList.add('visible');
+      }
+      function hideError(containerId) {
+        document.getElementById(containerId).classList.remove('visible');
+      }
+      function setLoading(btn, textEl, label, isLoading) {
+        textEl.textContent = label;
+        btn.disabled = isLoading;
+        btn.style.opacity = isLoading ? '0.7' : '';
+        btn.style.cursor  = isLoading ? 'not-allowed' : '';
+      }
+      function showProgress(show) {
+        document.getElementById('upload-progress-wrap').classList.toggle('hidden', !show);
+      }
+      function formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+
+      // ── Public API ───────────────────────────────────────────────────
+      return {
+        openLogin,
+        closeLogin,
+        openUpload,
+        closeUpload,
+        handleLogin,
+        handleUpload,
+        handleFileSelect,
+        clearFileSelection,
+        resetUploadForm,
+        togglePasscodeVisibility,
+        logout
+      };
+    })();
+  </script>
+
+  <script>
+    // /scripts/carousel.js  (defensive non-module version — improved: pointer-only + early reentrancy guard)
+(function (global) {
+  function initCarousel(rootEl) {
+    if (!rootEl) return null;
+    console.log('initCarousel called for', rootEl);
+
+    const slidesEl = rootEl.querySelector('.slides');
+    const slides = Array.from(rootEl.querySelectorAll('.slide'));
+    const imgs = Array.from(rootEl.querySelectorAll('img'));
+    const overlay = rootEl.querySelector('.image-overlay');
+    const overlayHeadline = overlay ? overlay.querySelector('#carousel-overlay-headline') : null;
+    const overlaySubtitle = overlay ? overlay.querySelector('#carousel-overlay-subtitle') : null;
+    const overlayContent = rootEl.querySelector('.image-overlay__content');
+    const dotsContainer = rootEl.querySelector('.carousel-dots');
+    const controls = rootEl.querySelector('.carousel-controls');
+    const liveRegion = rootEl.querySelector('.carousel-live');
+
+    let current = 0;
+    let isAnimating = false;
+    let inView = false;
+    let lastSwipeAt = 0;
+
+    if (!slidesEl || !slides.length) {
+      console.warn('Carousel init aborted: missing slides container or slides.');
+      return null;
+    }
+
+    // Activate carousel mode
+    rootEl.classList.add('carousel-enabled');
+
+    // Defensive inline layout so the carousel shows even if CSS hasn't loaded yet
+    slidesEl.style.display = 'flex';
+    slidesEl.style.flexWrap = 'nowrap';
+    slidesEl.style.boxSizing = 'border-box';
+    slidesEl.style.width = `${slides.length * 100}%`;
+    slidesEl.style.willChange = slidesEl.style.willChange || 'transform';
+    // Do not forcibly set transition (leave to CSS), but ensure a sensible fallback only if none exists:
+    if (!slidesEl.style.transition) {
+      slidesEl.style.transition = 'transform 360ms cubic-bezier(.2,.9,.3,1)';
+    }
+    slidesEl.style.transform = `translate3d(-${current * 100}%, 0, 0)`;
+    slidesEl.style.alignItems = 'stretch';
+
+    slides.forEach((s) => {
+      s.style.minWidth = '100%';
+      s.style.flex = '0 0 100%';
+      s.style.boxSizing = 'border-box';
+      s.style.position = s.style.position || 'relative';
+      const caption = s.querySelector('.slide-caption');
+      if (caption) caption.style.display = 'none';
+    });
+
+    imgs.forEach(img => {
+      img.style.display = 'block';
+      img.style.width = '100%';
+      img.style.height = 'auto';
+      if (!img.style.objectFit) img.style.objectFit = 'cover';
+      img.style.opacity = img.style.opacity || '';
+      img.style.visibility = img.style.visibility || '';
+    });
+
+    if (controls) controls.setAttribute('aria-hidden', 'false');
+    if (dotsContainer) dotsContainer.setAttribute('aria-hidden', 'false');
+    if (overlay) overlay.setAttribute('aria-hidden', 'false');
+
+    // Build dots
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      slides.forEach((s, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'carousel-dot';
+        btn.setAttribute('aria-pressed', i === current ? 'true' : 'false');
+        btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        btn.dataset.index = String(i);
+        btn.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(btn);
+      });
+    }
+
+    // Prev / Next
+    const prevBtn = rootEl.querySelector('.carousel-btn.prev');
+    const nextBtn = rootEl.querySelector('.carousel-btn.next');
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    // Keyboard
+    rootEl.tabIndex = 0;
+    rootEl.addEventListener('keydown', (ev) => {
+      if (ev.key === 'ArrowLeft') { ev.preventDefault(); goTo(current - 1); }
+      if (ev.key === 'ArrowRight') { ev.preventDefault(); goTo(current + 1); }
+    });
+
+    // Swipe handling: use Pointer Events if supported (avoid double-firing)
+    let startX = 0, deltaX = 0, isPointerDown = false;
+    const supportsPointer = !!window.PointerEvent;
+
+    if (supportsPointer) {
+      slidesEl.addEventListener('pointerdown', (e) => {
+        isPointerDown = true;
+        startX = e.clientX;
+        deltaX = 0;
+        if (e.pointerId && slidesEl.setPointerCapture) slidesEl.setPointerCapture(e.pointerId);
+      }, { passive: true });
+
+      slidesEl.addEventListener('pointermove', (e) => {
+        if (!isPointerDown) return;
+        deltaX = e.clientX - startX;
+      }, { passive: true });
+
+      slidesEl.addEventListener('pointerup', () => {
+        isPointerDown = false;
+        handleSwipe();
+      });
+
+      slidesEl.addEventListener('pointercancel', () => {
+        isPointerDown = false;
+        deltaX = 0;
+      });
+    } else {
+      // fallback to touch events only (no pointer events)
+      slidesEl.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        deltaX = 0;
+      }, { passive: true });
+
+      slidesEl.addEventListener('touchmove', (e) => {
+        deltaX = e.touches[0].clientX - startX;
+      }, { passive: true });
+
+      slidesEl.addEventListener('touchend', handleSwipe, { passive: true });
+    }
+
+    function handleSwipe() {
+      // debounce quick repeated ups (protect against weird duplicate events)
+      const now = Date.now();
+      if (now - lastSwipeAt < 200) { deltaX = 0; return; }
+      lastSwipeAt = now;
+
+      const threshold = Math.min(100, window.innerWidth * 0.12);
+      if (deltaX > threshold) goTo(current - 1);
+      else if (deltaX < -threshold) goTo(current + 1);
+      deltaX = 0;
+    }
+
+    // IntersectionObserver to toggle inView
+    const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.target === rootEl) {
+          inView = entry.isIntersecting && entry.intersectionRatio > 0.25;
+          if (inView) rootEl.classList.add('in-view');
+          else rootEl.classList.remove('in-view');
+        }
+      });
+    }, { threshold: [0, 0.25, 0.5] }) : null;
+    if (io) io.observe(rootEl);
+    else rootEl.classList.add('in-view');
+
+    slides.forEach((s, i) => s.setAttribute('aria-hidden', i === current ? 'false' : 'true'));
+
+    // initial render
+    updateUI(true);
+
+    // IMPORTANT: Prevent reentrancy by setting isAnimating immediately when we start a navigation.
+    function goTo(idx) {
+      if (isAnimating) return;
+      const target = ((idx % slides.length) + slides.length) % slides.length;
+      if (target === current) return;
+
+      // lock reentrancy now
+      isAnimating = true;
+      current = target;
+      updateUI(false);
+      // updateUI will schedule the unlock timeout
+    }
+
+    function updateUI(initial = false) {
+      // GPU-accelerated transform
+      // Use requestAnimationFrame to ensure the browser applies styles before transform for smoother transition
+      requestAnimationFrame(() => {
+        slidesEl.style.transform = `translate3d(-${current * 100}%, 0, 0)`;
+      });
+
+      // accessibility updates
+      slides.forEach((s, i) => s.setAttribute('aria-hidden', i === current ? 'false' : 'true'));
+      if (dotsContainer) {
+        const dotButtons = Array.from(dotsContainer.children || []);
+        dotButtons.forEach((b, i) => b.setAttribute('aria-pressed', i === current ? 'true' : 'false'));
+      }
+
+      // overlay content
+      const active = slides[current];
+      const title = active && active.dataset ? (active.dataset.title || '') : '';
+      const subtitle = active && active.dataset ? (active.dataset.subtitle || '') : '';
+      if (overlayHeadline) overlayHeadline.textContent = title;
+      if (overlaySubtitle) overlaySubtitle.textContent = subtitle;
+      if (liveRegion) liveRegion.textContent = `${title}. ${subtitle}`;
+
+      // caption animation replay
+      if (overlayContent) {
+        overlayContent.classList.remove('is-animate');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!prefersReduced && inView) {
+          void overlayContent.offsetWidth; // force reflow
+          overlayContent.classList.add('is-animate');
+          overlayContent.style.opacity = '';
+        } else {
+          overlayContent.style.opacity = '1';
+        }
+      }
+
+      // release isAnimating after transition time (give small buffer)
+      if (!initial) {
+        const releaseAfter = 420; // should match CSS transition/animation durations
+        window.setTimeout(() => { isAnimating = false; }, releaseAfter);
+      } else {
+        // initial render should not block interaction
+        isAnimating = false;
+      }
+
+      console.debug('carousel update', { current, title, subtitle });
+    }
+
+    // Public API
+    const api = {
+      goTo,
+      next() { goTo(current + 1); },
+      prev() { goTo(current - 1); },
+      get index() { return current; },
+      destroy() {
+        if (io) io.disconnect();
+        rootEl.classList.remove('carousel-enabled');
+        if (controls) controls.setAttribute('aria-hidden', 'true');
+        if (dotsContainer) dotsContainer.setAttribute('aria-hidden', 'true');
+        if (overlay) overlay.setAttribute('aria-hidden', 'true');
+        // full listener cleanup is omitted for brevity
+      }
+    };
+
+    return api;
+  }
+
+  // expose for classic usage
+  global.initCarousel = initCarousel;
+})(window);
+  </script>
+
+  <!-- ── BIC Nav + Menu JS ── -->
+  <script>
+  (function () {
+    'use strict';
+    var nav = document.querySelector('.bic-site-nav');
+    if (nav) {
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobileMenu');
+      var panel = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openBtns = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocus = null, timeouts = [];
+      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
+      if (!menu) return;
+      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
+      function scroll(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function trapFocus(e) { if (!panel || !panel.contains(e.target)) { var els = Array.from(panel.querySelectorAll(SEL)); if (els.length) els[0].focus({ preventScroll: true }); } }
+      function onEsc(e) { if (e.key === 'Escape') close(); }
+      function open() {
+        if (menu.classList.contains('open')) return;
+        lastFocus = document.activeElement;
+        menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () { if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll: true }); } }, PDELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', trapFocus, true);
+        document.addEventListener('keydown', onEsc);
+        if (overlay) overlay.addEventListener('click', close);
+        scroll(true);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
+      }
+      function close() {
+        if (!menu.classList.contains('open')) return;
+        clearTO();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () { var tH = setTimeout(function () { if (overlay) overlay.classList.remove('overlay-in'); var tH2 = setTimeout(function () { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); if (panel) panel.setAttribute('aria-hidden','true'); openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); }); scroll(false); if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true }); }, ODUR); timeouts.push(tH2); }, OHOLD); timeouts.push(tH); }, PDUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', trapFocus, true);
+        document.removeEventListener('keydown', onEsc);
+        if (overlay) overlay.removeEventListener('click', close);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+      }
+      openBtns.forEach(function(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+        btn.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
+      });
+      closeBtns.forEach(function(btn) { if (!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
+      window.openMobileMenu = open; window.closeMobileMenu = close;
+      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
+      var orig = document.getElementById('hamburger');
+      if (orig) {
+        var fl = orig.cloneNode(true);
+        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
+        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
+        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
+        document.body.appendChild(fl);
+        function act(){ if (typeof open==='function') open(); }
+        fl.addEventListener('click', act);
+        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      }
+    });
+  }());
+  </script>
+</body>
+</html>

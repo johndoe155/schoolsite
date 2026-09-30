@@ -1,0 +1,1661 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bodija International — Contact</title>
+
+  <!-- Google Fonts chosen to match the screenshots: elegant display + geometric sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@600;700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       BODIJA INTERNATIONAL COLLEGE — CONTACT PAGE
+       "Silent Luxury" Material-Inspired Overhaul
+       ============================================================ */
+
+    /* ── Page-level tokens ── */
+    :root {
+      --lux-parchment:    #F5F0E8;
+      --lux-cream:        #FAF7F2;
+      --lux-white:        #FFFFFF;
+      --lux-ink:          #181410;
+      --lux-ink-70:       rgba(24, 20, 16, 0.70);
+      --lux-ink-40:       rgba(24, 20, 16, 0.40);
+      --lux-ink-12:       rgba(24, 20, 16, 0.10);
+      --lux-gold:         #B07D3F;
+      --lux-gold-pale:    rgba(176, 125, 63, 0.09);
+      --lux-gold-border:  rgba(176, 125, 63, 0.28);
+      --lux-muted:        #7A6F63;
+      --lux-success:      #2E7D4F;
+      --lux-danger:       #9E3030;
+      --lux-font-display: 'Cormorant Garamond', Georgia, serif;
+      --lux-font-body:    'DM Sans', system-ui, sans-serif;
+      --lux-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --lux-ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+      --lux-dur-fast:     220ms;
+      --lux-dur-mid:      420ms;
+      --lux-dur-slow:     680ms;
+      --lux-max:          1180px;
+      --lux-gutter:       clamp(24px, 5vw, 72px);
+    }
+
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--lux-font-body);
+      color: var(--lux-ink);
+      background-color: var(--lux-parchment);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+    }
+
+    /* ── Scroll reveal system ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity var(--lux-dur-slow) var(--lux-ease-out),
+        transform var(--lux-dur-slow) var(--lux-ease-out);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 80ms; }
+    .reveal-delay-2 { transition-delay: 160ms; }
+    .reveal-delay-3 { transition-delay: 240ms; }
+    .reveal-delay-4 { transition-delay: 320ms; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ── Page wrapper ── */
+    .lux-wrap {
+      max-width: var(--lux-max);
+      margin: 0 auto;
+      padding-left: var(--lux-gutter);
+      padding-right: var(--lux-gutter);
+    }
+
+    /* ================================================================
+       HERO SECTION
+    ================================================================ */
+    .lux-hero {
+      position: relative;
+      padding-top: clamp(80px, 14vw, 148px);
+      padding-bottom: clamp(56px, 9vw, 100px);
+      overflow: hidden;
+    }
+
+    /* Giant watermark text behind the headline */
+    .lux-hero-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      pointer-events: none;
+      user-select: none;
+      overflow: hidden;
+    }
+    .lux-hero-watermark span {
+      font-family: var(--lux-font-display);
+      font-size: clamp(120px, 22vw, 280px);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(24, 20, 16, 0.035);
+      line-height: 0.85;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+      transform: translateX(5%);
+    }
+
+    /* Thin decorative rule */
+    .lux-hero-rule {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.8s var(--lux-ease-out) both;
+    }
+    .lux-hero-rule::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--lux-gold);
+      flex-shrink: 0;
+    }
+    .lux-hero-eyebrow {
+      font-family: var(--lux-font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--lux-gold);
+    }
+
+    /* Main headline */
+    .lux-hero-title {
+      font-family: var(--lux-font-display);
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.028em;
+      color: var(--lux-ink);
+      margin: 0 0 28px 0;
+      animation: fadeSlideUp 0.9s 0.08s var(--lux-ease-out) both;
+    }
+    .lux-hero-title em {
+      font-style: italic;
+      color: var(--lux-gold);
+    }
+
+    /* Subtitle */
+    .lux-hero-sub {
+      font-family: var(--lux-font-body);
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+      font-weight: 300;
+      color: var(--lux-muted);
+      max-width: 46ch;
+      line-height: 1.72;
+      margin: 0;
+      animation: fadeSlideUp 0.9s 0.16s var(--lux-ease-out) both;
+    }
+
+    /* Decorative horizontal rule below hero */
+    .lux-hero-bottom-rule {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: clamp(40px, 6vw, 64px);
+      animation: fadeSlideUp 0.9s 0.22s var(--lux-ease-out) both;
+    }
+    .lux-hero-bottom-rule::before,
+    .lux-hero-bottom-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--lux-ink-12);
+    }
+    .lux-hero-bottom-rule-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--lux-gold);
+      margin: 0 16px;
+      flex-shrink: 0;
+    }
+
+    /* ================================================================
+       CONTACT SECTION
+    ================================================================ */
+    .lux-contact-section {
+      padding-bottom: clamp(80px, 12vw, 140px);
+    }
+
+    /* Two-column grid */
+    .lux-contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (min-width: 960px) {
+      .lux-contact-grid {
+        grid-template-columns: 1fr 360px;
+        gap: 48px;
+      }
+    }
+    @media (min-width: 1100px) {
+      .lux-contact-grid {
+        grid-template-columns: 1fr 400px;
+        gap: 64px;
+      }
+    }
+
+    /* ================================================================
+       FORM SURFACE
+    ================================================================ */
+    .lux-form-surface {
+      background: var(--lux-white);
+      padding: clamp(36px, 5vw, 64px);
+      position: relative;
+      box-shadow:
+        0 1px 2px rgba(24, 20, 16, 0.04),
+        0 4px 16px rgba(24, 20, 16, 0.04),
+        0 20px 48px rgba(24, 20, 16, 0.05);
+    }
+
+    /* Gold top accent line */
+    .lux-form-surface::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--lux-gold) 0%, rgba(176,125,63,0.4) 60%, transparent 100%);
+    }
+
+    /* Form eyebrow */
+    .lux-form-eyebrow {
+      font-family: var(--lux-font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--lux-gold);
+      margin: 0 0 18px 0;
+    }
+
+    /* Form heading */
+    .lux-form-heading {
+      font-family: var(--lux-font-display);
+      font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+      font-weight: 300;
+      letter-spacing: -0.022em;
+      color: var(--lux-ink);
+      line-height: 1.08;
+      margin: 0 0 10px 0;
+    }
+
+    /* Form description */
+    .lux-form-desc {
+      font-family: var(--lux-font-body);
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--lux-muted);
+      margin: 0 0 40px 0;
+      line-height: 1.68;
+      max-width: 54ch;
+    }
+
+    /* ── Fields grid ── */
+    .lux-fields {
+      display: grid;
+      gap: 32px;
+    }
+    .lux-fields.two-up { /* mobile: single col */ }
+    @media (min-width: 600px) {
+      .lux-fields.two-up {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px 32px;
+      }
+    }
+
+    /* Field group — position context for animated underline */
+    .lux-field-group {
+      position: relative;
+    }
+
+    /* Label */
+    .lux-label {
+      display: block;
+      font-family: var(--lux-font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--lux-gold);
+      margin-bottom: 12px;
+      transition: color var(--lux-dur-fast) ease;
+    }
+
+    /* Input / Textarea — borderless, only bottom line */
+    .lux-input,
+    .lux-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--lux-ink-12);
+      padding: 10px 0 14px;
+      font-family: var(--lux-font-body);
+      font-size: 0.975rem;
+      font-weight: 300;
+      color: var(--lux-ink);
+      outline: none;
+      border-radius: 0;
+      transition: border-color var(--lux-dur-fast) ease;
+      -webkit-appearance: none;
+    }
+    .lux-input::placeholder,
+    .lux-textarea::placeholder {
+      color: rgba(24, 20, 16, 0.22);
+      font-weight: 300;
+    }
+
+    /* Animated gold underline bar */
+    .lux-field-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--lux-gold);
+      transition: width 0.45s var(--lux-ease-out);
+      pointer-events: none;
+    }
+    .lux-field-group:focus-within .lux-field-line {
+      width: 100%;
+    }
+    .lux-field-group:focus-within .lux-label {
+      color: var(--lux-gold);
+    }
+
+    /* Textarea */
+    .lux-textarea {
+      min-height: 130px;
+      resize: none;
+      display: block;
+      line-height: 1.65;
+    }
+
+    /* Keyboard focus ring for accessibility */
+    .lux-input:focus-visible,
+    .lux-textarea:focus-visible {
+      outline: none; /* handled by animated underline */
+    }
+
+    /* ── Form actions ── */
+    .lux-form-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+    }
+
+    /* Primary CTA — dark with gold reveal sweep */
+    .lux-btn-send {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 38px;
+      background: var(--lux-ink);
+      color: var(--lux-cream);
+      font-family: var(--lux-font-body);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: color var(--lux-dur-mid) var(--lux-ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lux-btn-send::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--lux-gold);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.5s var(--lux-ease-out);
+    }
+    .lux-btn-send:hover::before,
+    .lux-btn-send:focus-visible::before {
+      transform: scaleX(1);
+    }
+    .lux-btn-send:hover { color: #1A1000; }
+    .lux-btn-send:focus-visible {
+      outline: 2px solid var(--lux-gold);
+      outline-offset: 3px;
+    }
+    .lux-btn-send > * { position: relative; z-index: 1; }
+    .lux-btn-send .lux-btn-arrow {
+      transition: transform 0.35s var(--lux-ease);
+    }
+    .lux-btn-send:hover .lux-btn-arrow {
+      transform: translateX(5px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lux-btn-send::before,
+      .lux-btn-send .lux-btn-arrow { transition: none; }
+    }
+
+    /* Ghost / reset button */
+    .lux-btn-reset {
+      background: none;
+      border: none;
+      padding: 16px 4px;
+      font-family: var(--lux-font-body);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--lux-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-color: rgba(122, 111, 99, 0.35);
+      transition: color var(--lux-dur-fast) ease, text-decoration-color var(--lux-dur-fast) ease;
+    }
+    .lux-btn-reset:hover { color: var(--lux-ink); text-decoration-color: var(--lux-ink); }
+    .lux-btn-reset:focus-visible { outline: 2px solid var(--lux-gold); outline-offset: 3px; }
+
+    /* Privacy note */
+    .lux-privacy-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      font-family: var(--lux-font-body);
+      font-size: 0.76rem;
+      font-weight: 300;
+      color: rgba(24, 20, 16, 0.32);
+      line-height: 1.4;
+    }
+    .lux-privacy-note svg { flex-shrink: 0; color: rgba(176,125,63,0.45); }
+
+    /* Status messages */
+    .lux-status {
+      margin-top: 24px;
+      font-family: var(--lux-font-body);
+      font-size: 0.875rem;
+      font-weight: 400;
+      padding: 14px 20px;
+      border-left: 2px solid;
+      animation: fadeSlideUp 0.4s var(--lux-ease-out) both;
+    }
+    .lux-status.success {
+      border-color: var(--lux-success);
+      color: var(--lux-success);
+      background: rgba(46, 125, 79, 0.05);
+    }
+    .lux-status.error {
+      border-color: var(--lux-danger);
+      color: var(--lux-danger);
+      background: rgba(158, 48, 48, 0.05);
+    }
+
+    /* ================================================================
+       SIDEBAR — INFO PANEL
+    ================================================================ */
+    .lux-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Dark info card */
+    .lux-info-panel {
+      background: var(--lux-ink);
+      padding: clamp(32px, 4vw, 48px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative concentric circle ornament */
+    .lux-info-panel::before {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      border: 1px solid rgba(176, 125, 63, 0.12);
+      pointer-events: none;
+    }
+    .lux-info-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 1px solid rgba(176, 125, 63, 0.08);
+      pointer-events: none;
+    }
+
+    /* Panel eyebrow */
+    .lux-info-eyebrow {
+      font-family: var(--lux-font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--lux-gold);
+      margin: 0 0 28px 0;
+    }
+
+    /* Contact items */
+    .lux-info-items {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .lux-info-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    /* Circular icon container */
+    .lux-info-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--lux-gold-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--lux-gold);
+      transition: background var(--lux-dur-fast) ease, border-color var(--lux-dur-fast) ease;
+    }
+    .lux-info-item:hover .lux-info-icon {
+      background: var(--lux-gold-pale);
+      border-color: var(--lux-gold);
+    }
+
+    .lux-info-body {
+      padding-top: 7px;
+    }
+    .lux-info-body strong {
+      display: block;
+      font-family: var(--lux-font-body);
+      font-size: 0.9375rem;
+      font-weight: 400;
+      color: rgba(250, 247, 242, 0.92);
+      margin-bottom: 3px;
+      line-height: 1.4;
+    }
+    .lux-info-body small {
+      font-family: var(--lux-font-body);
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: rgba(250, 247, 242, 0.42);
+      letter-spacing: 0.01em;
+    }
+    .lux-info-body a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(250, 247, 242, 0.18);
+      transition: border-color var(--lux-dur-fast) ease;
+    }
+    .lux-info-body a:hover { border-color: var(--lux-gold); color: var(--lux-gold); }
+    .lux-info-body a:focus-visible { outline: 2px solid var(--lux-gold); outline-offset: 2px; }
+
+    /* Divider */
+    .lux-info-divider {
+      height: 1px;
+      background: rgba(176, 125, 63, 0.14);
+      margin: 4px 0 24px;
+    }
+
+    /* Social links */
+    .lux-info-socials {
+      display: flex;
+      gap: 10px;
+    }
+    .lux-social-link {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(250, 247, 242, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(250, 247, 242, 0.5);
+      text-decoration: none;
+      transition:
+        border-color var(--lux-dur-fast) ease,
+        color var(--lux-dur-fast) ease,
+        transform var(--lux-dur-fast) ease;
+    }
+    .lux-social-link:hover {
+      border-color: var(--lux-gold);
+      color: var(--lux-gold);
+      transform: translateY(-2px);
+    }
+    .lux-social-link:focus-visible {
+      outline: 2px solid var(--lux-gold);
+      outline-offset: 3px;
+    }
+
+    /* ================================================================
+       MAP SURFACE
+    ================================================================ */
+    .lux-map-surface {
+      background: var(--lux-white);
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(24, 20, 16, 0.04),
+        0 8px 24px rgba(24, 20, 16, 0.04);
+      position: relative;
+    }
+    /* Gold top accent */
+    .lux-map-surface::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--lux-gold) 0%, rgba(176,125,63,0.3) 60%, transparent 100%);
+    }
+
+    .lux-map-header {
+      padding: 24px 28px 22px;
+      border-bottom: 1px solid var(--lux-ink-12);
+    }
+    .lux-map-title {
+      font-family: var(--lux-font-display);
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: -0.015em;
+      color: var(--lux-ink);
+      margin: 0 0 4px 0;
+      line-height: 1.1;
+    }
+    .lux-map-desc {
+      font-family: var(--lux-font-body);
+      font-size: 0.8125rem;
+      font-weight: 300;
+      color: var(--lux-muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .lux-map-frame {
+      width: 100%;
+      height: 210px;
+      border: none;
+      display: block;
+    }
+
+    /* ================================================================
+       KEYFRAME ANIMATIONS
+    ================================================================ */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+  </style>
+    <!-- ── BIC Shared Nav + Menu + Footer CSS ── -->
+  <style>
+    :root {
+      --bic-ink:          #18140F;
+      --bic-ink-60:       rgba(24,20,15,.6);
+      --bic-ink-12:       rgba(24,20,15,.12);
+      --bic-ebony:        #141210;
+      --bic-ebony-2:      #1E1A14;
+      --bic-ebony-border: rgba(255,255,255,.08);
+      --bic-ebony-muted:  rgba(230,218,196,.6);
+      --bic-parchment:    #F3EFE5;
+      --bic-surface:      #FDFAF5;
+      --bic-gold:         #B07D3F;
+      --bic-gold-pale:    rgba(176,125,63,.10);
+      --bic-gold-border:  rgba(176,125,63,.22);
+      --bic-font-display: 'Cormorant Garamond', Georgia, serif;
+      --bic-font-sc:      'Cormorant SC', Georgia, serif;
+      --bic-font-body:    'DM Sans', system-ui, sans-serif;
+      --bic-max:          1120px;
+      --bic-gutter:       clamp(20px, 4vw, 56px);
+      --bic-e2:           0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
+      --bic-r-sm:         6px;
+      --bic-dur-fast:     200ms;
+      --bic-dur-mid:      360ms;
+      --z-hamburger:      10002;
+      --z-overlay:        10003;
+      --z-panel:          10004;
+    }
+    /* ── Nav bar ── */
+    .bic-site-nav {
+      position: fixed; inset-x: 0; top: 0; z-index: 9000;
+      padding: 0 var(--bic-gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+      width: 100%; 
+      background: rgba(243,239,229,.92);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      border-bottom: 1px solid var(--bic-ink-12);
+      transition: background var(--bic-dur-mid) ease, box-shadow var(--bic-dur-mid) ease;
+    }
+    .bic-site-nav.scrolled { background: rgba(253,250,245,.97); box-shadow: var(--bic-e2); }
+    .bic-nav-brand  { display: flex; align-items: center; gap: 14px; }
+    .bic-nav-logo   { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--bic-gold-border); background: var(--bic-surface); flex-shrink: 0; }
+    .bic-nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .bic-nav-wordmark { display: flex; flex-direction: column; gap: 1px; }
+    .bic-nav-wordmark strong { font-family: var(--bic-font-sc); font-size: 14px; font-weight: 500; letter-spacing: .06em; color: var(--bic-ink); line-height: 1.2; }
+    .bic-nav-wordmark span   { font-size: 11px; color: var(--bic-ink-60); letter-spacing: .04em; }
+    @media (max-width: 767px) {
+  .bic-site-nav {
+    padding-left: calc(49px + 56px + 2px); /* left-edge + button width + gap */
+  }
+}
+.bic-nav-brand {
+  margin-left: 10%;
+}
+    /* ── Hamburger ── */
+    #hamburger {
+      font-family: var(--bic-font-sc) !important; font-size: 20px !important;
+      font-weight: 600 !important; letter-spacing: .12em !important;
+      color: var(--bic-gold) !important; cursor: pointer;
+      padding: 8px 16px !important; border: 1.5px solid var(--bic-gold-border) !important;
+      border-radius: var(--bic-r-sm) !important; background: transparent !important;
+      background-image: none !important; text-shadow: none !important;
+      -webkit-text-fill-color: unset !important; -webkit-background-clip: unset !important;
+      background-clip: unset !important; user-select: none; display: inline-block; line-height: 1;
+      transition: background var(--bic-dur-fast), border-color var(--bic-dur-fast), transform var(--bic-dur-fast) !important;
+    }
+    #hamburger:hover, #hamburger:focus-visible {
+      background: var(--bic-gold-pale) !important; border-color: var(--bic-gold) !important;
+      transform: translateY(-1px) !important; filter: none !important;
+    }
+    #hamburger:active  { transform: translateY(0) !important; }
+    #hamburger:focus   { outline: none !important; }
+    #hamburger:focus-visible { outline: 2px solid var(--bic-gold) !important; outline-offset: 3px !important; box-shadow: none !important; }
+    #hamburger::after  { display: none !important; }
+    /* ── Nav right-side CTA ── */
+    .bic-nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 999px;
+      font-size: 13px; font-weight: 500; letter-spacing: .03em;
+      font-family: var(--bic-font-body); color: var(--bic-ink);
+      background: transparent; border: 1.5px solid var(--bic-ink-12);
+      text-decoration: none;
+      transition: border-color var(--bic-dur-mid), color var(--bic-dur-mid); white-space: nowrap;
+    }
+    .bic-nav-cta:hover      { border-color: var(--bic-gold); color: var(--bic-gold); }
+    .bic-nav-cta:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
+    /* ── Mobile menu ── */
+    .mobile-menu { display: none !important; }
+    .mobile-menu.open { display: block !important; }
+    .mobile-menu__overlay {
+      position: fixed; inset: 0; z-index: var(--z-overlay);
+      background: rgba(18,14,10,.55); opacity: 0;
+      transition: opacity 260ms cubic-bezier(.2,.9,.3,1);
+      backdrop-filter: blur(4px); transform: none !important;
+    }
+    .mobile-menu__overlay.overlay-in { opacity: 1; }
+    .mobile-menu__panel {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: min(380px, 90vw) !important; max-width: none !important; height: 100vh;
+      z-index: var(--z-panel);
+      background: var(--bic-ebony) !important; background-image: none !important;
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 360ms cubic-bezier(.2,.9,.3,1);
+      overflow-y: auto; box-shadow: 4px 0 24px rgba(0,0,0,.4);
+    }
+    .mobile-menu__panel.panel-in { transform: translateX(0); }
+    .mobile-menu__inner {
+      padding: 28px 32px 48px; display: flex; flex-direction: column; min-height: 100%;
+      transform: none !important; opacity: 1 !important; transition: none !important;
+    }
+    .mobile-menu__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 32px; border-bottom: 1px solid var(--bic-ebony-border);
+      margin-bottom: 32px;
+    }
+    .bic-logo-mark { font-family: var(--bic-font-sc); font-size: 18px; font-weight: 500; color: var(--bic-gold); letter-spacing: .1em; }
+    .mobile-menu__close {
+      background: none !important; border: none !important; cursor: pointer;
+      color: var(--bic-ebony-muted) !important; padding: 4px; border-radius: 50%;
+      outline: none !important; box-shadow: none !important;
+      transition: color var(--bic-dur-fast);
+    }
+    .mobile-menu__close:hover { color: #fff !important; }
+    .mobile-menu__close svg circle { display: none !important; }
+    .mobile-menu__nav { display: flex; flex-direction: column; gap: 0; }
+    .menu-item {
+      font-family: var(--bic-font-display) !important; font-size: clamp(22px,5vw,28px) !important;
+      font-weight: 400 !important; color: rgba(230,218,196,.8) !important;
+      padding: 10px 0 !important; letter-spacing: -.01em !important;
+      border-bottom: 1px solid rgba(255,255,255,.04) !important;
+      transition: color var(--bic-dur-fast), padding-left var(--bic-dur-fast) !important;
+      display: block !important; line-height: 1.2 !important; text-decoration: none !important;
+      -webkit-font-smoothing: antialiased; transform: none !important;
+    }
+    .menu-item:hover, .menu-item:focus { color: #fff !important; padding-left: 8px !important; outline: none !important; }
+    .bic-menu-footer-text {
+      margin-top: auto; padding-top: 32px;
+      font-size: 12px; color: rgba(230,218,196,.35); letter-spacing: .05em;
+      font-family: var(--bic-font-body);
+    }
+    /* Floating sticky clone */
+    .brand-btn--fixed {
+      position: fixed !important; top: 14px !important; left: var(--bic-gutter) !important;
+      z-index: var(--z-hamburger) !important; display: none;
+      font-family: var(--bic-font-sc) !important; font-size: 20px !important;
+      font-weight: 600 !important; letter-spacing: .12em !important; color: var(--bic-gold) !important;
+      cursor: pointer !important; padding: 8px 16px !important;
+      border: 1.5px solid var(--bic-gold-border) !important; border-radius: var(--bic-r-sm) !important;
+      background: rgba(243,239,229,.92) !important; background-image: none !important;
+      text-shadow: none !important; -webkit-text-fill-color: unset !important;
+      -webkit-background-clip: unset !important; background-clip: unset !important;
+      transform: none !important; filter: none !important; will-change: auto !important; line-height: 1;
+    }
+    .brand-btn--fixed::after { display: none !important; }
+    .brand-btn--fixed:hover  { background: var(--bic-gold-pale) !important; border-color: var(--bic-gold) !important; }
+    @media (min-width: 768px) { .brand-btn--fixed { display: inline-block !important; } }
+    @media (max-width: 767px) {
+      #hamburger { position: fixed !important; top: 14px !important; left: 16px !important; z-index: var(--z-hamburger) !important; }
+      .brand-btn--fixed { display: none !important; }
+    }
+    /* ── Footer ── */
+    .bic-site-footer { background: var(--bic-ebony-2); color: #F4EFE2; padding: clamp(48px,8vw,88px) 0 40px; font-family: var(--bic-font-body); -webkit-font-smoothing: antialiased; margin-top: 0; }
+    .bic-footer-wrap { max-width: var(--bic-max); margin: 0 auto; padding: 0 var(--bic-gutter); }
+    .bic-footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 56px; }
+    @media (min-width: 860px) { .bic-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; } }
+    .bic-footer-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .bic-footer-logo { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(176,125,63,.3); flex-shrink: 0; }
+    .bic-footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .bic-footer-wordmark strong { font-family: var(--bic-font-sc); font-size: 15px; font-weight: 500; display: block; letter-spacing: .04em; color: #F4EFE2; }
+    .bic-footer-wordmark small  { font-size: 12px; color: var(--bic-ebony-muted); }
+    .bic-footer-addr { font-style: normal; font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--bic-ebony-muted); max-width: 240px; margin-bottom: 24px; }
+    .bic-footer-addr a { color: inherit; text-decoration: none; transition: color var(--bic-dur-fast); }
+    .bic-footer-addr a:hover { color: var(--bic-gold); }
+    .bic-social-row { display: flex; gap: 10px; }
+    .bic-social-link { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: var(--bic-ebony-muted); transition: all var(--bic-dur-fast); text-decoration: none; }
+    .bic-social-link:hover { border-color: var(--bic-gold); color: var(--bic-gold); transform: translateY(-2px); }
+    .bic-social-link:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
+    .bic-footer-col-title { font-family: var(--bic-font-sc); font-size: 11px; font-weight: 500; letter-spacing: .18em; color: var(--bic-gold); margin-bottom: 20px; display: block; }
+    .bic-footer-body { font-size: 14px; font-weight: 300; color: var(--bic-ebony-muted); line-height: 1.75; }
+    .bic-footer-discover { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; font-weight: 500; color: #F4EFE2; letter-spacing: .03em; transition: color var(--bic-dur-fast); text-decoration: none; }
+    .bic-footer-discover:hover { color: var(--bic-gold); }
+    .bic-footer-discover svg { transition: transform var(--bic-dur-fast); }
+    .bic-footer-discover:hover svg { transform: translateX(4px); }
+    .bic-footer-city-list { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
+    .bic-footer-city { font-family: var(--bic-font-display); font-size: 2.2rem; font-weight: 300; letter-spacing: -.02em; line-height: 1; color: rgba(255,255,255,.22); }
+    .bic-footer-city.active { color: rgba(255,255,255,.8); }
+    .bic-footer-tagline { font-family: var(--bic-font-display); font-size: clamp(2.5rem,6vw,5rem); font-weight: 400; letter-spacing: -.03em; line-height: .95; color: rgba(255,255,255,.12); text-align: right; user-select: none; }
+    .bic-footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,.07); display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: space-between; }
+    @media (min-width: 600px) { .bic-footer-bottom { flex-direction: row; } }
+    .bic-footer-copy { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.3); }
+    .bic-adm-trigger { display: inline-flex; color: rgba(255,255,255,.3); font-size: 12px; cursor: pointer; text-decoration: none; transition: color var(--bic-dur-fast); font-family: var(--bic-font-body); }
+    .bic-adm-trigger:hover { color: rgba(255,255,255,.6); }
+  </style>
+</head>
+<body>
+
+  <!-- ── BIC Site Nav ── -->
+  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
+    <span id="hamburger"
+          role="button" tabindex="0"
+          aria-controls="mobileMenu" aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+      <div class="bic-nav-wordmark">
+        <strong>Bodija Int'l College</strong>
+        <span>Get In Touch</span>
+      </div>
+    </div>
+    <a href="/prototypes.html" class="bic-nav-cta">Home <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+  </nav>
+  <!-- ── BIC Mobile Menu ── -->
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile navigation menu">
+    <div class="mobile-menu__overlay" data-overlay></div>
+    <aside class="mobile-menu__panel" role="document" aria-hidden="true">
+      <div class="mobile-menu__inner">
+        <header class="mobile-menu__header">
+          <span class="bic-logo-mark">BIC</span>
+          <button class="mobile-menu__close" aria-label="Close menu" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </header>
+        <nav class="mobile-menu__nav" role="navigation" aria-label="Main navigation">
+          <a href="http://127.0.0.1:4040"       class="menu-item">Home</a>
+          <a href="http://127.0.0.1:2020" class="menu-item">Updates</a>
+          <a href="http://127.0.0.1:3030"  class="menu-item">Our Programs</a>
+          <a href="/index.html"      class="menu-item">Get In Touch</a>
+          <a href="http://127.0.0.1:5050"          class="menu-item">Digital Library</a>
+        </nav>
+        <p class="bic-menu-footer-text">Bodija International College &middot; Ibadan, Oyo State</p>
+      </div>
+    </aside>
+  </div>
+
+  <main id="main">
+
+    <!-- ══════════════════════════════════════════════
+         HERO SECTION — silent luxury editorial opener
+    ════════════════════════════════════════════════ -->
+    <section class="lux-hero" aria-label="Contact page introduction">
+      <div class="lux-hero-watermark" aria-hidden="true"><span>Contact</span></div>
+      <div class="lux-wrap">
+        <div class="lux-hero-rule" role="presentation">
+          <span class="lux-hero-eyebrow">Bodija International College</span>
+        </div>
+        <h1 class="lux-hero-title">We Value<br><em>Your Voice</em></h1>
+        <p class="lux-hero-sub">Questions about admissions, campus tours, or partnerships? Reach out — we respond to every message with care and intention.</p>
+        <div class="lux-hero-bottom-rule" aria-hidden="true"><div class="lux-hero-bottom-rule-dot"></div></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         CONTACT GRID — form + sidebar
+    ════════════════════════════════════════════════ -->
+    <section class="lux-contact-section" aria-labelledby="contact-heading">
+      <div class="lux-wrap">
+        <div class="lux-contact-grid">
+
+          <!-- LEFT: Contact Form -->
+          <div class="reveal">
+            <div class="lux-form-surface" role="region" aria-labelledby="contact-heading">
+              <p class="lux-form-eyebrow">Send a Message</p>
+              <h2 id="contact-heading" class="lux-form-heading">Never Miss an Update</h2>
+              <p class="lux-form-desc">Fill the form and we'll reply within 2–3 business days. For urgent matters, call the number listed alongside.</p>
+              <form id="contactForm" novalidate>
+                <div class="lux-fields two-up" role="group" aria-label="Your name and email">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="name">Full Name <span aria-hidden="true">*</span></label>
+                    <input id="name" name="name" class="lux-input" type="text" autocomplete="name" required aria-required="true" placeholder="Your full name">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="email">Email Address <span aria-hidden="true">*</span></label>
+                    <input id="email" name="email" class="lux-input" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-fields" style="margin-top:32px;">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="subject">Subject <span aria-hidden="true">*</span></label>
+                    <input id="subject" name="subject" class="lux-input" type="text" required aria-required="true" placeholder="Admissions · Campus Tours · Partnerships">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-fields" style="margin-top:32px;">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="message">Your Message <span aria-hidden="true">*</span></label>
+                    <textarea id="message" name="message" class="lux-textarea" required aria-required="true" placeholder="Tell us how we can help…"></textarea>
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-form-actions">
+                  <button type="submit" class="lux-btn-send">
+                    <span>Send Message</span>
+                    <svg class="lux-btn-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </button>
+                  <button type="reset" class="lux-btn-reset">Clear form</button>
+                </div>
+                <div id="formStatus" aria-live="polite"></div>
+                <p class="lux-privacy-note">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                  Your information is used solely to respond to this enquiry and is kept strictly confidential.
+                </p>
+              </form>
+            </div>
+          </div>
+
+          <!-- RIGHT: Info Panel + Map -->
+          <aside class="lux-sidebar" aria-label="Contact details and location">
+            <div class="lux-info-panel reveal reveal-delay-2">
+              <p class="lux-info-eyebrow">Direct Contact</p>
+              <div class="lux-info-items">
+                <div class="lux-info-item">
+                  <div class="lux-info-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C16.97 2 20 7 20 10.75c0 4.83-5.33 9.9-7.56 11.86a1 1 0 01-1.37 0C9.33 20.65 4 15.58 4 10.75 4 7 7.03 2 12 2z"/><circle cx="12" cy="10.5" r="2.2" fill="currentColor" stroke="none"/></svg>
+                  </div>
+                  <div class="lux-info-body">
+                    <strong>1-5, Tunde Lakanmi Crescent, Bodija, Ibadan</strong>
+                    <small>Office hours: Mon–Fri, 8:00–16:00</small>
+                  </div>
+                </div>
+                <div class="lux-info-item">
+                  <div class="lux-info-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.86 19.86 0 01.01 0 2 2 0 012 0h3a2 2 0 012 1.72c.12 1.05.36 2.07.71 3.03a2 2 0 01-.45 2.11L6.3 8.94a16.1 16.1 0 007.73 7.73l1.08-1.08a2 2 0 012.11-.45c.96.35 1.98.59 3.03.71A2 2 0 0122 16.92z"/></svg>
+                  </div>
+                  <div class="lux-info-body">
+                    <strong><a href="tel:+2348166061632">+234 816 606 1632</a></strong>
+                    <small>Call or WhatsApp</small>
+                  </div>
+                </div>
+                <div class="lux-info-item">
+                  <div class="lux-info-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M3 8.8l9 5.2 9-5.2"/></svg>
+                  </div>
+                  <div class="lux-info-body">
+                    <strong><a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></strong>
+                    <small>General enquiries</small>
+                  </div>
+                </div>
+              </div>
+              <div class="lux-info-divider" aria-hidden="true"></div>
+              <div class="lux-info-socials" aria-label="Follow us on social media">
+                <a href="https://www.facebook.com/bicbisbodija" class="lux-social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Facebook" title="Facebook">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg>
+                </a>
+                <a href="https://x.com/bic_bis" class="lux-social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on X (formerly Twitter)" title="X">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/bic_bis" class="lux-social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram" title="Instagram">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="11.5" r="3"/><circle cx="17.6" cy="6.5" r="0.85" fill="currentColor" stroke="none"/></svg>
+                </a>
+              </div>
+            </div>
+            <div class="lux-map-surface reveal reveal-delay-3" role="region" aria-labelledby="map-title">
+              <div class="lux-map-header">
+                <h3 id="map-title" class="lux-map-title">Find Us</h3>
+                <p class="lux-map-desc">Near Bodija Market, Ibadan — get directions below.</p>
+              </div>
+              <iframe class="lux-map-frame" loading="lazy" title="Bodija International College map location" src="https://www.google.com/maps?q=Ibadan%20Bodija&output=embed" aria-label="Interactive map showing Bodija International College"></iframe>
+            </div>
+          </aside>
+
+        </div><!-- /lux-contact-grid -->
+      </div><!-- /lux-wrap -->
+    </section>
+
+  </main>
+ 
+
+  <!-- ── BIC Site Footer ── -->
+  <footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="bic-footer-wrap">
+      <div class="bic-footer-grid">
+        <!-- Left -->
+        <div>
+          <div class="bic-footer-logo-row">
+            <div class="bic-footer-logo">
+              <img src="images/logo.png" alt="Bodija International College" loading="lazy" />
+            </div>
+            <div class="bic-footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home &middot; Get In Touch</small>
+            </div>
+          </div>
+          <address class="bic-footer-addr">
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>
+          </address>
+          <div class="bic-social-row" aria-label="Follow us on social media">
+            <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+            </a>
+          </div>
+        </div>
+        <!-- Centre -->
+        <div>
+          <span class="bic-footer-col-title">Our Mission</span>
+          <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="bic-footer-discover">
+            Discover our values
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <div class="bic-footer-city-list" aria-label="Location">
+            <div class="bic-footer-city">Bodija</div>
+            <div class="bic-footer-city active">Ibadan</div>
+            <div class="bic-footer-city">Oyo State</div>
+          </div>
+        </div>
+        <!-- Right -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
+          <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>
+        </div>
+      </div>
+      <div class="bic-footer-bottom">
+        <span class="bic-footer-copy">
+          &copy; <span id="year"></span> Bodija International College. All rights reserved.
+        </span>
+      </div>
+    </div>
+  </footer>
+   
+  <script>    // Small JS: year injection + client-side form validation feedback.
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('formStatus');
+
+    function showMessage(type, text) {
+      status.innerHTML = '';
+      const p = document.createElement('div');
+      p.className = 'lux-status ' + (type === 'success' ? 'success' : 'error');
+      p.textContent = text;
+      p.setAttribute('role', 'status');
+      status.appendChild(p);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      status.innerHTML = '';
+      const name    = form.name.value.trim();
+      const email   = form.email.value.trim();
+      const subject = form.subject.value.trim();
+      const message = form.message.value.trim();
+
+      if (!name || !email || !subject || !message) {
+        showMessage('error', 'Please complete all required fields before sending.');
+        return;
+      }
+      const emailOK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailOK) {
+        showMessage('error', 'Please enter a valid email address.');
+        form.email.focus();
+        return;
+      }
+      showMessage('success', 'Thank you. Your message has been recorded — we will respond shortly.');
+      form.reset();
+    });
+
+    // ── Scroll reveal ── IntersectionObserver for .reveal elements
+    (function initReveal() {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      els.forEach(el => io.observe(el));
+    })();
+  </script>
+  <script>
+/*
+  Footer-related JS extracted from your main script.
+
+  The original lines in your script that this covers included:
+    // hide footer to make overlay own the viewport
+    const footerEl = document.querySelector('footer.site-footer');
+    if(footerEl){ overlayPrevFooterDisplay = footerEl.style.display || ''; footerEl.style.display = 'none'; }
+    ...
+    const footerEl = currentArticleEl._footerEl;
+    if(footerEl){
+      footerEl.style.display = currentArticleEl._overlayPrevFooterDisplay || '';
+      footerEl.removeAttribute('aria-hidden');
+    }
+
+  This new script:
+    - Fills the copyright year <span id="year">
+    - Binds a newsletter form if present (#newsletterForm)
+    - Hides/restores the footer when an .article-overlay element appears/disappears
+      (works even if the main overlay code fails to hide/restore the footer).
+*/
+
+(function footerBehavior() {
+  // Run after DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  function init() {
+    // 1) Fill copyright year
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+
+    // 2) Newsletter binding (if you put the form in the footer)
+    const newsletter = document.getElementById('newsletterForm');
+    if (newsletter) {
+      newsletter.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const emailInput = document.getElementById('newsletterEmail');
+        const email = emailInput ? emailInput.value.trim() : '';
+        if (!email || !email.includes('@')) {
+          alert('Please enter a valid email address');
+          return;
+        }
+        const btn = newsletter.querySelector('button');
+        if (btn) {
+          btn.disabled = true;
+          const prevText = btn.textContent;
+          btn.textContent = 'Subscribed ✓';
+          setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = prevText || 'Subscribe';
+            if (emailInput) emailInput.value = '';
+          }, 2500);
+        }
+      });
+    }
+
+    // 3) Footer show/hide behavior driven by presence of .article-overlay
+    const footerEl = document.querySelector('footer.site-footer');
+    if (!footerEl) {
+      // If there's no footer element, nothing to do.
+      return;
+    }
+
+    // Helper to hide footer and mark previous display
+    function hideFooter() {
+      footerEl.dataset.prevDisplay = footerEl.style.display || '';
+      footerEl.style.display = 'none';
+      footerEl.setAttribute('aria-hidden', 'true');
+    }
+
+    // Helper to restore footer display
+    function restoreFooter() {
+      footerEl.style.display = footerEl.dataset.prevDisplay || '';
+      footerEl.removeAttribute('aria-hidden');
+      delete footerEl.dataset.prevDisplay;
+    }
+
+    // If overlay already exists on load (e.g. user landed with #/post/x), hide footer now
+    if (document.querySelector('.article-overlay')) {
+      hideFooter();
+    }
+
+    // Observe top-level additions/removals so we can react when overlay is appended/removed
+    const observer = new MutationObserver((mutationsList) => {
+      for (const m of mutationsList) {
+        // Check added nodes
+        for (const node of m.addedNodes) {
+          if (node.nodeType === 1 && node.classList && node.classList.contains('article-overlay')) {
+            hideFooter();
+          }
+        }
+        // Check removed nodes
+        for (const node of m.removedNodes) {
+          if (node.nodeType === 1 && node.classList && node.classList.contains('article-overlay')) {
+            restoreFooter();
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true });
+
+    // Also restore footer when the window unloads / beforeunload (safety)
+    window.addEventListener('beforeunload', function () {
+      restoreFooter();
+    });
+
+    // Expose for debugging if you want to call manually from console:
+    window.__footerBehavior = {
+      hideFooter,
+      restoreFooter
+    };
+  }
+})();
+</script>
+<script>
+  (function () {
+    'use strict';
+
+    function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+    function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+    function getFocusable(container) {
+      if (!container) return [];
+      return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+        .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobileMenu');
+      if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+      var overlay = menu.querySelector('[data-overlay]');
+      var panel = menu.querySelector('.mobile-menu__panel');
+      var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+      var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+      var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+      function parseTime(s) {
+        if (!s) return 0;
+        var str = String(s).trim();
+        if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+        if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+        var n = parseFloat(str);
+        return isFinite(n) ? n : 0;
+      }
+
+      var rootStyles = getComputedStyle(document.documentElement);
+      var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+      var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+      var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+      var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+      var timeouts = [];
+      var lastFocused = null;
+
+      function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+      function preventScroll(enable){
+        if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+        else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+      }
+
+      function onKeyDown(e){
+        if (!menu.classList.contains('open')) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+        if (e.key === 'Tab') {
+          if (!panel) return;
+          var focusable = getFocusable(panel);
+          if (!focusable.length) { e.preventDefault(); return; }
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+
+      function focusTrap(e){
+        if (!menu.classList.contains('open')) return;
+        if (!panel) return;
+        if (panel.contains(e.target)) return;
+        e.stopPropagation();
+        var f = getFocusable(panel);
+        if (f.length) f[0].focus(); else panel.focus();
+      }
+
+      // --- START: Robust stacking & disabling of openers ---
+      // Ensure menu is appended to body to avoid ancestor stacking contexts
+      if (menu && menu.parentElement !== document.body) {
+        document.body.appendChild(menu);
+        overlay = menu.querySelector('[data-overlay]');
+        panel = menu.querySelector('.mobile-menu__panel');
+      }
+
+      // store for restoring open buttons state
+      var openerStateMap = new WeakMap();
+
+      function disableOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = {
+            tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+            pointerEvents: b.style.pointerEvents || null,
+            ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+          };
+          openerStateMap.set(b, prev);
+          try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+          b.style.pointerEvents = 'none';
+          try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+        });
+      }
+
+      function restoreOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = openerStateMap.get(b) || {};
+          if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+          else b.setAttribute('tabindex', prev.tabindex);
+          if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+          else b.style.pointerEvents = prev.pointerEvents;
+          if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+          else b.setAttribute('aria-hidden', prev.ariaHidden);
+          openerStateMap.delete(b);
+        });
+      }
+      // --- END: Robust stacking & disabling of openers ---
+
+      function openMobileMenu(){
+        if (menu.classList.contains('open')) return;
+        lastFocused = document.activeElement;
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+
+        // disable hamburgers / openers while menu is open
+        disableOpenButtons();
+
+        if (overlay) overlay.classList.remove('overlay-in');
+        if (panel) panel.classList.remove('panel-in');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+
+        var t = setTimeout(function(){
+          if (panel) {
+            panel.classList.add('panel-in');
+            var closeBtn = panel.querySelector('.mobile-menu__close');
+            if (closeBtn) closeBtn.focus({ preventScroll: true });
+          }
+        }, PANEL_DELAY);
+        timeouts.push(t);
+
+        document.addEventListener('focus', focusTrap, true);
+        document.addEventListener('keydown', onKeyDown);
+        if (overlay) overlay.addEventListener('click', overlayClick);
+        preventScroll(true);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+      }
+
+      function closeMobileMenu(){
+        if (!menu.classList.contains('open')) return;
+        clearAllTimeouts();
+        if (panel) panel.classList.remove('panel-in');
+
+        var t1 = setTimeout(function(){
+          var tHold = setTimeout(function(){
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tHide = setTimeout(function(){
+              menu.classList.remove('open');
+              menu.setAttribute('aria-hidden', 'true');
+              if (panel) panel.setAttribute('aria-hidden', 'true');
+
+              // restore hamburgers / openers to previous state
+              restoreOpenButtons();
+
+              preventScroll(false);
+              if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+            }, OVERLAY_DUR);
+            timeouts.push(tHide);
+          }, OVERLAY_HOLD);
+          timeouts.push(tHold);
+        }, PANEL_DUR);
+        timeouts.push(t1);
+
+        document.removeEventListener('focus', focusTrap, true);
+        document.removeEventListener('keydown', onKeyDown);
+        if (overlay) overlay.removeEventListener('click', overlayClick);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+      }
+
+      function overlayClick(){ closeMobileMenu(); }
+
+      // Attach listeners to openers
+      openButtons.forEach(function(btn){
+        if (!btn) return;
+        btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+        btn.addEventListener('keydown', function(ev){
+          var k = ev.key;
+          if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+        });
+      });
+
+      // Attach close buttons
+      externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+      window.openMobileMenu = openMobileMenu;
+      window.closeMobileMenu = closeMobileMenu;
+      window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+      // Preload background image if present
+      (function preloadBg(){
+        if (!panel) return;
+        var style = getComputedStyle(panel);
+        var bg = style.getPropertyValue('background-image') || '';
+        var url = '';
+        var start = bg.indexOf('url(');
+        var end = bg.lastIndexOf(')');
+        if (start !== -1 && end !== -1 && end > start) {
+          url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+        }
+        if (url) { var img = new Image(); img.src = url; }
+      })();
+
+    }); // DOMContentLoaded end
+
+  })();
+  </script>
+
+  <!-- Optional sticky helper (keeps parity with canonical source). Non-intrusive. -->
+  <script>
+  (function addStickyHamburger(){
+    const original = document.getElementById('hamburger');
+    if (!original) return;
+
+    // create a lightweight clone used as the floating button
+    const floating = original.cloneNode(true);
+    floating.id = 'hamburgerSticky';
+    floating.classList.add('brand-btn--fixed');
+
+    // make it accessible and interactive
+    floating.setAttribute('aria-controls', original.getAttribute('aria-controls') || 'mobileMenu');
+    floating.setAttribute('aria-label', original.getAttribute('aria-label') || 'Open menu');
+    floating.setAttribute('role', original.getAttribute('role') || 'button');
+    floating.setAttribute('tabindex', '0');
+
+    // append to body so it stays fixed above content and follows body stacking order
+    document.body.appendChild(floating);
+
+    // forward activation to the original handler (open menu)
+    function activate() {
+      if (typeof window.openMobileMenu === 'function') window.openMobileMenu();
+      else original.click();
+    }
+    floating.addEventListener('click', activate);
+    floating.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); activate(); }
+    });
+
+    // Sync the 'scrolled' visual state (optional)
+    const hero = document.querySelector('#home') || document.querySelector('main') || document.documentElement;
+    if (hero && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          floating.classList.toggle('compact', entry.intersectionRatio < 0.5);
+        });
+      }, { threshold: [0, 0.5, 1] });
+      io.observe(hero);
+    }
+
+    window.enableStickyHamburger = function (enable = true) {
+      floating.style.display = enable ? 'inline-block' : 'none';
+    };
+
+    window.enableStickyHamburger(true);
+  })();
+  </script>
+
+  <!-- Rest of your inline scripts (decoy injectors etc.) remain unchanged and follow -->
+  <!-- [existing inline scripts that were originally after the menu are preserved above] -->
+
+  <script>
+    // small script used by footer: set year
+    (function(){ const y = new Date().getFullYear(); document.getElementById('year').textContent = y; })();
+  </script>
+
+  <!-- ── BIC Nav + Menu JS ── -->
+  <script>
+  (function () {
+    'use strict';
+    var nav = document.querySelector('.bic-site-nav');
+    if (nav) {
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu      = document.getElementById('mobileMenu');
+      var panel     = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay   = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openBtns  = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocus = null, timeouts = [];
+      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
+      if (!menu) return;
+      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
+      function scrollLock(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function trapFocus(e) {
+        if (!panel || !panel.contains(e.target)) {
+          var els = Array.from(panel.querySelectorAll(SEL));
+          if (els.length) els[0].focus({ preventScroll: true });
+        }
+      }
+      function onEsc(e) { if (e.key === 'Escape') close(); }
+      function open() {
+        if (menu.classList.contains('open')) return;
+        lastFocus = document.activeElement;
+        menu.classList.add('open'); menu.setAttribute('aria-hidden','false');
+        if (panel) panel.setAttribute('aria-hidden','false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () {
+          if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll:true }); }
+        }, PDELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', trapFocus, true);
+        document.addEventListener('keydown', onEsc);
+        if (overlay) overlay.addEventListener('click', close);
+        scrollLock(true);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
+      }
+      function close() {
+        if (!menu.classList.contains('open')) return;
+        clearTO();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () {
+          var tH = setTimeout(function () {
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tH2 = setTimeout(function () {
+              menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
+              if (panel) panel.setAttribute('aria-hidden','true');
+              openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+              scrollLock(false);
+              if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true });
+            }, ODUR);
+            timeouts.push(tH2);
+          }, OHOLD);
+          timeouts.push(tH);
+        }, PDUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', trapFocus, true);
+        document.removeEventListener('keydown', onEsc);
+        if (overlay) overlay.removeEventListener('click', close);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+      }
+      openBtns.forEach(function(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+        btn.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
+      });
+      closeBtns.forEach(function(btn) { if(!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
+      window.openMobileMenu  = open;
+      window.closeMobileMenu = close;
+      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
+      /* Floating sticky clone */
+      var orig = document.getElementById('hamburger');
+      if (orig) {
+        var fl = orig.cloneNode(true);
+        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
+        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
+        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
+        document.body.appendChild(fl);
+        function act(){ if (typeof open==='function') open(); }
+        fl.addEventListener('click', act);
+        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      }
+    });
+  }());
+  </script>
+</body>
+</html>

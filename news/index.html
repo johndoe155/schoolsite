@@ -1,0 +1,3221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bodija International College — School News</title>
+  <meta name="description" content="School News — Bodija International College. Campus announcements, features and events." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fonts -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Single (fixed) Google Fonts request with display=swap to avoid FOIT.
+       Combined families to reduce requests. KEEP display=swap. -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@600;700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════
+       NEWS PAGE — SILENT LUXURY REDESIGN
+       Palette: warm parchment · navy · antique gold
+       Type:    Cormorant Garamond (display) · DM Sans (body)
+    ═══════════════════════════════════════════════ */
+    :root {
+      /* Brand */
+      --navy:      #08103A;
+      --yellow:    #F6C600;
+      --gold:      #B07D3F;
+      --gold-pale: rgba(176,125,63,.08);
+      --gold-border:rgba(176,125,63,.22);
+
+      /* Surfaces */
+      --cream:     #F6F3EE;
+      --parchment: #FAF8F4;
+      --white:     #FFFFFF;
+
+      /* Ink */
+      --ink:       #08103A;
+      --ink-70:    rgba(8,16,58,0.70);
+      --ink-45:    rgba(8,16,58,0.45);
+      --ink-20:    rgba(8,16,58,0.20);
+      --ink-08:    rgba(8,16,58,0.08);
+      --ink-04:    rgba(8,16,58,0.04);
+
+      /* Legacy aliases (used by admin + JS-generated content) */
+      --beige:     #F6F3EE;
+      --muted:     rgba(8,16,58,0.50);
+      --card-shadow: 0 2px 12px rgba(8,16,58,0.07), 0 1px 3px rgba(8,16,58,0.05);
+
+      /* Elevation */
+      --shadow-xs: 0 1px 2px rgba(8,16,58,0.06);
+      --shadow-sm: 0 2px 12px rgba(8,16,58,0.07), 0 1px 3px rgba(8,16,58,0.04);
+      --shadow-md: 0 8px 32px rgba(8,16,58,0.09), 0 2px 8px rgba(8,16,58,0.05);
+      --shadow-lg: 0 20px 60px rgba(8,16,58,0.12), 0 6px 20px rgba(8,16,58,0.06);
+
+      /* Geometry */
+      --radius-xs: 3px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+
+      /* Motion */
+      --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1);
+      --dur-fast:    180ms;
+      --dur-mid:     380ms;
+      --dur-slow:    680ms;
+      --dur-reveal:  800ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.55;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    /* ── Accessibility ── */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: var(--radius-xs);
+    }
+    :focus:not(:focus-visible) { outline: none; }
+
+    /* ── Container ── */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: clamp(20px, 4vw, 56px);
+    }
+
+    /* ══════════════════════════════════════
+       HERO — Editorial masthead
+    ══════════════════════════════════════ */
+    .hero {
+      padding: clamp(40px, 6vw, 80px) 0 clamp(32px, 4vw, 56px);
+    }
+
+    .hero-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: clamp(32px, 5vw, 64px);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(32px, 5vw, 64px);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle texture overlay */
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 110% 50%, rgba(176,125,63,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at -10% 80%, rgba(8,16,58,0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Thin gold rule at top */
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: clamp(32px,5vw,64px); right: clamp(32px,5vw,64px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+
+    @media (min-width: 980px) {
+      .hero-card { grid-template-columns: 1fr 320px; }
+    }
+
+    /* Eyebrow label */
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow-rule {
+      width: 32px; height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+    .hero-eyebrow-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(38px, 6vw, 72px);
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      margin: 0 0 20px;
+      color: var(--ink);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--gold);
+    }
+
+    .hero-desc {
+      font-size: clamp(14px, 1.5vw, 16px);
+      color: var(--ink-45);
+      margin: 0 0 36px;
+      max-width: 48ch;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Search ── */
+    .search-row {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      max-width: 520px;
+      border: 1px solid var(--ink-20);
+      border-radius: var(--radius-md);
+      background: var(--white);
+      transition: border-color var(--dur-mid) var(--ease-out),
+                  box-shadow var(--dur-mid) var(--ease-out);
+    }
+    .search-row:focus-within {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px var(--ink-04), var(--shadow-sm);
+    }
+
+    .search-icon-wrap {
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      color: var(--ink-45);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      padding: 14px 0;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+      min-width: 0;
+    }
+    .search-input::placeholder { color: var(--ink-45); }
+    .search-input:focus { outline: none; }
+
+    /* ── Category chips ── */
+    .chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--ink-20);
+      color: var(--ink-70);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition:
+        border-color var(--dur-fast) var(--ease-out),
+        color var(--dur-fast) var(--ease-out),
+        background var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+    }
+    .chip:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+      transform: translateY(-1px);
+    }
+    .chip.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+    .chip:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    /* ── Hero aside ── */
+    .hero-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Featured block */
+    .featured {
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 1px solid var(--ink-08);
+      position: relative;
+    }
+
+    .featured::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 24px; right: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+    }
+
+    .featured-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .featured-label::before {
+      content: '';
+      width: 16px; height: 1px;
+      background: var(--gold);
+    }
+
+    .featured-excerpt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--ink);
+      margin: 0 0 16px;
+      font-style: italic;
+    }
+
+    .featured-link {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap var(--dur-fast) var(--ease-out),
+                  color var(--dur-fast);
+    }
+    .featured-link:hover { color: var(--gold); gap: 14px; }
+    .featured-link svg { transition: transform var(--dur-fast) var(--ease-out); }
+    .featured-link:hover svg { transform: translateX(3px); }
+
+    /* Discover section */
+    .discover-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-45);
+      margin-bottom: 12px;
+    }
+
+    /* ══════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════ */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(24px, 4vw, 48px);
+      margin-top: clamp(24px, 4vw, 48px);
+    }
+    @media (min-width: 980px) {
+      .layout { grid-template-columns: 1fr 300px; }
+    }
+
+    /* ── Section divider ── */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--ink-08);
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 0;
+    }
+    .section-count {
+      font-size: 12px;
+      color: var(--ink-45);
+      letter-spacing: 0.04em;
+    }
+
+    /* ══════════════════════════════════════
+       NEWS GRID & CARDS
+    ══════════════════════════════════════ */
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(16px, 2.5vw, 24px);
+    }
+    @media (min-width: 640px) {
+      .news-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Card */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--ink-08);
+      box-shadow: var(--shadow-sm);
+      transition:
+        transform var(--dur-mid) var(--ease-luxury),
+        box-shadow var(--dur-mid) var(--ease-luxury),
+        border-color var(--dur-mid) var(--ease-out);
+      will-change: transform;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--ink-20);
+    }
+
+    /* Card image */
+    .card .media {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      background: var(--cream);
+    }
+    .card .media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(8,16,58,0.18) 100%);
+      opacity: 0;
+      transition: opacity var(--dur-mid) var(--ease-out);
+    }
+    .card:hover .media::after { opacity: 1; }
+
+    .card .media img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform var(--dur-slow) var(--ease-luxury);
+    }
+    .card:hover .media img { transform: scale(1.04); }
+
+    /* Card body */
+    .card-body {
+      padding: clamp(18px, 2.5vw, 28px);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    /* Tag */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--gold-border);
+      background: var(--gold-pale);
+    }
+
+    /* Card time */
+    .card-time {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--ink-45);
+      letter-spacing: 0.02em;
+    }
+
+    /* Card title */
+    .card-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 0 0 10px;
+      flex: 1;
+    }
+
+    /* Card excerpt */
+    .card-excerpt {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--ink-45);
+      margin: 0 0 20px;
+    }
+
+    /* Card footer */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--ink-08);
+      margin-top: auto;
+    }
+
+    .read-more {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition:
+        gap var(--dur-fast) var(--ease-out),
+        color var(--dur-fast);
+    }
+    .read-more:hover { color: var(--gold); gap: 14px; }
+    .read-more-arrow {
+      display: inline-flex;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background var(--dur-fast), border-color var(--dur-fast);
+    }
+    .read-more:hover .read-more-arrow {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 64px 32px;
+      text-align: center;
+      border: 1px dashed var(--ink-20);
+      border-radius: var(--radius-lg);
+      background: var(--white);
+    }
+    .empty-state-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--ink-45);
+      margin: 0 0 8px;
+    }
+    .empty-state-sub {
+      font-size: 14px;
+      color: var(--ink-45);
+      margin: 0;
+    }
+
+    /* ══════════════════════════════════════
+       PAGINATION
+    ══════════════════════════════════════ */
+    .pagination-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--ink-08);
+    }
+
+    .pg-info {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ink-45);
+      letter-spacing: 0.02em;
+    }
+
+    .pagination { display: flex; gap: 8px; align-items: center; }
+
+    .pg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--ink-20);
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink);
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition:
+        border-color var(--dur-fast),
+        background var(--dur-fast),
+        color var(--dur-fast),
+        transform var(--dur-fast) var(--ease-out);
+    }
+    .pg-btn:hover:not(:disabled) {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--white);
+      transform: translateY(-1px);
+    }
+    .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .pg-counter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--ink-45);
+      min-width: 56px;
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════
+       ASIDE PANEL
+    ══════════════════════════════════════ */
+    aside.panel {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--ink-08);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-section {
+      padding: clamp(20px, 3vw, 32px);
+    }
+    .panel-section + .panel-section {
+      border-top: 1px solid var(--ink-08);
+    }
+
+    .panel-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-label::before {
+      content: '';
+      width: 14px; height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .panel h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin: 0 0 10px;
+      color: var(--ink);
+    }
+
+    .panel-sub {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ink-45);
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+
+    /* Newsletter form */
+    .newsletter { display: flex; flex-direction: column; gap: 10px; }
+
+    .newsletter input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--ink-20);
+      background: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--ink);
+      transition: border-color var(--dur-fast), background var(--dur-fast);
+    }
+    .newsletter input::placeholder { color: var(--ink-45); }
+    .newsletter input:focus {
+      outline: none;
+      border-color: var(--navy);
+      background: var(--white);
+    }
+
+    .newsletter button {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        background var(--dur-fast),
+        transform var(--dur-fast) var(--ease-out);
+    }
+    .newsletter button:hover {
+      background: var(--gold);
+      transform: translateY(-1px);
+    }
+    .newsletter button:active { transform: none; }
+
+    /* Contact block */
+    .panel-contact-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-45);
+      margin-bottom: 10px;
+    }
+
+    .panel-address {
+      font-style: normal;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--ink-45);
+      line-height: 1.75;
+    }
+
+    /* Muted utility */
+    .muted { color: var(--ink-45); }
+
+    /* ══════════════════════════════════════
+       SCROLL-REVEAL ANIMATION
+    ══════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity var(--dur-reveal) var(--ease-luxury),
+        transform var(--dur-reveal) var(--ease-luxury);
+    }
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 80ms; }
+    .reveal-delay-2 { transition-delay: 160ms; }
+    .reveal-delay-3 { transition-delay: 240ms; }
+
+    /* Legacy class — keep functional (used by JS render loop) */
+    .fade-up { opacity: 0; transform: translateY(16px); animation: fadeUp 0.6s var(--ease-luxury) forwards; }
+    .fade-up.delay-1 { animation-delay: 80ms; }
+    .fade-up.delay-2 { animation-delay: 160ms; }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+    /* ══════════════════════════════════════
+       ARTICLE OVERLAY — Editorial reader
+    ══════════════════════════════════════ */
+    .article-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--parchment);
+      color: var(--ink);
+      z-index: 11000;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    /* Overlay entrance animation */
+    .article-overlay {
+      animation: overlayReveal 0.5s var(--ease-luxury) forwards;
+    }
+    @keyframes overlayReveal {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .article-overlay .container-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: clamp(24px, 5vw, 60px) clamp(20px, 4vw, 48px);
+      width: 100%;
+    }
+
+    /* Overlay top bar */
+    .overlay-topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(250,248,244,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--ink-08);
+      z-index: 2;
+      padding: 14px clamp(20px, 4vw, 48px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .overlay-breadcrumb {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--ink-45);
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .overlay-breadcrumb-sep { opacity: 0.4; }
+
+    .overlay-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* Overlay buttons */
+    .btn-close, .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition:
+        background var(--dur-fast),
+        border-color var(--dur-fast),
+        color var(--dur-fast),
+        transform var(--dur-fast);
+    }
+    .btn-close {
+      background: var(--white);
+      border: 1px solid var(--ink-20);
+      color: var(--ink);
+    }
+    .btn-close:hover {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--ink-20);
+      color: var(--ink-70);
+    }
+    .btn-ghost:hover {
+      border-color: var(--ink-45);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+
+    /* Overlay meta */
+    .article-overlay .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .article-overlay .close-row { display: none; } /* replaced by topbar */
+
+    /* Article hero image */
+    .article-overlay .hero-media {
+      height: clamp(220px, 40vh, 480px);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-lg);
+    }
+    .article-overlay .hero-media img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    /* Article heading */
+    .article-overlay h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      margin: 0 0 24px;
+      color: var(--ink);
+    }
+
+    /* Article body text */
+    .article-overlay .article-content {
+      font-size: clamp(16px, 1.5vw, 18px);
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--ink-70);
+    }
+    .article-overlay .article-content p { margin: 0 0 1.5em; }
+    .article-overlay .article-content h2,
+    .article-overlay .article-content h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      color: var(--ink);
+      margin: 2em 0 0.75em;
+    }
+
+    /* Responsive */
+    @media (min-width: 900px) {
+      .article-view { padding: 32px; }
+    }
+  </style>
+
+  <!-- ── BIC Shared Nav + Menu + Footer CSS ── -->
+  <style>
+    :root {
+      --bic-ink:          #18140F;
+      --bic-ink-60:       rgba(24,20,15,.6);
+      --bic-ink-12:       rgba(24,20,15,.12);
+      --bic-ebony:        #141210;
+      --bic-ebony-2:      #1E1A14;
+      --bic-ebony-border: rgba(255,255,255,.08);
+      --bic-ebony-muted:  rgba(230,218,196,.6);
+      --bic-parchment:    #F3EFE5;
+      --bic-surface:      #FDFAF5;
+      --bic-gold:         #B07D3F;
+      --bic-gold-pale:    rgba(176,125,63,.10);
+      --bic-gold-border:  rgba(176,125,63,.22);
+      --bic-font-display: 'Cormorant Garamond', Georgia, serif;
+      --bic-font-sc:      'Cormorant SC', Georgia, serif;
+      --bic-font-body:    'DM Sans', system-ui, sans-serif;
+      --bic-max:          1120px;
+      --bic-gutter:       clamp(20px, 4vw, 56px);
+      --bic-e2:           0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
+      --bic-r-sm:         6px;
+      --bic-dur-fast:     200ms;
+      --bic-dur-mid:      360ms;
+      --z-hamburger:      10002;
+      --z-overlay:        10003;
+      --z-panel:          10004;
+    }
+    /* ── Nav bar ── */
+    .bic-site-nav {
+      position: fixed; inset-x: 0; top: 0; z-index: 9000;
+      padding: 0 var(--bic-gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+      width: 100%; 
+      background: rgba(243,239,229,.92);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      border-bottom: 1px solid var(--bic-ink-12);
+      transition: background var(--bic-dur-mid) ease, box-shadow var(--bic-dur-mid) ease;
+    }
+    .bic-site-nav.scrolled { background: rgba(253,250,245,.97); box-shadow: var(--bic-e2); }
+    .bic-nav-brand  { display: flex; align-items: center; gap: 14px; }
+    .bic-nav-logo   { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--bic-gold-border); background: var(--bic-surface); flex-shrink: 0; }
+    .bic-nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .bic-nav-wordmark { display: flex; flex-direction: column; gap: 1px; }
+    .bic-nav-wordmark strong { font-family: var(--bic-font-sc); font-size: 14px; font-weight: 500; letter-spacing: .06em; color: var(--bic-ink); line-height: 1.2; }
+    .bic-nav-wordmark span   { font-size: 11px; color: var(--bic-ink-60); letter-spacing: .04em; }
+    @media (max-width: 767px) {
+  .bic-site-nav {
+    padding-left: calc(16px + 56px + 2px); /* left-edge + button width + gap */
+  }
+}
+.bic-nav-brand {
+  margin-left: 10%;
+}
+    /* ── Hamburger ── */
+    #hamburger {
+      font-family: var(--bic-font-sc) !important; font-size: 20px !important;
+      font-weight: 600 !important; letter-spacing: .12em !important;
+      color: var(--bic-gold) !important; cursor: pointer;
+      padding: 8px 16px !important; border: 1.5px solid var(--bic-gold-border) !important;
+      border-radius: var(--bic-r-sm) !important; background: transparent !important;
+      background-image: none !important; text-shadow: none !important;
+      -webkit-text-fill-color: unset !important; -webkit-background-clip: unset !important;
+      background-clip: unset !important; user-select: none; display: inline-block; line-height: 1;
+      transition: background var(--bic-dur-fast), border-color var(--bic-dur-fast), transform var(--bic-dur-fast) !important;
+    }
+    #hamburger:hover, #hamburger:focus-visible {
+      background: var(--bic-gold-pale) !important; border-color: var(--bic-gold) !important;
+      transform: translateY(-1px) !important; filter: none !important;
+    }
+    #hamburger:active  { transform: translateY(0) !important; }
+    #hamburger:focus   { outline: none !important; }
+    #hamburger:focus-visible { outline: 2px solid var(--bic-gold) !important; outline-offset: 3px !important; box-shadow: none !important; }
+    #hamburger::after  { display: none !important; }
+    /* ── Nav right-side CTA ── */
+    .bic-nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 999px;
+      font-size: 13px; font-weight: 500; letter-spacing: .03em;
+      font-family: var(--bic-font-body); color: var(--bic-ink);
+      background: transparent; border: 1.5px solid var(--bic-ink-12);
+      text-decoration: none;
+      transition: border-color var(--bic-dur-mid), color var(--bic-dur-mid); white-space: nowrap;
+    }
+    .bic-nav-cta:hover      { border-color: var(--bic-gold); color: var(--bic-gold); }
+    .bic-nav-cta:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
+    /* ── Mobile menu ── */
+    .mobile-menu { display: none !important; }
+    .mobile-menu.open { display: block !important; }
+    .mobile-menu__overlay {
+      position: fixed; inset: 0; z-index: var(--z-overlay);
+      background: rgba(18,14,10,.55); opacity: 0;
+      transition: opacity 260ms cubic-bezier(.2,.9,.3,1);
+      backdrop-filter: blur(4px); transform: none !important;
+    }
+    .mobile-menu__overlay.overlay-in { opacity: 1; }
+    .mobile-menu__panel {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: min(380px, 90vw) !important; max-width: none !important; height: 100vh;
+      z-index: var(--z-panel);
+      background: var(--bic-ebony) !important; background-image: none !important;
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 360ms cubic-bezier(.2,.9,.3,1);
+      overflow-y: auto; box-shadow: 4px 0 24px rgba(0,0,0,.4);
+    }
+    .mobile-menu__panel.panel-in { transform: translateX(0); }
+    .mobile-menu__inner {
+      padding: 28px 32px 48px; display: flex; flex-direction: column; min-height: 100%;
+      transform: none !important; opacity: 1 !important; transition: none !important;
+    }
+    .mobile-menu__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 32px; border-bottom: 1px solid var(--bic-ebony-border);
+      margin-bottom: 32px;
+    }
+    .bic-logo-mark { font-family: var(--bic-font-sc); font-size: 18px; font-weight: 500; color: var(--bic-gold); letter-spacing: .1em; }
+    .mobile-menu__close {
+      background: none !important; border: none !important; cursor: pointer;
+      color: var(--bic-ebony-muted) !important; padding: 4px; border-radius: 50%;
+      outline: none !important; box-shadow: none !important;
+      transition: color var(--bic-dur-fast);
+    }
+    .mobile-menu__close:hover { color: #fff !important; }
+    .mobile-menu__close svg circle { display: none !important; }
+    .mobile-menu__nav { display: flex; flex-direction: column; gap: 0; }
+    .menu-item {
+      font-family: var(--bic-font-display) !important; font-size: clamp(22px,5vw,28px) !important;
+      font-weight: 400 !important; color: rgba(230,218,196,.8) !important;
+      padding: 10px 0 !important; letter-spacing: -.01em !important;
+      border-bottom: 1px solid rgba(255,255,255,.04) !important;
+      transition: color var(--bic-dur-fast), padding-left var(--bic-dur-fast) !important;
+      display: block !important; line-height: 1.2 !important; text-decoration: none !important;
+      -webkit-font-smoothing: antialiased; transform: none !important;
+    }
+    .menu-item:hover, .menu-item:focus { color: #fff !important; padding-left: 8px !important; outline: none !important; }
+    .bic-menu-footer-text {
+      margin-top: auto; padding-top: 32px;
+      font-size: 12px; color: rgba(230,218,196,.35); letter-spacing: .05em;
+      font-family: var(--bic-font-body);
+    }
+    /* Floating sticky clone */
+    .brand-btn--fixed {
+      position: fixed !important; top: 14px !important; left: var(--bic-gutter) !important;
+      z-index: var(--z-hamburger) !important; display: none;
+      font-family: var(--bic-font-sc) !important; font-size: 20px !important;
+      font-weight: 600 !important; letter-spacing: .12em !important; color: var(--bic-gold) !important;
+      cursor: pointer !important; padding: 8px 16px !important;
+      border: 1.5px solid var(--bic-gold-border) !important; border-radius: var(--bic-r-sm) !important;
+      background: rgba(243,239,229,.92) !important; background-image: none !important;
+      text-shadow: none !important; -webkit-text-fill-color: unset !important;
+      -webkit-background-clip: unset !important; background-clip: unset !important;
+      transform: none !important; filter: none !important; will-change: auto !important; line-height: 1;
+    }
+    .brand-btn--fixed::after { display: none !important; }
+    .brand-btn--fixed:hover  { background: var(--bic-gold-pale) !important; border-color: var(--bic-gold) !important; }
+    @media (min-width: 768px) { .brand-btn--fixed { display: inline-block !important; } }
+    @media (max-width: 767px) {
+      #hamburger { position: fixed !important; top: 14px !important; left: 16px !important; z-index: var(--z-hamburger) !important; }
+      .brand-btn--fixed { display: none !important; }
+    }
+    /* ── Footer ── */
+    .bic-site-footer { background: var(--bic-ebony-2); color: #F4EFE2; padding: clamp(48px,8vw,88px) 0 40px; font-family: var(--bic-font-body); -webkit-font-smoothing: antialiased; margin-top: 0; }
+    .bic-footer-wrap { max-width: var(--bic-max); margin: 0 auto; padding: 0 var(--bic-gutter); }
+    .bic-footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 56px; }
+    @media (min-width: 860px) { .bic-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; } }
+    .bic-footer-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .bic-footer-logo { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(176,125,63,.3); flex-shrink: 0; }
+    .bic-footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .bic-footer-wordmark strong { font-family: var(--bic-font-sc); font-size: 15px; font-weight: 500; display: block; letter-spacing: .04em; color: #F4EFE2; }
+    .bic-footer-wordmark small  { font-size: 12px; color: var(--bic-ebony-muted); }
+    .bic-footer-addr { font-style: normal; font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--bic-ebony-muted); max-width: 240px; margin-bottom: 24px; }
+    .bic-footer-addr a { color: inherit; text-decoration: none; transition: color var(--bic-dur-fast); }
+    .bic-footer-addr a:hover { color: var(--bic-gold); }
+    .bic-social-row { display: flex; gap: 10px; }
+    .bic-social-link { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: var(--bic-ebony-muted); transition: all var(--bic-dur-fast); text-decoration: none; }
+    .bic-social-link:hover { border-color: var(--bic-gold); color: var(--bic-gold); transform: translateY(-2px); }
+    .bic-social-link:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
+    .bic-footer-col-title { font-family: var(--bic-font-sc); font-size: 11px; font-weight: 500; letter-spacing: .18em; color: var(--bic-gold); margin-bottom: 20px; display: block; }
+    .bic-footer-body { font-size: 14px; font-weight: 300; color: var(--bic-ebony-muted); line-height: 1.75; }
+    .bic-footer-discover { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; font-weight: 500; color: #F4EFE2; letter-spacing: .03em; transition: color var(--bic-dur-fast); text-decoration: none; }
+    .bic-footer-discover:hover { color: var(--bic-gold); }
+    .bic-footer-discover svg { transition: transform var(--bic-dur-fast); }
+    .bic-footer-discover:hover svg { transform: translateX(4px); }
+    .bic-footer-city-list { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
+    .bic-footer-city { font-family: var(--bic-font-display); font-size: 2.2rem; font-weight: 300; letter-spacing: -.02em; line-height: 1; color: rgba(255,255,255,.22); }
+    .bic-footer-city.active { color: rgba(255,255,255,.8); }
+    .bic-footer-tagline { font-family: var(--bic-font-display); font-size: clamp(2.5rem,6vw,5rem); font-weight: 400; letter-spacing: -.03em; line-height: .95; color: rgba(255,255,255,.12); text-align: right; user-select: none; }
+    .bic-footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,.07); display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: space-between; }
+    @media (min-width: 600px) { .bic-footer-bottom { flex-direction: row; } }
+    .bic-footer-copy { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.3); }
+    .bic-adm-trigger { display: inline-flex; color: rgba(255,255,255,.3); font-size: 12px; cursor: pointer; text-decoration: none; transition: color var(--bic-dur-fast); font-family: var(--bic-font-body); }
+    .bic-adm-trigger:hover { color: rgba(255,255,255,.6); }
+  </style>
+  <!-- ── ADMIN SYSTEM STYLES ── -->
+  <style>
+    /* Login overlay */
+    #adminLogin {
+      display: none; position: fixed; inset: 0;
+      background: linear-gradient(135deg, var(--navy) 0%, #0d1c52 60%, #1a0a2e 100%);
+      z-index: 30000; overflow: auto;
+      align-items: center; justify-content: center;
+    }
+    #adminLogin.adm-visible { display: flex; }
+
+    .adm-login-wrap {
+      width: 90%; max-width: 420px; margin: auto;
+      padding: 20px 0;
+    }
+    .adm-login-brand {
+      text-align: center; margin-bottom: 32px;
+    }
+    .adm-login-brand .adm-bic {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 52px; font-weight: 900; letter-spacing: 0.1em;
+      background: linear-gradient(92deg,#d49832,#f6c600);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent; -webkit-text-fill-color: transparent;
+      display: block; line-height: 1;
+    }
+    .adm-login-brand p {
+      color: rgba(255,255,255,0.55); font-size: 13px;
+      margin: 6px 0 0; letter-spacing: 0.04em;
+      font-family: 'Montserrat', sans-serif; font-weight: 500;
+    }
+    .adm-login-card {
+      background: #fff; border-radius: 20px; padding: 36px 32px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .adm-login-card h2 {
+      font-family: 'Playfair Display', serif; font-size: 24px;
+      margin: 0 0 6px; color: var(--navy);
+    }
+    .adm-login-card p.adm-subtitle {
+      color: var(--muted); font-size: 14px; margin: 0 0 24px;
+    }
+    .adm-field { margin-bottom: 16px; }
+    .adm-field label {
+      display: block; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--navy); margin-bottom: 7px;
+    }
+    .adm-field input[type="password"] {
+      width: 100%; padding: 12px 16px; border-radius: 10px;
+      border: 1.5px solid #e6e9ef; font-size: 15px;
+      font-family: 'Montserrat', sans-serif;
+      background: #fafbfc; color: var(--navy);
+      transition: border-color .15s;
+      box-sizing: border-box;
+    }
+    .adm-field input[type="password"]:focus {
+      border-color: var(--navy); outline: none; background: #fff;
+    }
+    .adm-login-error {
+      display: none; background: #fff1f0; border: 1px solid #fca5a5;
+      color: #dc2626; font-size: 13px; border-radius: 8px;
+      padding: 10px 14px; margin-bottom: 16px;
+    }
+    .adm-login-submit {
+      width: 100%; padding: 13px; border: none; border-radius: 10px;
+      background: var(--navy); color: #fff; font-weight: 700;
+      font-size: 15px; font-family: 'Montserrat', sans-serif;
+      cursor: pointer; transition: background .15s;
+    }
+    .adm-login-submit:hover { background: #0f1f6a; }
+    .adm-back-link {
+      display: block; text-align: center; margin-top: 18px;
+      color: rgba(255,255,255,0.45); font-size: 13px; cursor: pointer;
+      text-decoration: none; transition: color .15s;
+    }
+    .adm-back-link:hover { color: rgba(255,255,255,0.8); }
+
+    /* Admin panel */
+    #adminPanel {
+      display: none; position: fixed; inset: 0;
+      background: var(--beige); z-index: 30000; overflow: auto;
+    }
+    #adminPanel.adm-visible { display: block; }
+
+    .adm-topbar {
+      background: var(--navy); color: #fff;
+      padding: 0 28px; height: 60px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .adm-topbar-left {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .adm-topbar-bic {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 22px; font-weight: 900; letter-spacing: 0.12em;
+      background: linear-gradient(92deg,#d49832,#f6c600);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent; -webkit-text-fill-color: transparent;
+    }
+    .adm-topbar-label {
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      border-left: 1px solid rgba(255,255,255,0.15);
+      padding-left: 14px; letter-spacing: 0.04em;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+    }
+    .adm-topbar-right { display: flex; align-items: center; gap: 12px; }
+    .adm-staff-badge {
+      font-size: 12px; color: rgba(255,255,255,0.55);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .adm-logout-btn {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: #fff; border-radius: 8px; padding: 7px 14px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; transition: background .15s;
+    }
+    .adm-logout-btn:hover { background: rgba(255,255,255,0.16); }
+
+    .adm-body {
+      max-width: 1100px; margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px; align-items: start;
+    }
+    @media(max-width: 768px) {
+      .adm-body { grid-template-columns: 1fr; }
+      .adm-topbar-label { display: none; }
+    }
+
+    .adm-card {
+      background: #fff; border-radius: 16px;
+      padding: 24px; box-shadow: var(--card-shadow);
+    }
+    .adm-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700;
+      color: var(--navy); margin: 0 0 18px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--yellow);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .adm-card-title svg { flex-shrink: 0; }
+
+    /* Article rows */
+    .adm-article-row {
+      display: flex; align-items: flex-start;
+      gap: 10px; padding: 13px 0;
+      border-bottom: 1px solid #f0f2f4;
+    }
+    .adm-article-row:last-child { border-bottom: none; }
+    .adm-article-info { flex: 1; min-width: 0; }
+    .adm-article-title-text {
+      font-weight: 700; font-size: 13px; color: var(--navy);
+      margin: 0 0 3px; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .adm-article-meta-text {
+      font-size: 11px; color: var(--muted); font-family: 'Montserrat', sans-serif;
+    }
+    .adm-featured-badge {
+      display: inline-block; background: var(--yellow); color: var(--navy);
+      font-size: 9px; font-weight: 800; padding: 2px 6px;
+      border-radius: 999px; margin-left: 5px; vertical-align: middle;
+      font-family: 'Montserrat', sans-serif; letter-spacing: 0.04em;
+    }
+    .adm-btn {
+      border: none; border-radius: 8px; padding: 7px 10px;
+      cursor: pointer; font-size: 14px;
+      transition: all .15s; flex-shrink: 0; line-height: 1;
+    }
+    .adm-btn-star { background: #fffbe6; color: #d97706; }
+    .adm-btn-star.adm-is-featured { background: var(--yellow); color: var(--navy); }
+    .adm-btn-del { background: #fff0f0; color: #dc2626; margin-left: 4px; }
+    .adm-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .adm-empty-state {
+      text-align: center; color: var(--muted);
+      padding: 28px 0; font-size: 14px;
+    }
+
+    /* Add article form */
+    .adm-form-group { margin-bottom: 14px; }
+    .adm-form-group label {
+      display: block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--navy); margin-bottom: 6px;
+    }
+    .adm-form-group input,
+    .adm-form-group select,
+    .adm-form-group textarea {
+      width: 100%; padding: 10px 13px; border-radius: 9px;
+      border: 1.5px solid #e6e9ef; font-family: 'Montserrat', sans-serif;
+      font-size: 13px; color: var(--navy); background: #fafbfc;
+      box-sizing: border-box; transition: border-color .15s;
+    }
+    .adm-form-group input:focus,
+    .adm-form-group select:focus,
+    .adm-form-group textarea:focus {
+      border-color: var(--navy); outline: none; background: #fff;
+    }
+    .adm-form-group textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .adm-form-group select { cursor: pointer; }
+    .adm-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .adm-submit {
+      width: 100%; padding: 13px; border: none; border-radius: 10px;
+      background: var(--navy); color: #fff; font-weight: 700;
+      font-size: 14px; font-family: 'Montserrat', sans-serif;
+      cursor: pointer; transition: background .15s; margin-top: 4px;
+    }
+    .adm-submit:hover { background: #0f1f6a; }
+
+    .adm-success-msg {
+      display: none; background: #f0fdf4; border: 1px solid #86efac;
+      color: #16a34a; font-size: 13px; border-radius: 8px;
+      padding: 10px 14px; margin-top: 12px;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+    }
+
+    /* Staff login trigger (subtle link in footer) */
+    .adm-staff-trigger {
+      display: flex;
+        justify-content: flex-end;
+      color: inherit; opacity: 0.4; font-size: 12px;
+      cursor: pointer; text-decoration: none; transition: opacity .15s;
+    }
+    .adm-staff-trigger:hover { opacity: 0.8; }
+
+    /* ── Image dropzone ─────────────────────────────── */
+    .adm-dropzone {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      background: #fafbfc;
+      position: relative;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+    .adm-dropzone:hover {
+      border-color: var(--navy);
+      background: #f0f2f8;
+    }
+    .adm-dropzone:focus-visible {
+      outline: none;
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(8,16,58,0.12);
+    }
+    .adm-dropzone.adm-dz-over {
+      border-color: var(--yellow);
+      background: #fffbe6;
+      box-shadow: 0 0 0 3px rgba(246,198,0,0.18);
+    }
+
+    /* idle / empty state */
+    .adm-dz-idle {
+      padding: 30px 20px 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .adm-dz-icon {
+      width: 48px; height: 48px;
+      background: #eef0f8;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--navy); opacity: 0.65;
+      margin-bottom: 2px;
+    }
+    .adm-dz-label {
+      margin: 0; font-size: 13px;
+      color: var(--muted);
+      font-family: 'Montserrat', sans-serif; font-weight: 500;
+      line-height: 1.5;
+    }
+    .adm-dz-link {
+      color: var(--navy); font-weight: 700;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .adm-dz-hint {
+      margin: 0; font-size: 11px; color: #9ca3af;
+      font-family: 'Montserrat', sans-serif; letter-spacing: 0.02em;
+    }
+
+    /* preview state */
+    .adm-dz-preview {
+      position: relative;
+      height: 172px;
+    }
+    .adm-dz-preview img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    /* dark overlay — only visible on hover */
+    .adm-dz-overlay {
+      position: absolute; inset: 0;
+      background: rgba(8,16,58,0.42);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .adm-dz-preview:hover .adm-dz-overlay { opacity: 1; }
+    /* filename strip at bottom of preview (always visible) */
+    .adm-dz-filename {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(8,16,58,0.6);
+      color: #fff; font-size: 11px; font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      padding: 5px 10px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .adm-dz-remove {
+      background: #fff; color: var(--navy);
+      border: none; border-radius: 8px;
+      padding: 8px 18px; font-size: 13px; font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: background .15s, transform .15s;
+      z-index: 2;
+    }
+    .adm-dz-remove:hover { background: #f0f2f8; transform: translateY(-1px); }
+
+    /* validation error ring */
+    .adm-dropzone.adm-dz-error { border-color: #dc2626; background: #fff5f5; }
+    .adm-dz-size-error {
+      display: none; color: #dc2626; font-size: 11px;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      margin-top: 6px;
+    }
+    .adm-dz-size-error.visible { display: block; }
+  </style>
+
+</head>
+<body>
+
+
+  <!-- ── BIC Site Nav ── -->
+  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
+    <span id="hamburger"
+          role="button" tabindex="0"
+          aria-controls="mobileMenu" aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+    <div class="bic-nav-brand" aria-label="Bodija International College home">
+      <div class="bic-nav-wordmark">
+        <strong>Bodija Int'l College</strong>
+        <span>School News</span>
+      </div>
+    </div>
+    <a href="/prototypes.html" class="bic-nav-cta">Home<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+  </nav>
+  <!-- ── BIC Mobile Menu ── -->
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile navigation menu">
+    <div class="mobile-menu__overlay" data-overlay></div>
+    <aside class="mobile-menu__panel" role="document" aria-hidden="true">
+      <div class="mobile-menu__inner">
+        <header class="mobile-menu__header">
+          <span class="bic-logo-mark">BIC</span>
+          <button class="mobile-menu__close" aria-label="Close menu" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </header>
+        <nav class="mobile-menu__nav" role="navigation" aria-label="Main navigation">
+          <a href="http://127.0.0.1:4040"       class="menu-item">Home</a>
+          <a href="/index.html" class="menu-item">Updates</a>
+          <a href="http://127.0.0.1:3030"  class="menu-item">Our Programs</a>
+          <a href="http://127.0.0.1:6060"      class="menu-item">Get In Touch</a>
+          <a href="http://127.0.0.1:5050"          class="menu-item">Digital Library</a>
+        </nav>
+        <p class="bic-menu-footer-text">Bodija International College &middot; Ibadan, Oyo State</p>
+      </div>
+    </aside>
+  </div>
+
+  <main class="container" id="mainContent" style="padding-top: calc(68px + clamp(20px,4vw,56px));">
+
+    <!-- ── Hero masthead ── -->
+    <section class="hero reveal" aria-label="News masthead">
+      <div class="hero-card">
+
+        <!-- Left: Headline + Search -->
+        <div>
+          <div class="hero-eyebrow">
+            <span class="hero-eyebrow-rule" aria-hidden="true"></span>
+            <span class="hero-eyebrow-text">Bodija International College</span>
+          </div>
+
+          <h1 class="hero-title">
+            School News<br>
+            <em>&amp; Stories</em>
+          </h1>
+
+          <p class="hero-desc">
+            Stay informed with campus announcements, student achievements,
+            events, and features from across our school community.
+          </p>
+
+          <form id="searchForm" class="search-row" role="search" aria-label="Search news" method="get" action="">
+            <span class="search-icon-wrap" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+              </svg>
+            </span>
+            <input
+              id="searchInput"
+              class="search-input"
+              name="q"
+              type="search"
+              placeholder="Search headlines, categories or keywords…"
+              aria-label="Search news articles"
+              autocomplete="off"
+            />
+          </form>
+        </div>
+
+        <!-- Right: Featured + Filters -->
+        <aside class="hero-aside" aria-label="Featured story and filters">
+          <!-- Featured block -->
+          <div class="featured">
+            <div class="featured-label" aria-label="Featured story">Featured</div>
+            <p id="featuredExcerpt" class="featured-excerpt">
+              Read about our new STEM lab and what hands-on learning means for students
+            </p>
+            <a id="featuredLink" href="#" class="featured-link" aria-label="Read featured article">
+              Read feature
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Category filters -->
+          <div>
+            <div class="discover-label">Filter by category</div>
+            <div class="chips" id="categoryChips" role="tablist" aria-label="Filter news by category">
+              <!-- injected by JS -->
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ── Main content layout ── -->
+    <div class="layout">
+
+      <!-- News grid column -->
+      <section aria-label="News articles">
+        <div class="section-header">
+          <h2 class="section-title">Latest stories</h2>
+          <span class="section-count" id="pageInfo" aria-live="polite">Loading…</span>
+        </div>
+
+        <div class="news-grid" id="newsGrid" aria-live="polite" aria-relevant="additions removals">
+          <!-- Cards injected by JS -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrap" aria-label="Pagination navigation">
+          <div class="pg-info" id="pageInfoBottom" aria-hidden="true"></div>
+          <div class="pagination">
+            <button id="prevBtn" class="pg-btn" type="button" aria-label="Go to previous page">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Prev
+            </button>
+            <span class="pg-counter" id="pageCounter" aria-live="polite">—</span>
+            <button id="nextBtn" class="pg-btn" type="button" aria-label="Go to next page">
+              Next
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="panel" aria-labelledby="newsletterHeading">
+
+        <!-- Newsletter -->
+        <div class="panel-section">
+          <div class="panel-label">Newsletter</div>
+          <h3 id="newsletterHeading">Never Miss<br>an Update</h3>
+          <p class="panel-sub">Subscribe for the latest BIC news, events, and stories delivered to your inbox.</p>
+
+          <form class="newsletter" id="newsletterForm" novalidate>
+            <label for="newsletterEmail" class="sr-only">Your email address</label>
+            <input
+              id="newsletterEmail"
+              name="email"
+              type="email"
+              placeholder="Your email address"
+              required
+              autocomplete="email"
+            />
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+
+        <!-- Contact -->
+        <div class="panel-section">
+          <div class="panel-contact-title">Get in touch</div>
+          <address class="panel-address">
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State
+          </address>
+        </div>
+
+      </aside>
+    </div>
+
+  </main>
+
+
+  <!-- ── BIC Site Footer ── -->
+  <footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="bic-footer-wrap">
+      <div class="bic-footer-grid">
+        <!-- Left -->
+        <div>
+          <div class="bic-footer-logo-row">
+            <div class="bic-footer-logo">
+              <img src="images/logo.png" alt="Bodija International College" loading="lazy" />
+            </div>
+            <div class="bic-footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home &middot; Updates</small>
+            </div>
+          </div>
+          <address class="bic-footer-addr">
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>
+          </address>
+          <div class="bic-social-row" aria-label="Follow us on social media">
+            <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+            </a>
+          </div>
+        </div>
+        <!-- Centre -->
+        <div>
+          <span class="bic-footer-col-title">Our Mission</span>
+          <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="bic-footer-discover">
+            Discover our values
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <div class="bic-footer-city-list" aria-label="Location">
+            <div class="bic-footer-city">Bodija</div>
+            <div class="bic-footer-city active">Ibadan</div>
+            <div class="bic-footer-city">Oyo State</div>
+          </div>
+        </div>
+        <!-- Right -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
+          <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>
+        </div>
+      </div>
+      <div class="bic-footer-bottom">
+        <span class="bic-footer-copy">
+          &copy; <span id="year"></span> Bodija International College. All rights reserved.&nbsp;<a class="bic-adm-trigger" href="#admin" id="adminTrigger">Staff Login</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Main site JS(unchanged) -->
+  <!-- Main site JS (REPLACE existing Main site JS with this block) -->
+<script>
+  // Data (replace with your API/CMS data)
+  // All articles are managed by the admin — loaded from the server via /api/posts on boot
+  window.posts = window.posts || [];
+
+  window.categories = ['All','Science & Technology','Arts & Humanities','Business & Economics','Campus Life','Sports','Announcements'];
+  const perPage = 6;
+
+  // State (exposed globally so admin JS can reset it)
+  window.state = { query:'', category:'All', page:1 };
+  let state = window.state;
+
+  // Elements
+  const newsGrid = document.getElementById('newsGrid');
+  const searchInput = document.getElementById('searchInput');
+  const categoryChips = document.getElementById('categoryChips');
+  const pageInfo = document.getElementById('pageInfo');
+  const pageCounter = document.getElementById('pageCounter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const searchForm = document.getElementById('searchForm');
+  const mainContent = document.getElementById('mainContent');
+
+  // Init
+  function init(){
+    // render chips
+    categories.forEach(cat=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip' + (cat==='All' ? ' active' : '');
+      btn.textContent = cat;
+      btn.setAttribute('role','tab');
+      btn.setAttribute('aria-selected', cat==='All' ? 'true' : 'false');
+      btn.addEventListener('click', ()=>{
+        state.category = cat;
+        state.page = 1;
+        updateChips();
+        render();
+        if(location.hash && !location.hash.startsWith('#/post/')) history.replaceState(null,'',location.pathname+location.search);
+      });
+      categoryChips.appendChild(btn);
+    });
+
+    // Search input handler
+    searchInput.addEventListener('input', (e)=>{
+      state.query = e.target.value;
+      state.page = 1;
+      render();
+    });
+
+    searchForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      state.query = searchInput.value.trim();
+      state.page = 1;
+      render();
+    });
+
+    prevBtn.addEventListener('click', ()=>{
+      if(state.page > 1){ state.page--; render(); }
+    });
+
+    nextBtn.addEventListener('click', ()=>{
+      const total = filteredPosts().length;
+      const totalPages = Math.max(1, Math.ceil(total / perPage));
+      if(state.page < totalPages){ state.page++; render(); }
+    });
+
+    // newsletter
+    const newsletter = document.getElementById('newsletterForm');
+    newsletter.addEventListener('submit', function(e){
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail').value.trim();
+      if(!email || !email.includes('@')){ alert('Please enter a valid email address'); return; }
+      const btn = newsletter.querySelector('button');
+      btn.disabled = true; btn.textContent = 'Subscribed ✓';
+      setTimeout(()=>{ btn.disabled=false; btn.textContent='Subscribe'; document.getElementById('newsletterEmail').value=''; }, 2500);
+    });
+
+    // hash routing
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeArticle(); });
+
+    render();
+    handleHash();
+  }
+
+  function updateChips(){
+    Array.from(categoryChips.children).forEach(btn=>{
+      const isActive = btn.textContent === state.category;
+      if(isActive) btn.classList.add('active'); else btn.classList.remove('active');
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      btn.tabIndex = isActive ? 0 : -1;
+    });
+  }
+
+  function filteredPosts(){
+    const q = String(state.query || '').trim().toLowerCase();
+    return (window.posts || []).filter(p=>{
+      if(state.category !== 'All' && p.category !== state.category) return false;
+      if(!q) return true;
+      return (p.title && p.title.toLowerCase().includes(q))
+        || (p.excerpt && p.excerpt.toLowerCase().includes(q))
+        || (p.category && p.category.toLowerCase().includes(q));
+    });
+  }
+
+  function render(){
+    const all = filteredPosts();
+    const total = all.length;
+    const totalPages = Math.max(1, Math.ceil(total / perPage));
+    if(state.page > totalPages) state.page = totalPages;
+    const start = (state.page-1)*perPage;
+    const pageItems = all.slice(start, start+perPage);
+
+    const from = total === 0 ? 0 : start+1;
+    const to = Math.min(start+perPage, total);
+    pageInfo.textContent = `Showing ${from}–${to} of ${total} stories`;
+    pageCounter.textContent = `${state.page} / ${totalPages}`;
+    prevBtn.disabled = state.page === 1;
+    nextBtn.disabled = state.page === totalPages;
+
+    // sync bottom pageInfo if present
+    var pageInfoBottom = document.getElementById('pageInfoBottom');
+    if(pageInfoBottom) pageInfoBottom.textContent = `Showing ${from}–${to} of ${total}`;
+
+    // render cards
+    newsGrid.innerHTML = '';
+    if(pageItems.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.setAttribute('role','status');
+      empty.innerHTML = `<p class="empty-state-title">No stories found.</p><p class="empty-state-sub">Try a different keyword or category.</p>`;
+      newsGrid.appendChild(empty);
+      return;
+    }
+
+    pageItems.forEach((p, idx)=>{
+      const article = document.createElement('article');
+      article.className = 'card fade-up';
+      const mod = idx % 3;
+      if(mod === 1) article.classList.add('delay-1');
+      else if(mod === 2) article.classList.add('delay-2');
+
+      const titleId = `article-title-${p.id}`;
+      article.setAttribute('aria-labelledby', titleId);
+
+      const safeTitle    = escapeHtml(p.title || '');
+      const safeExcerpt  = escapeHtml(p.excerpt || '');
+      const safeCategory = escapeHtml(p.category || '');
+
+      const dateStr = (p.date) ? new Date(p.date).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }) : '';
+
+      article.innerHTML = ''
+        + `<div class="media" aria-hidden="true"><img src="${escapeHtml(p.image || '')}" alt="" loading="lazy"></div>`
+        + `<div class="card-body">`
+        +   `<div class="card-top-row">`
+        +     `<span class="tag">${safeCategory}</span>`
+        +     `<time class="card-time" datetime="${escapeHtml(p.date || '')}">${escapeHtml(dateStr)}</time>`
+        +   `</div>`
+        +   `<h3 id="${titleId}" class="card-title">${safeTitle}</h3>`
+        +   `<p class="card-excerpt">${safeExcerpt}</p>`
+        +   `<div class="card-footer">`
+        +     `<a class="read-more" href="#/post/${p.id}" data-id="${p.id}" aria-labelledby="${titleId}">Read article <span class="read-more-arrow" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></a>`
+        +   `</div>`
+        + `</div>`;
+
+      newsGrid.appendChild(article);
+    });
+
+    // attach click handlers
+    newsGrid.querySelectorAll('a.read-more').forEach(a=>{
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        const id = this.dataset.id;
+        if(!id) return;
+        location.hash = `/post/${id}`;
+      });
+    });
+  }
+
+  function escapeHtml(input){
+    return String(input)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // --- Article overlay handling ---
+  let currentArticleEl = null;
+  let overlayPrevFooterDisplay = '';
+
+  function handleHash(){
+    const h = location.hash || '';
+    const match = h.match(/^#\/post\/(\d+)$/);
+    if(match){
+      const id = Number(match[1]);
+      renderArticle(id);
+    } else {
+      closeArticle();
+    }
+  }
+
+  function renderArticle(id){
+    const post = (window.posts || []).find(p => p.id === id);
+    if(!post){ showTemporaryMessage('Article not found.'); return; }
+
+    if(currentArticleEl && Number(currentArticleEl.dataset.id) === id) return;
+
+    closeArticle(true);
+
+    // lock body scroll and remember previous position
+    window.__prevScroll = window.scrollY || document.documentElement.scrollTop || 0;
+    document.body.style.top = `-${window.__prevScroll}px`;
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+
+    // hide footer to make overlay own the viewport
+    const footerEl = document.querySelector('footer.site-footer');
+    if(footerEl){ overlayPrevFooterDisplay = footerEl.style.display || ''; footerEl.style.display = 'none'; }
+
+    const prevFocus = document.activeElement;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'article-overlay fade-up';
+    overlay.dataset.id = id;
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-labelledby','article-page-title');
+
+    const dateStr = post.date ? new Date(post.date).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }) : '';
+
+    overlay.innerHTML = `
+      <div class="overlay-topbar" role="banner">
+        <div class="overlay-breadcrumb">
+          <span>BIC News</span>
+          <span class="overlay-breadcrumb-sep" aria-hidden="true">›</span>
+          <span>${escapeHtml(post.category)}</span>
+        </div>
+        <div class="overlay-actions">
+          <button class="btn-ghost" id="shareLink" type="button" aria-label="Copy article link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+          <button class="btn-close" id="closeOverlay" type="button" aria-label="Close article">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Close
+          </button>
+        </div>
+      </div>
+
+      <div class="container-inner">
+        <div class="meta">
+          <span class="tag">${escapeHtml(post.category)}</span>
+          <time datetime="${escapeHtml(post.date || '')}" style="font-size:13px;color:var(--ink-45);font-weight:300;">${escapeHtml(dateStr)}</time>
+        </div>
+        <h1 id="article-page-title">${escapeHtml(post.title)}</h1>
+
+        ${post.image ? `<div class="hero-media" aria-hidden="false"><img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title)}"></div>` : ''}
+
+        <div class="article-content">${post.content}</div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    mainContent.setAttribute('aria-hidden','true');
+    if(footerEl) footerEl.setAttribute('aria-hidden','true');
+
+    // focus trap
+    const focusableSelector = 'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])';
+    const focusable = overlay.querySelectorAll(focusableSelector);
+    let firstFocusable = focusable[0] || overlay;
+    let lastFocusable = focusable[focusable.length -1] || overlay;
+
+    function onKeyDown(e){
+      if(e.key === 'Escape'){ e.preventDefault(); if(location.hash && location.hash.startsWith('#/post/')){ if(history.length > 1) history.back(); else location.hash = ''; } else { closeArticle(); } }
+      if(e.key === 'Tab'){
+        if(focusable.length === 0){ e.preventDefault(); return; }
+        if(e.shiftKey){
+          if(document.activeElement === firstFocusable){ e.preventDefault(); lastFocusable.focus(); }
+        } else {
+          if(document.activeElement === lastFocusable){ e.preventDefault(); firstFocusable.focus(); }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+
+    const closeBtn = overlay.querySelector('#closeOverlay');
+    closeBtn.focus();
+
+    closeBtn.addEventListener('click', function(){
+      if(location.hash && location.hash.startsWith('#/post/')){ if(history.length > 1) history.back(); else location.hash = ''; } else { closeArticle(); }
+    });
+
+    const share = overlay.querySelector('#shareLink');
+    share.addEventListener('click', function(e){
+      e.preventDefault();
+      const url = location.origin + location.pathname + location.search + '#/post/' + id;
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(url).then(()=>{ showTemporaryMessage('Link copied to clipboard'); }).catch(()=>{ prompt('Copy this link', url); });
+      } else {
+        prompt('Copy this link', url);
+      }
+    });
+
+    currentArticleEl = overlay;
+    currentArticleEl._onKeyDown = onKeyDown;
+    currentArticleEl._prevFocus = prevFocus;
+    currentArticleEl._footerEl = footerEl;
+    currentArticleEl._overlayPrevFooterDisplay = overlayPrevFooterDisplay;
+
+    document.title = post.title + ' — Bodija International College';
+    overlay.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function closeArticle(force){
+    if(!currentArticleEl) return;
+
+    if(currentArticleEl._onKeyDown) window.removeEventListener('keydown', currentArticleEl._onKeyDown);
+
+    if(document.body.style.position === 'fixed'){
+      const prev = window.__prevScroll || 0;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, prev);
+      window.__prevScroll = 0;
+    }
+
+    const footerEl = currentArticleEl._footerEl;
+    if(footerEl){
+      footerEl.style.display = currentArticleEl._overlayPrevFooterDisplay || '';
+      footerEl.removeAttribute('aria-hidden');
+    }
+
+    mainContent.removeAttribute('aria-hidden');
+
+    try{ if(currentArticleEl._prevFocus && currentArticleEl._prevFocus.focus) currentArticleEl._prevFocus.focus(); }catch(e){}
+
+    currentArticleEl.remove();
+    currentArticleEl = null;
+
+    document.title = 'Bodija International College — School News';
+
+    if(!force && location.hash && location.hash.startsWith('#/post/')){ history.replaceState(null,'',location.pathname+location.search); }
+  }
+
+  function showTemporaryMessage(msg){
+    const tmp = document.createElement('div');
+    tmp.style.position='fixed'; tmp.style.right='20px'; tmp.style.bottom='30px'; tmp.style.background='#111827'; tmp.style.color='#fff'; tmp.style.padding='10px 14px'; tmp.style.borderRadius='10px'; tmp.style.boxShadow='0 10px 30px rgba(0,0,0,0.3)'; tmp.style.zIndex=9999;
+    tmp.textContent = msg;
+    document.body.appendChild(tmp);
+    setTimeout(()=>{ tmp.remove(); }, 2200);
+  }
+
+  // Expose key functions globally for admin JS
+  window.render = render;
+  window.updateChips = updateChips;
+  window.renderArticle = renderArticle;
+
+  // start
+  init();
+
+</script>
+
+  <!-- ---------------------------
+       INSERTED: Canonical menu JS (keeps original behavior)
+       - open/close
+       - focus trap
+       - ESC handling
+       - overlay click
+       - aria updates
+       - disable other openers while open
+       - preload bg (if set)
+       --------------------------- -->
+  <script>
+  (function () {
+    'use strict';
+
+    function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+    function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+    function getFocusable(container) {
+      if (!container) return [];
+      return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+        .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobileMenu');
+      if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+      var overlay = menu.querySelector('[data-overlay]');
+      var panel = menu.querySelector('.mobile-menu__panel');
+      var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+      var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+      var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+      function parseTime(s) {
+        if (!s) return 0;
+        var str = String(s).trim();
+        if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+        if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+        var n = parseFloat(str);
+        return isFinite(n) ? n : 0;
+      }
+
+      var rootStyles = getComputedStyle(document.documentElement);
+      var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+      var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+      var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+      var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+      var timeouts = [];
+      var lastFocused = null;
+
+      function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+      function preventScroll(enable){
+        if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+        else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+      }
+
+      function onKeyDown(e){
+        if (!menu.classList.contains('open')) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+        if (e.key === 'Tab') {
+          if (!panel) return;
+          var focusable = getFocusable(panel);
+          if (!focusable.length) { e.preventDefault(); return; }
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+
+      function focusTrap(e){
+        if (!menu.classList.contains('open')) return;
+        if (!panel) return;
+        if (panel.contains(e.target)) return;
+        e.stopPropagation();
+        var f = getFocusable(panel);
+        if (f.length) f[0].focus(); else panel.focus();
+      }
+
+      // --- START: Robust stacking & disabling of openers ---
+      // Ensure menu is appended to body to avoid ancestor stacking contexts
+      if (menu && menu.parentElement !== document.body) {
+        document.body.appendChild(menu);
+        overlay = menu.querySelector('[data-overlay]');
+        panel = menu.querySelector('.mobile-menu__panel');
+      }
+
+      // store for restoring open buttons state
+      var openerStateMap = new WeakMap();
+
+      function disableOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = {
+            tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+            pointerEvents: b.style.pointerEvents || null,
+            ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+          };
+          openerStateMap.set(b, prev);
+          try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+          b.style.pointerEvents = 'none';
+          try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+        });
+      }
+
+      function restoreOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = openerStateMap.get(b) || {};
+          if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+          else b.setAttribute('tabindex', prev.tabindex);
+          if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+          else b.style.pointerEvents = prev.pointerEvents;
+          if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+          else b.setAttribute('aria-hidden', prev.ariaHidden);
+          openerStateMap.delete(b);
+        });
+      }
+      // --- END: Robust stacking & disabling of openers ---
+
+      function openMobileMenu(){
+        if (menu.classList.contains('open')) return;
+        lastFocused = document.activeElement;
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+
+        // disable hamburgers / openers while menu is open
+        disableOpenButtons();
+
+        if (overlay) overlay.classList.remove('overlay-in');
+        if (panel) panel.classList.remove('panel-in');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+
+        var t = setTimeout(function(){
+          if (panel) {
+            panel.classList.add('panel-in');
+            var closeBtn = panel.querySelector('.mobile-menu__close');
+            if (closeBtn) closeBtn.focus({ preventScroll: true });
+          }
+        }, PANEL_DELAY);
+        timeouts.push(t);
+
+        document.addEventListener('focus', focusTrap, true);
+        document.addEventListener('keydown', onKeyDown);
+        if (overlay) overlay.addEventListener('click', overlayClick);
+        preventScroll(true);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+      }
+
+      function closeMobileMenu(){
+        if (!menu.classList.contains('open')) return;
+        clearAllTimeouts();
+        if (panel) panel.classList.remove('panel-in');
+
+        var t1 = setTimeout(function(){
+          var tHold = setTimeout(function(){
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tHide = setTimeout(function(){
+              menu.classList.remove('open');
+              menu.setAttribute('aria-hidden', 'true');
+              if (panel) panel.setAttribute('aria-hidden', 'true');
+
+              // restore hamburgers / openers to previous state
+              restoreOpenButtons();
+
+              preventScroll(false);
+              if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+            }, OVERLAY_DUR);
+            timeouts.push(tHide);
+          }, OVERLAY_HOLD);
+          timeouts.push(tHold);
+        }, PANEL_DUR);
+        timeouts.push(t1);
+
+        document.removeEventListener('focus', focusTrap, true);
+        document.removeEventListener('keydown', onKeyDown);
+        if (overlay) overlay.removeEventListener('click', overlayClick);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+      }
+
+      function overlayClick(){ closeMobileMenu(); }
+
+      // Attach listeners to openers
+      openButtons.forEach(function(btn){
+        if (!btn) return;
+        btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+        btn.addEventListener('keydown', function(ev){
+          var k = ev.key;
+          if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+        });
+      });
+
+      // Attach close buttons
+      externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+      window.openMobileMenu = openMobileMenu;
+      window.closeMobileMenu = closeMobileMenu;
+      window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+      // Preload background image if present
+      (function preloadBg(){
+        if (!panel) return;
+        var style = getComputedStyle(panel);
+        var bg = style.getPropertyValue('background-image') || '';
+        var url = '';
+        var start = bg.indexOf('url(');
+        var end = bg.lastIndexOf(')');
+        if (start !== -1 && end !== -1 && end > start) {
+          url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+        }
+        if (url) { var img = new Image(); img.src = url; }
+      })();
+
+    }); // DOMContentLoaded end
+
+  })();
+  </script>
+
+  <!-- Optional sticky helper (keeps parity with canonical source). Non-intrusive. -->
+  <script>
+  (function addStickyHamburger(){
+    const original = document.getElementById('hamburger');
+    if (!original) return;
+
+    // create a lightweight clone used as the floating button
+    const floating = original.cloneNode(true);
+    floating.id = 'hamburgerSticky';
+    floating.classList.add('brand-btn--fixed');
+
+    // make it accessible and interactive
+    floating.setAttribute('aria-controls', original.getAttribute('aria-controls') || 'mobileMenu');
+    floating.setAttribute('aria-label', original.getAttribute('aria-label') || 'Open menu');
+    floating.setAttribute('role', original.getAttribute('role') || 'button');
+    floating.setAttribute('tabindex', '0');
+
+    // append to body so it stays fixed above content and follows body stacking order
+    document.body.appendChild(floating);
+
+    // forward activation to the original handler (open menu)
+    function activate() {
+      if (typeof window.openMobileMenu === 'function') window.openMobileMenu();
+      else original.click();
+    }
+    floating.addEventListener('click', activate);
+    floating.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); activate(); }
+    });
+
+    // Sync the 'scrolled' visual state (optional)
+    const hero = document.querySelector('#home') || document.querySelector('main') || document.documentElement;
+    if (hero && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          floating.classList.toggle('compact', entry.intersectionRatio < 0.5);
+        });
+      }, { threshold: [0, 0.5, 1] });
+      io.observe(hero);
+    }
+
+    window.enableStickyHamburger = function (enable = true) {
+      floating.style.display = enable ? 'inline-block' : 'none';
+    };
+
+    window.enableStickyHamburger(true);
+  })();
+  </script>
+
+  <!-- Rest of your inline scripts (decoy injectors etc.) remain unchanged and follow -->
+  <!-- ══════════════════════════════════════════
+       ADMIN LOGIN OVERLAY
+  ══════════════════════════════════════════ -->
+  <div id="adminLogin" role="dialog" aria-modal="true" aria-label="Staff login">
+    <div class="adm-login-wrap">
+      <div class="adm-login-brand">
+        <span class="adm-bic">BIC</span>
+        <p>Bodija International College</p>
+      </div>
+      <div class="adm-login-card">
+        <h2>Staff Login</h2>
+        <p class="adm-subtitle">Enter your admin password to manage content.</p>
+        <div id="adminLoginError" class="adm-login-error" role="alert">
+          Incorrect password. Please try again.
+        </div>
+        <form id="adminLoginForm" novalidate>
+          <div class="adm-field">
+            <label for="adminPasswordInput">Password</label>
+            <input type="password" id="adminPasswordInput" autocomplete="current-password"
+              placeholder="Enter admin password" required />
+          </div>
+          <button type="submit" class="adm-login-submit">Sign In →</button>
+        </form>
+      </div>
+      <a class="adm-back-link" id="adminBackLink" href="#">← Back to News</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ADMIN PANEL OVERLAY
+  ══════════════════════════════════════════ -->
+  <div id="adminPanel" role="main" aria-label="Admin panel">
+    <!-- Top navigation bar -->
+    <div class="adm-topbar">
+      <div class="adm-topbar-left">
+        <span class="adm-topbar-bic">BIC</span>
+        <span class="adm-topbar-label">Content Admin</span>
+      </div>
+      <div class="adm-topbar-right">
+        <span class="adm-staff-badge">Logged in as Staff</span>
+        <button class="adm-logout-btn" id="adminLogoutBtn">Log Out</button>
+      </div>
+    </div>
+
+    <!-- Two-column body -->
+    <div class="adm-body">
+      <!-- Left column: Manage Articles -->
+      <div class="adm-card">
+        <div class="adm-card-title">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Manage Articles
+        </div>
+        <div id="adminArticleList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Right column: Add New Article -->
+      <div class="adm-card">
+        <div class="adm-card-title">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+          Add New Article
+        </div>
+        <form id="adminAddForm" novalidate>
+          <div class="adm-form-group">
+            <label for="newTitle">Headline *</label>
+            <input type="text" id="newTitle" placeholder="Article headline" required />
+          </div>
+          <div class="adm-form-row">
+            <div class="adm-form-group">
+              <label for="newCategory">Category *</label>
+              <select id="newCategory" required>
+                <option value="Science &amp; Technology">Science &amp; Technology</option>
+                <option value="Arts &amp; Humanities">Arts &amp; Humanities</option>
+                <option value="Business &amp; Economics">Business &amp; Economics</option>
+                <option value="Campus Life">Campus Life</option>
+                <option value="Sports">Sports</option>
+                <option value="Announcements">Announcements</option>
+              </select>
+            </div>
+            <div class="adm-form-group">
+              <label for="newDate">Publish Date *</label>
+              <input type="date" id="newDate" required />
+            </div>
+          </div>
+          <div class="adm-form-group">
+            <label for="newExcerpt">Short Excerpt *</label>
+            <input type="text" id="newExcerpt" placeholder="Brief summary shown on card" required />
+          </div>
+          <div class="adm-form-group">
+            <label>
+              Article Image
+              <span style="font-weight:400;text-transform:none;font-size:10px;opacity:0.55;margin-left:4px">optional · JPG PNG WebP GIF · max 5 MB</span>
+            </label>
+
+            <!-- Dropzone wrapper — keyboard-accessible, handles click + drag -->
+            <div id="imageDropzone"
+                 class="adm-dropzone"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Click or drag an image file to upload it"
+                 aria-describedby="dzSizeError">
+
+              <!-- Hidden file input (triggered programmatically) -->
+              <input type="file"
+                     id="newImage"
+                     accept="image/jpeg,image/png,image/gif,image/webp"
+                     style="display:none"
+                     aria-hidden="true" />
+
+              <!-- ① Idle / empty state -->
+              <div class="adm-dz-idle" id="dropzoneIdle">
+                <div class="adm-dz-icon" aria-hidden="true">
+                  <!-- Upload cloud icon -->
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.7"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 16 12 12 8 16"/>
+                    <line x1="12" y1="12" x2="12" y2="21"/>
+                    <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+                  </svg>
+                </div>
+                <p class="adm-dz-label">
+                  Drop an image here, or
+                  <span class="adm-dz-link">browse files</span>
+                </p>
+                <p class="adm-dz-hint">JPG · PNG · WebP · GIF &nbsp;·&nbsp; Max 5 MB</p>
+              </div>
+
+              <!-- ② Preview state (hidden until a file is chosen) -->
+              <div class="adm-dz-preview" id="dropzonePreview" style="display:none"
+                   aria-live="polite" aria-label="Image preview">
+                <img id="previewImg" src="" alt="Selected article image preview" />
+                <span class="adm-dz-filename" id="previewFilename" aria-hidden="true"></span>
+                <div class="adm-dz-overlay">
+                  <button type="button"
+                          id="removeImageBtn"
+                          class="adm-dz-remove"
+                          aria-label="Remove selected image">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"/>
+                      <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div><!-- /.adm-dropzone -->
+
+            <!-- File-size error (shown inline, not via alert) -->
+            <div id="dzSizeError" class="adm-dz-size-error" role="alert"></div>
+          </div>
+          <div class="adm-form-group">
+            <label for="newContent">Full Article Body *</label>
+            <textarea id="newContent" rows="5"
+              placeholder="Write the full article here. Separate paragraphs with a blank line." required></textarea>
+          </div>
+          <div class="adm-form-group" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="checkbox" id="newSetFeatured" style="width:auto;padding:0;border-radius:4px" />
+            <label for="newSetFeatured" style="text-transform:none;font-size:13px;font-weight:600;margin:0;cursor:pointer">
+              ★ Mark as featured story on publish
+            </label>
+          </div>
+          <button type="submit" class="adm-submit">Publish Article</button>
+          <div id="adminSuccessMsg" class="adm-success-msg" role="status">
+            ✓ Article published successfully!
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ADMIN SYSTEM JS
+  ══════════════════════════════════════════ -->
+  <script>
+  (function(){
+    'use strict';
+
+    // ── Session flag (UI only — real auth lives server-side) ──────────
+    var SESSION_AUTH = 'bic_admin_auth';
+    function isAuth(){ return sessionStorage.getItem(SESSION_AUTH) === '1'; }
+    function setAuth(v){ v ? sessionStorage.setItem(SESSION_AUTH,'1') : sessionStorage.removeItem(SESSION_AUTH); }
+
+    // ── Holds the File object chosen in the dropzone ──────────────────
+    var _selectedFile = null;
+
+    // ── API wrapper (JSON endpoints) ──────────────────────────────────
+    function api(method, url, body){
+      var opts = {
+        method:      method,
+        credentials: 'same-origin',
+        headers:     { 'Content-Type': 'application/json' }
+      };
+      if(body !== undefined) opts.body = JSON.stringify(body);
+      return fetch(url, opts).then(function(res){
+        return res.json().then(function(data){
+          if(!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+          return data;
+        });
+      });
+    }
+
+    // ── HTML escape ───────────────────────────────────────────────────
+    function escHtml(s){
+      return String(s||'')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // ── Featured section updater ──────────────────────────────────────
+    window.updateFeaturedSection = function(){
+      var fp = (window.posts||[]).find(function(p){ return p.id === window.featuredId; })
+            || (window.posts && window.posts[0]);
+      if(!fp) return;
+      var exc = document.getElementById('featuredExcerpt');
+      var lnk = document.getElementById('featuredLink');
+      if(exc) exc.textContent = fp.excerpt || '';
+      if(lnk){
+        lnk.setAttribute('href','#/post/'+fp.id);
+        lnk.setAttribute('aria-label','Read featured story: '+escHtml(fp.title));
+        var fresh = lnk.cloneNode(true);
+        lnk.parentNode.replaceChild(fresh, lnk);
+        fresh.addEventListener('click', function(e){
+          e.preventDefault();
+          location.hash = '/post/'+fp.id;
+          if(typeof window.renderArticle === 'function'){
+            try{ window.renderArticle(fp.id); }catch(_){}
+          }
+        }, {passive:false});
+      }
+    };
+
+    // ── Admin Login ───────────────────────────────────────────────────
+    function showLogin(){
+      document.getElementById('adminLogin').classList.add('adm-visible');
+      document.getElementById('adminLoginError').style.display = 'none';
+      document.getElementById('adminPasswordInput').value = '';
+      setTimeout(function(){ document.getElementById('adminPasswordInput').focus(); }, 80);
+    }
+    function hideLogin(){
+      document.getElementById('adminLogin').classList.remove('adm-visible');
+    }
+
+    // ── Admin Panel ───────────────────────────────────────────────────
+    function showPanel(){
+      renderAdminPanel();
+      document.getElementById('adminPanel').classList.add('adm-visible');
+    }
+    function hidePanel(){
+      document.getElementById('adminPanel').classList.remove('adm-visible');
+    }
+
+    // ── Render article list ───────────────────────────────────────────
+    function renderAdminPanel(){
+      var list  = document.getElementById('adminArticleList');
+      if(!list) return;
+      var posts = window.posts || [];
+      var fid   = window.featuredId;
+
+      if(posts.length === 0){
+        list.innerHTML = '<div class="adm-empty-state">No articles yet.</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      posts.forEach(function(p){
+        var isFeat = p.id === fid;
+        var row    = document.createElement('div');
+        row.className = 'adm-article-row';
+
+        var badge = isFeat ? '<span class="adm-featured-badge">FEATURED</span>' : '';
+        var date  = p.date ? new Date(p.date).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}) : '';
+
+        row.innerHTML =
+          '<div class="adm-article-info">'
+          + '<div class="adm-article-title-text" title="'+escHtml(p.title)+'">'
+          +   escHtml(p.title)+badge
+          + '</div>'
+          + '<div class="adm-article-meta-text">'+escHtml(p.category)+' · '+escHtml(date)+'</div>'
+          + '</div>'
+          + '<button class="adm-btn adm-btn-star'+(isFeat?' adm-is-featured':'')+'" title="'+(isFeat?'Currently featured':'Set as featured')+'" data-id="'+p.id+'">★</button>'
+          + '<button class="adm-btn adm-btn-del" title="Delete article" data-id="'+p.id+'">🗑</button>';
+
+        // ★ Set featured → PUT /api/config/featured
+        row.querySelector('.adm-btn-star').addEventListener('click', function(){
+          var btn = this; btn.disabled = true;
+          api('PUT', '/api/config/featured', { featuredId: p.id })
+            .then(function(){
+              window.featuredId = p.id;
+              window.updateFeaturedSection();
+              renderAdminPanel();
+              showToast('★ "'+p.title+'" is now the featured story.');
+            })
+            .catch(function(e){ showToast('Error: '+e.message); btn.disabled = false; });
+        });
+
+        // 🗑 Delete → DELETE /api/posts/:id
+        row.querySelector('.adm-btn-del').addEventListener('click', function(){
+          if(!confirm('Delete "'+p.title+'"?\n\nThis cannot be undone.')) return;
+          var btn = this; btn.disabled = true;
+          api('DELETE', '/api/posts/'+p.id)
+            .then(function(){
+              var idx = window.posts.findIndex(function(x){ return x.id === p.id; });
+              if(idx !== -1) window.posts.splice(idx, 1);
+              if(window.featuredId === p.id){
+                window.featuredId = window.posts[0] ? window.posts[0].id : null;
+                window.updateFeaturedSection();
+              }
+              if(typeof window.render === 'function') try{ window.render(); }catch(_){}
+              renderAdminPanel();
+              showToast('Article deleted.');
+            })
+            .catch(function(e){ showToast('Error: '+e.message); btn.disabled = false; });
+        });
+
+        list.appendChild(row);
+      });
+    }
+
+    // ── Image dropzone ────────────────────────────────────────────────
+    function setupImageDropzone(){
+      var dropzone   = document.getElementById('imageDropzone');
+      var fileInput  = document.getElementById('newImage');
+      var idleEl     = document.getElementById('dropzoneIdle');
+      var previewEl  = document.getElementById('dropzonePreview');
+      var previewImg = document.getElementById('previewImg');
+      var filenameEl = document.getElementById('previewFilename');
+      var removeBtn  = document.getElementById('removeImageBtn');
+      var sizeErr    = document.getElementById('dzSizeError');
+      if(!dropzone || !fileInput) return;
+
+      var MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+
+      function showPreview(file){
+        // Size guard
+        if(file.size > MAX_BYTES){
+          dropzone.classList.add('adm-dz-error');
+          sizeErr.textContent = 'File is too large (' + (file.size/1024/1024).toFixed(1) + ' MB). Maximum is 5 MB.';
+          sizeErr.classList.add('visible');
+          fileInput.value = '';
+          _selectedFile = null;
+          return;
+        }
+        dropzone.classList.remove('adm-dz-error');
+        sizeErr.classList.remove('visible');
+
+        var reader = new FileReader();
+        reader.onload = function(e){
+          previewImg.src = e.target.result;
+          if(filenameEl) filenameEl.textContent = file.name;
+          idleEl.style.display  = 'none';
+          previewEl.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        _selectedFile = file;
+      }
+
+      function clearPreview(){
+        previewImg.src = '';
+        if(filenameEl) filenameEl.textContent = '';
+        idleEl.style.display    = '';
+        previewEl.style.display = 'none';
+        fileInput.value = '';
+        dropzone.classList.remove('adm-dz-error');
+        sizeErr.classList.remove('visible');
+        _selectedFile = null;
+      }
+
+      // Click anywhere in the dropzone opens the picker
+      dropzone.addEventListener('click', function(e){
+        // Don't re-open picker when clicking the Remove button
+        if(removeBtn && (e.target === removeBtn || removeBtn.contains(e.target))) return;
+        fileInput.click();
+      });
+
+      // Keyboard activation
+      dropzone.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          fileInput.click();
+        }
+      });
+
+      // File input change
+      fileInput.addEventListener('change', function(){
+        var file = this.files && this.files[0];
+        if(file) showPreview(file);
+      });
+
+      // Drag-and-drop
+      dropzone.addEventListener('dragover', function(e){
+        e.preventDefault(); e.stopPropagation();
+        dropzone.classList.add('adm-dz-over');
+      });
+      ['dragleave','dragend'].forEach(function(evt){
+        dropzone.addEventListener(evt, function(){
+          dropzone.classList.remove('adm-dz-over');
+        });
+      });
+      dropzone.addEventListener('drop', function(e){
+        e.preventDefault(); e.stopPropagation();
+        dropzone.classList.remove('adm-dz-over');
+        var files = e.dataTransfer && e.dataTransfer.files;
+        var file  = files && files[0];
+        if(file && file.type.startsWith('image/')) showPreview(file);
+      });
+
+      // Remove button
+      removeBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        clearPreview();
+      });
+
+      // Expose clearPreview so form reset can call it
+      dropzone._clear = clearPreview;
+    }
+
+    // ── Add article form ──────────────────────────────────────────────
+    function setupAddForm(){
+      var form = document.getElementById('adminAddForm');
+      if(!form) return;
+
+      var dateInput = document.getElementById('newDate');
+      if(dateInput) dateInput.valueAsDate = new Date();
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        var title   = (document.getElementById('newTitle').value||'').trim();
+        var cat     = document.getElementById('newCategory').value;
+        var date    = document.getElementById('newDate').value;
+        var excerpt = (document.getElementById('newExcerpt').value||'').trim();
+        var body    = (document.getElementById('newContent').value||'').trim();
+        var setFeat = document.getElementById('newSetFeatured').checked;
+
+        if(!title || !excerpt || !body){
+          alert('Please fill in all required fields (Headline, Excerpt, Body).');
+          return;
+        }
+
+        // Build HTML from plain paragraphs
+        var contentHtml = '<p>' + body.split(/\n{2,}/).map(function(chunk){
+          return chunk.replace(/\n/g,'<br>');
+        }).join('</p><p>') + '</p>';
+
+        var submitBtn = form.querySelector('.adm-submit');
+        if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Publishing…'; }
+
+        // ── POST /api/posts  ──────────────────────────────────────────
+        // Use FormData so we can attach the image file in a single request
+        var fd = new FormData();
+        fd.append('title',       title);
+        fd.append('category',    cat);
+        fd.append('date',        date);
+        fd.append('excerpt',     excerpt);
+        fd.append('content',     contentHtml);
+        fd.append('setFeatured', setFeat ? '1' : '0');
+        if(_selectedFile) fd.append('image', _selectedFile, _selectedFile.name);
+
+        // NOTE: Do NOT set Content-Type — the browser sets the multipart boundary automatically
+        fetch('/api/posts', {
+          method:      'POST',
+          credentials: 'same-origin',
+          body:        fd
+        })
+        .then(function(res){
+          return res.json().then(function(data){
+            if(!res.ok) throw new Error(data.error || 'HTTP '+res.status);
+            return data;
+          });
+        })
+        .then(function(newPost){
+          if(!window.posts) window.posts = [];
+          window.posts.unshift(newPost);
+
+          // Add new category chip if needed
+          if(window.categories && !window.categories.includes(cat)){
+            window.categories.push(cat);
+            var chips = document.getElementById('categoryChips');
+            if(chips){
+              var chip = document.createElement('button');
+              chip.type='button'; chip.className='chip'; chip.textContent=cat;
+              chip.setAttribute('role','tab'); chip.setAttribute('aria-selected','false');
+              chip.addEventListener('click', function(){
+                window.state.category=cat; window.state.page=1;
+                if(typeof window.updateChips==='function') window.updateChips();
+                if(typeof window.render==='function') try{ window.render(); }catch(_){}
+              });
+              chips.appendChild(chip);
+            }
+          }
+
+          if(newPost.isFeatured){
+            window.featuredId = newPost.id;
+            window.updateFeaturedSection();
+          }
+
+          if(typeof window.render === 'function') try{ window.render(); }catch(_){}
+          renderAdminPanel();
+
+          form.reset();
+          if(dateInput) dateInput.valueAsDate = new Date();
+
+          // Clear the dropzone preview
+          var dz = document.getElementById('imageDropzone');
+          if(dz && dz._clear) dz._clear();
+
+          var msg = document.getElementById('adminSuccessMsg');
+          if(msg){ msg.style.display='block'; setTimeout(function(){ msg.style.display='none'; }, 3000); }
+        })
+        .catch(function(e){ alert('Failed to publish: '+e.message); })
+        .finally(function(){
+          if(submitBtn){ submitBtn.disabled=false; submitBtn.textContent='Publish Article'; }
+        });
+      });
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────
+    function showToast(msg){
+      var t = document.createElement('div');
+      t.style.cssText = 'position:fixed;right:20px;bottom:30px;background:#111827;color:#fff;padding:11px 16px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:40000;font-size:13px;font-family:Montserrat,sans-serif;font-weight:600;max-width:280px';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(function(){ t.remove(); }, 2400);
+    }
+
+    // ── Logout → POST /api/logout ─────────────────────────────────────
+    function logout(){
+      api('POST', '/api/logout').finally(function(){
+        setAuth(false);
+        hidePanel();
+        hideLogin();
+        if(location.hash === '#admin') history.replaceState(null,'',location.pathname+location.search);
+        if(typeof window.render === 'function') try{ window.render(); }catch(_){}
+        showToast('Logged out.');
+      });
+    }
+
+    // ── Hash routing ──────────────────────────────────────────────────
+    function checkAdminHash(){
+      if(location.hash === '#admin'){
+        if(isAuth()) showPanel();
+        else showLogin();
+      }
+    }
+
+    // ── Boot ──────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function(){
+
+      // Load posts + config from the server in parallel
+      Promise.all([
+        api('GET', '/api/posts'),
+        api('GET', '/api/config')
+      ])
+      .then(function(results){
+        var posts  = results[0];
+        var config = results[1];
+
+        if(Array.isArray(posts) && posts.length){
+          window.posts.length = 0;
+          posts.forEach(function(p){ window.posts.push(p); });
+        }
+
+        if(config && config.featuredId != null){
+          window.featuredId = config.featuredId;
+        } else if(window.posts.length){
+          window.featuredId = window.posts[0].id;
+        }
+
+        window.updateFeaturedSection();
+        if(typeof window.render === 'function') try{ window.render(); }catch(_){}
+      })
+      .catch(function(e){ console.error('[BIC] Could not load data from server:', e.message); });
+
+      // Staff Login link
+      var trigger = document.getElementById('adminTrigger');
+      if(trigger){
+        trigger.addEventListener('click', function(e){
+          e.preventDefault();
+          if(isAuth()) showPanel();
+          else { history.pushState(null,'',location.pathname+location.search+'#admin'); showLogin(); }
+        });
+      }
+
+      // Back link on login screen
+      var backLink = document.getElementById('adminBackLink');
+      if(backLink){
+        backLink.addEventListener('click', function(e){
+          e.preventDefault();
+          hideLogin();
+          history.replaceState(null,'',location.pathname+location.search);
+        });
+      }
+
+      // Login form → POST /api/login
+      var loginForm = document.getElementById('adminLoginForm');
+      if(loginForm){
+        loginForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          var pw     = document.getElementById('adminPasswordInput').value;
+          var errEl  = document.getElementById('adminLoginError');
+          var submit = loginForm.querySelector('.adm-login-submit');
+          if(submit){ submit.disabled=true; submit.textContent='Checking…'; }
+
+          api('POST', '/api/login', { password: pw })
+            .then(function(){
+              setAuth(true);
+              hideLogin();
+              history.replaceState(null,'',location.pathname+location.search);
+              showPanel();
+            })
+            .catch(function(){
+              errEl.style.display = 'block';
+              document.getElementById('adminPasswordInput').value = '';
+              document.getElementById('adminPasswordInput').focus();
+            })
+            .finally(function(){
+              if(submit){ submit.disabled=false; submit.textContent='Sign In →'; }
+            });
+        });
+      }
+
+      // Logout button
+      var logoutBtn = document.getElementById('adminLogoutBtn');
+      if(logoutBtn) logoutBtn.addEventListener('click', logout);
+
+      // Hash routing
+      window.addEventListener('hashchange', checkAdminHash);
+      checkAdminHash();
+
+      setupImageDropzone();
+      setupAddForm();
+
+      // Footer year
+      var yearEl = document.getElementById('year');
+      if(yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+
+    window.featuredId = window.featuredId || null;
+
+  })();
+  </script>
+
+
+
+  <!-- ── Silent Luxury: Scroll-reveal + Polish ── -->
+  <script>
+  (function(){
+    'use strict';
+
+    /* ── Scroll-reveal via IntersectionObserver ── */
+    function initReveal(){
+      var els = document.querySelectorAll('.reveal');
+      if(!els.length) return;
+
+      if(!('IntersectionObserver' in window)){
+        els.forEach(function(el){ el.classList.add('revealed'); });
+        return;
+      }
+
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('revealed');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      els.forEach(function(el){ io.observe(el); });
+    }
+
+    /* ── Stagger hero card children on load ── */
+    function initHeroStagger(){
+      var heroCard = document.querySelector('.hero-card');
+      if(!heroCard) return;
+      var children = heroCard.children;
+      Array.prototype.forEach.call(children, function(child, i){
+        child.style.opacity = '0';
+        child.style.transform = 'translateY(20px)';
+        child.style.transition = 'opacity 700ms cubic-bezier(0.16,1,0.3,1), transform 700ms cubic-bezier(0.16,1,0.3,1)';
+        child.style.transitionDelay = (i * 120 + 80) + 'ms';
+        requestAnimationFrame(function(){
+          requestAnimationFrame(function(){
+            child.style.opacity = '1';
+            child.style.transform = 'none';
+          });
+        });
+      });
+    }
+
+    /* ── Magnetic chip hover (subtle pull) ── */
+    function initChipMagnet(){
+      document.addEventListener('mousemove', function(e){
+        var chips = document.querySelectorAll('.chip');
+        chips.forEach(function(chip){
+          var rect = chip.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var dx = e.clientX - cx;
+          var dy = e.clientY - cy;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < 60){
+            var pull = (1 - dist / 60) * 4;
+            chip.style.transform = 'translate(' + (dx/dist*pull) + 'px,' + (dy/dist*pull) + 'px)';
+          } else {
+            chip.style.transform = '';
+          }
+        });
+      }, { passive: true });
+    }
+
+    /* ── Smooth page-change scroll ── */
+    function initPaginationScroll(){
+      var grid = document.getElementById('newsGrid');
+      if(!grid) return;
+      var observer = new MutationObserver(function(){
+        var mainEl = document.getElementById('mainContent');
+        if(mainEl){
+          var top = mainEl.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+      observer.observe(grid, { childList: true });
+    }
+
+    /* ── Card tilt on hover (subtle 3-D depth) ── */
+    function initCardTilt(){
+      document.addEventListener('mousemove', function(e){
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function(card){
+          var rect = card.getBoundingClientRect();
+          var inside = e.clientX >= rect.left && e.clientX <= rect.right
+                    && e.clientY >= rect.top  && e.clientY <= rect.bottom;
+          if(inside){
+            var rx = ((e.clientY - rect.top)  / rect.height - 0.5) * -5;
+            var ry = ((e.clientX - rect.left) / rect.width  - 0.5) *  5;
+            card.style.transform = 'translateY(-4px) perspective(600px) rotateX('+rx+'deg) rotateY('+ry+'deg)';
+          } else {
+            card.style.transform = '';
+          }
+        });
+      }, { passive: true });
+    }
+
+    /* ── Run on DOM ready ── */
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    function init(){
+      initReveal();
+      initHeroStagger();
+      initChipMagnet();
+      initPaginationScroll();
+      initCardTilt();
+    }
+  }());
+  </script>
+
+
+  <script>
+  (function () {
+    'use strict';
+    var nav = document.querySelector('.bic-site-nav');
+    if (nav) {
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu      = document.getElementById('mobileMenu');
+      var panel     = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay   = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openBtns  = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocus = null, timeouts = [];
+      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
+      if (!menu) return;
+      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
+      function scrollLock(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function trapFocus(e) {
+        if (!panel || !panel.contains(e.target)) {
+          var els = Array.from(panel.querySelectorAll(SEL));
+          if (els.length) els[0].focus({ preventScroll: true });
+        }
+      }
+      function onEsc(e) { if (e.key === 'Escape') close(); }
+      function open() {
+        if (menu.classList.contains('open')) return;
+        lastFocus = document.activeElement;
+        menu.classList.add('open'); menu.setAttribute('aria-hidden','false');
+        if (panel) panel.setAttribute('aria-hidden','false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () {
+          if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll:true }); }
+        }, PDELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', trapFocus, true);
+        document.addEventListener('keydown', onEsc);
+        if (overlay) overlay.addEventListener('click', close);
+        scrollLock(true);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
+      }
+      function close() {
+        if (!menu.classList.contains('open')) return;
+        clearTO();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () {
+          var tH = setTimeout(function () {
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tH2 = setTimeout(function () {
+              menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
+              if (panel) panel.setAttribute('aria-hidden','true');
+              openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+              scrollLock(false);
+              if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true });
+            }, ODUR);
+            timeouts.push(tH2);
+          }, OHOLD);
+          timeouts.push(tH);
+        }, PDUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', trapFocus, true);
+        document.removeEventListener('keydown', onEsc);
+        if (overlay) overlay.removeEventListener('click', close);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+      }
+      openBtns.forEach(function(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+        btn.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
+      });
+      closeBtns.forEach(function(btn) { if(!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
+      window.openMobileMenu  = open;
+      window.closeMobileMenu = close;
+      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
+      /* Floating sticky clone */
+      var orig = document.getElementById('hamburger');
+      if (orig) {
+        var fl = orig.cloneNode(true);
+        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
+        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
+        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
+        document.body.appendChild(fl);
+        function act(){ if (typeof open==='function') open(); }
+        fl.addEventListener('click', act);
+        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      }
+    });
+  }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,1689 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Explore Programs — Bodija International College</title>
+  <meta name="description" content="Explore programs at Bodija International College — Science & Technology, Arts & Humanities, Business & Economics." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — SILENT LUXURY PALETTE
+       ============================================================ */
+    :root {
+      /* Color */
+      --ink:          #18140F;
+      --ink-60:       rgba(24,20,15,.6);
+      --ink-30:       rgba(24,20,15,.3);
+      --ink-12:       rgba(24,20,15,.12);
+      --ink-6:        rgba(24,20,15,.06);
+      --parchment:    #F3EFE5;
+      --surface:      #FDFAF5;
+      --surface-2:    #F7F3EA;
+      --gold:         #B07D3F;
+      --gold-light:   #C8963E;
+      --gold-pale:    rgba(176,125,63,.10);
+      --gold-border:  rgba(176,125,63,.22);
+
+      /* Dark surfaces */
+      --ebony:        #141210;
+      --ebony-2:      #1E1A14;
+      --ebony-border: rgba(255,255,255,.08);
+      --ebony-muted:  rgba(230,218,196,.6);
+
+      /* Typography */
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-sc:      'Cormorant SC', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+
+      /* Spacing */
+      --max:   1120px;
+      --gutter: clamp(20px, 4vw, 56px);
+
+      /* Elevation (Material-inspired warm shadows) */
+      --e1: 0 1px 3px rgba(24,20,15,.08), 0 1px 2px rgba(24,20,15,.06);
+      --e2: 0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
+      --e3: 0 8px 32px rgba(24,20,15,.10), 0 4px 8px rgba(24,20,15,.06);
+      --e4: 0 16px 48px rgba(24,20,15,.13), 0 6px 12px rgba(24,20,15,.06);
+
+      /* Radii */
+      --r-sm:  6px;
+      --r-md: 12px;
+      --r-lg: 20px;
+
+      /* Motion */
+      --ease-out:   cubic-bezier(.22,.9,.37,1);
+      --ease-expo:  cubic-bezier(.16,1,.3,1);
+      --dur-fast:   200ms;
+      --dur-mid:    360ms;
+      --dur-slow:   600ms;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--parchment);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+    ul { list-style: none; }
+
+    /* ============================================================
+       UTILITIES
+       ============================================================ */
+    .sr-only {
+      position: absolute !important; width: 1px; height: 1px;
+      overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap;
+    }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+    .label-sc {
+      font-family: var(--font-sc);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* ============================================================
+       SCROLL REVEAL SYSTEM
+       ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity var(--dur-slow) var(--ease-expo),
+                  transform var(--dur-slow) var(--ease-expo);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-24px);
+      transition: opacity var(--dur-slow) var(--ease-expo), transform var(--dur-slow) var(--ease-expo);
+    }
+    .reveal-left.is-visible { opacity: 1; transform: translateX(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-left { transition: none; opacity: 1; transform: none; }
+    }
+
+    /* ============================================================
+       NAVIGATION BAR
+       ============================================================ */
+    .site-nav {
+      position: fixed; inset-x: 0; top: 0; z-index: 9000;
+      padding: 0 var(--gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+      border-bottom: 1px solid var(--ink-12);
+      transition: background var(--dur-mid) ease, box-shadow var(--dur-mid) ease;
+    }
+    .site-nav.scrolled {
+      box-shadow: var(--e2);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer;
+    }
+    .nav-logo {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1.5px solid var(--gold-border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .nav-wordmark {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .nav-wordmark strong {
+      font-family: var(--font-sc); font-size: 14px; font-weight: 500;
+      letter-spacing: .06em; color: var(--ink);
+      line-height: 1.2;
+    }
+    .nav-wordmark span {
+      font-size: 11px; color: var(--ink-60); letter-spacing: .04em;
+    }
+    @media (max-width: 600px) { .nav-wordmark { display: none; } }
+
+    /* Hamburger / BIC button — preserve original id for JS */
+    #hamburger {
+      font-family: var(--font-sc);
+      font-size: 20px; font-weight: 600;
+      letter-spacing: .12em;
+      color: var(--gold);
+      cursor: pointer;
+      padding: 8px 16px;
+      border: 1.5px solid var(--gold-border);
+      border-radius: var(--r-sm);
+      background: transparent;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+      user-select: none;
+    }
+    #hamburger:hover, #hamburger:focus-visible {
+      background: var(--gold-pale);
+      border-color: var(--gold);
+      transform: translateY(-1px);
+    }
+    #hamburger:active { transform: translateY(0); }
+    #hamburger:focus { outline: none; }
+    #hamburger:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    /* ============================================================
+       MOBILE MENU
+       ============================================================ */
+    :root {
+      --z-hamburger: 10002; --z-overlay: 10003; --z-panel: 10004;
+      --overlay-duration: 260ms; --panel-duration: 360ms; --panel-delay: 60ms;
+      --overlay-opacity: 1; --overlay-ease: cubic-bezier(.2,.9,.3,1);
+      --overlay-hold: 80ms; --panel-ease: cubic-bezier(.2,.9,.3,1);
+    }
+    .mobile-menu { display: none; }
+    .mobile-menu.open { display: block; }
+    .mobile-menu__overlay {
+      position: fixed; inset: 0; z-index: var(--z-overlay);
+      background: rgba(18,14,10,.55);
+      opacity: 0; transition: opacity var(--overlay-duration) var(--overlay-ease);
+      backdrop-filter: blur(4px);
+    }
+    .mobile-menu__overlay.overlay-in { opacity: var(--overlay-opacity); }
+    .mobile-menu__panel {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: min(380px, 90vw);
+      z-index: var(--z-panel);
+      background: var(--ebony);
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform var(--panel-duration) var(--panel-ease);
+      overflow-y: auto;
+    }
+    .mobile-menu__panel.panel-in { transform: translateX(0); }
+    .mobile-menu__inner { padding: 28px 32px 48px; display: flex; flex-direction: column; height: 100%; }
+    .mobile-menu__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--ebony-border);
+      margin-bottom: 32px;
+    }
+    .mobile-menu__header .logo-mark {
+      font-family: var(--font-sc); font-size: 18px; font-weight: 500;
+      color: var(--gold); letter-spacing: .1em;
+    }
+    .mobile-menu__close {
+      background: none; border: none; cursor: pointer;
+      color: var(--ebony-muted); padding: 4px;
+      border-radius: 50%; transition: color var(--dur-fast), background var(--dur-fast);
+    }
+    .mobile-menu__close:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .mobile-menu__nav { display: flex; flex-direction: column; gap: 4px; }
+    .menu-item {
+      font-family: var(--font-display); font-size: 28px; font-weight: 400;
+      color: rgba(230,218,196,.8);
+      padding: 10px 0; letter-spacing: -.01em;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      transition: color var(--dur-fast), padding-left var(--dur-fast);
+      display: block;
+    }
+    .menu-item:hover { color: #fff; padding-left: 8px; }
+    .menu-footer-text {
+      margin-top: auto; padding-top: 32px;
+      font-size: 12px; color: rgba(230,218,196,.35);
+      letter-spacing: .05em;
+    }
+
+    /* Sticky floating clone */
+    .brand-btn--fixed {
+      position: fixed; top: 14px; left: var(--gutter);
+      z-index: var(--z-hamburger); display: none;
+    }
+    @media (min-width: 768px) { .brand-btn--fixed { display: inline-block; } }
+    @media (max-width: 767px) {
+      #hamburger { position: fixed; top: 14px; left: 16px; z-index: var(--z-hamburger); }
+      .brand-btn--fixed { display: none !important; }
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      overflow: hidden;
+      background: var(--ebony);
+    }
+    .hero__bg {
+      position: absolute; inset: 0;
+      background-image: url('images/programs1.jpg');
+      background-size: cover; background-position: center 30%;
+      transform: scale(1.04);
+      transition: transform 1.4s var(--ease-expo);
+      filter: brightness(.52) saturate(.85);
+    }
+    .hero.loaded .hero__bg { transform: scale(1); }
+    .hero__grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+      mix-blend-mode: overlay;
+    }
+    .hero__vignette {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: linear-gradient(to top, rgba(14,11,8,.92) 0%, rgba(14,11,8,.3) 50%, transparent 100%);
+    }
+    .hero__content {
+      position: relative; z-index: 3;
+      padding: 0 var(--gutter) clamp(56px, 8vh, 96px);
+      max-width: var(--max); margin: 0 auto; width: 100%;
+    }
+    .hero__eyebrow {
+      font-family: var(--font-sc); font-size: 12px; font-weight: 500;
+      letter-spacing: .24em; color: var(--gold); margin-bottom: 20px;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity .9s var(--ease-expo) .2s, transform .9s var(--ease-expo) .2s;
+    }
+    .hero.loaded .hero__eyebrow { opacity: 1; transform: translateY(0); }
+    .hero__title {
+      font-family: var(--font-display); font-size: clamp(3.2rem, 8vw, 7rem);
+      font-weight: 400; line-height: 1.0; letter-spacing: -.02em;
+      color: #F7F2E8;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 1s var(--ease-expo) .35s, transform 1s var(--ease-expo) .35s;
+    }
+    .hero.loaded .hero__title { opacity: 1; transform: translateY(0); }
+    .hero__title em { font-style: italic; color: rgba(247,242,232,.7); }
+    .hero__subtitle {
+      margin-top: 20px; max-width: 560px;
+      font-size: 17px; font-weight: 300; color: rgba(220,210,190,.75);
+      line-height: 1.65;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 1s var(--ease-expo) .5s, transform 1s var(--ease-expo) .5s;
+    }
+    .hero.loaded .hero__subtitle { opacity: 1; transform: translateY(0); }
+    .hero__actions {
+      margin-top: 36px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 1s var(--ease-expo) .65s, transform 1s var(--ease-expo) .65s;
+    }
+    .hero.loaded .hero__actions { opacity: 1; transform: translateY(0); }
+
+    /* Hero scroll indicator */
+    .hero__scroll {
+      position: absolute; bottom: 40px; right: var(--gutter); z-index: 3;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; transition: opacity 1s ease 1.2s;
+    }
+    .hero.loaded .hero__scroll { opacity: .45; }
+    .hero__scroll span {
+      font-family: var(--font-sc); font-size: 10px; letter-spacing: .2em;
+      color: rgba(220,210,190,.8); writing-mode: vertical-rl; transform: rotate(180deg);
+    }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, transparent, rgba(200,150,62,.6));
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: .3; transform: scaleY(.8); }
+      50%       { opacity: .9; transform: scaleY(1); }
+    }
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px; border-radius: 999px;
+      font-size: 14px; font-weight: 500; letter-spacing: .03em;
+      cursor: pointer; transition: all var(--dur-mid) var(--ease-out);
+      border: none; text-decoration: none;
+      position: relative; overflow: hidden;
+    }
+    .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .btn::after {
+      content: ''; position: absolute; inset: 0; border-radius: 999px;
+      background: rgba(255,255,255,.12); opacity: 0;
+      transition: opacity var(--dur-fast);
+    }
+    .btn:hover::after { opacity: 1; }
+
+    .btn-gold {
+      background: var(--gold); color: #FDF8EF;
+      box-shadow: 0 2px 16px rgba(176,125,63,.35);
+    }
+    .btn-gold:hover { background: var(--gold-light); box-shadow: 0 4px 24px rgba(176,125,63,.5); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; color: rgba(220,210,190,.85);
+      border: 1px solid rgba(220,210,190,.25);
+    }
+    .btn-ghost:hover { border-color: rgba(220,210,190,.55); color: #fff; background: rgba(255,255,255,.04); }
+    .btn-outline-dark {
+      background: transparent; color: var(--ink);
+      border: 1.5px solid var(--ink-30);
+    }
+    .btn-outline-dark:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ============================================================
+       SECTION SHELL
+       ============================================================ */
+    .section { padding: clamp(64px, 10vh, 112px) 0; }
+    .section-header { margin-bottom: clamp(40px, 6vh, 72px); }
+    .section-header .label-sc { display: block; margin-bottom: 14px; }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 400; letter-spacing: -.02em;
+      line-height: 1.05; color: var(--ink);
+    }
+    .section-body {
+      margin-top: 16px; max-width: 560px;
+      font-size: 16px; font-weight: 300;
+      color: var(--ink-60); line-height: 1.7;
+    }
+    .divider {
+      height: 1px; background: var(--ink-12); margin: 0;
+    }
+
+    /* ============================================================
+       PROGRAM CARDS (hero grid)
+       ============================================================ */
+    .programs-section { background: var(--surface); }
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--ink-12);
+      border: 1px solid var(--ink-12);
+      border-radius: var(--r-lg); overflow: hidden;
+      box-shadow: var(--e3);
+    }
+    @media (max-width: 760px) {
+      .programs-grid { grid-template-columns: 1fr; }
+    }
+    .prog-card {
+      position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+      min-height: 460px; overflow: hidden;
+      background: var(--ebony);
+      cursor: pointer;
+    }
+    @media (max-width: 760px) { .prog-card { min-height: 320px; } }
+    .prog-card__img {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform .7s var(--ease-expo), filter .5s ease;
+      filter: brightness(.48) saturate(.7);
+    }
+    .prog-card:hover .prog-card__img {
+      transform: scale(1.06); filter: brightness(.38) saturate(.55);
+    }
+    .prog-card__gradient {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(14,11,8,.95) 0%, rgba(14,11,8,.4) 60%, transparent 100%);
+    }
+    .prog-card__body {
+      position: relative; z-index: 2; padding: 32px;
+    }
+    .prog-card__label {
+      font-family: var(--font-sc); font-size: 10px; font-weight: 500;
+      letter-spacing: .22em; color: var(--gold); margin-bottom: 10px;
+      display: block;
+    }
+    .prog-card__title {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 400; line-height: 1.05; letter-spacing: -.01em;
+      color: #F4EFE2; margin-bottom: 10px;
+    }
+    .prog-card__desc {
+      font-size: 14px; font-weight: 300; color: rgba(220,210,190,.65);
+      line-height: 1.6; margin-bottom: 20px;
+    }
+    .prog-card__chips {
+      display: flex; flex-wrap: wrap; gap: 7px;
+    }
+    .chip {
+      font-family: var(--font-sc); font-size: 10px; letter-spacing: .14em;
+      padding: 5px 12px; border-radius: 999px;
+      border: 1px solid rgba(176,125,63,.3); color: rgba(220,210,190,.7);
+      background: rgba(176,125,63,.06);
+      transition: border-color var(--dur-fast), color var(--dur-fast);
+    }
+    .prog-card:hover .chip { border-color: rgba(176,125,63,.55); color: rgba(220,210,190,.9); }
+    .prog-card__arrow {
+      position: absolute; top: 28px; right: 28px; z-index: 3;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(176,125,63,.15); border: 1px solid rgba(176,125,63,.25);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      opacity: 0; transform: translateY(6px);
+      transition: opacity var(--dur-mid) var(--ease-out), transform var(--dur-mid) var(--ease-out);
+    }
+    .prog-card:hover .prog-card__arrow { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
+       DETAIL SECTION LAYOUT
+       ============================================================ */
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px; align-items: start;
+    }
+    @media (max-width: 1024px) { .detail-layout { grid-template-columns: 1fr; } }
+
+    .detail-main > * + * { margin-top: 24px; }
+
+    /* Program detail cards */
+    .program-section {
+      background: var(--surface); border-radius: var(--r-lg);
+      border: 1px solid var(--ink-6);
+      box-shadow: var(--e1);
+      overflow: hidden;
+      scroll-margin-top: 88px;
+      transition: box-shadow var(--dur-mid) ease;
+    }
+    .program-section:hover { box-shadow: var(--e3); }
+    .program-section__header {
+      padding: 40px 40px 32px;
+      border-bottom: 1px solid var(--ink-6);
+    }
+    @media (max-width: 600px) { .program-section__header { padding: 28px; } }
+    .program-section__body { padding: 36px 40px 40px; }
+    @media (max-width: 600px) { .program-section__body { padding: 24px 28px 32px; } }
+    .program-tag {
+      font-family: var(--font-sc); font-size: 11px; font-weight: 500;
+      letter-spacing: .2em; color: var(--gold); margin-bottom: 10px; display: block;
+    }
+    .program-title {
+      font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400; letter-spacing: -.02em; line-height: 1.05; color: var(--ink);
+    }
+    .program-desc {
+      margin-top: 12px; font-size: 15px; font-weight: 300;
+      color: var(--ink-60); line-height: 1.75; max-width: 580px;
+    }
+
+    /* Outcomes grid */
+    .sub-heading {
+      font-family: var(--font-sc); font-size: 11px; font-weight: 500;
+      letter-spacing: .18em; color: var(--ink-60); margin-bottom: 18px;
+      display: block;
+    }
+    .outcomes-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 500px) { .outcomes-grid { grid-template-columns: 1fr; } }
+    .outcome-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px 18px; border-radius: var(--r-md);
+      background: var(--parchment); border: 1px solid var(--ink-6);
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+    }
+    .outcome-item:hover { border-color: var(--gold-border); box-shadow: var(--e2); }
+    .outcome-icon {
+      width: 36px; height: 36px; border-radius: var(--r-sm); flex-shrink: 0;
+      background: var(--gold-pale); display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+    }
+    .outcome-text strong {
+      font-size: 14px; font-weight: 500; color: var(--ink); display: block; margin-bottom: 3px;
+    }
+    .outcome-text small { font-size: 13px; font-weight: 300; color: var(--ink-60); }
+
+    /* Curriculum timeline */
+    .curriculum-section { margin-bottom: 36px; }
+    .timeline { display: flex; flex-direction: column; gap: 2px; }
+    .year-block {
+      display: grid; grid-template-columns: 64px 1fr;
+      gap: 0; border-radius: 0;
+      background: transparent; border: none;
+      padding: 0;
+    }
+    .year-block:first-child .year-inner { border-radius: var(--r-md) var(--r-md) 0 0; }
+    .year-block:last-child .year-inner { border-radius: 0 0 var(--r-md) var(--r-md); }
+    .year-block:only-child .year-inner { border-radius: var(--r-md); }
+    .year-label {
+      padding: 20px 0 20px 18px;
+      font-family: var(--font-display); font-size: 13px; font-weight: 500;
+      color: var(--gold); letter-spacing: .04em;
+      border-right: 1px solid var(--gold-border);
+      display: flex; align-items: flex-start; padding-top: 22px;
+    }
+    .year-inner {
+      padding: 18px 20px; background: var(--parchment); border: 1px solid var(--ink-6);
+      border-left: none;
+    }
+    .year-modules {
+      font-size: 14px; font-weight: 300; color: var(--ink-60);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .year-modules li {
+      padding: 4px 0; padding-left: 14px;
+      position: relative; line-height: 1.5;
+    }
+    .year-modules li::before {
+      content: ''; position: absolute; left: 0; top: 50%;
+      width: 5px; height: 1px; background: var(--gold); transform: translateY(-50%);
+    }
+
+    /* Project / capstone grid */
+    .projects-section { margin-bottom: 36px; }
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    }
+    @media (max-width: 500px) { .projects-grid { grid-template-columns: 1fr; } }
+    .project-card {
+      border-radius: var(--r-md); overflow: hidden;
+      border: 1px solid var(--ink-6); box-shadow: var(--e1);
+      background: var(--surface);
+      transition: transform var(--dur-mid) var(--ease-out), box-shadow var(--dur-mid) ease;
+    }
+    .project-card:hover { transform: translateY(-3px); box-shadow: var(--e4); }
+    .project-card img {
+      width: 100%; height: 160px; object-fit: cover;
+      transition: filter .4s ease;
+    }
+    .project-card:hover img { filter: brightness(1.05) saturate(1.1); }
+    .project-card__body { padding: 14px 16px 18px; }
+    .project-card__title { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+    .project-card__sub { font-size: 13px; font-weight: 300; color: var(--ink-60); }
+
+    /* FAQ accordion */
+    .faq-list { display: flex; flex-direction: column; gap: 1px; }
+    details.faq {
+      background: var(--parchment); border-radius: 0;
+      border: 1px solid var(--ink-6); border-bottom: none;
+    }
+    details.faq:first-child { border-radius: var(--r-md) var(--r-md) 0 0; }
+    details.faq:last-child  { border-radius: 0 0 var(--r-md) var(--r-md); border-bottom: 1px solid var(--ink-6); }
+    details.faq:only-child  { border-radius: var(--r-md); border-bottom: 1px solid var(--ink-6); }
+    details.faq[open] { background: var(--surface); box-shadow: var(--e2); }
+    details.faq > summary {
+      padding: 16px 20px; cursor: pointer; list-style: none;
+      font-size: 14px; font-weight: 500; color: var(--ink);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; user-select: none;
+    }
+    details.faq > summary::-webkit-details-marker { display: none; }
+    details.faq > summary::after {
+      content: '+'; font-size: 18px; font-weight: 300; color: var(--gold);
+      transition: transform var(--dur-fast), content var(--dur-fast);
+      flex-shrink: 0; line-height: 1;
+    }
+    details.faq[open] > summary::after { content: '−'; }
+    details.faq .faq-answer {
+      padding: 0 20px 18px;
+      font-size: 14px; font-weight: 300; color: var(--ink-60); line-height: 1.7;
+    }
+
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
+    .sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card {
+      background: var(--surface); border-radius: var(--r-lg);
+      border: 1px solid var(--ink-12); box-shadow: var(--e2);
+      overflow: hidden;
+    }
+    .sidebar-card__header {
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid var(--ink-6);
+    }
+    .sidebar-card__title {
+      font-family: var(--font-display); font-size: 1.7rem;
+      font-weight: 400; letter-spacing: -.01em; color: var(--ink); margin-bottom: 6px;
+    }
+    .sidebar-card__sub {
+      font-size: 13px; font-weight: 300; color: var(--ink-60); line-height: 1.6;
+    }
+    .sidebar-card__body { padding: 24px 28px 28px; }
+
+    /* Contact form */
+    .form-field { margin-bottom: 16px; }
+    .form-field label {
+      display: block; font-family: var(--font-sc); font-size: 10px;
+      letter-spacing: .16em; color: var(--ink-60); margin-bottom: 7px;
+    }
+    .form-field input,
+    .form-field select {
+      width: 100%; padding: 11px 14px; border-radius: var(--r-sm);
+      border: 1px solid var(--ink-12); background: var(--parchment);
+      font-size: 14px; font-weight: 400; color: var(--ink);
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+      appearance: none;
+    }
+    .form-field input:focus,
+    .form-field select:focus {
+      outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-pale);
+    }
+    .form-field input::placeholder { color: var(--ink-30); }
+    .form-submit {
+      width: 100%; padding: 13px;
+      background: var(--ink); color: var(--parchment);
+      border: none; border-radius: var(--r-sm);
+      font-size: 14px; font-weight: 500; letter-spacing: .04em;
+      cursor: pointer; transition: background var(--dur-fast), transform var(--dur-fast);
+    }
+    .form-submit:hover { background: #2C2619; transform: translateY(-1px); }
+    .form-submit:active { transform: translateY(0); }
+    #contact-msg { margin-top: 12px; font-size: 13px; color: var(--gold); }
+
+    /* Quick info strip */
+    .info-strip {
+      background: var(--gold-pale); border-radius: var(--r-md);
+      border: 1px solid var(--gold-border);
+      padding: 18px 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .info-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 300; color: var(--ink-60);
+    }
+    .info-row svg { color: var(--gold); flex-shrink: 0; }
+
+    /* ============================================================
+       APPLY CTA SECTION
+       ============================================================ */
+    .cta-section {
+      background: var(--ebony); color: #F4EFE2;
+      border-radius: var(--r-lg); margin: 0 var(--gutter) 64px;
+      padding: clamp(40px, 6vw, 72px) clamp(32px, 5vw, 64px);
+      display: flex; flex-direction: column; gap: 28px;
+      position: relative; overflow: hidden;
+      box-shadow: var(--e4);
+    }
+    @media (min-width: 720px) {
+      .cta-section { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+    .cta-bg-text {
+      position: absolute; right: -20px; bottom: -30px;
+      font-family: var(--font-display); font-size: 18vw;
+      font-weight: 700; color: rgba(255,255,255,.02);
+      line-height: 1; pointer-events: none; user-select: none;
+      letter-spacing: -.05em;
+    }
+    .cta-label { font-family: var(--font-sc); font-size: 11px; letter-spacing: .2em; color: var(--gold); margin-bottom: 12px; }
+    .cta-title {
+      font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 400; letter-spacing: -.02em; line-height: 1.05; color: #F4EFE2;
+    }
+    .cta-sub { font-size: 15px; font-weight: 300; color: var(--ebony-muted); margin-top: 10px; max-width: 420px; }
+    .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+
+    /* Contact panel */
+    .contact-panel {
+      overflow: hidden; height: 0; opacity: 0;
+      transition: none; width: 100%;
+    }
+    .contact-panel[aria-hidden="false"] { opacity: 1; }
+    .contact-content {
+      margin-top: 16px; padding: 20px 24px;
+      border-radius: var(--r-md);
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--ebony-border);
+    }
+    .contact-content p { margin: 0 0 8px; font-size: 14px; font-weight: 300; }
+    .contact-content a { color: var(--gold); text-decoration: underline; text-decoration-color: var(--gold-border); }
+    .contact-content strong { font-weight: 500; color: #F4EFE2; }
+    @media (prefers-reduced-motion: reduce) { .contact-panel { transition: none !important; } }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .site-footer {
+      background: var(--ebony-2); color: #F4EFE2;
+      padding: clamp(48px, 8vw, 88px) 0 40px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 48px; margin-bottom: 56px;
+    }
+    @media (min-width: 860px) { .footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; } }
+
+    .footer-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .footer-logo {
+      width: 52px; height: 52px; border-radius: 50%;
+      overflow: hidden; border: 1px solid rgba(176,125,63,.3); flex-shrink: 0;
+    }
+    .footer-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .footer-wordmark strong {
+      font-family: var(--font-sc); font-size: 15px; font-weight: 500; display: block;
+      letter-spacing: .04em; color: #F4EFE2;
+    }
+    .footer-wordmark small { font-size: 12px; color: var(--ebony-muted); }
+    address {
+      font-style: normal; font-size: 14px; font-weight: 300; line-height: 1.8;
+      color: var(--ebony-muted); max-width: 240px; margin-bottom: 24px;
+    }
+    address a { color: inherit; transition: color var(--dur-fast); }
+    address a:hover { color: var(--gold); }
+
+    .social-row { display: flex; gap: 10px; }
+    .social-link {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ebony-muted);
+      transition: all var(--dur-fast);
+    }
+    .social-link:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .social-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    .footer-col-title {
+      font-family: var(--font-sc); font-size: 11px; font-weight: 500;
+      letter-spacing: .18em; color: var(--gold); margin-bottom: 20px; display: block;
+    }
+    .footer-body {
+      font-size: 14px; font-weight: 300; color: var(--ebony-muted); line-height: 1.75;
+    }
+    .footer-discover {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 20px; font-size: 14px; font-weight: 500;
+      color: #F4EFE2; letter-spacing: .03em;
+      transition: color var(--dur-fast);
+    }
+    .footer-discover:hover { color: var(--gold); }
+    .footer-discover svg { transition: transform var(--dur-fast); }
+    .footer-discover:hover svg { transform: translateX(4px); }
+
+    .footer-city-list { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
+    .footer-city {
+      font-family: var(--font-display); font-size: 2.2rem;
+      font-weight: 300; letter-spacing: -.02em; line-height: 1;
+      color: rgba(255,255,255,.25);
+    }
+    .footer-city.active { color: rgba(255,255,255,.8); }
+
+    .footer-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 400; letter-spacing: -.03em; line-height: .95;
+      color: rgba(255,255,255,.12); text-align: right;
+      user-select: none;
+    }
+
+    .footer-bottom {
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,.07);
+      display: flex; flex-direction: column; gap: 10px;
+      align-items: center; justify-content: space-between;
+    }
+    @media (min-width: 600px) { .footer-bottom { flex-direction: row; } }
+    .footer-copy { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.3); }
+
+    /* ============================================================
+       SURFACE SECTION ALTERNATION
+       ============================================================ */
+    .bg-surface { background: var(--surface); }
+    .bg-parchment { background: var(--parchment); }
+
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================
+       SITE NAVIGATION
+       ==================================================== -->
+  <nav class="site-nav" id="siteNav" aria-label="Site navigation">
+    <!-- BIC hamburger — preserving id="hamburger" for existing JS -->
+    <span id="hamburger"
+          role="button"
+          tabindex="0"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+  </nav>
+
+  <!-- ====================================================
+       MOBILE MENU
+       ==================================================== -->
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile navigation menu">
+    <div class="mobile-menu__overlay" data-overlay></div>
+    <aside class="mobile-menu__panel" role="document" aria-hidden="true">
+      <div class="mobile-menu__inner">
+        <header class="mobile-menu__header">
+          <span class="logo-mark">BIC</span>
+          <button class="mobile-menu__close" aria-label="Close menu" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </header>
+        <nav class="mobile-menu__nav" role="navigation" aria-label="Main navigation">
+          <a href="http://127.0.0.1:4040" class="menu-item">Home</a>
+          <a href="http://127.0.0.1:2020" class="menu-item">Updates</a>
+          <a href="/index.html" class="menu-item">Our Programs</a>
+          <a href="http://127.0.0.1:6060" class="menu-item">Get In Touch</a>
+          <a href="http://127.0.0.1:5050" class="menu-item">Digital Library</a>
+        </nav>
+        <p class="menu-footer-text">Bodija International College · Ibadan, Oyo State</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ====================================================
+       HERO
+       ==================================================== -->
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero__bg" role="img" aria-label="Students collaborating in a modern academic environment"></div>
+    <div class="hero__grain" aria-hidden="true"></div>
+    <div class="hero__vignette" aria-hidden="true"></div>
+    <div class="hero__content wrap">
+      <span class="hero__eyebrow">Bodija International College · Ibadan</span>
+      <h1 class="hero__title" id="hero-title">
+        Explore our<br><em>Programs</em>
+      </h1>
+      <p class="hero__subtitle">
+        Three pathways. Each pairs rigorous coursework with real-world projects, mentorship, and a capstone to launch your future.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn-gold" href="#programs-overview">View programs</a>
+        <a class="btn btn-ghost" href="#apply">Contact Admissions</a>
+        <span style="font-size:13px; color:rgba(200,190,170,.5); letter-spacing:.03em;">bicbis95@gmail.com</span>
+      </div>
+    </div>
+    <div class="hero__scroll" aria-hidden="true">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       PROGRAMS OVERVIEW
+       ==================================================== -->
+  <section class="section programs-section" id="programs-overview" aria-labelledby="programs-title">
+    <div class="wrap">
+      <header class="section-header reveal">
+        <span class="label-sc">Academic pathways</span>
+        <h2 class="section-title" id="programs-title">Three distinct<br>programs of study</h2>
+        <p class="section-body">
+          We deliver world-class educational experiences built on personalized mentorship and sustainable professional development goals.
+        </p>
+      </header>
+
+      <div class="programs-grid" role="list">
+
+        <!-- Sciences -->
+        <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-sci"
+                 style="transition-delay:.05s">
+          <div class="prog-card__img" style="background-image:url('/images/science1.jpg');" aria-hidden="true"></div>
+          <div class="prog-card__gradient" aria-hidden="true"></div>
+          <div class="prog-card__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="prog-card__body">
+            <span class="prog-card__label">Sciences</span>
+            <h3 class="prog-card__title" id="prog-sci">Frontiers of<br>Discovery</h3>
+            <p class="prog-card__desc">Pushing the boundaries of what is known and what is possible.</p>
+            <div class="prog-card__chips">
+              <span class="chip">Innovation</span>
+              <span class="chip">Systems</span>
+              <span class="chip">Research</span>
+            </div>
+          </div>
+          <a href="#sci-tech" class="sr-only">Explore Science &amp; Technology program</a>
+        </article>
+
+        <!-- Arts -->
+        <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-arts"
+                 style="transition-delay:.15s">
+          <div class="prog-card__img" style="background-image:url('/images/arts1.jpg');" aria-hidden="true"></div>
+          <div class="prog-card__gradient" aria-hidden="true"></div>
+          <div class="prog-card__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="prog-card__body">
+            <span class="prog-card__label">Arts</span>
+            <h3 class="prog-card__title" id="prog-arts">The Human<br>Narrative</h3>
+            <p class="prog-card__desc">An exploration of culture, history, and the art of being human.</p>
+            <div class="prog-card__chips">
+              <span class="chip">Culture</span>
+              <span class="chip">Expression</span>
+              <span class="chip">Humanities</span>
+            </div>
+          </div>
+          <a href="#arts" class="sr-only">Explore Arts &amp; Humanities program</a>
+        </article>
+
+        <!-- Commerce -->
+        <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-comm"
+                 style="transition-delay:.25s">
+          <div class="prog-card__img" style="background-image:url('/images/comm1.jpg');" aria-hidden="true"></div>
+          <div class="prog-card__gradient" aria-hidden="true"></div>
+          <div class="prog-card__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="prog-card__body">
+            <span class="prog-card__label">Commerce</span>
+            <h3 class="prog-card__title" id="prog-comm">Commerce &amp;<br>Quantitative Analysis</h3>
+            <p class="prog-card__desc">Decoding the economic forces that drive modern industry and growth.</p>
+            <div class="prog-card__chips">
+              <span class="chip">Market</span>
+              <span class="chip">Management</span>
+              <span class="chip">Economics</span>
+            </div>
+          </div>
+          <a href="#business" class="sr-only">Explore Business &amp; Economics program</a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ====================================================
+       PROGRAM DETAILS + SIDEBAR
+       ==================================================== -->
+  <section class="section bg-parchment" aria-label="Detailed program information">
+    <div class="wrap">
+      <div class="detail-layout">
+
+        <!-- ── MAIN COLUMN ─────────────────────────────── -->
+        <main class="detail-main" id="main-content">
+
+          <!-- ── SCIENCE & TECHNOLOGY ── -->
+          <article class="program-section reveal" id="sci-tech" aria-labelledby="sci-title">
+            <header class="program-section__header">
+              <span class="program-tag">Science &amp; Technology</span>
+              <h2 class="program-title" id="sci-title">Hands-on science for the builders of tomorrow</h2>
+              <p class="program-desc">The pathway focuses on hands-on lab work, robotics, programming, and design thinking. Students build prototypes, write firmware, analyze data, and complete an industry capstone.</p>
+            </header>
+            <div class="program-section__body">
+
+              <span class="sub-heading">Learning Outcomes</span>
+              <div class="outcomes-grid" aria-label="Learning outcomes">
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Hands-on labs</strong><small>Robotics kits, electronics and sensors.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Coding &amp; firmware</strong><small>Python, C/C++ and embedded systems.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Prototype design</strong><small>Electromechanical prototyping and testing.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Industry mentorship</strong><small>Capstone with external partners.</small></div>
+                </div>
+              </div>
+
+              <div class="curriculum-section">
+                <span class="sub-heading">Curriculum Snapshot</span>
+                <div class="timeline" role="list">
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 1</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Foundations of Science</li><li>Intro to Robotics</li><li>Mathematics for Engineers</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 2</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Electronics &amp; Circuits</li><li>Embedded Programming</li><li>Data &amp; Sensors</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 3</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Advanced Robotics</li><li>AI &amp; Machine Learning</li><li>Capstone Project</li></ul></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projects-section">
+                <span class="sub-heading">Capstone Examples</span>
+                <div class="projects-grid">
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=70" alt="Autonomous Field Drone project">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Autonomous Field Drone</div>
+                      <div class="project-card__sub">Sensors and navigation</div>
+                    </div>
+                  </div>
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=70" alt="Smart Water Monitor project">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Smart Water Monitor</div>
+                      <div class="project-card__sub">IoT sensors &amp; analytics</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="sub-heading">Frequently Asked</span>
+              <div class="faq-list">
+                <details class="faq">
+                  <summary>Who should apply?</summary>
+                  <div class="faq-answer">Curious students interested in STEM. No prior experience needed.</div>
+                </details>
+                <details class="faq">
+                  <summary>Are internships available?</summary>
+                  <div class="faq-answer">Yes — Year 2 and 3 placements with partner firms are available.</div>
+                </details>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- ── ARTS & HUMANITIES ── -->
+          <article class="program-section reveal" id="arts" aria-labelledby="arts-title" style="transition-delay:.1s">
+            <header class="program-section__header">
+              <span class="program-tag">Arts &amp; Humanities</span>
+              <h2 class="program-title" id="arts-title">Creative inquiry across culture &amp; expression</h2>
+              <p class="program-desc">The pathway emphasizes visual arts, literature, history, and media — combining expression, critical thinking, research, and public-facing projects.</p>
+            </header>
+            <div class="program-section__body">
+
+              <span class="sub-heading">Learning Outcomes</span>
+              <div class="outcomes-grid" aria-label="Learning outcomes">
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.72 1.7-1.6 0-.41-.15-.78-.42-1.07-.27-.29-.44-.68-.44-1.11 0-.9 1.14-1.63 2.16-1.63H18c2.2 0 4-1.8 4-4 0-5.5-4.5-10-10-10z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Creative practice</strong><small>Studio skills, digital art and performance.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Writing &amp; analysis</strong><small>Literary and critical thinking skills.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Communication</strong><small>Presentations, curation and portfolio work.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5 5 0 0 1 0 7.07l-7.07 7.07a1 1 0 0 1-1.42 0L4.86 11.65a5 5 0 1 1 7.07-7.07l.35.35.35-.35a5 5 0 0 1 7.07 0z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Community projects</strong><small>Collaborations with local cultural partners.</small></div>
+                </div>
+              </div>
+
+              <div class="curriculum-section">
+                <span class="sub-heading">Curriculum Snapshot</span>
+                <div class="timeline" role="list">
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 1</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Introduction to Visual Arts</li><li>Foundations of Literature</li><li>Creative Writing</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 2</div>
+                    <div class="year-inner"><ul class="year-modules"><li>History &amp; Cultural Studies</li><li>Digital Media</li><li>Research Methods</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 3</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Advanced Studio Practice</li><li>Curation &amp; Criticism</li><li>Capstone Exhibition</li></ul></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projects-section">
+                <span class="sub-heading">Featured Projects</span>
+                <div class="projects-grid">
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?auto=format&fit=crop&w=800&q=70" alt="Community Mural art project">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Community Mural</div>
+                      <div class="project-card__sub">Public art &amp; design process</div>
+                    </div>
+                  </div>
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=70" alt="Student Literary Magazine">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Student Literary Magazine</div>
+                      <div class="project-card__sub">Curated texts &amp; interviews</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="sub-heading">Frequently Asked</span>
+              <div class="faq-list">
+                <details class="faq">
+                  <summary>Do I need prior art experience?</summary>
+                  <div class="faq-answer">No. Beginners and experienced students are welcome; fundamentals are taught early on.</div>
+                </details>
+                <details class="faq">
+                  <summary>Is there exhibition space?</summary>
+                  <div class="faq-answer">Yes — students show work in on-campus galleries and community venues.</div>
+                </details>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- ── BUSINESS & ECONOMICS ── -->
+          <article class="program-section reveal" id="business" aria-labelledby="biz-title" style="transition-delay:.2s">
+            <header class="program-section__header">
+              <span class="program-tag">Business &amp; Economics</span>
+              <h2 class="program-title" id="biz-title">Practical business education for the real economy</h2>
+              <p class="program-desc">Economics, accounting, entrepreneurship, and project-based learning that builds real-world business planning skills and industry connections.</p>
+            </header>
+            <div class="program-section__body">
+
+              <span class="sub-heading">Learning Outcomes</span>
+              <div class="outcomes-grid" aria-label="Learning outcomes">
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Financial literacy</strong><small>Accounting basics and personal finance.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Entrepreneurship</strong><small>Business planning and market research.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Team projects</strong><small>Start-up simulations &amp; client projects.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Industry links</strong><small>Partnerships with local businesses for placements.</small></div>
+                </div>
+              </div>
+
+              <div class="curriculum-section">
+                <span class="sub-heading">Curriculum Snapshot</span>
+                <div class="timeline" role="list">
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 1</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Principles of Economics</li><li>Business Communication</li><li>Intro to Accounting</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 2</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Marketing &amp; Sales</li><li>Financial Management</li><li>Entrepreneurship Lab</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 3</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Business Strategy</li><li>Internship / Client Project</li><li>Capstone Business Plan</li></ul></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projects-section">
+                <span class="sub-heading">Capstone Examples</span>
+                <div class="projects-grid">
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=800&q=70" alt="Student startup pitch day">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Start-up Launch</div>
+                      <div class="project-card__sub">Student teams launched local ventures.</div>
+                    </div>
+                  </div>
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=70" alt="Financial literacy workshop">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Financial Literacy Workshops</div>
+                      <div class="project-card__sub">Community workshops and consultancy projects.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="sub-heading">Frequently Asked</span>
+              <div class="faq-list">
+                <details class="faq">
+                  <summary>Are scholarships available?</summary>
+                  <div class="faq-answer">Merit and need-based awards are available — contact admissions for details.</div>
+                </details>
+                <details class="faq">
+                  <summary>Can I start a business while studying?</summary>
+                  <div class="faq-answer">Yes — our entrepreneurship lab supports student start-ups with mentorship and seed resources.</div>
+                </details>
+              </div>
+
+            </div>
+          </article>
+
+        </main>
+
+        <!-- ── SIDEBAR ─────────────────────────────────── -->
+        <aside class="sidebar" aria-label="Admissions information">
+
+          <!-- Contact Form Card -->
+          <div class="sidebar-card reveal" style="transition-delay:.3s">
+            <div class="sidebar-card__header">
+              <h3 class="sidebar-card__title">Admissions help</h3>
+              <p class="sidebar-card__sub">Schedule a call, request a brochure, or ask about scholarships.</p>
+            </div>
+            <div class="sidebar-card__body">
+              <form id="contact-form" aria-label="Request information from admissions" novalidate>
+                <div class="form-field">
+                  <label for="name">Your name</label>
+                  <input id="name" name="name" type="text" placeholder="Full name" required autocomplete="name" />
+                </div>
+                <div class="form-field">
+                  <label for="email">Email address</label>
+                  <input id="email" name="email" type="email" placeholder="name@example.com" required autocomplete="email" />
+                </div>
+                <div class="form-field">
+                  <label for="interest">Program of interest</label>
+                  <select id="interest" name="interest">
+                    <option value="sci">Science &amp; Technology</option>
+                    <option value="arts">Arts &amp; Humanities</option>
+                    <option value="biz">Business &amp; Economics</option>
+                  </select>
+                </div>
+                <button type="submit" class="form-submit">Request information</button>
+                <div id="contact-msg" aria-live="polite" style="display:none"></div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Quick Info -->
+          <div class="info-strip reveal" style="transition-delay:.45s">
+            <div class="info-row">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a>
+            </div>
+            <div class="info-row">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.58 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.03a16 16 0 0 0 6.06 6.06l1.39-1.38a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"></path></svg>
+              <a href="tel:+2348166061632">+234 816 606 1632</a>
+            </div>
+            <div class="info-row">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span>Mon – Fri, 08:00 – 16:00</span>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       APPLY CTA
+       ==================================================== -->
+  <div style="padding: 0 0 clamp(48px, 8vh, 96px);" class="bg-parchment">
+    <div class="cta-section" id="apply" aria-labelledby="apply-title">
+      <div aria-hidden="true" class="cta-bg-text">BIC</div>
+
+      <div class="reveal">
+        <span class="cta-label">Next steps</span>
+        <h2 class="cta-title" id="apply-title">Ready to join?</h2>
+        <p class="cta-sub">Apply to a program or contact Admissions for guidance and scholarship details.</p>
+      </div>
+
+      <div class="cta-actions reveal" style="transition-delay:.15s">
+        <a class="btn btn-gold contact-btn"
+           href="/contact"
+           id="contactBtn"
+           aria-controls="contactPanel"
+           aria-expanded="false">
+          Contact us
+        </a>
+        <a class="btn btn-ghost" href="mailto:bicbis95@gmail.com">
+          Email directly
+        </a>
+      </div>
+
+      <!-- Contact panel -->
+      <div id="contactPanel" class="contact-panel" aria-hidden="true" data-open="false"
+           role="region" aria-label="Contact details">
+        <div class="contact-content">
+          <p><strong>Admissions Office</strong></p>
+          <p>Email: <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></p>
+          <p>Phone: <a href="tel:+2348166061632">+234 816 606 1632</a></p>
+          <p style="margin-bottom:0">Office hours: Mon – Fri, 08:00 – 16:00</p>
+        </div>
+      </div>
+      <div id="contactAnnouncer" class="sr-only" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       FOOTER
+       ==================================================== -->
+  <footer class="site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="wrap">
+      <div class="footer-grid">
+
+        <!-- Left -->
+        <div>
+          <div class="footer-logo-row">
+            <div class="footer-logo">
+              <img src="images/logo.png" alt="Bodija International College" loading="lazy" />
+            </div>
+            <div class="footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home · Our Programs</small>
+            </div>
+          </div>
+          <address>
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>
+          </address>
+          <div class="social-row" aria-label="Follow us on social media">
+            <a class="social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 5.92c-.63.28-1.3.48-2 .56.72-.43 1.28-1.12 1.54-1.95-.67.4-1.42.69-2.22.85A3.5 3.5 0 0016.5 4c-1.93 0-3.5 1.6-3.5 3.57 0 .28.03.55.09.81-2.9-.15-5.48-1.6-7.2-3.8-.3.5-.47 1.09-.47 1.72 0 1.22.6 2.3 1.52 2.93-.56-.02-1.09-.18-1.55-.44v.05c0 1.66 1.19 3.04 2.77 3.35-.29.08-.59.12-.9.12-.22 0-.44-.02-.65-.06.45 1.36 1.76 2.36 3.31 2.39A7.03 7.03 0 014 19.54c1.96 1.26 4.3 2 6.82 2 8.18 0 12.66-7.3 12.66-13.64v-.62c.86-.63 1.6-1.4 2.18-2.3-.78.36-1.62.62-2.5.73z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Center -->
+        <div>
+          <span class="footer-col-title">Our Mission</span>
+          <p class="footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="footer-discover">
+            Discover our values
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <div class="footer-city-list" aria-label="Location">
+            <div class="footer-city">Bodija</div>
+            <div class="footer-city active">Ibadan</div>
+            <div class="footer-city">Oyo State</div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div style="display:flex; align-items:flex-end; justify-content: flex-end;">
+          <div class="footer-tagline" aria-label="Success Through Labor">
+            Success<br>Through<br>Labor
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-copy">
+          &copy; <span id="year"></span> Bodija International College. All rights reserved.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================
+       SCRIPTS
+       ==================================================== -->
+  <script>
+  (function () {
+    'use strict';
+
+    // ── Hero entrance ──────────────────────────────
+    window.addEventListener('load', function () {
+      var hero = document.querySelector('.hero');
+      if (hero) {
+        requestAnimationFrame(function () { hero.classList.add('loaded'); });
+      }
+    });
+
+    // ── Nav scroll state ───────────────────────────
+    var nav = document.getElementById('siteNav');
+    if (nav) {
+      var lastScroll = 0;
+      window.addEventListener('scroll', function () {
+        var y = window.scrollY;
+        nav.classList.toggle('scrolled', y > 60);
+        lastScroll = y;
+      }, { passive: true });
+    }
+
+    // ── Scroll reveal ──────────────────────────────
+    if ('IntersectionObserver' in window) {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal, .reveal-left').forEach(function (el) {
+        revealObserver.observe(el);
+      });
+    } else {
+      document.querySelectorAll('.reveal, .reveal-left').forEach(function (el) {
+        el.classList.add('is-visible');
+      });
+    }
+
+    // ── Program cards: click to scroll ────────────
+    document.querySelectorAll('.prog-card').forEach(function (card) {
+      var href = card.querySelector('a[href]');
+      if (!href) return;
+      var target = href.getAttribute('href');
+      card.addEventListener('click', function () { window.location.hash = target; });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.location.hash = target;
+        }
+      });
+    });
+
+    // ── Contact panel toggle ───────────────────────
+    var contactBtn   = document.getElementById('contactBtn');
+    var contactPanel = document.getElementById('contactPanel');
+    var announcer    = document.getElementById('contactAnnouncer');
+
+    function openPanel () {
+      var h = contactPanel.scrollHeight;
+      contactPanel.style.height = h + 'px';
+      contactPanel.setAttribute('aria-hidden', 'false');
+      contactBtn.setAttribute('aria-expanded', 'true');
+      if (announcer) announcer.textContent = 'Contact details shown';
+      contactPanel.addEventListener('transitionend', function onEnd () {
+        contactPanel.style.height = 'auto';
+        contactPanel.removeEventListener('transitionend', onEnd);
+      });
+    }
+    function closePanel () {
+      var h = contactPanel.scrollHeight;
+      contactPanel.style.height = h + 'px';
+      requestAnimationFrame(function () {
+        contactPanel.style.transition = 'height .36s cubic-bezier(.22,.9,.37,1), opacity .3s ease';
+        contactPanel.style.height = '0';
+        contactPanel.style.opacity = '0';
+      });
+      contactPanel.setAttribute('aria-hidden', 'true');
+      contactBtn.setAttribute('aria-expanded', 'false');
+      if (announcer) announcer.textContent = 'Contact details hidden';
+      contactPanel.addEventListener('transitionend', function onEnd () {
+        contactPanel.style.transition = '';
+        contactPanel.removeEventListener('transitionend', onEnd);
+      });
+    }
+
+    if (contactBtn && contactPanel) {
+      contactBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var open = contactPanel.getAttribute('aria-hidden') === 'false';
+        if (open) {
+          closePanel();
+        } else {
+          contactPanel.style.opacity = '1';
+          contactPanel.style.transition = 'height .4s cubic-bezier(.22,.9,.37,1), opacity .35s ease';
+          openPanel();
+        }
+      });
+    }
+
+    // ── Contact form ───────────────────────────────
+    var form = document.getElementById('contact-form');
+    var msg  = document.getElementById('contact-msg');
+    if (form && msg) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        msg.textContent = 'Thank you — we\'ll be in touch within one business day.';
+        msg.style.display = 'block';
+        form.reset();
+      });
+    }
+
+    // ── Footer year ────────────────────────────────
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // ════════════════════════════════════════════════
+    //  MOBILE MENU
+    // ════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu          = document.getElementById('mobileMenu');
+      var panel         = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay       = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns     = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openButtons   = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocused   = null;
+      var timeouts      = [];
+
+      var PANEL_DUR   = 360;
+      var PANEL_DELAY = 60;
+      var OVERLAY_DUR = 260;
+      var OVERLAY_HOLD = 80;
+
+      if (!menu) return;
+
+      function clearAllTimeouts () { timeouts.forEach(clearTimeout); timeouts = []; }
+      function preventScroll (on) { document.body.style.overflow = on ? 'hidden' : ''; }
+
+      var FOCUSABLE = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function focusTrap (e) {
+        if (!panel || !panel.contains(e.target)) {
+          var els = Array.from(panel.querySelectorAll(FOCUSABLE));
+          if (els.length) els[0].focus({ preventScroll: true });
+        }
+      }
+      function onKeyDown (e) {
+        if (e.key === 'Escape') closeMobileMenu();
+      }
+      function restoreOpenButtons () {
+        openButtons.forEach(function (b) {
+          if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      function openMobileMenu () {
+        if (menu.classList.contains('open')) return;
+        lastFocused = document.activeElement;
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () {
+          if (panel) {
+            panel.classList.add('panel-in');
+            var cb = panel.querySelector('.mobile-menu__close');
+            if (cb) cb.focus({ preventScroll: true });
+          }
+        }, PANEL_DELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', focusTrap, true);
+        document.addEventListener('keydown', onKeyDown);
+        if (overlay) overlay.addEventListener('click', overlayClick);
+        preventScroll(true);
+        openButtons.forEach(function (b) { if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+      }
+
+      function closeMobileMenu () {
+        if (!menu.classList.contains('open')) return;
+        clearAllTimeouts();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () {
+          var tHold = setTimeout(function () {
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tHide = setTimeout(function () {
+              menu.classList.remove('open');
+              menu.setAttribute('aria-hidden', 'true');
+              if (panel) panel.setAttribute('aria-hidden', 'true');
+              restoreOpenButtons();
+              preventScroll(false);
+              if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+            }, OVERLAY_DUR);
+            timeouts.push(tHide);
+          }, OVERLAY_HOLD);
+          timeouts.push(tHold);
+        }, PANEL_DUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', focusTrap, true);
+        document.removeEventListener('keydown', onKeyDown);
+        if (overlay) overlay.removeEventListener('click', overlayClick);
+        openButtons.forEach(function (b) { if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+      }
+
+      function overlayClick () { closeMobileMenu(); }
+
+      openButtons.forEach(function (btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function (ev) { ev.preventDefault(); openMobileMenu(); });
+        btn.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+        });
+      });
+
+      closeBtns.forEach(function (btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function (ev) { ev.preventDefault(); closeMobileMenu(); });
+      });
+
+      window.openMobileMenu  = openMobileMenu;
+      window.closeMobileMenu = closeMobileMenu;
+      window.toggleMobileMenu = function () {
+        if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu();
+      };
+    });
+
+    // ── Sticky floating hamburger ──────────────────
+    (function addStickyHamburger () {
+      var original = document.getElementById('hamburger');
+      if (!original) return;
+      var floating = original.cloneNode(true);
+      floating.id = 'hamburgerSticky';
+      floating.classList.add('brand-btn--fixed');
+      floating.setAttribute('aria-controls', 'mobileMenu');
+      floating.setAttribute('aria-label', 'Open menu');
+      floating.setAttribute('role', 'button');
+      floating.setAttribute('tabindex', '0');
+      document.body.appendChild(floating);
+      function activate () {
+        if (typeof window.openMobileMenu === 'function') window.openMobileMenu();
+        else original.click();
+      }
+      floating.addEventListener('click', activate);
+      floating.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+      });
+    })();
+
+  }());
+  </script>
+
+</body>
+</html>
