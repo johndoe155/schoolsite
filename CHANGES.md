@@ -364,3 +364,35 @@ Structure/copy identical everywhere — only the palette shifts.
 - Inline `<style>` and all 9 stylesheets brace-balanced; layout.js syntax OK.
 - 26-URL HTTP check → 0 failures; academies serves the unified header,
   menu placeholder, themed footer placeholder, footer.css and layout.js.
+
+---
+
+# Phase 9 — Bugfix round (owner-reported)
+
+## 1. Contact page rendered blank (CRITICAL)
+
+`contact.js` wrote `document.getElementById('year').textContent` at the top
+of the file (twice). Since the footer rebuild, `#year` only exists once
+`layout.js` injects the shared footer at DOMContentLoaded — so the script
+threw immediately and **the rest of contact.js (incl. the reveal logic)
+never ran**, leaving every `.reveal` section at `opacity: 0` (blank page).
+Both writes are now null-guarded (`layout.js fillYears()` already owns the
+year). Verified: jsdom boots contact.html with 0 errors, 3/3 reveals visible.
+Same guard audit done for programs/news/library/main — all safe.
+
+## 2. Academies "standard version" note + stacked footer
+
+- The static fallback `<footer class="site-footer">` inside `#root` (the
+  no-JS safety net) stacked over the unified footer whenever React hadn't
+  mounted yet. It is now **removed** (+ its 7 CSS rules) — the unified
+  footer is the only footer.
+- The mount watchdog was a single 6s shot, but the interactive build pulls
+  React/three/framer-motion from esm.sh and a cold load can legitimately
+  exceed 6s. It now polls for 12s, only then shows a softer "still loading"
+  note (`#bic-std-note`), and the module removes the note if the app mounts
+  late. Added `<link rel="preconnect" href="https://esm.sh">` to shave
+  import latency.
+- If the note persists permanently in a given browser, esm.sh is unreachable
+  from that environment (page degrades to the static standard version by
+  design). The module script itself was verified clean: syntax check, and a
+  stubbed-CDN jsdom execution reaches `render()` with no errors.

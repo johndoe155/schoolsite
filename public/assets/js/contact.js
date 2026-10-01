@@ -1,6 +1,6 @@
 (function () {
 // Small JS: year injection + client-side form validation feedback.
-    document.getElementById('year').textContent = new Date().getFullYear();
+    var __y = document.getElementById('year'); if (__y) __y.textContent = new Date().getFullYear();
 
     const form = document.getElementById('contactForm');
     const status = document.getElementById('formStatus');
@@ -263,5 +263,5 @@
 
 (function () {
 // small script used by footer: set year
-    (function(){ const y = new Date().getFullYear(); document.getElementById('year').textContent = y; })();
+    (function(){ var el = document.getElementById('year'); if (el) el.textContent = new Date().getFullYear(); })();
 })();

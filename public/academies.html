@@ -7,6 +7,7 @@
 <meta name="description" content="Bodija International College Academies — elite training in Creative Media Arts (BIMA) and Athletics (BIFA)." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://esm.sh" crossorigin />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 
@@ -358,38 +359,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .info-card .detail-row a { color: var(--clay); font-weight: 500; }
 
 /* ============================================================================
-   FOOTER
-   ============================================================================ */
-.site-footer { background: var(--ink); color: var(--text-on-dark-soft); padding: 56px 0 34px; }
-.site-footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-.site-footer .logo { color: var(--text-on-dark); }
-.site-footer-links { display: flex; gap: 26px; font-family: var(--font-ui); font-size: 13.5px; }
-.site-footer-links a:hover { color: var(--brass-light); }
-.site-footer-bottom {
-  max-width: var(--maxw); margin: 34px auto 0; padding: 22px 32px 0;
-  border-top: 1px solid var(--line-dark);
-  font-size: 12.5px; font-family: var(--font-ui); color: rgba(243, 236, 218, 0.5);
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-}
-
-/* ============================================================================
    RESPONSIVE
    ============================================================================ */
 @media (max-width: 980px) {
   .section { padding: 90px 0; }
   .section-header { margin-bottom: 56px; }
   .track-image { height: 420px; }
-}
-@media (max-width: 760px) {
-  .nav-links { display: none; }
-  .menu-toggle { display: block; }
-  .container { padding: 0 22px; }
-  .track-image-frame { display: none; }
-  .hero-content { padding-top: 108px; }
-  .site-footer-bottom { padding-left: 22px; padding-right: 22px; }
-
-  .track-heading { padding: 0 22px; }
-  .track-image { height: 300px; }
 }
 
 @media (min-width: 761px) {
@@ -645,16 +620,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="container">
-    <a href="#home" class="logo"><span class="dot" aria-hidden="true"></span>B.I.C</a>
-    <div class="site-footer-links"><a href="#bima">Our Programs</a><a href="#enroll">Get In Touch</a></div>
-  </div>
-  <div class="site-footer-bottom">
-    <span>Bodija International College &mdash; BIMA &amp; BIFA</span>
-    <span>All rights reserved.</span>
-  </div>
-</footer>
 
 </div>
 
@@ -672,16 +637,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 <script src="/assets/js/layout.js"></script>
 
 <script>
-  window.setTimeout(function () {
-    if (window.__BIC_APP_MOUNTED__) return;
-    var note = document.createElement('div');
-    note.setAttribute('role', 'status');
-    note.style.cssText = 'position:fixed;bottom:18px;left:18px;right:18px;max-width:440px;margin:0 auto;' +
-      'background:#0E0C1B;color:#F3ECDA;padding:14px 20px;border-radius:14px;' +
-      'font:14px/1.5 Montserrat,-apple-system,sans-serif;z-index:9999;box-shadow:0 16px 36px rgba(0,0,0,.32)';
-    note.textContent = 'Showing the standard version of this page — the full interactive experience needs an internet connection to load.';
-    document.body.appendChild(note);
-  }, 6000);
+  (function () {
+    var deadline = Date.now() + 12000, shown = false;
+    var timer = window.setInterval(function () {
+      if (window.__BIC_APP_MOUNTED__) { window.clearInterval(timer); return; }
+      if (!shown && Date.now() > deadline) {
+        shown = true;
+        var note = document.createElement('div');
+        note.id = 'bic-std-note';
+        note.setAttribute('role', 'status');
+        note.style.cssText = 'position:fixed;bottom:18px;left:18px;right:18px;max-width:440px;margin:0 auto;' +
+          'background:#0E0C1B;color:#F3ECDA;padding:14px 20px;border-radius:14px;' +
+          'font:14px/1.5 Montserrat,-apple-system,sans-serif;z-index:9999;box-shadow:0 16px 36px rgba(0,0,0,.32)';
+        note.textContent = 'Still loading the interactive version — if this stays, the experience needs an internet connection to load.';
+        document.body.appendChild(note);
+      }
+      if (shown && window.__BIC_APP_MOUNTED__) {
+        var n = document.getElementById('bic-std-note');
+        if (n) n.remove();
+        window.clearInterval(timer);
+      }
+    }, 600);
+  })();
 </script>
 
 <script type="importmap">
@@ -1866,6 +1843,8 @@ createRoot(container).render(
   /* @__PURE__ */ jsx16(ErrorBoundary, { fallback: /* @__PURE__ */ jsx16(Fallback, {}), children: /* @__PURE__ */ jsx16(App, {}) })
 );
 window.__BIC_APP_MOUNTED__ = true;
+var __stdNote = document.getElementById("bic-std-note");
+if (__stdNote) __stdNote.remove();
 
 </script>
 </body>
