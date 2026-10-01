@@ -13,7 +13,9 @@
 > | `--font-statement` (hero) | **Abril Fatface** 400 only | hero headline + footer tagline — weight pinned to 400 |
 >
 > Small-caps kickers/wordmark labels (`--font-sc`, `--bic-font-sc`) now resolve
-> to Montserrat. `academies.html` remains untouched (self-contained stack).
+> to Montserrat. `academies.html` was re-skinned onto the same system in
+> Phase 6b (see CHANGES.md) — its IBM Plex Mono ledger layer was folded into
+> Montserrat, and its hero now sets Abril Fatface.
 > Canonical link: `family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap`
 
 ---

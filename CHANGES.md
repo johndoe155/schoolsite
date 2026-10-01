@@ -197,8 +197,8 @@ Fraunces/Inter).
 # Phase 6 — Typeface reinstatement (kill the template look)
 
 Inter / Cormorant Garamond / Fraunces read as generic AI-template fonts and
-were retired site-wide (except `academies.html`, still untouched). Four
-original faces reinstated with strict roles:
+were retired site-wide — including `academies.html`, re-skinned in Phase 6b
+below. Four original faces reinstated with strict roles:
 
 | Role | Family | Where |
 |---|---|---|
@@ -241,3 +241,29 @@ variable and render every weight natively.
 - jsdom menu+footer suite: 48/48 pass.
 - HTTP check: 26 URLs → 0 failures.
 - New Google Fonts URL verified to serve valid `@font-face` for all 4 families.
+
+---
+
+# Phase 6b — academies.html re-skin (owner request)
+
+The self-contained academies page (BIMA & BIFA) joined the same 4-family
+system. Its embedded `<style>` token block and JS-generated UI were retyped:
+
+| Old | New |
+|---|---|
+| Fraunces (headings, logo, mobile menu) | **Libre Baskerville** 700 for headings & mobile menu |
+| Fraunces hero | **Abril Fatface** 400 — "Cultivating Excellence"; the `<em>` drops its synthetic italic (Abril has none) and keeps its brass colour |
+| Inter (body + all chrome) | **Quicksand** for prose (body, hero copy, cards); **Montserrat** for chrome (nav links, buttons, badges, footer links, skip-link, toast, error fallback) |
+| IBM Plex Mono (kickers, price tags, ledger meta, footer fine print) | **Montserrat** — the tracked-uppercase kicker + ledger role reads sharper in Montserrat and removes a fifth family |
+
+- Font link → the same canonical 4-family URL as every other page.
+- Weight discipline kept: headings pinned 700 (LB), hero pinned 400 (Abril);
+  no synthesized weights anywhere on the page.
+- `--font-mono` token retired; `--font-ui` added to the page's local tokens.
+- Zero Fraunces/Inter/IBM Plex Mono references remain — the site is now
+  100% on the reinstated stack.
+
+## Validation (Phase 6b)
+
+- Embedded CSS brace audit clean; no single-weight-face synthesis violations.
+- HTTP 200 + all internal refs resolve; jsdom suite still 48/48.

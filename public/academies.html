@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 
 <style>
 /* ============================================================================
@@ -58,9 +58,10 @@
   --radius-sm: 12px;
   --maxw: 1240px;
 
-  --font-display: 'Fraunces', 'Iowan Old Style', serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-display: 'Libre Baskerville', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Quicksand', -apple-system, sans-serif;
+  --font-ui: 'Montserrat', -apple-system, sans-serif;
+  --font-statement: 'Abril Fatface', 'Iowan Old Style', serif;
 }
 
 /* ============================================================================
@@ -81,7 +82,7 @@ body {
 h1, h2, h3, h4, .serif {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.01em;
   color: var(--text);
@@ -94,7 +95,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .container { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
 
 .kicker {
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 2.5px;
@@ -109,7 +110,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: absolute; left: 16px; top: -60px;
   background: var(--ink); color: var(--paper);
   padding: 12px 20px; border-radius: 10px; z-index: 2000;
-  transition: top 0.3s var(--ease); font-size: 14px; font-weight: 600;
+  transition: top 0.3s var(--ease); font-family: var(--font-ui); font-size: 14px; font-weight: 600;
 }
 .skip-link:focus { top: 16px; }
 .sr-only {
@@ -139,8 +140,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .nav-inner { display: flex; justify-content: space-between; align-items: center; }
 .logo {
-  font-family: var(--font-display);
-  font-size: 24px; font-weight: 500; letter-spacing: 2px;
+  font-family: var(--font-ui);
+  font-size: 24px; font-weight: 600; letter-spacing: 2px;
   color: var(--paper); transition: color 0.4s var(--ease);
   display: flex; align-items: center; gap: 10px;
 }
@@ -164,6 +165,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .fallback-nav-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 .fallback-nav-links .nav-link { color: var(--text); padding: 8px 4px; font-size: 13px; }
 .nav-link {
+  font-family: var(--font-ui);
   position: relative; font-size: 13.5px; font-weight: 500;
   letter-spacing: 0.3px; color: rgba(247, 241, 227, 0.9);
   padding: 10px 16px; border-radius: 10px;
@@ -200,7 +202,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 6px;
 }
 .mobile-menu a {
-  font-family: var(--font-display); font-size: 30px; font-weight: 600;
+  font-family: var(--font-display); font-size: 30px; font-weight: 700;
   color: var(--text-on-dark); padding: 12px 0;
 }
 .mobile-menu a[data-disabled='true'] { opacity: 0.4; }
@@ -223,9 +225,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .hero-content { position: relative; z-index: 2; padding-top: 140px; padding-bottom: 110px; max-width: 760px; }
 .hero-content .kicker { color: var(--brass-light); }
 .hero h1 {
+  font-family: var(--font-statement); font-weight: 400; letter-spacing: 0;
   font-size: clamp(3rem, 6.4vw, 5.25rem); color: var(--text-on-dark); margin: 22px 0 28px;
 }
-.hero h1 em { color: var(--brass-light); font-style: italic; font-weight: 500; }
+.hero h1 em { color: var(--brass-light); font-weight: 400; }
 .hero-body {
   font-size: 1.14rem; color: var(--text-on-dark-soft); max-width: 540px; margin-bottom: 42px;
   font-weight: 300;
@@ -249,7 +252,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Buttons -------------------------------------------------------------------- */
 .btn {
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 16px 30px; border-radius: 50px; font-weight: 600; font-size: 14.5px;
+  padding: 16px 30px; border-radius: 50px; font-family: var(--font-ui); font-weight: 600; font-size: 14.5px;
   transition: box-shadow 0.3s var(--ease), background 0.3s var(--ease);
 }
 .btn-primary { background: var(--brass); color: var(--ink); box-shadow: 0 10px 28px rgba(196, 153, 31, 0.28); }
@@ -342,7 +345,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .track-badge {
   position: absolute; bottom: 22px; left: 22px;
   background: rgba(247, 241, 227, 0.95); backdrop-filter: blur(8px);
-  padding: 10px 18px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  padding: 10px 18px; border-radius: 50px; font-family: var(--font-ui); font-size: 13px; font-weight: 600;
   display: flex; align-items: center; gap: 8px; color: var(--ink);
   box-shadow: var(--shadow-2);
 }
@@ -374,7 +377,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   padding: 13px 22px; border-radius: 14px;
 }
 .surface-dark .price-tag { background: rgba(231, 190, 90, 0.1); border-color: rgba(231, 190, 90, 0.32); }
-.price-tag-amount { font-family: var(--font-mono); font-weight: 600; font-size: 0.98rem; color: var(--accent-ink, var(--brass-ink)); }
+.price-tag-amount { font-family: var(--font-ui); font-weight: 600; font-size: 0.98rem; color: var(--accent-ink, var(--brass-ink)); }
 .surface-dark .price-tag-amount { color: var(--accent-light, var(--brass-light)); }
 .price-tag-note { font-size: 0.85rem; color: var(--text-soft); }
 .surface-dark .price-tag-note { color: var(--text-on-dark-soft); }
@@ -422,9 +425,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .info-card h4 { font-size: 1.28rem; margin-bottom: 12px; }
 .info-card > p { color: var(--text-soft); font-weight: 300; margin-bottom: 16px; }
-.info-card .meta { font-family: var(--font-mono); font-size: 12px; color: var(--brass-ink); font-weight: 500; letter-spacing: 0.3px; }
+.info-card .meta { font-family: var(--font-ui); font-size: 12px; color: var(--brass-ink); font-weight: 500; letter-spacing: 0.3px; }
 .info-card .detail-list { margin-top: 4px; }
-.info-card .detail-row { display: flex; gap: 8px; font-family: var(--font-mono); font-size: 0.86rem; margin-bottom: 6px; color: var(--text); }
+.info-card .detail-row { display: flex; gap: 8px; font-family: var(--font-ui); font-size: 0.86rem; margin-bottom: 6px; color: var(--text); }
 .info-card .detail-row span:first-child { color: var(--text-soft); min-width: 84px; }
 .info-card .detail-row a { color: var(--clay); font-weight: 500; }
 
@@ -434,12 +437,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .site-footer { background: var(--ink); color: var(--text-on-dark-soft); padding: 56px 0 34px; }
 .site-footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
 .site-footer .logo { color: var(--text-on-dark); }
-.site-footer-links { display: flex; gap: 26px; font-size: 13.5px; }
+.site-footer-links { display: flex; gap: 26px; font-family: var(--font-ui); font-size: 13.5px; }
 .site-footer-links a:hover { color: var(--brass-light); }
 .site-footer-bottom {
   max-width: var(--maxw); margin: 34px auto 0; padding: 22px 32px 0;
   border-top: 1px solid var(--line-dark);
-  font-size: 12.5px; font-family: var(--font-mono); color: rgba(243, 236, 218, 0.5);
+  font-size: 12.5px; font-family: var(--font-ui); color: rgba(243, 236, 218, 0.5);
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
 }
 
@@ -615,7 +618,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     note.setAttribute('role', 'status');
     note.style.cssText = 'position:fixed;bottom:18px;left:18px;right:18px;max-width:440px;margin:0 auto;' +
       'background:#0E0C1B;color:#F3ECDA;padding:14px 20px;border-radius:14px;' +
-      'font:14px/1.5 Inter,-apple-system,sans-serif;z-index:9999;box-shadow:0 16px 36px rgba(0,0,0,.32)';
+      'font:14px/1.5 Montserrat,-apple-system,sans-serif;z-index:9999;box-shadow:0 16px 36px rgba(0,0,0,.32)';
     note.textContent = 'Showing the standard version of this page — the full interactive experience needs an internet connection to load.';
     document.body.appendChild(note);
   }, 6000);
@@ -1789,7 +1792,7 @@ function Fallback() {
         gap: 12,
         textAlign: "center",
         padding: 32,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Montserrat, sans-serif",
         background: "#F7F1E3",
         color: "#17152A"
       },
