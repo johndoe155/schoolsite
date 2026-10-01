@@ -267,3 +267,54 @@ system. Its embedded `<style>` token block and JS-generated UI were retyped:
 
 - Embedded CSS brace audit clean; no single-weight-face synthesis violations.
 - HTTP 200 + all internal refs resolve; jsdom suite still 48/48.
+
+---
+
+# Phase 7 — Footer rebuilt on the original landing-page model + lighter "BIC"
+
+## 1. Footer (owner direction)
+
+The Phase-5 shared footer was modelled on the contact-page footer. Per owner
+review, the **pre-unification landing-page footer was the strong original** —
+the others were weaker copies. The shared footer is now rebuilt on that
+model (`footer.css` rewritten, `layout.js footerHtml()` rewritten):
+
+- Deep indigo `--color-brand` (#05014A) field instead of warm black.
+- Single editorial column: logo + "Bodija Int'l College" wordmark (Libre
+  Baskerville small-caps) with the "Success through Labor" line →
+  uppercase kicker "How we make it happen" → the big **Abril Fatface**
+  statement *"Building / deep human / connection / that sparks / success"*
+  (50px, 0.92 leading, drop-shadow, exactly as on the old landing page) →
+  mission **and** vision paragraphs (the old footer had both; the Phase-5
+  footer had dropped the vision) → four social circles (**Dribbble restored**)
+  → contact row "We'd love to hear from you — bicbis95@gmail.com" beside the
+  stacked Abril tagline → copyright bar with Staff Login.
+- Removed from the Phase-5 design: address block, city list, "Discover our
+  values" link, per-page `data-bic-sub` subtitles. The `footerHtml(sub)`
+  parameter is kept (defaults to the tagline) should a page ever need it.
+- `.social-circle` styles moved into footer.css (shared by the footer and the
+  home mobile menu); the dead `--footer-yellow` hover reference is gone.
+- Staff Login contract unchanged: `/admin.html` everywhere, `#admin` +
+  `#adminTrigger` on news.
+
+## 2. Solitary "BIC" marks lightened (owner direction)
+
+Every place "BIC" appears alone was too heavy; all reduced:
+
+| Element | Before | After |
+|---|---|---|
+| index loader crest `.bic` | 700 | 400 |
+| index nav `.brand-btn` | 700 | 400 |
+| `#hamburger` triggers (contact/library/news/programs) | 600 | 400 |
+| `.bic-logo-mark` / `.logo-mark` (mobile menu header) | 500 | 400 |
+| news admin `.adm-bic` / `.adm-topbar-bic` | 900 | 500 |
+| admin panel BIC badges (×2) | bold | medium |
+| programs decorative `.cta-bg-text` | 700 | 400 |
+
+## Validation (Phase 7)
+
+- jsdom suite rewritten for the new contract: statement lines, tagline,
+  kicker, email, 4 socials, staff-login targets, old elements gone —
+  **75/75 pass** across all pages.
+- CSS brace audit clean; 26-URL HTTP check 0 failures; zero references to
+  retired footer classes remain.

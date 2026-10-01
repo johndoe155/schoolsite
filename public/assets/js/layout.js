@@ -122,45 +122,35 @@
 
   /* ── Shared site footer ────────────────────────────────── */
   function footerHtml(sub, adminHref, adminId) {
-    var arrow = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
     return '' +
       '<footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">' +
       '  <div class="bic-footer-wrap">' +
-      '    <div class="bic-footer-grid">' +
+      '    <div class="bic-footer-identity">' +
+      '      <div class="bic-footer-logo"><img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" /></div>' +
       '      <div>' +
-      '        <div class="bic-footer-logo-row">' +
-      '          <div class="bic-footer-logo"><img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" /></div>' +
-      '          <div class="bic-footer-wordmark">' +
-      '            <strong>Bodija International College</strong>' +
-      '            <small>' + esc(sub || 'Excellence in Education') + '</small>' +
-      '          </div>' +
-      '        </div>' +
-      '        <address class="bic-footer-addr">' +
-      '          1-5, Tunde Lakanmi Crescent<br>Bodija, Ibadan, Oyo State<br>' +
-      '          <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>' +
-      '        </address>' +
-      '        <div class="bic-social-row" aria-label="Follow us on social media">' +
-      '          <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">' +
-      '            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg></a>' +
-      '          <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">' +
-      '            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg></a>' +
-      '          <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">' +
-      '            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg></a>' +
-      '        </div>' +
+      '        <h2 class="bic-footer-wordmark">Bodija Int\u2019l College</h2>' +
+      '        <p class="bic-footer-sub">' + esc(sub || 'Success through Labor') + '</p>' +
       '      </div>' +
-      '      <div>' +
-      '        <span class="bic-footer-col-title">Our Mission</span>' +
-      '        <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>' +
-      '        <a href="/index.html#about" class="bic-footer-discover">Discover our values ' + arrow + '</a>' +
-      '        <div class="bic-footer-city-list" aria-label="Location">' +
-      '          <div class="bic-footer-city">Bodija</div>' +
-      '          <div class="bic-footer-city active">Ibadan</div>' +
-      '          <div class="bic-footer-city">Oyo State</div>' +
-      '        </div>' +
-      '      </div>' +
-      '      <div class="bic-footer-tag-col">' +
-      '        <div class="bic-footer-tagline" aria-label="Success Through Labour">Success<br>Through<br>Labour</div>' +
-      '      </div>' +
+      '    </div>' +
+      '    <p class="bic-footer-kicker">How we make it happen</p>' +
+      '    <p class="bic-footer-statement">Building<br>deep human<br>connection<br>that sparks<br>success</p>' +
+      '    <div class="bic-footer-prose">' +
+      '      <p>We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>' +
+      '      <p>Our vision is confident, adaptable learners who succeed academically and as responsible citizens. With measurable progress, clear communication, and strong family partnerships, we balance joy and excellence to turn potential into practice.</p>' +
+      '    </div>' +
+      '    <div class="bic-footer-social" aria-label="Follow us on social media">' +
+      '      <a class="social-circle" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">' +
+      '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z" fill="currentColor"/></svg></a>' +
+      '      <a class="social-circle" href="https://www.instagram.com/bic_bis?igsh=MXdxMGFubnpteTEzeg==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">' +
+      '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z" fill="currentColor"/></svg></a>' +
+      '      <a class="social-circle" target="_blank" rel="noopener noreferrer" aria-label="Dribbble" title="Dribbble">' +
+      '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 16.1c-1.64-1.9-3.95-3.1-6.6-3.47 1.01-2.47 2.37-4.6 3.27-5.77 2.22 1.39 3.8 3.63 3.86 6.24.01.35-.25.66-.53.99zM7.9 6.1c1.27 1.02 2.44 3.22 3.19 5.3-2.86.25-5.29 1.2-6.99 2.7A7.96 7.96 0 017.9 6.1z" fill="currentColor"/></svg></a>' +
+      '      <a class="social-circle" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" title="X / Twitter">' +
+      '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 5.92c-.63.28-1.3.48-2 .56.72-.43 1.28-1.12 1.54-1.95-.67.4-1.42.69-2.22.85A3.5 3.5 0 0016.5 4c-1.93 0-3.5 1.6-3.5 3.57 0 .28.03.55.09.81-2.9-.15-5.48-1.6-7.2-3.8-.3.5-.47 1.09-.47 1.72 0 1.22.6 2.3 1.52 2.93-.56-.02-1.09-.18-1.55-.44v.05c0 1.66 1.19 3.04 2.77 3.35-.29.08-.59.12-.9.12-.22 0-.44-.02-.65-.06.45 1.36 1.76 2.36 3.31 2.39A7.03 7.03 0 014 19.54c1.96 1.26 4.3 2 6.82 2 8.18 0 12.66-7.3 12.66-13.64v-.62c.86-.63 1.6-1.4 2.18-2.3-.78.36-1.62.62-2.5.73z" fill="currentColor"/></svg></a>' +
+      '    </div>' +
+      '    <div class="bic-footer-contact">' +
+      '      <div class="bic-footer-email">We\u2019d love to hear from you \u2014 <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></div>' +
+      '      <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>' +
       '    </div>' +
       '    <div class="bic-footer-bottom">' +
       '      <span class="bic-footer-copy">&copy; <span id="year">' + new Date().getFullYear() + '</span> Bodija International College. All rights reserved.</span>' +

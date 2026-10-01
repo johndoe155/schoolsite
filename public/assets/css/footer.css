@@ -1,139 +1,162 @@
 /* ============================================================
    BIC — Shared Site Footer
-   One implementation for every page. Markup is injected by
-   assets/js/layout.js into <div data-bic-footer> placeholders.
+   Modelled on the original landing-page footer (pre-unification):
+   deep indigo, single editorial column — identity, kicker,
+   big statement, mission/vision prose, socials, contact row
+   with the stacked tagline, then the copyright bar.
+   Markup is injected by assets/js/layout.js into
+   <div data-bic-footer> placeholders.
    ============================================================ */
 
 .bic-site-footer {
-  background: var(--color-ebony-2);
-  color: var(--color-cream);
-  padding: var(--space-7) 0 var(--space-5);
+  background: var(--color-brand);
+  color: rgba(229, 231, 235, 0.92);
+  padding: 48px 0 64px;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  text-align: left;
 }
 .bic-footer-wrap {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
-.bic-footer-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-6);
-  margin-bottom: var(--space-7);
-}
-@media (min-width: 860px) {
-  .bic-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: var(--space-5); }
-}
 
-/* Left column — identity + contact */
-.bic-footer-logo-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+/* ── Identity ────────────────────────────────────────────── */
+.bic-footer-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
 .bic-footer-logo {
-  width: 52px; height: 52px; border-radius: 50%;
-  overflow: hidden; flex-shrink: 0;
-  border: 1px solid var(--color-accent-border);
-  background: var(--color-surface);
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  flex-shrink: 0;
 }
 .bic-footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.bic-footer-wordmark strong {
+.bic-footer-wordmark {
   font-family: var(--font-display);
   font-variant-caps: small-caps;
-  font-size: 15px;
-  font-weight: var(--weight-bold);
-  display: block;
-  letter-spacing: .04em;
-  color: var(--color-cream);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: #fff;
+  margin: 0;
 }
-.bic-footer-wordmark small { font-size: var(--fs-caption); color: var(--color-ebony-muted); }
-.bic-footer-addr {
-  font-style: normal;
-  font-size: var(--fs-small);
-  font-weight: var(--weight-light);
-  line-height: 1.8;
-  color: var(--color-ebony-muted);
-  max-width: 240px;
-  margin-bottom: var(--space-4);
+.bic-footer-sub {
+  font-size: 1.125rem;
+  color: rgba(203, 213, 225, 0.55);
+  margin: 2px 0 0;
 }
-.bic-footer-addr a { color: inherit; text-decoration: none; transition: color var(--dur-fast); }
-.bic-footer-addr a:hover { color: var(--color-accent); }
 
-.bic-social-row { display: flex; gap: var(--space-2); }
-.bic-social-link {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.1);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--color-ebony-muted);
-  transition: all var(--dur-fast);
-  text-decoration: none;
-}
-.bic-social-link:hover { border-color: var(--color-accent); color: var(--color-accent); transform: translateY(-2px); }
-.bic-social-link:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
-
-/* Centre column — mission */
-.bic-footer-col-title {
+/* ── Kicker + statement ──────────────────────────────────── */
+.bic-footer-kicker {
   font-family: var(--font-ui);
-  font-size: 11px;
-  font-weight: var(--weight-semibold);
+  font-size: var(--fs-caption);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  color: var(--color-accent);
-  margin-bottom: var(--space-4);
-  display: block;
+  color: rgba(203, 213, 225, 0.5);
+  margin: var(--space-5) 0 0;
 }
-.bic-footer-body { font-size: var(--fs-small); font-weight: var(--weight-light); color: var(--color-ebony-muted); line-height: 1.75; }
-.bic-footer-discover {
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  margin-top: var(--space-4);
-  font-size: var(--fs-small); font-weight: var(--weight-medium);
-  color: var(--color-cream); letter-spacing: .03em;
-  transition: color var(--dur-fast); text-decoration: none;
+.bic-footer-statement {
+  font-family: var(--font-statement);
+  font-weight: var(--weight-regular);
+  font-size: clamp(2.25rem, 1rem + 4vw, 50px);
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+  color: #fff;
+  max-width: 520px;
+  margin: var(--space-6) 0 0;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
 }
-.bic-footer-discover:hover { color: var(--color-accent); }
-.bic-footer-discover svg { transition: transform var(--dur-fast); }
-.bic-footer-discover:hover svg { transform: translateX(4px); }
 
-.bic-footer-city-list { margin-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-1); }
-.bic-footer-city {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: var(--weight-light);
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: rgba(255,255,255,.22);
+/* ── Mission / vision prose ──────────────────────────────── */
+.bic-footer-prose {
+  margin-top: 40px;
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
-.bic-footer-city.active { color: rgba(255,255,255,.8); }
+.bic-footer-prose p {
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: rgba(203, 213, 225, 0.62);
+  margin: 0;
+}
 
-/* Right column — tagline */
-.bic-footer-tag-col { display: flex; align-items: flex-end; justify-content: flex-end; }
+/* ── Social circles (shared with the home mobile menu) ───── */
+.bic-footer-social {
+  margin-top: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.social-circle {
+  width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9999px; border: 2px solid rgba(226, 239, 244, 0.25);
+  transition: all 0.18s ease; background: transparent; color: rgba(226, 239, 244, 0.85);
+}
+.social-circle:hover {
+  transform: translateY(-3px);
+  border-color: #e2eff4;
+  color: #fff;
+}
+.social-circle:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+
+/* ── Contact row + stacked tagline ───────────────────────── */
+.bic-footer-contact {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+@media (min-width: 640px) {
+  .bic-footer-contact { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+}
+.bic-footer-email { font-size: var(--fs-small); color: rgba(203, 213, 225, 0.62); }
+.bic-footer-email a { color: #fff; font-weight: var(--weight-medium); text-decoration: none; transition: color var(--dur-fast); }
+.bic-footer-email a:hover { color: var(--color-brand-yellow); }
 .bic-footer-tagline {
   font-family: var(--font-statement);
-  font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: var(--weight-regular);
-  letter-spacing: -0.03em;
-  line-height: .95;
-  color: rgba(255,255,255,.12);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
   text-align: right;
+  color: #fff;
+  margin: 0 0 0 auto;
   user-select: none;
 }
 
-/* Bottom bar */
+/* ── Bottom bar ──────────────────────────────────────────── */
 .bic-footer-bottom {
-  padding-top: var(--space-4);
-  border-top: 1px solid rgba(255,255,255,.07);
+  margin-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: var(--space-5);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   align-items: center;
   justify-content: space-between;
 }
-@media (min-width: 600px) { .bic-footer-bottom { flex-direction: row; } }
-.bic-footer-copy { font-size: var(--fs-caption); font-weight: var(--weight-light); color: rgba(255,255,255,.3); }
+@media (min-width: 640px) { .bic-footer-bottom { flex-direction: row; } }
+.bic-footer-copy { font-size: var(--fs-small); color: rgba(203, 213, 225, 0.55); }
 .bic-adm-trigger {
-  display: inline-flex;
-  color: rgba(255,255,255,.3);
-  font-size: var(--fs-caption);
+  display: inline-block;
+  color: inherit;
+  opacity: 0.4;
+  font-size: var(--fs-micro);
   cursor: pointer;
   text-decoration: none;
-  transition: color var(--dur-fast);
+  transition: opacity 0.15s;
 }
-.bic-adm-trigger:hover { color: rgba(255,255,255,.6); }
+.bic-adm-trigger:hover { opacity: 0.8; }

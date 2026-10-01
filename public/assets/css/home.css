@@ -320,7 +320,7 @@ body {
   color: white;
   font-size: 3rem;
   font-family: 'Libre Baskerville', serif;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.1em;
   animation: pulse 2s ease-in-out infinite;
 }
@@ -329,7 +329,7 @@ body {
 .brand-btn {
   font-family: 'Libre Baskerville', serif;
   font-variant-caps: small-caps;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 1.5rem;
   padding: 0.5rem 1rem;
   background: linear-gradient(90deg, #e2e8f0, #ffffff);
@@ -467,12 +467,6 @@ footer{
   font-size:13px;
   padding-bottom:40px;
 }
-.social-circle {
-  width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
-  border-radius:9999px; border:2px solid rgba(226,239,244,0.25);
-  transition: all .18s ease; background: transparent; color: currentColor;
-}
-.social-circle:hover { transform: translateY(-3px); border-color: var(--footer-yellow); background: rgba(231,76,60,0.04); color: #fff; }
 
 :focus { outline: 3px solid rgba(99,102,241,0.12); outline-offset: 2px; }
 a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }

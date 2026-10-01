@@ -729,7 +729,7 @@
     /* ── Hamburger ── */
     #hamburger {
       font-family: var(--bic-font-sc) !important; font-size: 20px !important;
-      font-weight: 600 !important; letter-spacing: .12em !important;
+      font-weight: 400 !important; letter-spacing: .12em !important;
       color: var(--bic-gold) !important; cursor: pointer;
       padding: 8px 16px !important; border: 1.5px solid var(--bic-gold-border) !important;
       border-radius: var(--bic-r-sm) !important; background: transparent !important;
@@ -788,7 +788,7 @@
       padding-bottom: 32px; border-bottom: 1px solid var(--bic-ebony-border);
       margin-bottom: 32px;
     }
-    .bic-logo-mark { font-family: var(--bic-font-sc); font-size: 18px; font-weight: 500; color: var(--bic-gold); letter-spacing: .1em; }
+    .bic-logo-mark { font-family: var(--bic-font-sc); font-size: 18px; font-weight: 400; color: var(--bic-gold); letter-spacing: .1em; }
     .mobile-menu__close {
       background: none !important; border: none !important; cursor: pointer;
       color: var(--bic-ebony-muted) !important; padding: 4px; border-radius: 50%;
@@ -818,7 +818,7 @@
       position: fixed !important; top: 14px !important; left: var(--bic-gutter) !important;
       z-index: var(--z-hamburger) !important; display: none;
       font-family: var(--bic-font-sc) !important; font-size: 20px !important;
-      font-weight: 600 !important; letter-spacing: .12em !important; color: var(--bic-gold) !important;
+      font-weight: 400 !important; letter-spacing: .12em !important; color: var(--bic-gold) !important;
       cursor: pointer !important; padding: 8px 16px !important;
       border: 1.5px solid var(--bic-gold-border) !important; border-radius: var(--bic-r-sm) !important;
       background: rgba(243,239,229,.92) !important; background-image: none !important;

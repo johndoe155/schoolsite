@@ -17,6 +17,13 @@
 > Phase 6b (see CHANGES.md) — its IBM Plex Mono ledger layer was folded into
 > Montserrat, and its hero now sets Abril Fatface.
 > Canonical link: `family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap`
+>
+> ## Amendment 2 — Phase 7 footer rebuild
+> The Phase-5 shared footer (contact-page model) was replaced with the
+> pre-unification **landing-page footer** per owner direction: deep indigo,
+> single editorial column, Abril Fatface statement, mission+vision prose,
+> 4 socials, email row + stacked tagline. Solitary "BIC" marks lightened
+> site-wide (see CHANGES.md Phase 7).
 
 ---
 
