@@ -191,3 +191,53 @@ Fraunces/Inter).
   (gallery, assets) → 200.
 - Link audit: 44 internal references → 0 missing; 0 retired font families
   remain outside `academies.html`.
+
+---
+
+# Phase 6 — Typeface reinstatement (kill the template look)
+
+Inter / Cormorant Garamond / Fraunces read as generic AI-template fonts and
+were retired site-wide (except `academies.html`, still untouched). Four
+original faces reinstated with strict roles:
+
+| Role | Family | Where |
+|---|---|---|
+| `--font-ui` chrome | **Montserrat** (300–800 + italics) | nav, menus, buttons, kickers, labels, wordmarks, form UI |
+| `--font-body` prose | **Quicksand** (300–700) | body copy, article text, inputs, long-form |
+| `--font-display` editorial | **Libre Baskerville** (400/700 + ital) | all headings, quotes, serif moments |
+| `--font-statement` hero | **Abril Fatface** (400 only) | hero headline + footer tagline |
+
+## Changes
+
+- `tokens.css`: new 4-family stack; `--font-ui` added; `--bic-font-sc`
+  small-caps/kicker alias now resolves to Montserrat.
+- `components.css`: headings pinned 700 (Libre Baskerville has no 600);
+  buttons + kickers → Montserrat; `.t-statement` weight pinned 400
+  (Abril Fatface is single-weight).
+- `programs.css`: `--font-sc` → Montserrat; `.year-label` moved to Montserrat
+  (a 13px UI label, not editorial display).
+- `news.css` / `home.css` / `admin.css`: literal families remapped with
+  per-role triage (body → Quicksand, chrome → Montserrat, display → Libre
+  Baskerville). Removed a stray `@import` of Cormorant SC from home.css and
+  swept 23 dead old-home-footer rules (`.site-footer`, `.footer-*`,
+  `.office-list`, `.btn-designed`) — the shared injected footer replaced them.
+- All 6 pages: single canonical Google Fonts link (4 families).
+- Tailwind configs (index/admin/library): `display`→Libre Baskerville,
+  `statement`→Abril Fatface (new key), `brand`/`sans`→Montserrat,
+  `serif`→Libre Baskerville. Hero H1 switched to `font-statement font-normal`;
+  serif heading weights normalised to real 400/700.
+- `news.js` toast → Montserrat; index font-loader → Libre Baskerville.
+
+## Weight discipline
+
+Libre Baskerville (400/700) and Abril Fatface (400) are the only available
+weights — no rule synthesizes 300/500/600 on either. Montserrat/Quicksand are
+variable and render every weight natively.
+
+## Validation performed (Phase 6)
+
+- 0 references to Inter/Fraunces/Cormorant remain outside `academies.html`.
+- CSS brace-balance audit clean (9 stylesheets); `node --check` clean (all JS).
+- jsdom menu+footer suite: 48/48 pass.
+- HTTP check: 26 URLs → 0 failures.
+- New Google Fonts URL verified to serve valid `@font-face` for all 4 families.

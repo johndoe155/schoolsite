@@ -1,7 +1,7 @@
     /* ═══════════════════════════════════════════════
        NEWS PAGE — SILENT LUXURY REDESIGN
        Palette: warm parchment · navy · antique gold
-       Type:    Cormorant Garamond (display) · Inter (body)
+       Type:    Libre Baskerville (display) · Abril Fatface (statement) · Montserrat (UI) · Quicksand (body)
     ═══════════════════════════════════════════════ */
     :root {
       /* Page aliases → canonical design tokens (tokens.css). The old
@@ -38,7 +38,7 @@
 
     body {
       margin: 0;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Quicksand', sans-serif;
       background: var(--cream);
       color: var(--ink);
       -webkit-font-smoothing: antialiased;
@@ -126,7 +126,7 @@
       flex-shrink: 0;
     }
     .hero-eyebrow-text {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.18em;
@@ -135,7 +135,7 @@
     }
 
     .hero-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Libre Baskerville', Georgia, serif;
       font-size: clamp(38px, 6vw, 72px);
       font-weight: 300;
       line-height: 1.0;
@@ -189,7 +189,7 @@
       border: none;
       padding: 14px 0;
       background: transparent;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Quicksand', sans-serif;
       font-size: 14px;
       font-weight: 300;
       color: var(--ink);
@@ -212,7 +212,7 @@
       background: transparent;
       border: 1px solid var(--ink-20);
       color: var(--ink-70);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 400;
       font-size: 12px;
       letter-spacing: 0.02em;
@@ -263,7 +263,7 @@
     }
 
     .featured-label {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.16em;
@@ -281,7 +281,7 @@
     }
 
     .featured-excerpt {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-size: 18px;
       font-weight: 400;
       line-height: 1.4;
@@ -291,7 +291,7 @@
     }
 
     .featured-link {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 12px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -309,7 +309,7 @@
 
     /* Discover section */
     .discover-label {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.16em;
@@ -341,7 +341,7 @@
       margin-bottom: 28px;
     }
     .section-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-size: 22px;
       font-weight: 400;
       letter-spacing: -0.01em;
@@ -430,7 +430,7 @@
     .tag {
       display: inline-flex;
       align-items: center;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -444,7 +444,7 @@
 
     /* Card time */
     .card-time {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 12px;
       font-weight: 300;
       color: var(--ink-45);
@@ -453,7 +453,7 @@
 
     /* Card title */
     .card-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Libre Baskerville', Georgia, serif;
       font-size: clamp(18px, 2vw, 22px);
       font-weight: 400;
       line-height: 1.25;
@@ -483,7 +483,7 @@
     }
 
     .read-more {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 12px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -523,7 +523,7 @@
       background: var(--white);
     }
     .empty-state-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-size: 24px;
       font-weight: 300;
       color: var(--ink-45);
@@ -548,7 +548,7 @@
     }
 
     .pg-info {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 13px;
       font-weight: 300;
       color: var(--ink-45);
@@ -565,7 +565,7 @@
       border-radius: 999px;
       border: 1px solid var(--ink-20);
       background: var(--white);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 13px;
       font-weight: 400;
       color: var(--ink);
@@ -586,7 +586,7 @@
     .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
     .pg-counter {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-size: 16px;
       font-weight: 300;
       color: var(--ink-45);
@@ -613,7 +613,7 @@
     }
 
     .panel-label {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.18em;
@@ -632,7 +632,7 @@
     }
 
     .panel h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-size: 26px;
       font-weight: 300;
       line-height: 1.1;
@@ -658,7 +658,7 @@
       border-radius: var(--radius-md);
       border: 1px solid var(--ink-20);
       background: var(--cream);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Quicksand', sans-serif;
       font-size: 14px;
       font-weight: 300;
       color: var(--ink);
@@ -678,7 +678,7 @@
       border: none;
       background: var(--navy);
       color: var(--white);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 13px;
       font-weight: 500;
       letter-spacing: 0.06em;
@@ -696,7 +696,7 @@
 
     /* Contact block */
     .panel-contact-title {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -807,7 +807,7 @@
       gap: 6px;
       padding: 8px 16px;
       border-radius: 999px;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 12px;
       font-weight: 500;
       letter-spacing: 0.04em;
@@ -865,7 +865,7 @@
 
     /* Article heading */
     .article-overlay h1 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Libre Baskerville', Georgia, serif;
       font-size: clamp(32px, 5vw, 54px);
       font-weight: 300;
       line-height: 1.05;
@@ -884,7 +884,7 @@
     .article-overlay .article-content p { margin: 0 0 1.5em; }
     .article-overlay .article-content h2,
     .article-overlay .article-content h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-weight: 400;
       color: var(--ink);
       margin: 2em 0 0.75em;
@@ -1048,7 +1048,7 @@
       text-align: center; margin-bottom: 32px;
     }
     .adm-login-brand .adm-bic {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 52px; font-weight: 900; letter-spacing: 0.1em;
       background: linear-gradient(92deg,#d49832,#f6c600);
       -webkit-background-clip: text; background-clip: text;
@@ -1058,14 +1058,14 @@
     .adm-login-brand p {
       color: rgba(255,255,255,0.55); font-size: 13px;
       margin: 6px 0 0; letter-spacing: 0.04em;
-      font-family: 'Inter', sans-serif; font-weight: 500;
+      font-family: 'Quicksand', sans-serif; font-weight: 500;
     }
     .adm-login-card {
       background: #fff; border-radius: 20px; padding: 36px 32px;
       box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
     }
     .adm-login-card h2 {
-      font-family: 'Cormorant Garamond', serif; font-size: 24px;
+      font-family: 'Libre Baskerville', serif; font-size: 24px;
       margin: 0 0 6px; color: var(--navy);
     }
     .adm-login-card p.adm-subtitle {
@@ -1080,7 +1080,7 @@
     .adm-field input[type="password"] {
       width: 100%; padding: 12px 16px; border-radius: 10px;
       border: 1.5px solid #e6e9ef; font-size: 15px;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Quicksand', sans-serif;
       background: #fafbfc; color: var(--navy);
       transition: border-color .15s;
       box-sizing: border-box;
@@ -1096,7 +1096,7 @@
     .adm-login-submit {
       width: 100%; padding: 13px; border: none; border-radius: 10px;
       background: var(--navy); color: #fff; font-weight: 700;
-      font-size: 15px; font-family: 'Inter', sans-serif;
+      font-size: 15px; font-family: 'Montserrat', sans-serif;
       cursor: pointer; transition: background .15s;
     }
     .adm-login-submit:hover { background: #0f1f6a; }
@@ -1126,7 +1126,7 @@
       display: flex; align-items: center; gap: 14px;
     }
     .adm-topbar-bic {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 22px; font-weight: 900; letter-spacing: 0.12em;
       background: linear-gradient(92deg,#d49832,#f6c600);
       -webkit-background-clip: text; background-clip: text;
@@ -1137,19 +1137,19 @@
       color: rgba(255,255,255,0.5);
       border-left: 1px solid rgba(255,255,255,0.15);
       padding-left: 14px; letter-spacing: 0.04em;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       text-transform: uppercase;
     }
     .adm-topbar-right { display: flex; align-items: center; gap: 12px; }
     .adm-staff-badge {
       font-size: 12px; color: rgba(255,255,255,0.55);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
     .adm-logout-btn {
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
       color: #fff; border-radius: 8px; padding: 7px 14px;
       font-size: 13px; font-weight: 600; cursor: pointer;
-      font-family: 'Inter', sans-serif; transition: background .15s;
+      font-family: 'Montserrat', sans-serif; transition: background .15s;
     }
     .adm-logout-btn:hover { background: rgba(255,255,255,0.16); }
 
@@ -1170,7 +1170,7 @@
       padding: 24px; box-shadow: var(--card-shadow);
     }
     .adm-card-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Libre Baskerville', serif;
       font-size: 20px; font-weight: 700;
       color: var(--navy); margin: 0 0 18px;
       padding-bottom: 14px;
@@ -1193,13 +1193,13 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .adm-article-meta-text {
-      font-size: 11px; color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 11px; color: var(--muted); font-family: 'Montserrat', sans-serif;
     }
     .adm-featured-badge {
       display: inline-block; background: var(--yellow); color: var(--navy);
       font-size: 9px; font-weight: 800; padding: 2px 6px;
       border-radius: 999px; margin-left: 5px; vertical-align: middle;
-      font-family: 'Inter', sans-serif; letter-spacing: 0.04em;
+      font-family: 'Montserrat', sans-serif; letter-spacing: 0.04em;
     }
     .adm-btn {
       border: none; border-radius: 8px; padding: 7px 10px;
@@ -1226,7 +1226,7 @@
     .adm-form-group select,
     .adm-form-group textarea {
       width: 100%; padding: 10px 13px; border-radius: 9px;
-      border: 1.5px solid #e6e9ef; font-family: 'Inter', sans-serif;
+      border: 1.5px solid #e6e9ef; font-family: 'Quicksand', sans-serif;
       font-size: 13px; color: var(--navy); background: #fafbfc;
       box-sizing: border-box; transition: border-color .15s;
     }
@@ -1242,7 +1242,7 @@
     .adm-submit {
       width: 100%; padding: 13px; border: none; border-radius: 10px;
       background: var(--navy); color: #fff; font-weight: 700;
-      font-size: 14px; font-family: 'Inter', sans-serif;
+      font-size: 14px; font-family: 'Montserrat', sans-serif;
       cursor: pointer; transition: background .15s; margin-top: 4px;
     }
     .adm-submit:hover { background: #0f1f6a; }
@@ -1251,7 +1251,7 @@
       display: none; background: #f0fdf4; border: 1px solid #86efac;
       color: #16a34a; font-size: 13px; border-radius: 8px;
       padding: 10px 14px; margin-top: 12px;
-      font-family: 'Inter', sans-serif; font-weight: 600;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
     }
 
     /* Staff login trigger (subtle link in footer) */
@@ -1308,7 +1308,7 @@
     .adm-dz-label {
       margin: 0; font-size: 13px;
       color: var(--muted);
-      font-family: 'Inter', sans-serif; font-weight: 500;
+      font-family: 'Montserrat', sans-serif; font-weight: 500;
       line-height: 1.5;
     }
     .adm-dz-link {
@@ -1317,7 +1317,7 @@
     }
     .adm-dz-hint {
       margin: 0; font-size: 11px; color: #9ca3af;
-      font-family: 'Inter', sans-serif; letter-spacing: 0.02em;
+      font-family: 'Montserrat', sans-serif; letter-spacing: 0.02em;
     }
 
     /* preview state */
@@ -1343,7 +1343,7 @@
       position: absolute; bottom: 0; left: 0; right: 0;
       background: rgba(8,16,58,0.6);
       color: #fff; font-size: 11px; font-weight: 600;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       padding: 5px 10px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
@@ -1351,7 +1351,7 @@
       background: #fff; color: var(--navy);
       border: none; border-radius: 8px;
       padding: 8px 18px; font-size: 13px; font-weight: 700;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       cursor: pointer;
       display: flex; align-items: center; gap: 7px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.18);
@@ -1364,7 +1364,7 @@
     .adm-dropzone.adm-dz-error { border-color: #dc2626; background: #fff5f5; }
     .adm-dz-size-error {
       display: none; color: #dc2626; font-size: 11px;
-      font-family: 'Inter', sans-serif; font-weight: 600;
+      font-family: 'Montserrat', sans-serif; font-weight: 600;
       margin-top: 6px;
     }
     .adm-dz-size-error.visible { display: block; }

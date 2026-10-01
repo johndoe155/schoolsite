@@ -1,6 +1,21 @@
 # Visual Refinement Plan — BIC Unified Site
 **Read-only audit · no code altered · awaiting approval**
 
+> ## Amendment 1 — Phase 6 typeface reinstatement (supersedes the font table below)
+> The Inter / Cormorant Garamond / Fraunces stack was retired as too
+> template-generic. The site now runs on **4 families with strict roles**:
+>
+> | Role | Family | Notes |
+> |---|---|---|
+> | `--font-ui` (chrome) | **Montserrat** 300–800 + italics | nav, menus, buttons, kickers, labels, wordmarks, forms UI |
+> | `--font-body` (prose) | **Quicksand** 300–700 | body copy, article text, inputs, long-form |
+> | `--font-display` (editorial) | **Libre Baskerville** 400/700 + italic | all headings, quotes, serif moments — never synthesize 500/600 |
+> | `--font-statement` (hero) | **Abril Fatface** 400 only | hero headline + footer tagline — weight pinned to 400 |
+>
+> Small-caps kickers/wordmark labels (`--font-sc`, `--bic-font-sc`) now resolve
+> to Montserrat. `academies.html` remains untouched (self-contained stack).
+> Canonical link: `family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap`
+
 ---
 
 ## Audit snapshot (measured, not vibes)

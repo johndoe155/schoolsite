@@ -22,7 +22,7 @@
       --ebony-2:      var(--color-ebony-2);
       --ebony-border: var(--color-ebony-border);
       --ebony-muted:  var(--color-ebony-muted);
-      --font-sc:      var(--font-display);
+      --font-sc:      var(--font-ui);
       --max:          var(--container-max);
       --e1:           var(--shadow-1);
       --e2:           var(--shadow-2);
@@ -526,7 +526,7 @@
     .year-block:only-child .year-inner { border-radius: var(--r-md); }
     .year-label {
       padding: 20px 0 20px 18px;
-      font-family: var(--font-display); font-size: 13px; font-weight: 500;
+      font-family: var(--font-sc); font-size: 13px; font-weight: 500;
       color: var(--gold); letter-spacing: .04em;
       border-right: 1px solid var(--gold-border);
       display: flex; align-items: flex-start; padding-top: 22px;

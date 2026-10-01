@@ -12,7 +12,7 @@
 
   <script>
   document.documentElement.classList.add('fonts-loading');
-  document.fonts.load('700 1em "Cormorant Garamond"').then(()=> {
+  document.fonts.load('700 1em "Libre Baskerville"').then(()=> {
     document.documentElement.classList.remove('fonts-loading');
     document.documentElement.classList.add('fonts-loaded');
   });
@@ -26,11 +26,11 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            display: ['Fraunces', 'Georgia', 'serif'],
-            brand: ['Inter', 'sans-serif'],
-            serif: ['Cormorant Garamond', 'Georgia', 'serif'],
-            cormorant: ['Cormorant Garamond', 'Georgia', 'serif'],
+            sans: ['Montserrat', 'system-ui', 'sans-serif'],
+            display: ['Libre Baskerville', 'Georgia', 'serif'],
+            statement: ['Abril Fatface', 'Georgia', 'serif'],
+            brand: ['Montserrat', 'sans-serif'],
+            serif: ['Libre Baskerville', 'Georgia', 'serif'],
           },
           colors: {
             brand: {
@@ -77,11 +77,11 @@
       }
     }
     .fonts-loading .logo { /* fallback look */ }
-    .fonts-loaded  .logo { font-family: 'Cormorant Garamond', serif; font-variant-caps: small-caps; }
+    .fonts-loaded  .logo { font-family: 'Libre Baskerville', serif; font-variant-caps: small-caps; }
   </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..600&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/footer.css">
@@ -172,7 +172,7 @@
   Welcome
 </div>
 
-          <h1 id="heroTitle" class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.9] mb-6 opacity-0 translate-y-8">
+          <h1 id="heroTitle" class="font-statement font-normal text-5xl sm:text-7xl lg:text-8xl leading-[0.9] mb-6 opacity-0 translate-y-8">
             Success Through<br/>Labour
           </h1>
 
@@ -271,7 +271,7 @@
       <div class="bic-reveal ornament-divider text-brand-indigo mb-6 max-w-xs mx-auto">
         <span class="section-eyebrow text-brand-indigo">Administration</span>
       </div>
-      <h2 class="bic-reveal font-serif text-4xl md:text-6xl font-semibold text-brand-indigo leading-tight" style="--delay:100ms">
+      <h2 class="bic-reveal font-serif text-4xl md:text-6xl font-bold text-brand-indigo leading-tight" style="--delay:100ms">
         A Message of<br/>
         <em style="font-weight:300; color:#4a4580">Purpose &amp; Promise</em>
       </h2>
@@ -502,7 +502,7 @@
       <img id="lbImg" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl transition-transform duration-300" loading="lazy">
 
       <div id="lbCaption" class="mt-4 text-center">
-        <h3 id="lbTitle" class="text-white text-xl font-display font-medium"></h3>
+        <h3 id="lbTitle" class="text-white text-xl font-display font-bold"></h3>
         <p id="lbCounter" class="text-slate-400 text-sm mt-1 font-mono tracking-widest">1 / 5</p>
       </div>
 

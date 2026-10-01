@@ -39,7 +39,7 @@
     #toast {
       position:fixed; bottom:2rem; right:2rem; z-index:10000;
       padding:.85rem 1.5rem; border-radius:.75rem;
-      font-family:Inter,sans-serif; font-size:.875rem;
+      font-family:Montserrat,sans-serif; font-size:.875rem;
       opacity:0; transform:translateY(12px);
       transition: opacity .3s ease, transform .3s ease;
       pointer-events:none; max-width:340px;
@@ -79,7 +79,7 @@
       width:100%; background:rgba(255,255,255,0.05);
       border:1px solid rgba(255,255,255,0.12); border-radius:.5rem;
       color:#f1f5f9; padding:.65rem 1rem; font-size:.875rem;
-      font-family:Inter,sans-serif; outline:none;
+      font-family:Montserrat,sans-serif; outline:none;
       transition:border-color .2s, box-shadow .2s;
     }
     .field:focus { border-color:#FACC15; box-shadow:0 0 0 3px rgba(250,204,21,0.15); }
@@ -90,7 +90,7 @@
       width:100%; background:rgba(255,255,255,0.05);
       border:1px solid rgba(255,255,255,0.1); border-radius:.75rem;
       color:#f1f5f9; padding:.65rem 1rem .65rem 2.6rem; font-size:.875rem;
-      font-family:Inter,sans-serif; outline:none;
+      font-family:Montserrat,sans-serif; outline:none;
       transition:border-color .2s;
     }
     #searchBar:focus { border-color:#FACC15; }

@@ -97,7 +97,7 @@
   color:var(--muted-purple);
   font-weight:300;
   letter-spacing:0.6px;
-  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-family:"Montserrat","Helvetica Neue",Arial,sans-serif;
   font-size:clamp(28px,9vw,56px);
   line-height:0.95;
   transition:color 140ms ease, transform 160ms ease;
@@ -234,8 +234,6 @@
   
 
 /* ── legacy style.css ── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@400;700&display=swap');
-
 /* --- Style Reset & Variables --- */
 :root {
   --brand-indigo: #05014a;
@@ -321,7 +319,7 @@ body {
   justify-content: center;
   color: white;
   font-size: 3rem;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Libre Baskerville', serif;
   font-weight: 700;
   letter-spacing: 0.1em;
   animation: pulse 2s ease-in-out infinite;
@@ -329,7 +327,7 @@ body {
 
 /* --- Typography & Buttons --- */
 .brand-btn {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Libre Baskerville', serif;
   font-variant-caps: small-caps;
   font-weight: 700;
   font-size: 1.5rem;
@@ -423,7 +421,7 @@ body {
 }
 
 .field-error {
-  font-family: Inter;
+  font-family: Montserrat;
   color: var(--g-100);
   font-size: 0.95rem;
   margin-top: 0.35rem;
@@ -434,8 +432,8 @@ body {
   opacity: 0.95;
 }
 
-.form-message--error { font-family: Inter; color: #E53935; }
-.form-message--success { font-family: Inter; color: #038C6A; font-weight: 600; }
+.form-message--error { font-family: Montserrat; color: #E53935; }
+.form-message--success { font-family: Montserrat; color: #038C6A; font-weight: 600; }
 
 .btn-primary {
   color: var(--color-foreground, #BDBDBD);
@@ -443,7 +441,7 @@ body {
   border: 1px solid rgba(189,189,189,0.12);
   box-shadow: 0 6px 18px rgba(187,238,221,0.06);
   backdrop-filter: blur(4px);
-  font-family: Inter;
+  font-family: Montserrat;
 }
 
 .btn-primary:hover { transform: translateY(-2px); }
@@ -469,91 +467,12 @@ footer{
   font-size:13px;
   padding-bottom:40px;
 }
-
-.site-footer {
-  --footer-indigo-1: #3a2730;
-  --footer-indigo-2: #35232b;
-  --footer-yellow: #e2eff4;
-  --footer-muted: #e8eafa;
-  --bg:#071226;
-  --muted:#9fb0c6;
-  --card-bg: rgba(255,255,255,0.03);
-  --accent: #FFC94D;
-  --accent-2:#8b5cf6;
-  --accent-3:#f59e0b;
-  --glass: rgba(255,255,255,0.03);
-  --max-width:1100px;
-  --radius:16px;
-  --pad:20px;
-  --border: rgba(255,255,255,0.06);
-
-  background: linear-gradient(90deg, var(--footer-indigo-1), var(--footer-indigo-2));
-  color: #fff;
-  padding: 16px 0 56px;
-  margin-top: 16px;
-}
-
-.site-footer .wrap { padding-left:var(--pad); padding-right:var(--pad); max-width:var(--max-width); margin:0 auto; }
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-  align-items: start;
-}
-@media(min-width:900px){
-  .footer-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-.footer-left .brand-block { display:flex; gap:12px; align-items:center; }
-.footer-left .brand-block .logo { width:96px; height:96px; margin-top: 24px; margin-bottom: 12px; }
-.footer-left address { text-align: left; margin-top: 12px; margin-bottom: 12px; font-style:normal; color:var(--footer-muted); font-size:16px; max-width:260px; line-height:20px; }
-.footer-left a { color: inherit; text-decoration: underline; text-decoration-style: dotted; }
-
-.social-row { display:flex; gap:12px; margin-top:24px; align-items:center; }
 .social-circle {
   width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
   border-radius:9999px; border:2px solid rgba(226,239,244,0.25);
   transition: all .18s ease; background: transparent; color: currentColor;
 }
 .social-circle:hover { transform: translateY(-3px); border-color: var(--footer-yellow); background: rgba(231,76,60,0.04); color: #fff; }
-
-.footer-center {
-  text-align: left;
-}
-.footer-center p { color: var(--footer-muted); margin:0; font-size: 15px; line-height: 20px; }
-.footer-center .discover { margin-top:27px; display:inline-block; font-family:'Inter',sans-serif; font-weight:600; color:#fff; text-decoration:none; position:relative; font-size: 15px; }
-.underline-accent {
-  display:inline-block; position:relative;
-}
-.underline-accent::after {
-  content:""; height:3px; width:70%; background: var(--footer-yellow);
-  position:absolute; left:0; bottom:-10px; border-radius:2px;
-}
-
-.office-list { margin-top:30px; display:flex; flex-direction:column; gap:16px; }
-.office-list .city { font-size:1.8rem; font-weight:300; color:#fff; line-height:1; }
-.office-list .city::after { content:"."; color: var(--footer-yellow); margin-left:2px; }
-
-.footer-bottom {
-  max-width: var(--max-width); margin: 28px auto 0; padding: 18px var(--pad) 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  display:flex; flex-direction:column; gap:12px; align-items:center; justify-content:space-between;
-}
-@media(min-width:640px){
-  .footer-bottom { flex-direction:row; }
-}
-
-.footer-bottom .copyright { color: var(--footer-muted); font-size:15px; margin-top: 10px; margin-bottom: 16px; }
-.btn-designed {
-  display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:999px;
-  font-weight:600; font-size:14px; text-decoration:none;
-  background: transparent; border:2px solid #e2eff4; color:#e2eff4;
-  box-shadow: none; transition: all .18s ease;
-}
-.btn-designed:hover { background:#0c1f47; color:#facc15; box-shadow:0 8px 30px rgba(0,0,0,0.32); transform:translateY(-2px); }
-
-.footer-right { display:flex; align-items:flex-end; justify-content:flex-end; }
 
 :focus { outline: 3px solid rgba(99,102,241,0.12); outline-offset: 2px; }
 a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }
@@ -656,7 +575,7 @@ a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }
   transform: translateY(-2px);
 }
 .timeline-year {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
@@ -671,7 +590,7 @@ a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }
 }
 
 .quote-glyph {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Libre Baskerville', serif;
   font-size: 14rem;
   font-weight: 300;
   font-style: italic;
@@ -708,7 +627,7 @@ a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }
   gap: 16px;
 }
 .admin-initials {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 4rem;
   font-weight: 600;
   color: var(--gold);
@@ -716,7 +635,7 @@ a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }
   letter-spacing: 0.1em;
 }
 .admin-title-badge {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -800,7 +719,7 @@ a:focus { outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px; }
 .mv-icon-vision  { background: rgba(250,204,21,0.1);  border: 1px solid rgba(250,204,21,0.25); }
 
 .section-eyebrow {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.28em;

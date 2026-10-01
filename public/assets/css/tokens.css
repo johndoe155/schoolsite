@@ -46,11 +46,12 @@
   --color-warning: #B45309;
   --color-focus:   var(--color-accent);
 
-  /* ── Typography — 3 families, strict roles ───────────── */
-  --font-body:      'Inter', system-ui, sans-serif;            /* UI + body copy */
-  --font-display:   'Cormorant Garamond', Georgia, serif;      /* editorial headings */
-  --font-statement: 'Fraunces', Georgia, serif;                /* hero / statement text */
-  --font-mono:      ui-monospace, 'SF Mono', Menlo, monospace; /* code/ledger accents */
+  /* ── Typography — 4 families, strict roles ───────────── */
+  --font-ui:        'Montserrat', 'Helvetica Neue', Arial, sans-serif;  /* chrome: nav, buttons, labels, kickers */
+  --font-body:      'Quicksand', 'Trebuchet MS', Verdana, sans-serif;   /* prose: body copy, forms, long text */
+  --font-display:   'Libre Baskerville', Georgia, serif;                /* editorial headings + serif moments */
+  --font-statement: 'Abril Fatface', Georgia, serif;                    /* hero / statement display (400 only) */
+  --font-mono:      ui-monospace, 'SF Mono', Menlo, monospace;          /* code/ledger accents */
 
   /* Type scale (fluid) */
   --fs-display: clamp(2.75rem, 1.8rem + 4.5vw, 4.75rem);
@@ -147,7 +148,7 @@
   --bic-gold-pale:     var(--color-accent-soft);
   --bic-gold-border:   var(--color-accent-border);
   --bic-font-display:  var(--font-display);
-  --bic-font-sc:       var(--font-display);
+  --bic-font-sc:       var(--font-ui);
   --bic-font-body:     var(--font-body);
   --bic-max:           var(--container-max);
   --bic-gutter:        var(--gutter);
