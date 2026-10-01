@@ -15,6 +15,8 @@
      navigate the blank mask wipes in again over the panel → route
               changes under cover → cover slides away TO THE RIGHT,
               revealing the destination page
+     #anchor  close, then glide to the section (owned scroll — the
+              native hash jump is unreliable right after scroll-lock)
    ============================================================ */
 (function () {
   'use strict';
@@ -273,13 +275,35 @@
     });
   }
 
+  /* ── Same-page section jumps (e.g. landing-page anchors) ──
+     The browser's native hash jump is unreliable right after the body
+     scroll-lock is released (notably Safari/iOS), so we own the scroll:
+     close the menu, then glide to the section once the sweep is underway. */
+  function jumpToSection(hash) {
+    var id = hash.slice(1);
+    setTimeout(function () {
+      var target = id ? document.getElementById(id) : null;
+      var reduced = false;
+      try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) { /* no-op */ }
+      if (target && typeof target.scrollIntoView === 'function') {
+        target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      }
+      try { history.replaceState(null, '', hash); } catch (err) { /* no-op */ }
+    }, 400);
+  }
+
   /* ── Link interception inside the menu ───────────────────── */
   function onMenuLinkClick(e) {
     var a = e.target.closest ? e.target.closest('a') : null;
     if (!a || !menu.contains(a)) return;
     var href = a.getAttribute('href');
     if (!href) return;
-    if (href.charAt(0) === '#') { closeMenu(); return; }            // anchor: close, then let it scroll
+    if (href.charAt(0) === '#') {                                   // same-page section
+      e.preventDefault();
+      closeMenu();
+      jumpToSection(href);
+      return;
+    }
     if (/^(mailto:|tel:|https?:)/.test(href)) return;               // external/social: plain behaviour
     if (href.charAt(0) !== '/') return;
     e.preventDefault();

@@ -484,3 +484,24 @@ Verified: rebuilt jsdom suite — 202 assertions across all 6 pages
 (structure, left-entrance classes, under-cover navigation with theme flag,
 snippet → arrival right-slide reveal, scroll director, 40-click toggle
 storm, scroll barrage, resize) — all passing.
+
+## Phase 10 fix round — landing page (owner-reported)
+
+1. **Nav no longer ghosts over the opened menu.** While opening, the bar
+   (z-index 1200, above the panel) used to fade its glass background and
+   light hero-theme text out over ~300ms — a visible ghost over the dark
+   panel, most obvious on the landing page. `.bic-nav--open` now vanishes
+   instantly (transition reduced to transform, children `transition: none`)
+   and stops intercepting clicks entirely (`pointer-events: none`, with the
+   toggle re-enabled). The smooth fades return on close.
+2. **Landing section links fixed.** Menu items pointing at same-page
+   sections (#about / #academics / #gallery / #contact / #home) no longer
+   rely on the browser's native hash jump — unreliable right after the body
+   scroll-lock releases (notably Safari/iOS). The click is intercepted: the
+   menu closes, then the page glides to the section via `scrollIntoView`
+   400ms in, with the hash synced via `history.replaceState`.
+   `prefers-reduced-motion` jumps instantly. Landing sections get
+   `scroll-margin-top: 76px` so headings clear the fixed bar.
+
+Verified: 20 focused assertions (anchor interception, scroll spy, hash
+sync, CSS vanish contract) plus the full 202-assertion suite — all green.

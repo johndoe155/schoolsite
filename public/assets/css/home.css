@@ -792,3 +792,6 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   opacity: 1;
   z-index: 1;
 }
+
+/* ── Phase 10: anchor targets clear the fixed unified nav ── */
+#about, #academics, #gallery, #contact { scroll-margin-top: 76px; }
