@@ -121,9 +121,10 @@
   }
 
   /* ── Shared site footer ────────────────────────────────── */
-  function footerHtml(sub, adminHref, adminId) {
+  function footerHtml(sub, adminHref, adminId, theme) {
+    var cls = 'bic-site-footer' + (theme ? ' bic-site-footer--' + theme : '');
     return '' +
-      '<footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">' +
+      '<footer class="' + cls + '" role="contentinfo" aria-label="Site footer">' +
       '  <div class="bic-footer-wrap">' +
       '    <div class="bic-footer-identity">' +
       '      <div class="bic-footer-logo"><img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" /></div>' +
@@ -167,7 +168,8 @@
       wrapper.innerHTML = footerHtml(
         ph.getAttribute('data-bic-sub'),
         ph.getAttribute('data-bic-admin-href'),
-        ph.getAttribute('data-bic-admin-id')
+        ph.getAttribute('data-bic-admin-id'),
+        ph.getAttribute('data-bic-footer-theme')
       );
       ph.parentNode.replaceChild(wrapper.firstChild, ph);
     });

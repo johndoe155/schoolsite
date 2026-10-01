@@ -1,21 +1,76 @@
 /* ============================================================
    BIC — Shared Site Footer
    Modelled on the original landing-page footer (pre-unification):
-   deep indigo, single editorial column — identity, kicker,
-   big statement, mission/vision prose, socials, contact row
-   with the stacked tagline, then the copyright bar.
-   Markup is injected by assets/js/layout.js into
-   <div data-bic-footer> placeholders.
+   deep field, single editorial column — identity, kicker, big
+   statement, mission/vision prose, socials, contact row with the
+   stacked tagline, then the copyright bar.
+
+   Colour is themed through custom properties so the footer can
+   complement each page's palette. Default = landing indigo;
+   modifier classes: --warm (parchment pages), --navy (library),
+   --academies (BIMA/BIFA page). Markup is injected by
+   assets/js/layout.js into <div data-bic-footer> placeholders.
    ============================================================ */
 
 .bic-site-footer {
-  background: var(--color-brand);
-  color: rgba(229, 231, 235, 0.92);
+  /* Landing scheme (deep brand indigo) — the default */
+  --footer-bg: var(--color-brand);
+  --footer-heading: #ffffff;
+  --footer-text: rgba(229, 231, 235, 0.92);
+  --footer-muted: rgba(203, 213, 225, 0.60);
+  --footer-faint: rgba(203, 213, 225, 0.50);
+  --footer-line: rgba(255, 255, 255, 0.12);
+  --footer-accent: var(--color-brand-yellow);
+  --footer-circle-border: rgba(226, 239, 244, 0.25);
+  --footer-circle-hover: #e2eff4;
+
+  background: var(--footer-bg);
+  color: var(--footer-text);
   padding: 48px 0 64px;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   text-align: left;
 }
+
+/* Warm scheme — contact / programs / news (parchment + ink + gold pages) */
+.bic-site-footer--warm {
+  --footer-bg: var(--color-ebony);
+  --footer-heading: #f4efe2;
+  --footer-text: rgba(233, 225, 210, 0.90);
+  --footer-muted: rgba(230, 218, 196, 0.58);
+  --footer-faint: rgba(230, 218, 196, 0.48);
+  --footer-line: rgba(230, 218, 196, 0.14);
+  --footer-accent: var(--color-accent-bright);
+  --footer-circle-border: rgba(230, 218, 196, 0.25);
+  --footer-circle-hover: #e6dac4;
+}
+
+/* Navy scheme — library (midnight-blue + brass-gold page) */
+.bic-site-footer--navy {
+  --footer-bg: #0b1220;
+  --footer-heading: #f7f5f2;
+  --footer-text: rgba(226, 232, 244, 0.90);
+  --footer-muted: rgba(199, 210, 232, 0.55);
+  --footer-faint: rgba(199, 210, 232, 0.45);
+  --footer-line: rgba(255, 255, 255, 0.10);
+  --footer-accent: #c59b53;
+  --footer-circle-border: rgba(197, 155, 83, 0.35);
+  --footer-circle-hover: #d4af6a;
+}
+
+/* Academies scheme — BIMA/BIFA (aubergine ink + brass page) */
+.bic-site-footer--academies {
+  --footer-bg: #15122b;
+  --footer-heading: #f3ecda;
+  --footer-text: rgba(243, 236, 218, 0.88);
+  --footer-muted: rgba(243, 236, 218, 0.58);
+  --footer-faint: rgba(243, 236, 218, 0.48);
+  --footer-line: rgba(247, 241, 227, 0.12);
+  --footer-accent: #e7be5a;
+  --footer-circle-border: rgba(231, 190, 90, 0.30);
+  --footer-circle-hover: #e7be5a;
+}
+
 .bic-footer-wrap {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -43,12 +98,12 @@
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0;
-  color: #fff;
+  color: var(--footer-heading);
   margin: 0;
 }
 .bic-footer-sub {
   font-size: 1.125rem;
-  color: rgba(203, 213, 225, 0.55);
+  color: var(--footer-faint);
   margin: 2px 0 0;
 }
 
@@ -59,7 +114,7 @@
   font-weight: var(--weight-bold);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(203, 213, 225, 0.5);
+  color: var(--footer-faint);
   margin: var(--space-5) 0 0;
 }
 .bic-footer-statement {
@@ -68,7 +123,7 @@
   font-size: clamp(2.25rem, 1rem + 4vw, 50px);
   line-height: 0.92;
   letter-spacing: -0.015em;
-  color: #fff;
+  color: var(--footer-heading);
   max-width: 520px;
   margin: var(--space-6) 0 0;
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
@@ -86,7 +141,7 @@
   font-family: var(--font-ui);
   font-size: var(--fs-small);
   line-height: 1.7;
-  color: rgba(203, 213, 225, 0.62);
+  color: var(--footer-muted);
   margin: 0;
 }
 
@@ -100,13 +155,13 @@
 .social-circle {
   width: 44px; height: 44px;
   display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 9999px; border: 2px solid rgba(226, 239, 244, 0.25);
-  transition: all 0.18s ease; background: transparent; color: rgba(226, 239, 244, 0.85);
+  border-radius: 9999px; border: 2px solid var(--footer-circle-border);
+  transition: all 0.18s ease; background: transparent; color: var(--footer-text);
 }
 .social-circle:hover {
   transform: translateY(-3px);
-  border-color: #e2eff4;
-  color: #fff;
+  border-color: var(--footer-circle-hover);
+  color: var(--footer-heading);
 }
 .social-circle:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
 
@@ -114,7 +169,7 @@
 .bic-footer-contact {
   margin-top: var(--space-5);
   padding-top: var(--space-5);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--footer-line);
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
@@ -122,9 +177,9 @@
 @media (min-width: 640px) {
   .bic-footer-contact { flex-direction: row; align-items: flex-end; justify-content: space-between; }
 }
-.bic-footer-email { font-size: var(--fs-small); color: rgba(203, 213, 225, 0.62); }
-.bic-footer-email a { color: #fff; font-weight: var(--weight-medium); text-decoration: none; transition: color var(--dur-fast); }
-.bic-footer-email a:hover { color: var(--color-brand-yellow); }
+.bic-footer-email { font-size: var(--fs-small); color: var(--footer-muted); }
+.bic-footer-email a { color: var(--footer-heading); font-weight: var(--weight-medium); text-decoration: none; transition: color var(--dur-fast); }
+.bic-footer-email a:hover { color: var(--footer-accent); }
 .bic-footer-tagline {
   font-family: var(--font-statement);
   font-weight: var(--weight-regular);
@@ -132,7 +187,7 @@
   line-height: 0.95;
   letter-spacing: -0.02em;
   text-align: right;
-  color: #fff;
+  color: var(--footer-heading);
   margin: 0 0 0 auto;
   user-select: none;
 }
@@ -140,7 +195,7 @@
 /* ── Bottom bar ──────────────────────────────────────────── */
 .bic-footer-bottom {
   margin-top: 40px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--footer-line);
   padding-top: var(--space-5);
   display: flex;
   flex-direction: column;
@@ -149,7 +204,7 @@
   justify-content: space-between;
 }
 @media (min-width: 640px) { .bic-footer-bottom { flex-direction: row; } }
-.bic-footer-copy { font-size: var(--fs-small); color: rgba(203, 213, 225, 0.55); }
+.bic-footer-copy { font-size: var(--fs-small); color: var(--footer-faint); }
 .bic-adm-trigger {
   display: inline-block;
   color: inherit;

@@ -318,3 +318,49 @@ Every place "BIC" appears alone was too heavy; all reduced:
   **75/75 pass** across all pages.
 - CSS brace audit clean; 26-URL HTTP check 0 failures; zero references to
   retired footer classes remain.
+
+---
+
+# Phase 8 — Per-page footer colour schemes + academies fully integrated
+
+## 1. Footer colour now complements each page (owner direction)
+
+The footer is themed through custom properties
+(`--footer-bg/-heading/-text/-muted/-faint/-line/-accent/-circle-*`) with a
+modifier class chosen via `data-bic-footer-theme` on the placeholder:
+
+| Page | Page palette | Footer scheme |
+|---|---|---|
+| index | brand indigo + yellow | **landing indigo** (default, kept as-is per owner) |
+| contact / programs / news | warm parchment + ink + gold | `--warm`: ebony `#141210`, warm-cream text, gold accent |
+| library | midnight navy `#0b1220` + brass gold | `--navy`: navy field, cream text, brass `#c59b53` accent |
+| academies | aubergine ink + brass | `--academies`: `#15122b` field, cream text, brass-light accent |
+
+`layout.js footerHtml()` reads the theme attribute and applies the class.
+Structure/copy identical everywhere — only the palette shifts.
+
+## 2. academies.html joined the unified system (owner direction)
+
+- **Unified footer** injected via `layout.js` with the `academies` theme;
+  the page now links `tokens.css` + `footer.css`.
+- **Header refactored to the shared lux pattern**: 68px fixed
+  `bic-site-nav` with the lightened Montserrat "BIC" hamburger trigger,
+  "Bodija Int'l Academies / BIMA & BIFA" wordmark and an Enroll CTA.
+  Transparent over the dark hero; paper + ink once scrolled (small inline
+  scroll listener replaces the retired React behaviour).
+- **Shared slide-over menu** (`data-bic-menu="lux"`): same ebony panel,
+  Libre Baskerville items and site-wide links as every other page; the
+  page-local menu CSS was ported into the inline stylesheet, so the page
+  remains single-file.
+- React `Nav` and `Footer` components retired from `App` (their markup,
+  mobile-menu CSS and 14 dead nav rules removed); the static in-`#root`
+  content remains as the no-JS/CDN-failure fallback, minus its own nav
+  (the unified header is static HTML and therefore always present).
+
+## Validation (Phase 8)
+
+- jsdom suite extended to academies + footer-theme assertions:
+  **95/95 pass** (menu + themed footer + contract on all 6 pages).
+- Inline `<style>` and all 9 stylesheets brace-balanced; layout.js syntax OK.
+- 26-URL HTTP check → 0 failures; academies serves the unified header,
+  menu placeholder, themed footer placeholder, footer.css and layout.js.
