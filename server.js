@@ -31,7 +31,8 @@ const path       = require('path');
 const PORT       = Number(process.env.PORT) || 4040;
 const NODE_ENV   = process.env.NODE_ENV || 'development';
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const DATA_DIR   = path.join(__dirname, 'data');
+const IS_VERCEL  = !!process.env.VERCEL;
+const DATA_DIR   = IS_VERCEL ? '/tmp/data' : path.join(__dirname, 'data');
 
 /* Gallery (staff admin) */
 const ADMIN_TOKEN    = process.env.ADMIN_TOKEN || '';
@@ -60,8 +61,18 @@ const LIBRARY_DIR      = path.join(PUBLIC_DIR, 'assets', 'library');
 const LIBRARY_CATALOG  = path.join(DATA_DIR, 'library', 'catalog.json');
 
 /* Make sure runtime directories exist */
+/* On Vercel the project folder is read-only; copy any bundled data into /tmp */
+const BUNDLED_DATA = path.join(__dirname, 'data');
+if (IS_VERCEL && fs.existsSync(BUNDLED_DATA)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.cpSync(BUNDLED_DATA, DATA_DIR, { recursive: true });
+}
+
 [DATA_DIR, NEWS_DATA_DIR, SESSIONS_DIR, GALLERY_DIR, NEWS_UPLOADS_DIR, LIBRARY_DIR,
- path.dirname(LIBRARY_CATALOG)].forEach(dir => fs.mkdirSync(dir, { recursive: true }));
+ path.dirname(LIBRARY_CATALOG)].forEach(dir => {
+  try { fs.mkdirSync(dir, { recursive: true }); }
+  catch (e) { console.warn('mkdir skipped:', dir, e.code); }
+});
 if (!fs.existsSync(POSTS_FILE))       fs.writeFileSync(POSTS_FILE, '[]');
 if (!fs.existsSync(NEWS_CONFIG_FILE)) fs.writeFileSync(NEWS_CONFIG_FILE, JSON.stringify({ featuredId: null }, null, 2));
 if (!fs.existsSync(LIBRARY_CATALOG))  fs.writeFileSync(LIBRARY_CATALOG, '[]');
@@ -514,11 +525,15 @@ app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found.' }));
 
 /* ── Start ────────────────────────────────────────────────────────────────── */
 
-app.listen(PORT, () => {
-  console.log('');
-  console.log('  ✅  Bodija International College — unified server');
-  console.log(`  🌐  Site     → http://localhost:${PORT}/`);
-  console.log(`  🔐  Gallery admin → http://localhost:${PORT}/admin.html`);
-  console.log(`  📰  News / 📚 Library admin panels are built into news.html / library.html`);
-  console.log('');
-});
+if (IS_VERCEL) {
+  module.exports = app;   // Vercel runs the app itself
+} else {
+  app.listen(PORT, () => {
+    console.log('');
+    console.log('  ✅  Bodija International College — unified server');
+    console.log(`  🌐  Site     → http://localhost:${PORT}/`);
+    console.log(`  🔐  Gallery admin → http://localhost:${PORT}/admin.html`);
+    console.log(`  📰  News / 📚 Library admin panels are built into news.html / library.html`);
+    console.log('');
+  });
+}

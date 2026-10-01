@@ -16,3 +16,5 @@ data/news/sessions/
 
 # Local build tooling caches
 .cache_build/
+.vercel
+.env*
