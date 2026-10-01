@@ -135,3 +135,59 @@ data/
   `NEWS_ADMIN_PASSWORD`, `STAFF_PASSCODE`, `SESSION_SECRET`.
 - Supply a real BIFA photo (`content.js` uses a placeholder plate by design)
   and hero slideshow image "her.jpg" was intentionally not recreated.
+
+---
+
+# Phase 5 — Visual Design & Aesthetic Consistency refinement
+
+Plan of record: `VISUAL-REFINEMENT-PLAN.md` (approved, incl. font/nav/footer
+decisions). Scope: index, contact, programs, news, library, admin pages.
+`academies.html` deliberately untouched (self-contained, already on
+Fraunces/Inter).
+
+## 1. Typography unified — 3 families
+
+- **Inter** (body/UI), **Cormorant Garamond** (editorial display; small-caps
+  kickers replace the retired Cormorant SC), **Fraunces** (statement/hero).
+- Retired across pages + JS: Montserrat, Playfair Display, Libre Baskerville,
+  DM Sans, Josefin Sans, Raleway, Poppins, Quicksand, Abril Fatface,
+  Cormorant SC/Infant.
+- One canonical Google Fonts link per page; dead duplicate Tailwind font
+  configs deleted (index.html); ~34 inline `font-family` attributes purged
+  from index.html; font-loader `.fonts-loaded` rules retargeted.
+
+## 2. Design tokens — single source of truth
+
+- `tokens.css` rewritten: canonical palette, 8px spacing grid (--space-1..8),
+  radii 4/8/12/20/pill, 5-step warm shadow scale, motion + type scales,
+  `--bic-*` compatibility aliases.
+- `contact.css` (`--lux-*`), `news.css` (navy palette), `programs.css`
+  (unprefixed set) remapped to canonical `var()` references — news drops its
+  divergent navy/parchment drift and shares the site palette.
+
+## 3. Shared footer — one component, five pages
+
+- `public/assets/css/footer.css` + `footerHtml()/injectFooters()` in
+  `layout.js`; pages carry a single `<div data-bic-footer data-bic-sub="…">`
+  placeholder. News keeps `href="#admin" id="adminTrigger"` so its admin
+  modal still binds (script order guarantees injection first).
+- Removed ~120 duplicated/drifted footer rules from contact, news, library,
+  programs and home CSS. Footer is now pixel-identical site-wide.
+
+## 4. Layout constants
+
+- Nav unified at **68px** (home moved 80→68, `h-20` → `h-[68px]`).
+- Container 1120px and gutter come from tokens everywhere; Tailwind brand
+  palette remapped (cream #F3EFE5, stone #E4DCCB).
+
+## 5. Validation performed (Phase 5)
+
+- `node --check` on all JS; CSS brace-balance audit on all 9 stylesheets.
+- jsdom suite: menu injection + footer injection on all 5 pages — placeholder
+  consumed, subtitles correct, Discover → `/index.html#about`, Staff Login
+  targets correct (`/admin.html`, `#admin`+`#adminTrigger` on news), admin
+  page verified footer-free. **48/48 assertions pass.**
+- HTTP check: 26 URLs (8 pages + 18 assets) → 0 failures; API fetch targets
+  (gallery, assets) → 200.
+- Link audit: 44 internal references → 0 missing; 0 retired font families
+  remain outside `academies.html`.

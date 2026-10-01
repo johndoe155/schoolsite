@@ -1,54 +1,36 @@
     /* ═══════════════════════════════════════════════
        NEWS PAGE — SILENT LUXURY REDESIGN
        Palette: warm parchment · navy · antique gold
-       Type:    Cormorant Garamond (display) · DM Sans (body)
+       Type:    Cormorant Garamond (display) · Inter (body)
     ═══════════════════════════════════════════════ */
     :root {
-      /* Brand */
-      --navy:      #08103A;
-      --yellow:    #F6C600;
-      --gold:      #B07D3F;
-      --gold-pale: rgba(176,125,63,.08);
-      --gold-border:rgba(176,125,63,.22);
-
-      /* Surfaces */
-      --cream:     #F6F3EE;
-      --parchment: #FAF8F4;
-      --white:     #FFFFFF;
-
-      /* Ink */
-      --ink:       #08103A;
-      --ink-70:    rgba(8,16,58,0.70);
-      --ink-45:    rgba(8,16,58,0.45);
-      --ink-20:    rgba(8,16,58,0.20);
-      --ink-08:    rgba(8,16,58,0.08);
-      --ink-04:    rgba(8,16,58,0.04);
-
-      /* Legacy aliases (used by admin + JS-generated content) */
-      --beige:     #F6F3EE;
-      --muted:     rgba(8,16,58,0.50);
-      --card-shadow: 0 2px 12px rgba(8,16,58,0.07), 0 1px 3px rgba(8,16,58,0.05);
-
-      /* Elevation */
-      --shadow-xs: 0 1px 2px rgba(8,16,58,0.06);
-      --shadow-sm: 0 2px 12px rgba(8,16,58,0.07), 0 1px 3px rgba(8,16,58,0.04);
-      --shadow-md: 0 8px 32px rgba(8,16,58,0.09), 0 2px 8px rgba(8,16,58,0.05);
-      --shadow-lg: 0 20px 60px rgba(8,16,58,0.12), 0 6px 20px rgba(8,16,58,0.06);
-
-      /* Geometry */
-      --radius-xs: 3px;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-
-      /* Motion */
-      --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1);
-      --dur-fast:    180ms;
-      --dur-mid:     380ms;
-      --dur-slow:    680ms;
-      --dur-reveal:  800ms;
+      /* Page aliases → canonical design tokens (tokens.css). The old
+         navy/parchment drift is gone: news now shares the site palette.
+         Names identical to canonical tokens (--ease-out, --dur-*,
+         --radius-*) resolve straight from tokens.css. */
+      --navy:       var(--color-brand);
+      --yellow:     var(--color-brand-yellow);
+      --gold:       var(--color-accent);
+      --gold-pale:  var(--color-accent-soft);
+      --gold-border: var(--color-accent-border);
+      --cream:      var(--color-cream);
+      --parchment:  var(--color-paper);
+      --white:      var(--color-white);
+      --ink:        var(--color-ink);
+      --ink-70:     var(--color-ink-70);
+      --ink-45:     var(--color-ink-40);
+      --ink-20:     var(--color-ink-12);
+      --ink-08:     var(--color-ink-08);
+      --ink-04:     var(--color-ink-04);
+      --beige:      var(--color-cream);
+      --muted:      var(--color-ink-40);
+      --card-shadow: var(--shadow-2);
+      --shadow-xs:  var(--shadow-1);
+      --shadow-sm:  var(--shadow-2);
+      --shadow-md:  var(--shadow-3);
+      --shadow-lg:  var(--shadow-4);
+      --ease-luxury: var(--ease-out);
+      --dur-reveal: 800ms;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -56,7 +38,7 @@
 
     body {
       margin: 0;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--cream);
       color: var(--ink);
       -webkit-font-smoothing: antialiased;
@@ -144,7 +126,7 @@
       flex-shrink: 0;
     }
     .hero-eyebrow-text {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.18em;
@@ -207,7 +189,7 @@
       border: none;
       padding: 14px 0;
       background: transparent;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 300;
       color: var(--ink);
@@ -230,7 +212,7 @@
       background: transparent;
       border: 1px solid var(--ink-20);
       color: var(--ink-70);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 400;
       font-size: 12px;
       letter-spacing: 0.02em;
@@ -281,7 +263,7 @@
     }
 
     .featured-label {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.16em;
@@ -309,7 +291,7 @@
     }
 
     .featured-link {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -327,7 +309,7 @@
 
     /* Discover section */
     .discover-label {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.16em;
@@ -448,7 +430,7 @@
     .tag {
       display: inline-flex;
       align-items: center;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -462,7 +444,7 @@
 
     /* Card time */
     .card-time {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 300;
       color: var(--ink-45);
@@ -501,7 +483,7 @@
     }
 
     .read-more {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -566,7 +548,7 @@
     }
 
     .pg-info {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 300;
       color: var(--ink-45);
@@ -583,7 +565,7 @@
       border-radius: 999px;
       border: 1px solid var(--ink-20);
       background: var(--white);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 400;
       color: var(--ink);
@@ -631,7 +613,7 @@
     }
 
     .panel-label {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.18em;
@@ -676,7 +658,7 @@
       border-radius: var(--radius-md);
       border: 1px solid var(--ink-20);
       background: var(--cream);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 300;
       color: var(--ink);
@@ -696,7 +678,7 @@
       border: none;
       background: var(--navy);
       color: var(--white);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 500;
       letter-spacing: 0.06em;
@@ -714,7 +696,7 @@
 
     /* Contact block */
     .panel-contact-title {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -825,7 +807,7 @@
       gap: 6px;
       padding: 8px 16px;
       border-radius: 999px;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 500;
       letter-spacing: 0.04em;
@@ -1049,39 +1031,6 @@
       #hamburger { position: fixed !important; top: 14px !important; left: 16px !important; z-index: var(--z-hamburger) !important; }
       .brand-btn--fixed { display: none !important; }
     }
-    /* ── Footer ── */
-    .bic-site-footer { background: var(--bic-ebony-2); color: #F4EFE2; padding: clamp(48px,8vw,88px) 0 40px; font-family: var(--bic-font-body); -webkit-font-smoothing: antialiased; margin-top: 0; }
-    .bic-footer-wrap { max-width: var(--bic-max); margin: 0 auto; padding: 0 var(--bic-gutter); }
-    .bic-footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 56px; }
-    @media (min-width: 860px) { .bic-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; } }
-    .bic-footer-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-    .bic-footer-logo { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(176,125,63,.3); flex-shrink: 0; }
-    .bic-footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .bic-footer-wordmark strong { font-family: var(--bic-font-sc); font-size: 15px; font-weight: 500; display: block; letter-spacing: .04em; color: #F4EFE2; }
-    .bic-footer-wordmark small  { font-size: 12px; color: var(--bic-ebony-muted); }
-    .bic-footer-addr { font-style: normal; font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--bic-ebony-muted); max-width: 240px; margin-bottom: 24px; }
-    .bic-footer-addr a { color: inherit; text-decoration: none; transition: color var(--bic-dur-fast); }
-    .bic-footer-addr a:hover { color: var(--bic-gold); }
-    .bic-social-row { display: flex; gap: 10px; }
-    .bic-social-link { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: var(--bic-ebony-muted); transition: all var(--bic-dur-fast); text-decoration: none; }
-    .bic-social-link:hover { border-color: var(--bic-gold); color: var(--bic-gold); transform: translateY(-2px); }
-    .bic-social-link:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
-    .bic-footer-col-title { font-family: var(--bic-font-sc); font-size: 11px; font-weight: 500; letter-spacing: .18em; color: var(--bic-gold); margin-bottom: 20px; display: block; }
-    .bic-footer-body { font-size: 14px; font-weight: 300; color: var(--bic-ebony-muted); line-height: 1.75; }
-    .bic-footer-discover { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; font-weight: 500; color: #F4EFE2; letter-spacing: .03em; transition: color var(--bic-dur-fast); text-decoration: none; }
-    .bic-footer-discover:hover { color: var(--bic-gold); }
-    .bic-footer-discover svg { transition: transform var(--bic-dur-fast); }
-    .bic-footer-discover:hover svg { transform: translateX(4px); }
-    .bic-footer-city-list { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
-    .bic-footer-city { font-family: var(--bic-font-display); font-size: 2.2rem; font-weight: 300; letter-spacing: -.02em; line-height: 1; color: rgba(255,255,255,.22); }
-    .bic-footer-city.active { color: rgba(255,255,255,.8); }
-    .bic-footer-tagline { font-family: var(--bic-font-display); font-size: clamp(2.5rem,6vw,5rem); font-weight: 400; letter-spacing: -.03em; line-height: .95; color: rgba(255,255,255,.12); text-align: right; user-select: none; }
-    .bic-footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,.07); display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: space-between; }
-    @media (min-width: 600px) { .bic-footer-bottom { flex-direction: row; } }
-    .bic-footer-copy { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.3); }
-    .bic-adm-trigger { display: inline-flex; color: rgba(255,255,255,.3); font-size: 12px; cursor: pointer; text-decoration: none; transition: color var(--bic-dur-fast); font-family: var(--bic-font-body); }
-    .bic-adm-trigger:hover { color: rgba(255,255,255,.6); }
-  
     /* Login overlay */
     #adminLogin {
       display: none; position: fixed; inset: 0;
@@ -1099,7 +1048,7 @@
       text-align: center; margin-bottom: 32px;
     }
     .adm-login-brand .adm-bic {
-      font-family: 'Josefin Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 52px; font-weight: 900; letter-spacing: 0.1em;
       background: linear-gradient(92deg,#d49832,#f6c600);
       -webkit-background-clip: text; background-clip: text;
@@ -1109,14 +1058,14 @@
     .adm-login-brand p {
       color: rgba(255,255,255,0.55); font-size: 13px;
       margin: 6px 0 0; letter-spacing: 0.04em;
-      font-family: 'Montserrat', sans-serif; font-weight: 500;
+      font-family: 'Inter', sans-serif; font-weight: 500;
     }
     .adm-login-card {
       background: #fff; border-radius: 20px; padding: 36px 32px;
       box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
     }
     .adm-login-card h2 {
-      font-family: 'Playfair Display', serif; font-size: 24px;
+      font-family: 'Cormorant Garamond', serif; font-size: 24px;
       margin: 0 0 6px; color: var(--navy);
     }
     .adm-login-card p.adm-subtitle {
@@ -1131,7 +1080,7 @@
     .adm-field input[type="password"] {
       width: 100%; padding: 12px 16px; border-radius: 10px;
       border: 1.5px solid #e6e9ef; font-size: 15px;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: #fafbfc; color: var(--navy);
       transition: border-color .15s;
       box-sizing: border-box;
@@ -1147,7 +1096,7 @@
     .adm-login-submit {
       width: 100%; padding: 13px; border: none; border-radius: 10px;
       background: var(--navy); color: #fff; font-weight: 700;
-      font-size: 15px; font-family: 'Montserrat', sans-serif;
+      font-size: 15px; font-family: 'Inter', sans-serif;
       cursor: pointer; transition: background .15s;
     }
     .adm-login-submit:hover { background: #0f1f6a; }
@@ -1177,7 +1126,7 @@
       display: flex; align-items: center; gap: 14px;
     }
     .adm-topbar-bic {
-      font-family: 'Josefin Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 22px; font-weight: 900; letter-spacing: 0.12em;
       background: linear-gradient(92deg,#d49832,#f6c600);
       -webkit-background-clip: text; background-clip: text;
@@ -1188,19 +1137,19 @@
       color: rgba(255,255,255,0.5);
       border-left: 1px solid rgba(255,255,255,0.15);
       padding-left: 14px; letter-spacing: 0.04em;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif;
       text-transform: uppercase;
     }
     .adm-topbar-right { display: flex; align-items: center; gap: 12px; }
     .adm-staff-badge {
       font-size: 12px; color: rgba(255,255,255,0.55);
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif;
     }
     .adm-logout-btn {
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
       color: #fff; border-radius: 8px; padding: 7px 14px;
       font-size: 13px; font-weight: 600; cursor: pointer;
-      font-family: 'Montserrat', sans-serif; transition: background .15s;
+      font-family: 'Inter', sans-serif; transition: background .15s;
     }
     .adm-logout-btn:hover { background: rgba(255,255,255,0.16); }
 
@@ -1221,7 +1170,7 @@
       padding: 24px; box-shadow: var(--card-shadow);
     }
     .adm-card-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Cormorant Garamond', serif;
       font-size: 20px; font-weight: 700;
       color: var(--navy); margin: 0 0 18px;
       padding-bottom: 14px;
@@ -1244,13 +1193,13 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .adm-article-meta-text {
-      font-size: 11px; color: var(--muted); font-family: 'Montserrat', sans-serif;
+      font-size: 11px; color: var(--muted); font-family: 'Inter', sans-serif;
     }
     .adm-featured-badge {
       display: inline-block; background: var(--yellow); color: var(--navy);
       font-size: 9px; font-weight: 800; padding: 2px 6px;
       border-radius: 999px; margin-left: 5px; vertical-align: middle;
-      font-family: 'Montserrat', sans-serif; letter-spacing: 0.04em;
+      font-family: 'Inter', sans-serif; letter-spacing: 0.04em;
     }
     .adm-btn {
       border: none; border-radius: 8px; padding: 7px 10px;
@@ -1277,7 +1226,7 @@
     .adm-form-group select,
     .adm-form-group textarea {
       width: 100%; padding: 10px 13px; border-radius: 9px;
-      border: 1.5px solid #e6e9ef; font-family: 'Montserrat', sans-serif;
+      border: 1.5px solid #e6e9ef; font-family: 'Inter', sans-serif;
       font-size: 13px; color: var(--navy); background: #fafbfc;
       box-sizing: border-box; transition: border-color .15s;
     }
@@ -1293,7 +1242,7 @@
     .adm-submit {
       width: 100%; padding: 13px; border: none; border-radius: 10px;
       background: var(--navy); color: #fff; font-weight: 700;
-      font-size: 14px; font-family: 'Montserrat', sans-serif;
+      font-size: 14px; font-family: 'Inter', sans-serif;
       cursor: pointer; transition: background .15s; margin-top: 4px;
     }
     .adm-submit:hover { background: #0f1f6a; }
@@ -1302,7 +1251,7 @@
       display: none; background: #f0fdf4; border: 1px solid #86efac;
       color: #16a34a; font-size: 13px; border-radius: 8px;
       padding: 10px 14px; margin-top: 12px;
-      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-family: 'Inter', sans-serif; font-weight: 600;
     }
 
     /* Staff login trigger (subtle link in footer) */
@@ -1359,7 +1308,7 @@
     .adm-dz-label {
       margin: 0; font-size: 13px;
       color: var(--muted);
-      font-family: 'Montserrat', sans-serif; font-weight: 500;
+      font-family: 'Inter', sans-serif; font-weight: 500;
       line-height: 1.5;
     }
     .adm-dz-link {
@@ -1368,7 +1317,7 @@
     }
     .adm-dz-hint {
       margin: 0; font-size: 11px; color: #9ca3af;
-      font-family: 'Montserrat', sans-serif; letter-spacing: 0.02em;
+      font-family: 'Inter', sans-serif; letter-spacing: 0.02em;
     }
 
     /* preview state */
@@ -1394,7 +1343,7 @@
       position: absolute; bottom: 0; left: 0; right: 0;
       background: rgba(8,16,58,0.6);
       color: #fff; font-size: 11px; font-weight: 600;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif;
       padding: 5px 10px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
@@ -1402,7 +1351,7 @@
       background: #fff; color: var(--navy);
       border: none; border-radius: 8px;
       padding: 8px 18px; font-size: 13px; font-weight: 700;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif;
       cursor: pointer;
       display: flex; align-items: center; gap: 7px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.18);
@@ -1415,7 +1364,7 @@
     .adm-dropzone.adm-dz-error { border-color: #dc2626; background: #fff5f5; }
     .adm-dz-size-error {
       display: none; color: #dc2626; font-size: 11px;
-      font-family: 'Montserrat', sans-serif; font-weight: 600;
+      font-family: 'Inter', sans-serif; font-weight: 600;
       margin-top: 6px;
     }
     .adm-dz-size-error.visible { display: block; }

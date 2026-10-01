@@ -5,28 +5,29 @@
 
     /* ── Page-level tokens ── */
     :root {
-      --lux-parchment:    #F5F0E8;
-      --lux-cream:        #FAF7F2;
-      --lux-white:        #FFFFFF;
-      --lux-ink:          #181410;
-      --lux-ink-70:       rgba(24, 20, 16, 0.70);
-      --lux-ink-40:       rgba(24, 20, 16, 0.40);
-      --lux-ink-12:       rgba(24, 20, 16, 0.10);
-      --lux-gold:         #B07D3F;
-      --lux-gold-pale:    rgba(176, 125, 63, 0.09);
-      --lux-gold-border:  rgba(176, 125, 63, 0.28);
-      --lux-muted:        #7A6F63;
-      --lux-success:      #2E7D4F;
-      --lux-danger:       #9E3030;
-      --lux-font-display: 'Cormorant Garamond', Georgia, serif;
-      --lux-font-body:    'DM Sans', system-ui, sans-serif;
-      --lux-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --lux-ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
-      --lux-dur-fast:     220ms;
-      --lux-dur-mid:      420ms;
-      --lux-dur-slow:     680ms;
-      --lux-max:          1180px;
-      --lux-gutter:       clamp(24px, 5vw, 72px);
+      /* Page aliases → canonical design tokens (tokens.css) */
+      --lux-parchment:    var(--color-paper);
+      --lux-cream:        var(--color-surface);
+      --lux-white:        var(--color-white);
+      --lux-ink:          var(--color-ink);
+      --lux-ink-70:       var(--color-ink-70);
+      --lux-ink-40:       var(--color-ink-40);
+      --lux-ink-12:       var(--color-ink-12);
+      --lux-gold:         var(--color-accent);
+      --lux-gold-pale:    var(--color-accent-soft);
+      --lux-gold-border:  var(--color-accent-border);
+      --lux-muted:        var(--color-ink-60);
+      --lux-success:      var(--color-success);
+      --lux-danger:       var(--color-danger);
+      --lux-font-display: var(--font-display);
+      --lux-font-body:    var(--font-body);
+      --lux-ease:         var(--ease-out);
+      --lux-ease-out:     var(--ease-out);
+      --lux-dur-fast:     var(--dur-fast);
+      --lux-dur-mid:      var(--dur-mid);
+      --lux-dur-slow:     var(--dur-slow);
+      --lux-max:          var(--container-max);
+      --lux-gutter:       var(--gutter);
     }
 
     /* ── Reset & base ── */
@@ -832,36 +833,4 @@
       #hamburger { position: fixed !important; top: 14px !important; left: 16px !important; z-index: var(--z-hamburger) !important; }
       .brand-btn--fixed { display: none !important; }
     }
-    /* ── Footer ── */
-    .bic-site-footer { background: var(--bic-ebony-2); color: #F4EFE2; padding: clamp(48px,8vw,88px) 0 40px; font-family: var(--bic-font-body); -webkit-font-smoothing: antialiased; margin-top: 0; }
-    .bic-footer-wrap { max-width: var(--bic-max); margin: 0 auto; padding: 0 var(--bic-gutter); }
-    .bic-footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 56px; }
-    @media (min-width: 860px) { .bic-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; } }
-    .bic-footer-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-    .bic-footer-logo { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(176,125,63,.3); flex-shrink: 0; }
-    .bic-footer-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .bic-footer-wordmark strong { font-family: var(--bic-font-sc); font-size: 15px; font-weight: 500; display: block; letter-spacing: .04em; color: #F4EFE2; }
-    .bic-footer-wordmark small  { font-size: 12px; color: var(--bic-ebony-muted); }
-    .bic-footer-addr { font-style: normal; font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--bic-ebony-muted); max-width: 240px; margin-bottom: 24px; }
-    .bic-footer-addr a { color: inherit; text-decoration: none; transition: color var(--bic-dur-fast); }
-    .bic-footer-addr a:hover { color: var(--bic-gold); }
-    .bic-social-row { display: flex; gap: 10px; }
-    .bic-social-link { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; color: var(--bic-ebony-muted); transition: all var(--bic-dur-fast); text-decoration: none; }
-    .bic-social-link:hover { border-color: var(--bic-gold); color: var(--bic-gold); transform: translateY(-2px); }
-    .bic-social-link:focus-visible { outline: 2px solid var(--bic-gold); outline-offset: 3px; }
-    .bic-footer-col-title { font-family: var(--bic-font-sc); font-size: 11px; font-weight: 500; letter-spacing: .18em; color: var(--bic-gold); margin-bottom: 20px; display: block; }
-    .bic-footer-body { font-size: 14px; font-weight: 300; color: var(--bic-ebony-muted); line-height: 1.75; }
-    .bic-footer-discover { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; font-weight: 500; color: #F4EFE2; letter-spacing: .03em; transition: color var(--bic-dur-fast); text-decoration: none; }
-    .bic-footer-discover:hover { color: var(--bic-gold); }
-    .bic-footer-discover svg { transition: transform var(--bic-dur-fast); }
-    .bic-footer-discover:hover svg { transform: translateX(4px); }
-    .bic-footer-city-list { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
-    .bic-footer-city { font-family: var(--bic-font-display); font-size: 2.2rem; font-weight: 300; letter-spacing: -.02em; line-height: 1; color: rgba(255,255,255,.22); }
-    .bic-footer-city.active { color: rgba(255,255,255,.8); }
-    .bic-footer-tagline { font-family: var(--bic-font-display); font-size: clamp(2.5rem,6vw,5rem); font-weight: 400; letter-spacing: -.03em; line-height: .95; color: rgba(255,255,255,.12); text-align: right; user-select: none; }
-    .bic-footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,.07); display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: space-between; }
-    @media (min-width: 600px) { .bic-footer-bottom { flex-direction: row; } }
-    .bic-footer-copy { font-size: 13px; font-weight: 300; color: rgba(255,255,255,.3); }
-    .bic-adm-trigger { display: inline-flex; color: rgba(255,255,255,.3); font-size: 12px; cursor: pointer; text-decoration: none; transition: color var(--bic-dur-fast); font-family: var(--bic-font-body); }
-    .bic-adm-trigger:hover { color: rgba(255,255,255,.6); }
-  
+    

@@ -1,0 +1,132 @@
+/* ============================================================
+   BIC — Shared Components & Base Typography
+   Loaded after tokens.css, before page stylesheets.
+   ============================================================ */
+
+/* ── Base typography ─────────────────────────────────────── */
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  font-weight: var(--weight-semibold);
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+h5 { font-size: var(--fs-h5); }
+h6 { font-size: var(--fs-h6); }
+
+p { line-height: var(--lh-body); }
+
+/* Statement text — hero/feature moments (Fraunces) */
+.t-statement {
+  font-family: var(--font-statement);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Kickers / eyebrows — small caps above headings */
+.kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-micro);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ── Layout rhythm ───────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--wide { max-width: var(--container-max-wide); }
+
+.section-pad { padding-block: var(--section-pad); }
+
+/* ── Buttons — 3 variants only ───────────────────────────── */
+.btn-primary,
+.btn-secondary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: calc(var(--space-3) - 2px) var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+.btn-primary {
+  background: var(--color-brand);
+  color: var(--color-cream);
+}
+.btn-primary:hover {
+  background: var(--color-brand-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+.btn-secondary {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+.btn-secondary:hover {
+  background: var(--color-accent-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-ink-12);
+  color: var(--color-ink);
+}
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* ── Cards & containers ──────────────────────────────────── */
+.bic-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+  transition: box-shadow var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+.bic-card:hover {
+  box-shadow: var(--shadow-2);
+}
+
+/* Hairline divider used between sections */
+.bic-rule {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}

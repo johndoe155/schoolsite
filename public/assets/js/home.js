@@ -65,7 +65,7 @@ window.__CMS__ = {
               </div>
             </div>
           </button>
-          <div style="font-family: Montserrat;" class="px-2">
+          <div class="px-2">
             <h3 class="text-xl md:text-2xl text-center text-white mt-6">${esc(item.title)}</h3>
             <p class="text-center text-indigo-300/80 mt-2">${esc(item.subtitle)}</p>
           </div>`;

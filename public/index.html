@@ -7,15 +7,12 @@
   <meta name="description" content="Empowering future leaders through excellence in education, science, arts, and technology.">
 
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@300;400;500;600&family=Josefin+Sans:wght@600;700&family=Playfair+Display:wght@600;700&family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+
 
   <script>
   document.documentElement.classList.add('fonts-loading');
-  document.fonts.load('700 1em "Cormorant SC"').then(()=> {
+  document.fonts.load('700 1em "Cormorant Garamond"').then(()=> {
     document.documentElement.classList.remove('fonts-loading');
     document.documentElement.classList.add('fonts-loaded');
   });
@@ -23,47 +20,25 @@
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: {
-          sans: ['Inter', 'system-ui', 'sans-serif'],
-          display: ['Abril Fatface', 'serif'],
-          brand: ['Josefin Sans', 'sans-serif'],
-          serif: ['Playfair Display', 'serif'],
-        },
-        colors: {
-          brand: { indigo: '#05014a', yellow: '#FACC15', dark: '#0f172a' }
-        },
-        borderRadius: { '3xl': '1.5rem' },
-        keyframes: {
-          fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-        },
-        animation: { fadeIn: 'fadeIn 0.5s ease-in-out forwards' },
-      }
-    }
-  }
-  </script>
+  
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'],
-            display: ['Abril Fatface', 'serif'],
-            brand: ['Josefin Sans', 'sans-serif'],
-            serif: ['Playfair Display', 'serif'],
-            cormorant: ['Cormorant SC', 'serif'],
-            'cormorant-infant': ['Cormorant Infant', 'serif'],
+            display: ['Fraunces', 'Georgia', 'serif'],
+            brand: ['Inter', 'sans-serif'],
+            serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+            cormorant: ['Cormorant Garamond', 'Georgia', 'serif'],
           },
           colors: {
             brand: {
               indigo: '#05014a',
               yellow: '#FACC15',
               dark: '#0f172a',
-              cream: '#FAF6EF',
-              stone: '#D6D3D1',
+              cream: '#F3EFE5',
+              stone: '#E4DCCB',
             }
           },
           borderRadius: { '3xl': '1.5rem', '4xl': '2rem' },
@@ -102,9 +77,14 @@
       }
     }
     .fonts-loading .logo { /* fallback look */ }
-    .fonts-loaded  .logo { font-family: 'Cormorant SC', serif; }
+    .fonts-loaded  .logo { font-family: 'Cormorant Garamond', serif; font-variant-caps: small-caps; }
   </style>
-    <link rel="stylesheet" href="/assets/css/tokens.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..600&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/footer.css">
   <link rel="stylesheet" href="/assets/css/home.css">
 </head>
 <body class="antialiased bg-slate-50 text-slate-800">
@@ -122,7 +102,7 @@
   <!-- Header -->
   <header class="fixed inset-x-0 top-0 z-40 transition-all duration-300" id="mainHeader">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
+      <div class="flex items-center justify-between h-[68px]">
         <!-- Brand -->
         <div class="flex items-center gap-4 z-50">
           <a href="#" class="brand-btn group" aria-label="Bodija International College Home">
@@ -167,7 +147,7 @@
            Isolated in its own stacking context (isolation:isolate) so its
            internal opacity/crossfade transitions can never bleed into,
            or trigger repaint of, sibling layers like the overlay below. -->
-      <div id="heroMedia" class="absolute inset-0 -z-20 bg-slate-50" style="isolation:isolate;">
+      <div id="heroMedia" class="absolute inset-0 -z-20 bg-slate-50" style="isolation:isolate">
         <div id="heroPoster" class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 opacity-0" aria-hidden="true"></div>
 
         <div id="videoContainer" class="absolute inset-0 w-full h-full transition-opacity duration-1000">
@@ -196,7 +176,7 @@
             Success Through<br/>Labour
           </h1>
 
-          <p id="heroKicker" style="font-family: Quicksand" class="text-lg sm:text-xl text-slate-300 max-w-2xl mb-10 opacity-0 translate-y-8 font-light leading-relaxed">
+          <p id="heroKicker" class="text-lg sm:text-xl text-slate-300 max-w-2xl mb-10 opacity-0 translate-y-8 font-light leading-relaxed">
             Empowering future leaders through excellence in education, character building, and community service.
           </p>
 
@@ -229,17 +209,17 @@
             </span>
 
             <h2 class="text-4xl md:text-5xl font-display text-slate-900 leading-tight">A Legacy of Excellence</h2>
-            <p style="font-family: Quicksand" class="text-lg text-slate-600 leading-relaxed">
+            <p class="text-lg text-slate-600 leading-relaxed">
               Bodija International College is dedicated to fostering academic excellence, creativity, and community engagement. We believe in a holistic approach to education that prepares students for the challenges of the modern world.
             </p>
             <ul class="space-y-4 pt-4">
-              <li style="font-family: Montserrat" class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
+              <li class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
                 <span class="reveal opacity-0 w-2 h-2 rounded-full bg-brand-yellow"></span> Global Curriculum Standards
               </li>
-              <li style="font-family: Montserrat" class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
+              <li class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
                 <span class="reveal opacity-0 w-2 h-2 rounded-full bg-brand-yellow"></span> 10:1 Student-Teacher Ratio
               </li>
-              <li style="font-family: Montserrat" class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
+              <li class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
                 <span class="reveal opacity-0 w-2 h-2 rounded-full bg-brand-yellow"></span> Award-winning STEM Program
               </li>
             </ul>
@@ -250,15 +230,15 @@
                  <div class="w-12 h-12 bg-indigo-50 rounded-md flex items-center justify-center text-brand-indigo mb-4">
                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                  </div>
-                 <h3 style="font-family: Cormorant SC" class="reveal opacity-0 text-2xl font-bold mb-2">Modern Labs</h3>
-                 <p style="font-family: Quicksand" class="reveal opacity-0 text-slate-600">Equipped with the latest technology to facilitate hands-on learning in sciences.</p>
+                 <h3 class="reveal opacity-0 text-2xl font-bold mb-2">Modern Labs</h3>
+                 <p class="reveal opacity-0 text-slate-600">Equipped with the latest technology to facilitate hands-on learning in sciences.</p>
                </div>
                <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-100 transform hover:-translate-y-1">
                  <div class="w-12 h-12 bg-indigo-50 rounded-md flex items-center justify-center text-brand-indigo mb-4">
                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                  </div>
-                 <h3 style="font-family: Cormorant SC" class="reveal opacity-0 text-2xl font-bold mb-2">Library & Research</h3>
-                 <p style="font-family: Quicksand" class="reveal opacity-0 text-slate-600">A vast collection of physical and digital resources to support academic inquiry.</p>
+                 <h3 class="reveal opacity-0 text-2xl font-bold mb-2">Library & Research</h3>
+                 <p class="reveal opacity-0 text-slate-600">A vast collection of physical and digital resources to support academic inquiry.</p>
                </div>
              </div>
           </div>
@@ -269,7 +249,7 @@
           <div class="text-center max-w-3xl mx-auto mb-16">
             <span class="text-brand-indigo font-bold tracking-widest uppercase text-sm">Academics</span>
             <h2 class="text-4xl md:text-5xl font-display text-slate-900 mt-4 mb-6">Our Programs</h2>
-            <p style="font-family: Quicksand" class="text-lg text-slate-600">Project-based learning, interdisciplinary teams, and mentorship prepare students for the real world.</p>
+            <p class="text-lg text-slate-600">Project-based learning, interdisciplinary teams, and mentorship prepare students for the real world.</p>
           </div>
 
           <div id="programGrid" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
@@ -283,7 +263,7 @@
 <section id="bic-message" class="py-28 md:py-36 relative overflow-hidden">
 
   <div class="absolute top-0 right-0 w-1/3 h-full pointer-events-none" aria-hidden="true"
-       style="background: linear-gradient(135deg, transparent 0%, rgba(5,1,74,0.03) 100%);"></div>
+       style="background: linear-gradient(135deg, transparent 0%, rgba(5,1,74,0.03) 100%)"></div>
 
   <div class="max-w-6xl mx-auto px-6 relative z-10">
 
@@ -291,22 +271,22 @@
       <div class="bic-reveal ornament-divider text-brand-indigo mb-6 max-w-xs mx-auto">
         <span class="section-eyebrow text-brand-indigo">Administration</span>
       </div>
-      <h2 class="bic-reveal font-serif text-4xl md:text-6xl font-semibold text-brand-indigo leading-tight" style="--delay:100ms;">
+      <h2 class="bic-reveal font-serif text-4xl md:text-6xl font-semibold text-brand-indigo leading-tight" style="--delay:100ms">
         A Message of<br/>
-        <em style="font-family:'Cormorant Infant',serif; font-weight:300; color:#4a4580;">Purpose &amp; Promise</em>
+        <em style="font-weight:300; color:#4a4580">Purpose &amp; Promise</em>
       </h2>
     </div>
 
     <div class="grid gap-12 lg:gap-20 items-center">
 
-      <div class="bic-reveal from-left flex justify-center lg:justify-center" style="--delay:0ms;">
+      <div class="bic-reveal from-left flex justify-center lg:justify-center" style="--delay:0ms">
   <div class="admin-photo-frame w-full max-w-[320px]">
     <div class="admin-photo-inner">
       <img src="/assets/media/princi.jpg" alt="Principal, Bodija International College"
            class="w-full h-full object-cover object-center" />
 
-      <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;" aria-hidden="true">
-        <svg width="100%" height="100%" viewBox="0 0 320 420" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.06;">
+      <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden" aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 320 420" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.06">
           <circle cx="160" cy="210" r="120" stroke="#FACC15" stroke-width="1"/>
           <circle cx="160" cy="210" r="150" stroke="#FACC15" stroke-width="0.5"/>
           <line x1="0" y1="210" x2="320" y2="210" stroke="#FACC15" stroke-width="0.5"/>
@@ -319,14 +299,14 @@
   </div>
 </div>
 
-      <div class="bic-reveal from-right" style="--delay:150ms;">
+      <div class="bic-reveal from-right" style="--delay:150ms">
         <div class="bic-quote-block relative pl-4 pt-6">
 
           <span class="quote-glyph" aria-hidden="true">&ldquo;</span>
 
           <blockquote class="relative z-10">
             <p class="text-2xl md:text-3xl lg:text-[2rem] leading-relaxed font-light text-brand-indigo mb-8"
-               style="font-family:'Cormorant Infant',serif; font-style:italic; line-height:1.55;">
+               style="font-style:italic; line-height:1.55">
                I have predictively seen the brighter future because our educators have the connections to guide you to your choice of university and to your new career through careful selection of subjects in the  Child Protection Unit, but the creativity in you is what defines your future.
 
                At BIC, our subjects are tailored to benefit your future interest. Be inspired to make an impact. This is my verdict.
@@ -336,7 +316,7 @@
 
             <footer class="flex items-center justify-center">
               <div>
-                <cite class="not-italic block text-brand-indigo font-semibold tracking-wide" style="font-family:'Playfair Display',serif; font-size:1rem;">
+                <cite class="not-italic block text-brand-indigo font-semibold tracking-wide" style="font-size:1rem">
                   The Founding Chairman
                 </cite>
                 <span class="section-eyebrow text-slate-500 text-[0.6rem]">
@@ -349,17 +329,17 @@
         </div>
 
         <div class="mt-12 grid grid-cols-3 gap-6 border-t border-brand-indigo/10 pt-10">
-          <div class="bic-reveal" style="--delay:250ms;">
-            <div class="text-3xl font-bold text-brand-indigo mb-1" style="font-family:'Cormorant SC',serif;">30<span class="text-brand-yellow">+</span></div>
-            <div class="text-xs text-slate-500 uppercase tracking-widest" style="font-family:'Josefin Sans',sans-serif;">Years of Excellence</div>
+          <div class="bic-reveal" style="--delay:250ms">
+            <div class="text-3xl font-bold text-brand-indigo mb-1">30<span class="text-brand-yellow">+</span></div>
+            <div class="text-xs text-slate-500 uppercase tracking-widest">Years of Excellence</div>
           </div>
-          <div class="bic-reveal" style="--delay:330ms;">
-            <div class="text-3xl font-bold text-brand-indigo mb-1" style="font-family:'Cormorant SC',serif;">5K<span class="text-brand-yellow">+</span></div>
-            <div class="text-xs text-slate-500 uppercase tracking-widest" style="font-family:'Josefin Sans',sans-serif;">Alumni Worldwide</div>
+          <div class="bic-reveal" style="--delay:330ms">
+            <div class="text-3xl font-bold text-brand-indigo mb-1">5K<span class="text-brand-yellow">+</span></div>
+            <div class="text-xs text-slate-500 uppercase tracking-widest">Alumni Worldwide</div>
           </div>
-          <div class="bic-reveal" style="--delay:410ms;">
-            <div class="text-3xl font-bold text-brand-indigo mb-1" style="font-family:'Cormorant SC',serif;">10<span class="text-brand-yellow">:1</span></div>
-            <div class="text-xs text-slate-500 uppercase tracking-widest" style="font-family:'Josefin Sans',sans-serif;">Student–Teacher Ratio</div>
+          <div class="bic-reveal" style="--delay:410ms">
+            <div class="text-3xl font-bold text-brand-indigo mb-1">10<span class="text-brand-yellow">:1</span></div>
+            <div class="text-xs text-slate-500 uppercase tracking-widest">Student–Teacher Ratio</div>
           </div>
         </div>
 
@@ -377,8 +357,8 @@
       <div class="max-w-7xl mx-auto px-6 relative z-10">
         <div class="flex flex-col md:flex-row justify-between items-end mb-12">
           <div>
-            <h2 style="font-family: Cormorant SC" class="reveal opacity-0 font-display font-bold text-5xl md:text-6xl mb-4">Life at BIC</h2>
-            <p style="font-family: Quicksand" class="text-slate-400 max-w-md">Explore our campus, events, and student activities through our lens.</p>
+            <h2 class="reveal opacity-0 font-display font-bold text-5xl md:text-6xl mb-4">Life at BIC</h2>
+            <p class="text-slate-400 max-w-md">Explore our campus, events, and student activities through our lens.</p>
           </div>
           <div class="hidden md:block pb-2">
             <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">Swipe to explore</span>
@@ -417,8 +397,8 @@
 </svg>
                 </div>
                 <div>
-                  <h4 style="font-family: Montserrat" class="slide-in-on-scroll font-semibold text-slate-900">Visit Us</h4>
-                  <p style="font-family: Quicksand" class="font-md text-slate-600 mt-1">1-5, Tunde Lakanmi Crescent, Bodija<br>Ibadan, Oyo State</p>
+                  <h4 class="slide-in-on-scroll font-semibold text-slate-900">Visit Us</h4>
+                  <p class="font-md text-slate-600 mt-1">1-5, Tunde Lakanmi Crescent, Bodija<br>Ibadan, Oyo State</p>
                 </div>
               </div>
 
@@ -430,8 +410,8 @@
 </svg>
                 </div>
                 <div>
-              <h4 style="font-family: Montserrat" class="slide-in-on-scroll font-semibold text-slate-900">Email Us</h4>
-                  <a href="mailto:bicbis95@gmail.com" style="font-family: Quicksand" class="font-md text-brand-indigo hover:underline mt-1 block">bicbis95@gmail.com</a>
+              <h4 class="slide-in-on-scroll font-semibold text-slate-900">Email Us</h4>
+                  <a href="mailto:bicbis95@gmail.com" class="font-md text-brand-indigo hover:underline mt-1 block">bicbis95@gmail.com</a>
                 </div>
               </div>
 
@@ -442,8 +422,8 @@
 </svg>
                 </div>
                 <div>
-                  <h4 style="font-family: Montserrat" class="slide-in-on-scroll font-semibold text-slate-900">Call Us</h4>
-                  <a href="tel:+234 816 606 1632" style="font-family: Quicksand" class="font-md text-brand-indigo hover:underline mt-1 block">+234 816 606 1632</a>
+                  <h4 class="slide-in-on-scroll font-semibold text-slate-900">Call Us</h4>
+                  <a href="tel:+234 816 606 1632" class="font-md text-brand-indigo hover:underline mt-1 block">+234 816 606 1632</a>
                   <p class="text-xs text-slate-500 mt-1">Mon-Fri, 8am - 4pm</p>
                 </div>
               </div>
@@ -463,22 +443,22 @@
             <div class="space-y-6">
 
               <div class="relative">
-                <input type="text" id="name" name="name" required style="font-family: Montserrat" class="peer w-full px-4 py-2 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 transition-all" placeholder="John Doe">
-                <label for="name" style="font-family: Montserrat" class="absolute left-4 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Full Name</label>
+                <input type="text" id="name" name="name" required class="peer w-full px-4 py-2 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 transition-all" placeholder="John Doe">
+                <label for="name" class="absolute left-4 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Full Name</label>
               </div>
 
               <div class="relative">
-                <input type="email" id="email" name="email" required   style="font-family: Montserrat" class="peer w-full px-4 py-2 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 transition-all" placeholder="john@example.com">
-                <label for="email" style="font-family: Montserrat" class="absolute left-4 top-1 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Email Address</label>
+                <input type="email" id="email" name="email" required   class="peer w-full px-4 py-2 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 transition-all" placeholder="john@example.com">
+                <label for="email" class="absolute left-4 top-1 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Email Address</label>
               </div>
 
               <div class="relative">
-                <textarea id="message" name="message" required rows="2" style="font-family: Montserrat" class="peer w-full px-4 py-3 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 resize-none transition-all" placeholder="Message"></textarea>
-                <label for="message" style="font-family: Montserrat" class="absolute left-4 top-1 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Your Message</label>
+                <textarea id="message" name="message" required rows="2" class="peer w-full px-4 py-3 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 resize-none transition-all" placeholder="Message"></textarea>
+                <label for="message" class="absolute left-4 top-1 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Your Message</label>
               </div>
 
               <div class="flex items-center gap-3">
-                <input type="checkbox" id="consent" required style="accent-color: #0f172a;"
+                <input type="checkbox" id="consent" required style="accent-color: #0f172a"
                   class="w-5 h-5 text-brand-indigo border-slate-300 rounded focus:ring-brand-indigo transition-colors cursor-pointer">
                 <label for="consent" class="text-sm text-slate cursor-pointer select-none">I agree to the processing of my personal data.</label>
               </div>
@@ -498,75 +478,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="text-left bg-[#05014a] pt-12 pb-16 text-gray-200">
-    <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 gap-10">
-
-      <div class="space-y-6">
-        <div class="flex items-center gap-3">
-          <div class="w-24 h-24 rounded-sm flex items-center justify-center overflow-hidden">
-            <img src="/assets/img/logo.png" alt="Your Company" class="w-full h-full object-contain" loading="lazy" />
-            </div>
-
-  <div>
-    <h1 style="font-family: Cormorant SC;" class="text-2xl font-semibold">Bodija Int'l College</h1>
-    <p style="font-family: Quicksand;" class="text-lg text-gray-500">Success through Labor</p>
-  </div>
-</div>
-
-        <p class="reveal opacity-0 text-slate-500 font-bold tracking-widest uppercase text-xs">How we make it happen</p>
-        <h1 class="slide-in-on-scroll mt-12 font-display text-white text-[50px] leading-[0.92] tracking-[-0.015em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.7)] max-w-[520px]">
-  Building<br/>deep human<br/>connection<br/>that sparks<br/>success
-</h1>
-
-      </div>
-
-      <div class="flex flex-col justify-between">
-        <div>
-          <p style="font-family: Montserrat;" class="reveal opacity-0 muted leading-relaxed max-w-xl text-sm mb-4">
-            We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
-
-            <p style="font-family: Montserrat;" class="muted leading-relaxed max-w-xl text-sm">Our vision is confident, adaptable learners who succeed academically and as responsible citizens. With measurable progress, clear communication, and strong family partnerships, we balance joy and excellence to turn potential into practice.
-          </p>
-
-<div class="flex items-center mt-6 gap-3">
-  <a class="social-circle" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z" fill="currentColor"/>
-    </svg>
-  </a>
-  <a class="social-circle" href="https://www.instagram.com/bic_bis?igsh=MXdxMGFubnpteTEzeg==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z" fill="currentColor"/>
-    </svg>
-  </a>
-  <a class="social-circle" target="_blank" rel="noopener noreferrer" aria-label="Dribbble" title="Dribbble">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 16.1c-1.64-1.9-3.95-3.1-6.6-3.47 1.01-2.47 2.37-4.6 3.27-5.77 2.22 1.39 3.8 3.63 3.86 6.24.01.35-.25.66-.53.99zM7.9 6.1c1.27 1.02 2.44 3.22 3.19 5.3-2.86.25-5.29 1.2-6.99 2.7A7.96 7.96 0 017.9 6.1z" fill="currentColor"/>
-    </svg>
-  </a>
-  <a class="social-circle" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Twitter" title="Twitter">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M22 5.92c-.63.28-1.3.48-2 .56.72-.43 1.28-1.12 1.54-1.95-.67.4-1.42.69-2.22.85A3.5 3.5 0 0016.5 4c-1.93 0-3.5 1.6-3.5 3.57 0 .28.03.55.09.81-2.9-.15-5.48-1.6-7.2-3.8-.3.5-.47 1.09-.47 1.72 0 1.22.6 2.3 1.52 2.93-.56-.02-1.09-.18-1.55-.44v.05c0 1.66 1.19 3.04 2.77 3.35-.29.08-.59.12-.9.12-.22 0-.44-.02-.65-.06.45 1.36 1.76 2.36 3.31 2.39A7.03 7.03 0 014 19.54c1.96 1.26 4.3 2 6.82 2 8.18 0 12.66-7.3 12.66-13.64v-.62c.86-.63 1.6-1.4 2.18-2.3-.78.36-1.62.62-2.5.73z" fill="currentColor"/>
-    </svg>
-  </a>
-</div>
-
-        <div class="mt-6 pt-6 border-t border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div class="text-sm muted">We'd love to hear from you — <a href="mailto:bicbis95@gmail.com" class="text-white font-medium">bicbis95@gmail.com</a></div>
-
-      <div class=" items-end justify-end">
-        <div class="tagline">
-          Success<br/>Through<br/>Labor 
-        </div>
-      </div>
-    </div>
-
-    <div class="max-w-6xl mx-auto px-6 mt-10">
-      <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div  class="text-sm muted">&copy; <span id="year"></span> Bodija International College. All rights reserved.&nbsp;<a class="adm-staff-trigger" href="/admin.html" id="adminTrigger">Staff Login</a></div>
-      </div>
-    </div>
-  </footer>
+    <div data-bic-footer data-bic-sub="Excellence in Education"></div>
 
   <!-- Lightbox -->
   <div id="lightbox" class="fixed inset-0 z-[60] bg-black/95 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image Gallery">

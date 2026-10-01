@@ -759,7 +759,7 @@
     // ── Toast ─────────────────────────────────────────────────────────
     function showToast(msg){
       var t = document.createElement('div');
-      t.style.cssText = 'position:fixed;right:20px;bottom:30px;background:#111827;color:#fff;padding:11px 16px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:40000;font-size:13px;font-family:Montserrat,sans-serif;font-weight:600;max-width:280px';
+      t.style.cssText = 'position:fixed;right:20px;bottom:30px;background:#111827;color:#fff;padding:11px 16px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:40000;font-size:13px;font-family:Inter,sans-serif;font-weight:600;max-width:280px';
       t.textContent = msg;
       document.body.appendChild(t);
       setTimeout(function(){ t.remove(); }, 2400);

@@ -177,7 +177,7 @@
           </div>
         </div>
         <div class="p-4">
-          <h3 style="font-family:'Playfair Display',serif" class="text-white font-semibold text-base truncate">${escHtml(item.title) || '<span class="text-slate-500 italic">Untitled</span>'}</h3>
+          <h3 class="text-white font-semibold text-base truncate">${escHtml(item.title) || '<span class="text-slate-500 italic">Untitled</span>'}</h3>
           <p class="text-slate-400 text-xs mt-0.5 truncate">${escHtml(item.subtitle) || '—'}</p>
           <div class="flex gap-2 mt-3">
             <button class="edit-btn flex-1 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 hover:bg-brand-yellow/10 hover:border-brand-yellow/30 hover:text-brand-yellow transition-colors flex items-center justify-center gap-1.5" data-id="${escHtml(item.id)}">

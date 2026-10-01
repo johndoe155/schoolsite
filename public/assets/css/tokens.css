@@ -1,49 +1,125 @@
 /* ============================================================
-   BIC — Shared Design Tokens
-   Single source of truth for the values every page reuses.
-   Loaded first on every page; page stylesheets may add
-   page-specific tokens but must not redefine these.
+   BIC — Design Tokens (single source of truth)
+   Loaded first on every page. All color/typography/spacing
+   decisions live here; page stylesheets consume these tokens
+   and must not hardcode values.
    ============================================================ */
 
 :root {
-  /* ── Brand ─────────────────────────────────────────────── */
-  --bic-brand-indigo: #05014a;
-  --bic-brand-yellow: #FACC15;
-  --bic-brand-dark:   #0f172a;
+  /* ── Neutrals (dominant) ─────────────────────────────── */
+  --color-paper:      #F3EFE5;              /* page background */
+  --color-surface:    #FDFAF5;              /* cards, form surfaces */
+  --color-surface-2:  #F7F3EA;              /* recessed panels */
+  --color-cream:      #F4EFE2;              /* text on dark sections */
+  --color-border:     #E4DCCB;              /* hairline borders on light */
+  --color-ink:        #18140F;              /* body text */
+  --color-ink-70:     rgba(24,20,15,.70);
+  --color-ink-60:     rgba(24,20,15,.60);
+  --color-ink-40:     rgba(24,20,15,.40);
+  --color-ink-30:     rgba(24,20,15,.30);
+  --color-ink-12:     rgba(24,20,15,.12);
+  --color-ink-08:     rgba(24,20,15,.08);
+  --color-ink-06:     rgba(24,20,15,.06);
+  --color-ink-04:     rgba(24,20,15,.04);
+  --color-ebony:      #141210;              /* dark sections / footers */
+  --color-ebony-2:    #1E1A14;
+  --color-ebony-border: rgba(255,255,255,.08);
+  --color-ebony-muted:  rgba(230,218,196,.64);
+  --color-white:      #FFFFFF;
 
-  /* ── Silent-luxury palette (contact / programs / news /
-        library pages) ─────────────────────────────────────── */
-  --bic-ink:          #18140F;
-  --bic-ink-60:       rgba(24,20,15,.6);
-  --bic-ink-12:       rgba(24,20,15,.12);
-  --bic-ebony:        #141210;
-  --bic-ebony-2:      #1E1A14;
-  --bic-ebony-border: rgba(255,255,255,.08);
-  --bic-ebony-muted:  rgba(230,218,196,.6);
-  --bic-parchment:    #F3EFE5;
-  --bic-surface:      #FDFAF5;
-  --bic-gold:         #B07D3F;
-  --bic-gold-light:   #C8963E;
-  --bic-gold-pale:    rgba(176,125,63,.10);
-  --bic-gold-border:  rgba(176,125,63,.22);
+  /* ── Primary brand ───────────────────────────────────── */
+  --color-brand:        #05014A;            /* indigo — brand + primary UI */
+  --color-brand-strong: #0F1F6A;            /* hover */
+  --color-brand-tint:   rgba(5,1,74,.08);
+  --color-brand-yellow: #FACC15;            /* home hero CTA/highlight */
 
-  /* ── Typography ────────────────────────────────────────── */
-  --bic-font-display: 'Cormorant Garamond', Georgia, serif;
-  --bic-font-sc:      'Cormorant SC', Georgia, serif;
-  --bic-font-body:    'DM Sans', system-ui, sans-serif;
+  /* ── Accent ──────────────────────────────────────────── */
+  --color-accent:         #B07D3F;          /* antique gold */
+  --color-accent-bright:  #C8963E;          /* gold, one step brighter */
+  --color-accent-strong:  #96682F;          /* hover */
+  --color-accent-soft:    rgba(176,125,63,.10);
+  --color-accent-border:  rgba(176,125,63,.25);
 
-  /* ── Layout ────────────────────────────────────────────── */
-  --bic-max:      1120px;
-  --bic-gutter:   clamp(20px, 4vw, 56px);
-  --bic-e2:       0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
-  --bic-r-sm:     6px;
+  /* ── Semantic states ─────────────────────────────────── */
+  --color-success: #2E7D4F;
+  --color-danger:  #9E3030;
+  --color-warning: #B45309;
+  --color-focus:   var(--color-accent);
 
-  /* ── Motion ────────────────────────────────────────────── */
-  --bic-dur-fast: 200ms;
-  --bic-dur-mid:  360ms;
+  /* ── Typography — 3 families, strict roles ───────────── */
+  --font-body:      'Inter', system-ui, sans-serif;            /* UI + body copy */
+  --font-display:   'Cormorant Garamond', Georgia, serif;      /* editorial headings */
+  --font-statement: 'Fraunces', Georgia, serif;                /* hero / statement text */
+  --font-mono:      ui-monospace, 'SF Mono', Menlo, monospace; /* code/ledger accents */
 
-  /* ── Mobile menu system (used by every page's menu and by
-        assets/js/layout.js) ───────────────────────────────── */
+  /* Type scale (fluid) */
+  --fs-display: clamp(2.75rem, 1.8rem + 4.5vw, 4.75rem);
+  --fs-h1:      clamp(2.25rem, 1.6rem + 3vw, 3.5rem);
+  --fs-h2:      clamp(1.875rem, 1.4rem + 2vw, 2.5rem);
+  --fs-h3:      clamp(1.5rem, 1.25rem + 1vw, 1.75rem);
+  --fs-h4:      1.25rem;
+  --fs-h5:      1.125rem;
+  --fs-h6:      1rem;
+  --fs-body-lg: 1.125rem;
+  --fs-body:    1rem;
+  --fs-small:   0.875rem;
+  --fs-caption: 0.8125rem;
+  --fs-micro:   0.75rem;
+
+  /* Leading + tracking */
+  --lh-display: 1.05;
+  --lh-heading: 1.15;
+  --lh-body:    1.65;
+  --lh-ui:      1.4;
+  --tracking-display: -0.02em;
+  --tracking-heading: -0.01em;
+  --tracking-caps:    0.16em;
+
+  /* Weights */
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ── Spacing — strict 8px grid (4px half-step) ───────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+  --space-8: 96px;
+
+  /* Layout rhythm */
+  --section-pad:       clamp(64px, 8vw, 128px); /* vertical padding for sections */
+  --container-max:     1120px;                   /* standard content width */
+  --container-max-wide: 1280px;                  /* gallery/home wide grids */
+  --gutter:            clamp(20px, 4vw, 56px);
+  --nav-height:        68px;                     /* one header height everywhere */
+
+  /* ── Radii — 5 stops ─────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* ── Elevation — 4 levels ────────────────────────────── */
+  --shadow-0: none;
+  --shadow-1: 0 1px 2px rgba(24,20,15,.06), 0 1px 3px rgba(24,20,15,.08);
+  --shadow-2: 0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
+  --shadow-3: 0 12px 32px rgba(24,20,15,.12), 0 4px 8px rgba(24,20,15,.06);
+  --shadow-4: 0 24px 48px rgba(24,20,15,.16), 0 8px 16px rgba(24,20,15,.08);
+
+  /* ── Motion ──────────────────────────────────────────── */
+  --dur-fast: 200ms;
+  --dur-mid:  360ms;
+  --dur-slow: 600ms;
+  --ease-out: cubic-bezier(.22,.9,.37,1);
+
+  /* ── Mobile menu system (consumed by layout.js + page css) */
   --z-hamburger:      10002;
   --z-overlay:        10003;
   --z-panel:          10004;
@@ -51,4 +127,32 @@
   --panel-duration:   360ms;
   --panel-delay:      600ms;
   --overlay-hold:     600ms;
+
+  /* ══════════════════════════════════════════════════════
+     Compatibility aliases — legacy --bic-* names remapped to
+     the canonical tokens above. Scheduled for deletion once
+     page stylesheets are migrated.
+     ══════════════════════════════════════════════════════ */
+  --bic-ink:           var(--color-ink);
+  --bic-ink-60:        var(--color-ink-60);
+  --bic-ink-12:        var(--color-ink-12);
+  --bic-ebony:         var(--color-ebony);
+  --bic-ebony-2:       var(--color-ebony-2);
+  --bic-ebony-border:  var(--color-ebony-border);
+  --bic-ebony-muted:   var(--color-ebony-muted);
+  --bic-parchment:     var(--color-paper);
+  --bic-surface:       var(--color-surface);
+  --bic-gold:          var(--color-accent);
+  --bic-gold-light:    var(--color-accent-bright);
+  --bic-gold-pale:     var(--color-accent-soft);
+  --bic-gold-border:   var(--color-accent-border);
+  --bic-font-display:  var(--font-display);
+  --bic-font-sc:       var(--font-display);
+  --bic-font-body:     var(--font-body);
+  --bic-max:           var(--container-max);
+  --bic-gutter:        var(--gutter);
+  --bic-e2:            var(--shadow-2);
+  --bic-r-sm:          var(--radius-xs);
+  --bic-dur-fast:      var(--dur-fast);
+  --bic-dur-mid:       var(--dur-mid);
 }
