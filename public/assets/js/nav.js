@@ -230,6 +230,7 @@
     if (state === 'navigating') return;
     state = 'navigating';
     clearTimers();
+    menu.classList.remove('bic-menu--open');
     header.classList.remove('bic-nav--open');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Open menu');
@@ -248,11 +249,31 @@
     // failsafe: if navigation never happens, restore the menu quietly
     later(function () {
       if (state !== 'navigating') return;
-      menu.classList.remove('bic-menu--covering', 'bic-menu--cover-go', 'bic-menu--live');
+      menu.classList.remove('bic-menu--covering', 'bic-menu--cover-go', 'bic-menu--open', 'bic-menu--live');
       menu.setAttribute('aria-hidden', 'true');
       preventScroll(false);
       state = 'closed';
     }, 4000);
+  }
+
+  /* Hard reset after an interrupted navigation (e.g. bfcache back restores
+     a page that froze mid-flight in the 'navigating' state). */
+  function resetMachine() {
+    clearTimers();
+    if (menu) {
+      menu.classList.remove('bic-menu--open', 'bic-menu--closing', 'bic-menu--live',
+        'bic-menu--covering', 'bic-menu--cover-go');
+      menu.setAttribute('aria-hidden', 'true');
+    }
+    if (header) header.classList.remove('bic-nav--open');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+    }
+    document.removeEventListener('keydown', onKeyDown);
+    document.removeEventListener('focus', onFocusCapture, true);
+    preventScroll(false);
+    state = 'closed';
   }
 
   /* Arriving on a page with a transition in flight: the head snippet has
@@ -363,15 +384,17 @@
     menu.addEventListener('click', onMenuLinkClick);
     window.addEventListener('scroll', onScroll, { passive: true });
     /* bfcache: re-run the reveal if restored mid-transition */
+    /* bfcache: re-run the reveal if restored mid-transition; a page
+       restored while stuck in 'navigating' gets a clean slate instead */
     window.addEventListener('pageshow', function (e) {
-      if (e.persisted) {
-        var f = false;
-        try {
-          f = !!sessionStorage.getItem(FLAG);
-          sessionStorage.removeItem(FLAG);
-        } catch (err) { /* no-op */ }
-        if (f) arrivalSequence();
-      }
+      if (!e.persisted) return;
+      var f = false;
+      try {
+        f = !!sessionStorage.getItem(FLAG);
+        sessionStorage.removeItem(FLAG);
+      } catch (err) { /* no-op */ }
+      if (f) arrivalSequence();
+      else if (state === 'navigating') resetMachine();
     });
     onScrollFrame();
   }

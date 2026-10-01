@@ -505,3 +505,31 @@ storm, scroll barrage, resize) — all passing.
 
 Verified: 20 focused assertions (anchor interception, scroll spy, hash
 sync, CSS vanish contract) plus the full 202-assertion suite — all green.
+
+## Phase 10 animation regression fix (owner-reported)
+
+**Symptom:** the mask sweep-in / panel hand-off looked buggy after the
+landing fixes.
+
+**Root cause:** the previous round made landing section links actually
+work — which created a brand-new flow: menu → section link → the page
+glides down → the smart-scroll director hides the bar (`translateY(-110%)`)
+→ next time the menu opens, the bar animated back down from -110% over
+520ms **while the mask was wiping in**, dragging the morphing toggle in
+from the top mid-animation. (Before the anchor fix the page never
+scrolled from a menu click, so the state was unreachable.)
+
+**Fixes:**
+- `.bic-nav--open` now pins `transform: translate3d(0,0,0)` with
+  `transition: none` — a hidden bar snaps into place instantly on open;
+  no drop-in ghost over the sweeping overlays.
+- `navigateUnderMask()` removes `--open` from the menu (and so does the
+  4s failsafe), so a failed/interrupted navigation can't strand the
+  overlays in a half-open state.
+- bfcache hardening: a page restored mid-flight with the machine stuck
+  in `navigating` gets a full `resetMachine()` on `pageshow` instead of
+  a dead toggle and a frozen cover.
+
+Verified: 13 new regression assertions (hidden-bar snap, navigate clears
+--open, bfcache reset, toggle alive after reset) plus the full 202 + 20
+suites — all green.
