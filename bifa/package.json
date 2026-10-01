@@ -1,0 +1,26 @@
+{
+  "name": "bodija-academies",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "framer-motion": "^11.2.0",
+    "three": "^0.160.0",
+    "@react-three/fiber": "^8.16.0"
+  },
+  "overrides": {
+    "esbuild": "0.28.1" 
+  },
+  "devDependencies": {
+    "vite": "^5.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "esbuild": "0.28.1"
+  }
+}
