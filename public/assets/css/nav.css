@@ -11,8 +11,8 @@
     9000   html.bic-is-transitioning::after (cross-page transit cover)
 
    Choreography — everything slides FROM THE LEFT:
-     open      mask wipes in → +120ms the panel wipes over it,
-               items stagger in
+     open      mask wipes in and covers the screen on its own → +340ms
+               the panel wipes over it, items stagger in
      close     reverse sweep back out to the left
      navigate  the blank mask wipes in again over the panel → route
                changes under cover → cover slides away TO THE RIGHT,
@@ -51,7 +51,7 @@
   --nav-accent-soft: rgba(231, 190, 90, 0.16);
   --nav-toggle-border: rgba(243, 239, 229, 0.30);
 
-  --mask-bg: #05014a;
+  --mask-bg: #02001f;
   --panel-bg: #0a0554;
   --menu-text: rgba(196, 202, 232, 0.78);
   --menu-heading: #dfe8ff;
@@ -117,7 +117,7 @@ html.bic-is-transitioning::after {
   background: #141210; /* paper default */
   transform: translate3d(0, 0, 0);
 }
-html.bic-transit--hero.bic-is-transitioning::after { background: #05014a; }
+html.bic-transit--hero.bic-is-transitioning::after { background: #02001f; }
 html.bic-transit--hero-dark.bic-is-transitioning::after { background: #0e0c1b; }
 html.bic-transit--navy.bic-is-transitioning::after { background: #070d18; }
 /* the reveal: cover slides away to the RIGHT */
@@ -288,7 +288,8 @@ html.bic-transit-go.bic-is-transitioning::after {
   will-change: transform;
 }
 
-/* Overlay B — content layer (also from the left, a beat after the mask) */
+/* Overlay B — content layer (also from the left, once the blank mask
+   has had a beat to read on its own) */
 .bic-menu__panel {
   position: absolute; inset: 0; z-index: 1100;
   background: var(--panel-bg); /* solid — modelled on the landing menu */
@@ -299,11 +300,19 @@ html.bic-transit-go.bic-is-transitioning::after {
   overflow-y: auto; overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   -webkit-font-smoothing: antialiased;
+  /* themed slim scrollbar — the panel overflows on the landing page
+     (11 links); the browser default bar read as a stray border */
+  scrollbar-width: thin;
+  scrollbar-color: var(--menu-line) transparent;
 }
+.bic-menu__panel::-webkit-scrollbar { width: 6px; }
+.bic-menu__panel::-webkit-scrollbar-track { background: transparent; }
+.bic-menu__panel::-webkit-scrollbar-thumb { background: var(--menu-line); border-radius: 3px; }
+.bic-menu__panel::-webkit-scrollbar-thumb:hover { background: var(--menu-accent); }
 
 /* State choreography (driven by nav.js) */
 .bic-menu--open .bic-menu__mask { transform: translate3d(0, 0, 0); }
-.bic-menu--open .bic-menu__panel { transform: translate3d(0, 0, 0); transition-delay: 120ms; }
+.bic-menu--open .bic-menu__panel { transform: translate3d(0, 0, 0); transition-delay: 340ms; }
 .bic-menu--closing .bic-menu__panel { transform: translate3d(-101%, 0, 0); transition-delay: 0ms; }
 .bic-menu--closing .bic-menu__mask { transform: translate3d(-101%, 0, 0); transition-delay: 100ms; }
 
@@ -357,7 +366,7 @@ html.bic-transit-go.bic-is-transitioning::after {
 }
 .bic-menu--open .bic-menu__link {
   opacity: 1; transform: translate3d(0, 0, 0);
-  transition-delay: calc(240ms + var(--i) * 40ms), calc(240ms + var(--i) * 40ms), 0ms;
+  transition-delay: calc(500ms + var(--i) * 40ms), calc(500ms + var(--i) * 40ms), 0ms;
 }
 .bic-menu--closing .bic-menu__link, .bic-menu--covering .bic-menu__link {
   opacity: 0; transform: translate3d(-14px, 0, 0);
@@ -383,7 +392,7 @@ html.bic-transit-go.bic-is-transitioning::after {
   opacity: 0; transform: translate3d(-16px, 0, 0);
   transition: opacity 460ms cubic-bezier(0.16, 1, 0.3, 1), transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.bic-menu--open .bic-menu__group-title { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 520ms; }
+.bic-menu--open .bic-menu__group-title { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 700ms; }
 .bic-menu--closing .bic-menu__group-title, .bic-menu--covering .bic-menu__group-title { opacity: 0; transition: opacity 150ms ease; }
 
 /* Panel footer: socials + CTA (plain, like the landing menu) */
@@ -395,7 +404,7 @@ html.bic-transit-go.bic-is-transitioning::after {
   opacity: 0; transform: translate3d(-16px, 0, 0);
   transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.bic-menu--open .bic-menu__foot { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 560ms; }
+.bic-menu--open .bic-menu__foot { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 740ms; }
 .bic-menu--closing .bic-menu__foot, .bic-menu--covering .bic-menu__foot { opacity: 0; transition: opacity 150ms ease; }
 .bic-menu__socials { display: flex; gap: 10px; }
 .bic-menu__socials .social-circle { width: 40px; height: 40px; border-color: var(--menu-line); color: var(--menu-muted); }

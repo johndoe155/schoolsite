@@ -505,3 +505,31 @@ storm, scroll barrage, resize) — all passing.
 
 Verified: 20 focused assertions (anchor interception, scroll spy, hash
 sync, CSS vanish contract) plus the full 202-assertion suite — all green.
+
+## Phase 10 diagnosis round — invisible first overlay + "weird border"
+
+Careful diagnosis (this replaces the reverted guess in 6a46c3d):
+
+**Symptom 1 — the blank overlay never gets seen on the landing page.**
+Two compounding causes:
+- The panel started only **120ms** after the mask, and with the luxury
+  easing `cubic-bezier(0.76,0,0.24,1)` the mask had covered just **5.3%**
+  of the screen by then — a sliver, not a readable blank cover.
+- The hero-theme mask colour (#05014a) was near-identical to the
+  landing hero's dark slate, so even the sliver blended in.
+
+Fix: the panel now waits **340ms**, by which time the mask has wiped to
+~81% coverage — the blank overlay clearly arrives on its own before the
+menu rides over it. The hero mask deepens to #02001f so the sweep reads
+against the hero. Item stagger (500ms + 40ms), group title (700ms) and
+footer (740ms) retimed to land after the panel's wipe.
+
+**Symptom 2 — the "weird border" on the overlay.** The landing panel is
+the only one that overflows (11 links ≈ 980px vs a ~700–900px viewport)
+and nothing styled its scrollbar — the browser's default light bar
+rendered as a bright stripe down the right edge of the dark panel.
+Fix: themed slim scrollbar (6px, `--menu-line` thumb, transparent track,
+accent on hover; `scrollbar-width: thin` for Firefox).
+
+Verified: 202 + 20 assertions green; timing probe confirms 340ms panel
+delay and 81% mask coverage at panel launch.

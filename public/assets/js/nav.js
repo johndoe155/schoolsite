@@ -9,8 +9,8 @@
    itself and owns all of their choreography — everything slides
    in FROM THE LEFT:
 
-     open     blank mask wipes in → +120ms the panel wipes over it,
-              items stagger in
+     open     blank mask wipes in and covers the screen on its own →
+              +340ms the panel wipes over it, items stagger in
      close    reverse sweep back out to the left
      navigate the blank mask wipes in again over the panel → route
               changes under cover → cover slides away TO THE RIGHT,
@@ -33,8 +33,8 @@
   window.BIC_SITEMAP = SITEMAP;
 
   var FLAG = 'bic.menuNav';
-  var MASK_MS = 480;
-  var PANEL_DELAY = 120;
+  var MASK_MS = 560;
+  var PANEL_DELAY = 340;
   var CLOSE_MS = 720;
   var COVER_MS = 440;
   var NAV_MS = 520;
