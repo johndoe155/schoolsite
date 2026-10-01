@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bodija International Academies | BIMA & BIFA</title>
+    <meta name="description" content="Bodija International College Academies — elite training in Creative Media Arts (BIMA) and Athletics (BIFA).">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --indigo: #05014a;
+            --indigo-soft: #0c0a5e;
+            --gold: #FACC15;
+            --gold-deep: #e0b30c;
+            --cream: #FAF6EF;
+            --stone-100: #f5f3ef;
+            --stone-200: #e7e2d8;
+            --stone-300: #cfc9bc;
+            --stone-500: #8b8678;
+            --stone-700: #4a4636;
+            --ink: #1c1a2e;
+
+            --shadow-1: 0 1px 2px rgba(5,1,74,.08), 0 1px 3px rgba(5,1,74,.06);
+            --shadow-2: 0 4px 12px rgba(5,1,74,.10), 0 2px 6px rgba(5,1,74,.06);
+            --shadow-3: 0 18px 40px rgba(5,1,74,.16), 0 8px 16px rgba(5,1,74,.08);
+            --shadow-4: 0 30px 70px rgba(5,1,74,.22), 0 14px 28px rgba(5,1,74,.12);
+
+            --ease: cubic-bezier(.22,1,.36,1);
+            --radius: 18px;
+            --maxw: 1240px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .serif {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        .container { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
+
+        .eyebrow {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-deep);
+        }
+
+        /* Accessibility */
+        :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+        .skip-link {
+            position: absolute; left: 16px; top: -60px;
+            background: var(--indigo); color: var(--cream);
+            padding: 12px 20px; border-radius: 10px; z-index: 2000;
+            transition: top .3s var(--ease); font-size: 14px; font-weight: 600;
+        }
+        .skip-link:focus { top: 16px; }
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+        }
+
+        /* ===== Navbar ===== */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 22px 0; z-index: 1000;
+            transition: background .4s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease);
+        }
+        nav.scrolled {
+            background: rgba(250,246,239,.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 14px 0;
+            box-shadow: var(--shadow-2);
+            border-bottom: 1px solid var(--stone-200);
+        }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px; font-weight: 700; letter-spacing: 3px;
+            color: var(--indigo); transition: color .4s var(--ease);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(250,204,21,.25); }
+        nav:not(.scrolled) .logo { color: var(--cream); }
+        nav:not(.scrolled) .nav-links a { color: rgba(250,246,239,.9); }
+
+        .nav-links { display: flex; gap: 8px; align-items: center; }
+        .nav-links a {
+            position: relative; font-size: 13.5px; font-weight: 500;
+            letter-spacing: .5px; color: var(--ink);
+            padding: 10px 16px; border-radius: 10px;
+            transition: color .3s var(--ease), background .3s var(--ease);
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: 6px; left: 16px; right: 16px;
+            height: 2px; background: var(--gold); transform: scaleX(0);
+            transform-origin: left; transition: transform .35s var(--ease);
+        }
+        .nav-links a:hover { color: var(--gold-deep); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+
+        .nav-cta {
+            background: var(--gold); color: var(--indigo) !important;
+            font-weight: 600; padding: 11px 24px !important; border-radius: 50px;
+            box-shadow: var(--shadow-1); transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+        }
+        .nav-cta::after { display: none; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(250,204,21,.45); }
+
+        /* Hamburger */
+        .menu-toggle {
+            display: none; background: none; border: 0; cursor: pointer;
+            width: 46px; height: 46px; border-radius: 12px; position: relative;
+            transition: background .3s var(--ease);
+        }
+        .menu-toggle span {
+            position: absolute; left: 11px; right: 11px; height: 2px; border-radius: 2px;
+            background: var(--ink); transition: transform .4s var(--ease), opacity .3s var(--ease), background .4s var(--ease);
+        }
+        nav:not(.scrolled) .menu-toggle span { background: var(--cream); }
+        .menu-toggle span:nth-child(1) { top: 16px; }
+        .menu-toggle span:nth-child(2) { top: 22px; }
+        .menu-toggle span:nth-child(3) { top: 28px; }
+        body.menu-open .menu-toggle span { background: var(--cream); }
+        body.menu-open .menu-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        body.menu-open .menu-toggle span:nth-child(2) { opacity: 0; }
+        body.menu-open .menu-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+        /* Mobile menu panel */
+        .mobile-menu {
+            position: fixed; inset: 0; z-index: 999;
+            background: linear-gradient(160deg, var(--indigo), var(--indigo-soft));
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            gap: 8px; opacity: 0; visibility: hidden;
+            clip-path: circle(0% at calc(100% - 45px) 40px);
+            transition: clip-path .6s var(--ease), opacity .4s var(--ease), visibility .4s;
+        }
+        body.menu-open .mobile-menu { opacity: 1; visibility: visible; clip-path: circle(150% at calc(100% - 45px) 40px); }
+        .mobile-menu a {
+            color: var(--cream); font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem; font-weight: 500; padding: 14px 30px; letter-spacing: .5px;
+            opacity: 0; transform: translateY(20px);
+            transition: color .3s var(--ease), opacity .5s var(--ease), transform .5s var(--ease);
+        }
+        body.menu-open .mobile-menu a { opacity: 1; transform: translateY(0); }
+        body.menu-open .mobile-menu a:nth-child(1) { transition-delay: .15s; }
+        body.menu-open .mobile-menu a:nth-child(2) { transition-delay: .22s; }
+        body.menu-open .mobile-menu a:nth-child(3) { transition-delay: .29s; }
+        body.menu-open .mobile-menu a:nth-child(4) { transition-delay: .36s; }
+        body.menu-open .mobile-menu a:nth-child(5) { transition-delay: .43s; }
+        .mobile-menu a:hover { color: var(--gold); }
+        .mobile-menu .mm-cta { margin-top: 16px; background: var(--gold); color: var(--indigo); border-radius: 50px; font-size: 1.1rem; font-family: 'Inter',sans-serif; font-weight: 600; }
+
+        /* ===== Hero ===== */
+        .hero {
+            min-height: 100vh; position: relative; display: flex;
+            align-items: center; overflow: hidden;
+            background: linear-gradient(135deg, rgba(5,1,74,.92), rgba(5,1,74,.72)),
+                        url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
+        }
+        .hero::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 75% 30%, rgba(250,204,21,.18), transparent 45%);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 760px; padding-top: 80px; }
+        .hero .eyebrow { color: var(--gold); display: inline-block; margin-bottom: 24px; }
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem); color: var(--cream); margin-bottom: 26px;
+            font-weight: 600;
+        }
+        .hero h1 em { color: var(--gold); font-style: italic; }
+        .hero p {
+            font-size: clamp(1.05rem, 2vw, 1.3rem); color: rgba(250,246,239,.85);
+            max-width: 560px; margin-bottom: 44px; font-weight: 300;
+        }
+        .hero-actions { display: flex; gap: 18px; flex-wrap: wrap; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 17px 38px; border-radius: 50px; font-size: 14px;
+            font-weight: 600; letter-spacing: .5px; cursor: pointer; border: 0;
+            font-family: 'Inter', sans-serif;
+            transition: transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease);
+        }
+        .btn-gold { background: var(--gold); color: var(--indigo); box-shadow: 0 10px 30px rgba(250,204,21,.35); }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(250,204,21,.5); }
+        .btn-ghost { background: rgba(250,246,239,.08); color: var(--cream); border: 1px solid rgba(250,246,239,.35); backdrop-filter: blur(6px); }
+        .btn-ghost:hover { background: rgba(250,246,239,.16); transform: translateY(-3px); }
+
+        /* ===== Sections ===== */
+        section { padding: 130px 0; position: relative; }
+        .section-header { text-align: center; max-width: 720px; margin: 0 auto 90px; }
+        .section-header .eyebrow { display: inline-block; margin-bottom: 18px; }
+        .section-header h2 { font-size: clamp(2.4rem, 5vw, 3.6rem); color: var(--indigo); margin-bottom: 18px; }
+        .section-header p { color: var(--stone-500); font-size: 1.15rem; }
+
+        .surface-indigo { background: var(--indigo); color: var(--cream); }
+        .surface-indigo .section-header h2 { color: var(--cream); }
+        .surface-indigo .section-header p { color: rgba(250,246,239,.7); }
+        .surface-indigo .eyebrow { color: var(--gold); }
+
+        /* ===== Split Layouts ===== */
+        .split { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 80px; }
+        .split.reverse .split-image { order: 2; }
+        .split.reverse .split-content { order: 1; }
+
+        .split-image {
+            position: relative; height: 560px; border-radius: var(--radius);
+            background-size: cover; background-position: center;
+            box-shadow: var(--shadow-4);
+        }
+        .split-image::after {
+            content: ''; position: absolute; inset: 22px -22px -22px 22px;
+            border: 1.5px solid var(--gold); border-radius: var(--radius); z-index: -1;
+            transition: inset .5s var(--ease), opacity .5s var(--ease);
+        }
+        .split.reverse .split-image::after { inset: 22px 22px -22px -22px; }
+        .split:hover .split-image::after { inset: 14px -14px -14px 14px; }
+        .split.reverse:hover .split-image::after { inset: 14px 14px -14px -14px; }
+        .split-image .badge {
+            position: absolute; bottom: 24px; left: 24px;
+            background: rgba(5,1,74,.82); backdrop-filter: blur(10px);
+            color: var(--cream); padding: 14px 22px; border-radius: 14px;
+            font-size: 13px; font-weight: 500; letter-spacing: .5px;
+            box-shadow: var(--shadow-2); display: flex; align-items: center; gap: 10px;
+        }
+        .split-image .badge .dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+
+        .split-content h3 { font-size: clamp(2rem, 4vw, 3rem); color: var(--indigo); margin-bottom: 12px; }
+        .surface-indigo .split-content h3 { color: var(--cream); }
+        .split-content h4 { font-size: .95rem; color: var(--gold-deep); margin-bottom: 26px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; font-family: 'Inter', sans-serif; }
+        .surface-indigo .split-content h4 { color: var(--gold); }
+        .split-content > p { color: var(--stone-500); margin-bottom: 28px; font-size: 1.05rem; }
+        .surface-indigo .split-content > p { color: rgba(250,246,239,.75); }
+
+        .feature-list { list-style: none; display: grid; gap: 14px; margin: 30px 0; }
+        .feature-list li {
+            padding-left: 38px; position: relative; font-size: 1rem; color: var(--ink);
+        }
+        .surface-indigo .feature-list li { color: rgba(250,246,239,.9); }
+        .feature-list li::before {
+            content: '✦'; color: var(--gold-deep); position: absolute; left: 0; top: -1px; font-size: 1rem;
+        }
+        .surface-indigo .feature-list li::before { color: var(--gold); }
+
+        .price-tag {
+            display: inline-flex; align-items: center; gap: 14px; margin-top: 26px;
+            background: rgba(250,204,21,.14); border: 1px solid rgba(250,204,21,.4);
+            padding: 14px 24px; border-radius: 14px; color: var(--gold-deep);
+            font-weight: 600; letter-spacing: .3px; font-size: .95rem;
+        }
+        .surface-indigo .price-tag { color: var(--gold); }
+
+        /* ===== Info Cards ===== */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 32px; }
+        .info-card {
+            background: var(--cream); padding: 48px 40px; border-radius: var(--radius);
+            border: 1px solid var(--stone-200); box-shadow: var(--shadow-1);
+            position: relative; overflow: hidden;
+            transition: transform .45s var(--ease), box-shadow .45s var(--ease);
+        }
+        .info-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-deep));
+            transform: scaleX(0); transform-origin: left; transition: transform .5s var(--ease);
+        }
+        .info-card:hover { transform: translateY(-12px); box-shadow: var(--shadow-3); }
+        .info-card:hover::before { transform: scaleX(1); }
+        .card-icon {
+            width: 56px; height: 56px; border-radius: 16px; background: var(--indigo);
+            color: var(--gold); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 26px; box-shadow: var(--shadow-2);
+        }
+        .info-card h4 { color: var(--indigo); font-size: 1.5rem; margin-bottom: 18px; }
+        .info-card p { color: var(--stone-500); font-size: .98rem; line-height: 1.8; }
+        .info-card .detail { margin-top: 20px; }
+        .info-card .detail p { margin-bottom: 6px; color: var(--stone-700); }
+        .info-card .highlight { color: var(--indigo); font-weight: 600; }
+        .info-card .meta {
+            margin-top: 22px; display: inline-block; font-size: .8rem; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-deep);
+        }
+
+        /* ===== Scroll Reveal ===== */
+        [data-reveal] { opacity: 0; transform: translateY(40px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+        [data-reveal].in { opacity: 1; transform: none; }
+        [data-reveal][data-delay="1"] { transition-delay: .12s; }
+        [data-reveal][data-delay="2"] { transition-delay: .24s; }
+        [data-reveal][data-delay="3"] { transition-delay: .36s; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 980px) {
+            .split { grid-template-columns: 1fr; gap: 48px; }
+            .split.reverse .split-image, .split.reverse .split-content { order: 0; }
+            .split-image { height: 420px; }
+            section { padding: 90px 0; }
+            .section-header { margin-bottom: 60px; }
+        }
+        @media (max-width: 760px) {
+            .nav-links { display: none; }
+            .menu-toggle { display: block; }
+            .container { padding: 0 22px; }
+            .split-image::after { display: none; }
+            .hero-content { padding-top: 110px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+            [data-reveal] { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <nav id="nav">
+        <div class="container nav-inner">
+            <a href="#home" class="logo" aria-label="Bodija International College home"><span class="dot" aria-hidden="true"></span>B.I.C</a>
+            <div class="nav-links">
+                 <a href="/index.html" class="menu-item">Home</a>
+        <a href="http://127.0.0.1:2020" class="menu-item">Updates</a>
+        <a href="http://127.0.0.1:3030" class="menu-item">Our Programs</a>
+        <a href="http://127.0.0.1:6060" class="menu-item">Get In Touch</a>
+        <a href="http://127.0.0.1:5050" class="menu-item">Digital Library</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+         <a href="/index.html" class="menu-item">Home</a>
+        <a href="http://127.0.0.1:2020" class="menu-item">Updates</a>
+        <a href="http://127.0.0.1:3030" class="menu-item">Our Programs</a>
+        <a href="http://127.0.0.1:6060" class="menu-item">Get In Touch</a>
+        <a href="http://127.0.0.1:5050" class="menu-item">Digital Library</a>
+        <a href="#enroll" class="btn mm-cta">Enroll Now</a>
+    </div>
+
+    <main id="main">
+        <header class="hero" id="home">
+            <div class="container hero-content">
+                <span class="eyebrow" data-reveal>Bodija International College</span>
+                <h1 data-reveal data-delay="1">Cultivating <em>Excellence</em></h1>
+                <p data-reveal data-delay="2">Our premier extracurricular institutions where creative media artistry meets elite athletic discipline. Discover your craft, refine your talent, define your future.</p>
+                <div class="hero-actions" data-reveal data-delay="3">
+                    <a href="#bima" class="btn btn-gold">Explore the Academies</a>
+                    <a href="#enroll" class="btn btn-ghost">Enrollment Details</a>
+                </div>
+            </div>
+        </header>
+
+        <section id="bima">
+            <div class="container">
+                <div class="section-header">
+                    <span class="eyebrow" data-reveal>Test Your Voice • Shape the Future</span>
+                    <h2 data-reveal data-delay="1">Bodija International Media Academy</h2>
+                    <p data-reveal data-delay="2">A meticulously crafted certification program for visionaries entering the entertainment, media, and communication industries.</p>
+                </div>
+
+                <div class="split">
+                    <div class="split-image" style="background-image: url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1000&auto=format&fit=crop');" data-reveal role="img" aria-label="Media studio production session">
+                        <div class="badge"><span class="dot" aria-hidden="true"></span>BIMA Studio</div>
+                    </div>
+                    <div class="split-content" data-reveal data-delay="1">
+                        <h4>Intensive 2-Week Certification</h4>
+                        <h3>Master the Creative Arts</h3>
+                        <p>BIMA delivers a short-term professional program tailored for those looking to dominate the entertainment, media, and business communication industries.</p>
+                        <ul class="feature-list">
+                            <li>Sound Engineering and Music Production</li>
+                            <li>Musical Instrument Training</li>
+                            <li>Film Production and Editing</li>
+                            <li>Dance and Drama</li>
+                            <li>Social Media Marketing &amp; Content Creation</li>
+                            <li>Business and Communication Skills</li>
+                            <li>Costume and Makeup Artistry</li>
+                        </ul>
+                        <span class="price-tag">Tuition ₦20,000 &nbsp;•&nbsp; Next Session: April 2 – 19</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bifa" class="surface-indigo">
+            <div class="container">
+                <div class="section-header">
+                    <span class="eyebrow" data-reveal>The Soaring Eagles • We Love Football</span>
+                    <h2 data-reveal data-delay="1">Bodija International Football Academy</h2>
+                    <p data-reveal data-delay="2">Fostering athletic excellence in youth through rigorous training, professional trials, and direct pathways to competitive greatness.</p>
+                </div>
+
+                <div class="split reverse">
+                    <div class="split-image" style="background-image: url('images/bifa.jpg');" data-reveal role="img" aria-label="Football training on the pitch"></div>
+                        <div class="badge"><span class="dot" aria-hidden="true"></span>The Soaring Eagles</div>
+                    </div>
+                    <div class="split-content" data-reveal data-delay="1">
+                        <h4>Elite Athletic Training &amp; Tournaments</h4>
+                        <h3>Elevate Your Game</h3>
+                        <p>Operating under the banner of 'The Soaring Eagles', BIFA is dedicated to nurturing the next generation of competitive athletes.</p>
+                        <ul class="feature-list">
+                            <li>Professional Football Training &amp; Talent Trials</li>
+                            <li>Tournament Placements (e.g. KEFT 2024)</li>
+                            <li>Track &amp; Field: Elite Relay Competitions</li>
+                            <li>Affiliated Drone Academy (Registration ₦10,000)</li>
+                            <li>Table Tennis &amp; Swimming Programs</li>
+                        </ul>
+                        <span class="price-tag">Open to Male &amp; Female Athletes</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="enroll">
+            <div class="container">
+                <div class="section-header">
+                    <span class="eyebrow" data-reveal>Begin Your Journey With Us</span>
+                    <h2 data-reveal data-delay="1">Enrollment Details</h2>
+                    <p data-reveal data-delay="2">Everything you need to take the first step toward joining our academies.</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card" data-reveal>
+                        <div class="card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e0b30c" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" width="48" height="48">
+  <!-- Slender Pin -->
+  <path d="M12 21.5c-4-4.5-6.5-8.5-6.5-11.5a6.5 6.5 0 0 1 13 0c0 3-2.5 7-6.5 11.5z" />
+  <!-- Minimalist Academy Architecture Inside -->
+  <path d="M10 9v3" />
+  <path d="M14 9v3" />
+  <path d="M9 12h6" />
+  <path d="M9 9h6" />
+  <path d="M12 6.5L9 9h6l-3-2.5z" />
+</svg>
+</div>
+                        <h4>Academy Location</h4>
+                        <p>1–5 Tunde Iakunni Crescent, Off Osuntokun, Bodija, Ibadan, Nigeria.</p>
+                        <span class="meta">Sessions commence 10:00 AM Daily</span>
+                    </div>
+                    <div class="info-card" data-reveal data-delay="1">
+                        <div class="card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e0b30c" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" width="48" height="48">
+  <!-- Sleek Premium Card -->
+  <rect x="2" y="5" width="20" height="14" rx="1.5" />
+  <!-- Minimal EMV Chip -->
+  <rect x="6" y="9" width="3" height="3" rx="0.5" />
+  <path d="M9 10.5h1" />
+  <path d="M6 10.5H5" />
+  <!-- Gateway Flow Lines -->
+  <path d="M14 16h5" />
+  <path d="M14 13h2" />
+  <!-- Terminals -->
+  <path d="M12 21v-2" />
+  <path d="M18 21v-2" />
+  <path d="M6 21v-2" />
+</svg>
+</div>
+                        <h4>Payment Gateway</h4>
+                        <p>All official payments are securely processed via the School Bursary accounts.</p>
+                        <div class="detail">
+                            <p>Bank: <span class="highlight">GTBank</span></p>
+                            <p>Name: <span class="highlight">Bodija International College</span></p>
+                            <p>Account No: <span class="highlight">0028908200</span></p>
+                        </div>
+                    </div>
+                    <div class="info-card" data-reveal data-delay="2">
+                        <div class="card-icon" aria-hidden="true">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e0b30c" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" width="48" height="48">
+  <rect x="3" y="5" width="18" height="14" rx="1" />
+  <path d="M3 5l9 6.5 9-6.5" />
+  <!-- Elegant Seal Detail -->
+  <circle cx="12" cy="13" r="2" />
+  <path d="M12 15v3" />
+  <path d="M10.5 18h3" />
+</svg>
+
+                        </div>
+                        <h4>Contact Management</h4>
+                        <p>For inquiries, sports trials, and registration assistance, our team is on standby.</p>
+                        <div class="detail">
+                            <p>Phone: <a href="tel:+2348030861619" class="highlight">0803 086 1619</a></p>
+                            <p>Email: <a href="mailto:bimacad2024@gmail.com" class="highlight">bimacad2024@gmail.com</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navbar scroll state
+        const nav = document.getElementById('nav');
+        const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // Mobile menu
+        const toggle = document.getElementById('menuToggle');
+        const closeMenu = () => {
+            document.body.classList.remove('menu-open');
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.setAttribute('aria-label', 'Open menu');
+        };
+        toggle.addEventListener('click', () => {
+            const open = document.body.classList.toggle('menu-open');
+            toggle.setAttribute('aria-expanded', String(open));
+            toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        });
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', closeMenu));
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+        // Scroll reveal
+        const reveal = document.querySelectorAll('[data-reveal]');
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(en => {
+                    if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+            reveal.forEach(el => io.observe(el));
+        } else {
+            reveal.forEach(el => el.classList.add('in'));
+        }
+    </script>
+</body>
+</html>
