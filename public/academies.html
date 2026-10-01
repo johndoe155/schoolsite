@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bodija International Academies | BIMA &amp; BIFA</title>
+<meta name="description" content="Bodija International College Academies — elite training in Creative Media Arts (BIMA) and Athletics (BIFA)." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================================
+   DESIGN TOKENS
+   ----------------------------------------------------------------------------
+   Replaces the original indigo/#FACC15-gold/cream system. Kept indigo as the
+   spine (it's a real, deliberate anchor — indigo dyeing/"adire" cloth is a
+   genuine Yoruba craft tradition centred in and around Ibadan, where this
+   college sits) but deepened it into something closer to wet ink than flat
+   web-safe blue, swapped the flat saturated yellow for an antique brass that
+   reads as regalia rather than a caution sign, and gave each academy its own
+   accent — clay for BIMA (creative/media), pitch-green for BIFA (athletics)
+   — so section colour now encodes which academy you're in rather than just
+   decorating it.
+   ============================================================================ */
+:root {
+  --ink: #0e0c1b;
+  --surface: #15122b;
+  --surface-2: #211c46;
+  --paper: #f7f1e3;
+  --paper-2: #efe4cb;
+  --line: #e4d8bc;
+  --line-dark: rgba(247, 241, 227, 0.12);
+
+  --text: #17152a;
+  --text-soft: #5b5546;
+  --text-on-dark: #f3ecda;
+  --text-on-dark-soft: rgba(243, 236, 218, 0.72);
+
+  --brass: #c4991f;
+  --brass-light: #e7be5a;
+  --brass-ink: #7c5c10;
+
+  --clay: #af4b2e;
+  --clay-deep: #7e3620;
+  --pitch: #166448;
+  --pitch-light: #4fae84;
+  --pitch-deep: #0e4433;
+
+  --shadow-1: 0 1px 2px rgba(14, 12, 27, 0.08), 0 1px 3px rgba(14, 12, 27, 0.06);
+  --shadow-2: 0 6px 20px rgba(14, 12, 27, 0.12), 0 2px 6px rgba(14, 12, 27, 0.08);
+  --shadow-3: 0 20px 44px rgba(14, 12, 27, 0.18), 0 8px 18px rgba(14, 12, 27, 0.1);
+  --shadow-4: 0 34px 76px rgba(14, 12, 27, 0.26), 0 14px 30px rgba(14, 12, 27, 0.14);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius: 22px;
+  --radius-sm: 12px;
+  --maxw: 1240px;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ============================================================================
+   RESET + BASE
+   ============================================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4, .serif {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--brass-ink);
+}
+.surface-dark .kicker { color: var(--brass-light); }
+
+/* Accessibility ------------------------------------------------------------ */
+:focus-visible { outline: 3px solid var(--brass); outline-offset: 3px; border-radius: 4px; }
+.skip-link {
+  position: absolute; left: 16px; top: -60px;
+  background: var(--ink); color: var(--paper);
+  padding: 12px 20px; border-radius: 10px; z-index: 2000;
+  transition: top 0.3s var(--ease); font-size: 14px; font-weight: 600;
+}
+.skip-link:focus { top: 16px; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ============================================================================
+   NAV
+   ============================================================================ */
+.nav {
+  position: fixed; top: 0; left: 0; width: 100%;
+  padding: 22px 0; z-index: 1000;
+  transition: background 0.4s var(--ease), padding 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.nav.is-scrolled {
+  background: rgba(247, 241, 227, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 14px 0;
+  box-shadow: var(--shadow-2);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner { display: flex; justify-content: space-between; align-items: center; }
+.logo {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 500; letter-spacing: 2px;
+  color: var(--paper); transition: color 0.4s var(--ease);
+  display: flex; align-items: center; gap: 10px;
+}
+.nav.is-scrolled .logo { color: var(--ink); }
+.logo .dot { width: 7px; height: 7px; background: var(--brass); border-radius: 50%; box-shadow: 0 0 0 4px rgba(196, 153, 31, 0.25); }
+
+.footer-logo-img {
+  height: 70px;
+  max-height: 70px;
+  width: auto;
+  display: block;
+}
+
+.nav-links { display: flex; gap: 4px; align-items: center; }
+
+/* The static (pre-React / no-JS) fallback nav has no working hamburger
+   toggle to reveal a hidden menu, so — unlike .nav-links, which the mobile
+   media query below hides in favour of .menu-toggle — its link row stays
+   visible and just wraps, rather than disappearing with nothing to bring
+   it back. */
+.fallback-nav-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.fallback-nav-links .nav-link { color: var(--text); padding: 8px 4px; font-size: 13px; }
+.nav-link {
+  position: relative; font-size: 13.5px; font-weight: 500;
+  letter-spacing: 0.3px; color: rgba(247, 241, 227, 0.9);
+  padding: 10px 16px; border-radius: 10px;
+  transition: color 0.3s var(--ease);
+}
+.nav.is-scrolled .nav-link { color: var(--text); }
+.nav-link[data-disabled='true'] { opacity: 0.45; cursor: default; }
+.nav-link-underline {
+  position: absolute; bottom: 6px; left: 16px; right: 16px;
+  height: 2px; background: var(--brass); transform-origin: left;
+}
+.nav-cta {
+  background: var(--brass); color: var(--ink) !important;
+  font-weight: 600; padding: 11px 22px !important; border-radius: 50px;
+  box-shadow: var(--shadow-1);
+}
+
+.menu-toggle {
+  display: none; width: 46px; height: 46px; border-radius: 12px; position: relative;
+}
+.menu-toggle span {
+  position: absolute; left: 11px; right: 11px; height: 2px; border-radius: 2px;
+  background: var(--paper); transition: background 0.3s var(--ease);
+}
+.nav.is-scrolled .menu-toggle span { background: var(--text); }
+.menu-toggle span:nth-child(1) { top: 16px; }
+.menu-toggle span:nth-child(2) { top: 22px; }
+.menu-toggle span:nth-child(3) { top: 28px; }
+
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 999;
+  background: linear-gradient(160deg, var(--surface), var(--surface-2));
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 6px;
+}
+.mobile-menu a {
+  font-family: var(--font-display); font-size: 30px; font-weight: 600;
+  color: var(--text-on-dark); padding: 12px 0;
+}
+.mobile-menu a[data-disabled='true'] { opacity: 0.4; }
+
+/* ============================================================================
+   HERO
+   ============================================================================ */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; position: relative;
+  background:
+    linear-gradient(185deg, rgba(14, 12, 27, 0.8), rgba(14, 12, 27, 0.94)),
+    url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
+  overflow: hidden;
+}
+.hero-glow {
+  position: absolute; top: -20%; right: -8%; width: 62vw; height: 80%;
+  background: radial-gradient(circle, rgba(196, 153, 31, 0.16), transparent 70%);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 2; padding-top: 140px; padding-bottom: 110px; max-width: 760px; }
+.hero-content .kicker { color: var(--brass-light); }
+.hero h1 {
+  font-size: clamp(3rem, 6.4vw, 5.25rem); color: var(--text-on-dark); margin: 22px 0 28px;
+}
+.hero h1 em { color: var(--brass-light); font-style: italic; font-weight: 500; }
+.hero-body {
+  font-size: 1.14rem; color: var(--text-on-dark-soft); max-width: 540px; margin-bottom: 42px;
+  font-weight: 300;
+}
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.emblem-stage {
+  position: absolute; left: 48%; top: 8%;
+  width: min(42vw, 620px); height: min(42vw, 620px);
+  z-index: 1; pointer-events: none;
+}
+.emblem-stage canvas { display: block !important; width: 100% !important; height: 100% !important; }
+
+@media (max-width: 980px), (pointer: coarse) {
+  .emblem-stage { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emblem-stage { display: none; }
+}
+
+/* Buttons -------------------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 30px; border-radius: 50px; font-weight: 600; font-size: 14.5px;
+  transition: box-shadow 0.3s var(--ease), background 0.3s var(--ease);
+}
+.btn-primary { background: var(--brass); color: var(--ink); box-shadow: 0 10px 28px rgba(196, 153, 31, 0.28); }
+.btn-primary:hover { box-shadow: 0 16px 36px rgba(196, 153, 31, 0.42); }
+.btn-secondary {
+  background: rgba(247, 241, 227, 0.08); color: var(--text-on-dark);
+  border: 1px solid rgba(247, 241, 227, 0.28); backdrop-filter: blur(8px);
+}
+.btn-secondary:hover { background: rgba(247, 241, 227, 0.16); }
+
+/* ============================================================================
+   SECTION SHARED
+   ============================================================================ */
+.section { padding: 132px 0; position: relative; }
+.surface-dark { background: linear-gradient(180deg, var(--surface), var(--surface-2)); color: var(--text-on-dark); }
+.surface-dark h2 { color: var(--text-on-dark); }
+.surface-dark p { color: var(--text-on-dark-soft); }
+
+.section-header { max-width: 640px; margin: 0 auto 84px; text-align: center; }
+.section-header h2 { font-size: clamp(2.2rem, 4vw, 3.1rem); margin: 16px 0 20px; }
+.section-header p { font-size: 1.04rem; color: var(--text-soft); font-weight: 300; }
+.surface-dark .section-header p { color: var(--text-on-dark-soft); }
+
+/* ============================================================================
+   HORIZONTAL TRACK
+   ============================================================================ */
+[data-track] {
+  position: relative;
+  padding: 0 !important;
+}
+.track-sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;
+  padding-top: 72px; padding-bottom: 48px; gap: 24px;
+  overflow: hidden; overflow-y: auto;
+}
+.track-heading { position: relative; padding: 0 32px; text-align: center; z-index: 3; pointer-events: none; }
+.track-heading > * { pointer-events: auto; }
+.track-heading p { max-width: 560px; margin: 12px auto 0; font-weight: 300; color: var(--text-soft); }
+.surface-dark .track-heading p { color: var(--text-on-dark-soft); }
+.track-heading h2 { margin-top: 14px; }
+.track-wrapper {
+  display: flex; gap: 30px; padding: 0 8vw;
+  will-change: transform;
+}
+.track-panel { flex: 0 0 min(78vw, 600px); }
+
+/* Progress dots --------------------------------------------------------------
+   Framer Motion layoutId drives the widened "active" pill (see TrackDots.jsx)
+   — the literal thing the original's own comments wished for when they fell
+   back to GSAP's Flip plugin as "the nearest vanilla equivalent." */
+.track-progress {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 3;
+}
+.track-dot { position: relative; width: 22px; height: 3px; border-radius: 2px; background: rgba(247, 241, 227, 0.25); }
+:not(.surface-dark) .track-dot { background: rgba(14, 12, 27, 0.15); }
+.track-dot-fill { position: absolute; inset: 0; border-radius: 2px; background: var(--dot-accent, var(--brass)); }
+
+/* Academy accent modifiers ----------------------------------------------------
+   Section colour now encodes which academy you're in: BIMA (creative/media)
+   reads in clay/terracotta, BIFA (athletics) in pitch-green — the brass
+   spine stays constant everywhere else (nav, buttons, enroll cards). */
+.accent-clay { --accent-ink: var(--clay-deep); --accent-light: #e08a68; --frame-accent: var(--clay); --dot-accent: var(--clay); --ph-a: var(--clay); --ph-b: var(--clay-deep); }
+.accent-pitch { --accent-ink: var(--pitch-deep); --accent-light: var(--pitch-light); --frame-accent: var(--pitch-light); --dot-accent: var(--pitch-light); --ph-a: var(--pitch); --ph-b: var(--pitch-deep); }
+
+/* Image panel ---------------------------------------------------------------- */
+.track-image {
+  position: relative; height: 560px; border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow-4);
+}
+.track-image-frame {
+  position: absolute; inset: 20px -20px -20px 20px;
+  border: 1.5px solid var(--frame-accent, var(--brass)); border-radius: var(--radius);
+  z-index: -1; pointer-events: none;
+}
+.track-image img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.track-image-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(14, 12, 27, 0.05), rgba(14, 12, 27, 0.35) 100%);
+}
+.track-image-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(155deg, var(--ph-a), var(--ph-b));
+  display: flex; align-items: center; justify-content: center;
+}
+.track-image-placeholder svg { width: 34%; height: 34%; opacity: 0.5; }
+.track-badge {
+  position: absolute; bottom: 22px; left: 22px;
+  background: rgba(247, 241, 227, 0.95); backdrop-filter: blur(8px);
+  padding: 10px 18px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px; color: var(--ink);
+  box-shadow: var(--shadow-2);
+}
+.track-badge .dot { width: 7px; height: 7px; background: var(--dot-accent, var(--brass)); border-radius: 50%; }
+
+/* Content panel --------------------------------------------------------------- */
+.track-content h4.kicker { margin-bottom: 14px; color: var(--accent-ink, var(--brass-ink)); }
+.surface-dark .track-content h4.kicker { color: var(--accent-light, var(--brass-light)); }
+.track-content h3 { font-size: clamp(1.75rem, 2.8vw, 2.3rem); margin-bottom: 18px; }
+.surface-dark .track-content h3 { color: var(--text-on-dark); }
+.track-content p { color: var(--text-soft); margin-bottom: 26px; font-weight: 300; max-width: 46ch; }
+.surface-dark .track-content p { color: var(--text-on-dark-soft); }
+
+.feature-list { list-style: none; }
+.feature-list li {
+  position: relative; padding-left: 30px; margin-bottom: 13px;
+  font-size: 0.98rem; font-weight: 400;
+}
+.feature-list li::before {
+  content: ''; position: absolute; left: 0; top: 5px;
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid var(--accent-ink, var(--brass-ink));
+}
+.surface-dark .feature-list li::before { border-color: var(--accent-light, var(--brass-light)); }
+
+.price-tag {
+  display: inline-flex; align-items: baseline; gap: 12px; margin-top: 8px;
+  background: rgba(196, 153, 31, 0.1); border: 1px solid rgba(196, 153, 31, 0.35);
+  padding: 13px 22px; border-radius: 14px;
+}
+.surface-dark .price-tag { background: rgba(231, 190, 90, 0.1); border-color: rgba(231, 190, 90, 0.32); }
+.price-tag-amount { font-family: var(--font-mono); font-weight: 600; font-size: 0.98rem; color: var(--accent-ink, var(--brass-ink)); }
+.surface-dark .price-tag-amount { color: var(--accent-light, var(--brass-light)); }
+.price-tag-note { font-size: 0.85rem; color: var(--text-soft); }
+.surface-dark .price-tag-note { color: var(--text-on-dark-soft); }
+
+/* Fallback: reduced motion / narrow viewport → plain vertical stack --------- */
+.track-fallback [data-track] { height: auto !important; padding: 88px 0 !important; }
+.track-fallback .track-sticky { position: static; height: auto; display: block; }
+.track-fallback .track-wrapper { display: flex; flex-direction: column; gap: 52px; padding: 0; transform: none !important; }
+.track-fallback .track-panel { flex: none; width: 100%; }
+.track-fallback .track-heading { position: static; padding: 0; margin-bottom: 56px; }
+.track-fallback .track-progress { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-track] { height: auto !important; padding: 88px 0 !important; }
+  .track-sticky { position: static !important; height: auto !important; display: block !important; }
+  .track-wrapper { display: flex !important; flex-direction: column !important; transform: none !important; }
+  .track-panel { flex: none !important; width: 100%; }
+  .track-heading { position: static !important; margin-bottom: 56px; }
+  .track-progress { display: none !important; }
+}
+
+/* ============================================================================
+   ENROLL / INFO CARDS
+   ============================================================================ */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+.info-card {
+  background: linear-gradient(155deg, var(--paper-2), var(--paper));
+  padding: 44px 38px; border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-1);
+  position: relative; overflow: hidden;
+  transition: box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+.info-card:hover { box-shadow: var(--shadow-3); border-color: var(--brass); }
+.info-card-arc {
+  position: absolute; top: -1px; left: -1px; width: 64px; height: 64px;
+  border-top: 1.5px solid var(--brass); border-left: 1.5px solid var(--brass);
+  border-radius: var(--radius) 0 0 0; opacity: 0.55; pointer-events: none;
+}
+.info-card-icon {
+  width: 54px; height: 54px; border-radius: 15px;
+  background: linear-gradient(155deg, var(--ink), var(--surface-2));
+  color: var(--brass-light); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 26px; box-shadow: var(--shadow-2), inset 0 1px 1px rgba(247, 241, 227, 0.2);
+}
+.info-card h4 { font-size: 1.28rem; margin-bottom: 12px; }
+.info-card > p { color: var(--text-soft); font-weight: 300; margin-bottom: 16px; }
+.info-card .meta { font-family: var(--font-mono); font-size: 12px; color: var(--brass-ink); font-weight: 500; letter-spacing: 0.3px; }
+.info-card .detail-list { margin-top: 4px; }
+.info-card .detail-row { display: flex; gap: 8px; font-family: var(--font-mono); font-size: 0.86rem; margin-bottom: 6px; color: var(--text); }
+.info-card .detail-row span:first-child { color: var(--text-soft); min-width: 84px; }
+.info-card .detail-row a { color: var(--clay); font-weight: 500; }
+
+/* ============================================================================
+   FOOTER
+   ============================================================================ */
+.site-footer { background: var(--ink); color: var(--text-on-dark-soft); padding: 56px 0 34px; }
+.site-footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.site-footer .logo { color: var(--text-on-dark); }
+.site-footer-links { display: flex; gap: 26px; font-size: 13.5px; }
+.site-footer-links a:hover { color: var(--brass-light); }
+.site-footer-bottom {
+  max-width: var(--maxw); margin: 34px auto 0; padding: 22px 32px 0;
+  border-top: 1px solid var(--line-dark);
+  font-size: 12.5px; font-family: var(--font-mono); color: rgba(243, 236, 218, 0.5);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width: 980px) {
+  .section { padding: 90px 0; }
+  .section-header { margin-bottom: 56px; }
+  .track-image { height: 420px; }
+}
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+  .menu-toggle { display: block; }
+  .container { padding: 0 22px; }
+  .track-image-frame { display: none; }
+  .hero-content { padding-top: 108px; }
+  .site-footer-bottom { padding-left: 22px; padding-right: 22px; }
+
+  .track-heading { padding: 0 22px; }
+  .track-image { height: 300px; }
+}
+
+@media (min-width: 761px) {
+  .track-sticky { overflow-y: hidden; }
+}
+
+
+.emblem-stage { opacity: 0; transition: opacity 1.1s var(--ease); }
+.emblem-stage.is-ready { opacity: 1; }
+</style>
+</head>
+<body>
+<!--
+  #root starts populated with real, static, semantic markup (nav, hero,
+  both academies, enrollment details, footer) rather than an empty shell,
+  so a visitor whose connection can't reach the CDNs below — or who has
+  module scripts blocked — still gets a complete, readable, navigable
+  page. The moment React mounts, it replaces this subtree with the full
+  interactive build.
+-->
+<div id="root">
+<a href="#main" class="skip-link">Skip to content</a>
+<nav class="nav is-scrolled" aria-label="Primary">
+  <div class="container nav-inner">
+    <a href="#home" class="logo"><span class="dot" aria-hidden="true"></span>B.I.C</a>
+    <div class="fallback-nav-links">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="#bima" class="nav-link">Our Programs</a>
+      <a href="#enroll" class="btn nav-cta">Get In Touch</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <header class="hero" id="home">
+    <div class="container hero-content" style="padding-top:150px">
+      <span class="kicker" style="color:var(--brass-light)">Bodija International College</span>
+      <h1 style="color:var(--text-on-dark)">Cultivating <em>Excellence</em></h1>
+      <p class="hero-body">Home to two elite academies dedicated to shaping the future of media, arts, and athletics — where discipline meets creativity, and passion becomes profession.</p>
+      <div class="hero-ctas">
+        <a href="#enroll" class="btn btn-primary">Begin Enrollment</a>
+        <a href="#bima" class="btn btn-secondary">Explore Academies</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="bima">
+    <div class="container">
+      <div class="section-header">
+        <span class="kicker accent-clay" style="color:var(--accent-ink)">Test Your Voice &bull; Shape the Future</span>
+        <h2>Bodija International Media Academy</h2>
+        <p>A meticulously crafted certification program for visionaries entering the entertainment, media, and communication industries.</p>
+      </div>
+      <div class="info-grid">
+        <div class="info-card accent-clay">
+          <h4>Master the Creative Arts</h4>
+          <p>BIMA delivers a short-term professional program tailored for those looking to dominate the entertainment, media, and business communication industries.</p>
+          <div class="price-tag"><span class="price-tag-amount">&#8358;20,000</span><span class="price-tag-note">Next Session: April 2 &ndash; 19</span></div>
+        </div>
+        <div class="info-card accent-clay">
+          <h4>Sound &amp; Instrument</h4>
+          <p>Sound Engineering and Music Production &middot; Musical Instrument Training</p>
+        </div>
+        <div class="info-card accent-clay">
+          <h4>Screen &amp; Stage</h4>
+          <p>Film Production and Editing &middot; Dance and Drama</p>
+        </div>
+        <div class="info-card accent-clay">
+          <h4>Business &amp; Presence</h4>
+          <p>Social Media Marketing &amp; Content Creation &middot; Business and Communication Skills &middot; Costume and Makeup Artistry</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-dark" id="bifa">
+    <div class="container">
+      <div class="section-header">
+        <span class="kicker">The Soaring Eagles &bull; We Love Football</span>
+        <h2>Bodija International Football Academy</h2>
+        <p>Fostering athletic excellence in youth through rigorous training, professional trials, and direct pathways to competitive greatness.</p>
+      </div>
+      <div class="info-grid">
+        <div class="info-card accent-pitch">
+          <h4>Elevate Your Game</h4>
+          <p>Operating under the banner of &lsquo;The Soaring Eagles&rsquo;, BIFA is dedicated to nurturing the next generation of competitive athletes.</p>
+        </div>
+        <div class="info-card accent-pitch">
+          <h4>Football &amp; Track</h4>
+          <p>Professional Football Training &amp; Talent Trials &middot; Tournament Placements (e.g. KEFT 2024) &middot; Track &amp; Field: Elite Relay Competitions</p>
+        </div>
+        <div class="info-card accent-pitch">
+          <h4>Affiliated Programs</h4>
+          <p>Affiliated Drone Academy (Registration &#8358;10,000) &middot; Table Tennis &amp; Swimming Programs</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="enroll">
+    <div class="container">
+      <div class="section-header">
+        <span class="kicker">Begin Your Journey With Us</span>
+        <h2>Enrollment Details</h2>
+        <p>Everything you need to take the first step toward joining our academies.</p>
+      </div>
+      <div class="info-grid">
+        <div class="info-card">
+          <h4>Academy Location</h4>
+          <p>1&ndash;5 Tunde Iakunni Crescent, Off Osuntokun, Bodija, Ibadan, Nigeria.</p>
+          <div class="meta">Sessions commence 10:00 AM Daily</div>
+        </div>
+        <div class="info-card">
+          <h4>Payment Gateway</h4>
+          <p>All official payments are securely processed via the School Bursary accounts.</p>
+          <div class="detail-list">
+            <div class="detail-row"><span>Bank</span><span>GTBank</span></div>
+            <div class="detail-row"><span>Name</span><span>Bodija International College</span></div>
+            <div class="detail-row"><span>Account No</span><span>0028908200</span></div>
+          </div>
+        </div>
+        <div class="info-card">
+          <h4>Contact Management</h4>
+          <p>For inquiries, sports trials, and registration assistance, our team is on standby.</p>
+          <div class="detail-list">
+            <div class="detail-row"><span>Phone</span><a href="tel:+2348030861619">0803 086 1619</a></div>
+            <div class="detail-row"><span>Email</span><a href="mailto:bimacad2024@gmail.com">bimacad2024@gmail.com</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <a href="#home" class="logo"><span class="dot" aria-hidden="true"></span>B.I.C</a>
+    <div class="site-footer-links"><a href="#bima">Our Programs</a><a href="#enroll">Get In Touch</a></div>
+  </div>
+  <div class="site-footer-bottom">
+    <span>Bodija International College &mdash; BIMA &amp; BIFA</span>
+    <span>All rights reserved.</span>
+  </div>
+</footer>
+
+</div>
+
+<script>
+  window.setTimeout(function () {
+    if (window.__BIC_APP_MOUNTED__) return;
+    var note = document.createElement('div');
+    note.setAttribute('role', 'status');
+    note.style.cssText = 'position:fixed;bottom:18px;left:18px;right:18px;max-width:440px;margin:0 auto;' +
+      'background:#0E0C1B;color:#F3ECDA;padding:14px 20px;border-radius:14px;' +
+      'font:14px/1.5 Inter,-apple-system,sans-serif;z-index:9999;box-shadow:0 16px 36px rgba(0,0,0,.32)';
+    note.textContent = 'Showing the standard version of this page — the full interactive experience needs an internet connection to load.';
+    document.body.appendChild(note);
+  }, 6000);
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "react/jsx-dev-runtime": "https://esm.sh/react@18.2.0/jsx-dev-runtime",
+    "three": "https://esm.sh/three@0.160.0",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber@8?external=react,react-dom,three",
+    "framer-motion": "https://esm.sh/framer-motion@11?external=react,react-dom"
+  }
+}
+</script>
+
+<script type="module">
+// src/main.jsx
+import React17 from "react";
+import { createRoot } from "react-dom/client";
+
+// src/App.jsx
+import React16 from "react";
+import { MotionConfig } from "framer-motion";
+
+// src/components/Nav.jsx
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+
+// src/data/content.js
+var siteLogo = {
+  // Shared site crest, served from the unified site's asset folder.
+  src: "/assets/img/logo.png",
+  alt: "Bodija International College crest"
+};
+var nav = {
+  logo: "B.I.C",
+  links: [
+    { label: "Home", href: "/index.html" },
+    // "Our Programs" and "Get In Touch" have real homes on this page, so
+    // they route in-page. "Updates" and "Digital Library" route to their
+    // pages on the unified site.
+    { label: "Updates", href: "/news.html" },
+    { label: "Our Programs", href: "#bima" },
+    // The original stylesheet defined a whole .nav-cta pill treatment
+    // (brass fill, dark text) that no element in the markup ever actually
+    // used — dead CSS. Given a real destination (#enroll) already exists,
+    // this is where that unfulfilled intent belongs.
+    { label: "Get In Touch", href: "#enroll" },
+    { label: "Digital Library", href: "/library.html" }
+  ]
+};
+var hero = {
+  eyebrow: "Bodija International College",
+  heading: ["Cultivating", "Excellence"],
+  body: "Home to two elite academies dedicated to shaping the future of media, arts, and athletics \u2014 where discipline meets creativity, and passion becomes profession.",
+  ctaPrimary: { label: "Begin Enrollment", href: "#enroll" },
+  ctaSecondary: { label: "Explore Academies", href: "#bima" }
+};
+var bima = {
+  id: "bima",
+  accent: "clay",
+  eyebrow: "Test Your Voice \u2022 Shape the Future",
+  heading: "Bodija International Media Academy",
+  body: "A meticulously crafted certification program for visionaries entering the entertainment, media, and communication industries.",
+  photo: {
+    src: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1200&auto=format&fit=crop",
+    badge: "BIMA Studio",
+    alt: "Media studio production session"
+  },
+  panels: [
+    {
+      kicker: "Intensive 2-Week Certification",
+      title: "Master the Creative Arts",
+      body: "BIMA delivers a short-term professional program tailored for those looking to dominate the entertainment, media, and business communication industries.",
+      priceTag: { amount: "\u20A620,000", note: "Next Session: April 2 \u2013 19" }
+    },
+    {
+      kicker: "Discipline 01",
+      title: "Sound & Instrument",
+      items: ["Sound Engineering and Music Production", "Musical Instrument Training"]
+    },
+    {
+      kicker: "Discipline 02",
+      title: "Screen & Stage",
+      items: ["Film Production and Editing", "Dance and Drama"]
+    },
+    {
+      kicker: "Discipline 03",
+      title: "Business & Presence",
+      items: [
+        "Social Media Marketing & Content Creation",
+        "Business and Communication Skills",
+        "Costume and Makeup Artistry"
+      ]
+    }
+  ]
+};
+var bifa = {
+  id: "bifa",
+  accent: "pitch",
+  surface: "dark",
+  eyebrow: "The Soaring Eagles \u2022 We Love Football",
+  heading: "Bodija International Football Academy",
+  body: "Fostering athletic excellence in youth through rigorous training, professional trials, and direct pathways to competitive greatness.",
+  photo: {
+    src: "/assets/img/bifa.jpg",
+    badge: "The Soaring Eagles",
+    alt: "Football training on the pitch"
+  },
+  panels: [
+    {
+      kicker: "Elite Athletic Training & Tournaments",
+      title: "Elevate Your Game",
+      body: "Operating under the banner of 'The Soaring Eagles', BIFA is dedicated to nurturing the next generation of competitive athletes.",
+      priceTag: { amount: "Open to All", note: "Male & Female Athletes" }
+    },
+    {
+      kicker: "On the Pitch",
+      title: "Football & Track",
+      items: [
+        "Professional Football Training & Talent Trials",
+        "Tournament Placements (e.g. KEFT 2024)",
+        "Track & Field: Elite Relay Competitions"
+      ]
+    },
+    {
+      kicker: "Beyond the Pitch",
+      title: "Affiliated Programs",
+      items: ["Affiliated Drone Academy (Registration \u20A610,000)", "Table Tennis & Swimming Programs"]
+    }
+  ]
+};
+var enroll = {
+  eyebrow: "Begin Your Journey With Us",
+  heading: "Enrollment Details",
+  body: "Everything you need to take the first step toward joining our academies.",
+  cards: [
+    {
+      icon: "location",
+      heading: "Academy Location",
+      body: "1\u20135 Tunde Iakunni Crescent, Off Osuntokun, Bodija, Ibadan, Nigeria.",
+      meta: "Sessions commence 10:00 AM Daily"
+    },
+    {
+      icon: "payment",
+      heading: "Payment Gateway",
+      body: "All official payments are securely processed via the School Bursary accounts.",
+      detail: [
+        { label: "Bank", value: "GTBank" },
+        { label: "Name", value: "Bodija International College" },
+        { label: "Account No", value: "0028908200" }
+      ]
+    },
+    {
+      icon: "contact",
+      heading: "Contact Management",
+      body: "For inquiries, sports trials, and registration assistance, our team is on standby.",
+      detail: [
+        { label: "Phone", value: "0803 086 1619", href: "tel:+2348030861619" },
+        { label: "Email", value: "bimacad2024@gmail.com", href: "mailto:bimacad2024@gmail.com" }
+      ]
+    }
+  ]
+};
+var footer = {
+  note: "Bodija International College \u2014 BIMA & BIFA",
+  links: [
+    { label: "What We Offer", href: "#bima" },
+    { label: "Connect With Us", href: "#enroll" }
+  ]
+};
+
+// src/components/Nav.jsx
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var EASE = [0.22, 1, 0.36, 1];
+function NavLink({ link, onNavigate }) {
+  const [hovered, setHovered] = useState(false);
+  if (link.cta) {
+    return /* @__PURE__ */ jsx("a", { href: link.href, className: "btn nav-cta", onClick: onNavigate, children: link.label });
+  }
+  return /* @__PURE__ */ jsxs(
+    "a",
+    {
+      href: link.href,
+      className: "nav-link",
+      "data-disabled": link.disabled || void 0,
+      "aria-disabled": link.disabled || void 0,
+      onClick: (e) => {
+        if (link.disabled) e.preventDefault();
+        onNavigate?.(e);
+      },
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false),
+      children: [
+        link.label,
+        !link.disabled && /* @__PURE__ */ jsx(
+          motion.span,
+          {
+            className: "nav-link-underline",
+            initial: false,
+            animate: { scaleX: hovered ? 1 : 0 },
+            transition: { duration: 0.35, ease: EASE }
+          }
+        )
+      ]
+    }
+  );
+}
+function Nav() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled((prev) => latest > 40 ? true : latest > 24 ? prev : false);
+  });
+  const closeMenu = () => setMenuOpen(false);
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx("nav", { className: `nav${isScrolled ? " is-scrolled" : ""}`, id: "nav", children: /* @__PURE__ */ jsxs("div", { className: "container nav-inner", children: [
+      /* @__PURE__ */ jsxs("a", { href: "#home", className: "logo", "aria-label": "Bodija International College home", children: [
+        /* @__PURE__ */ jsx("span", { className: "dot", "aria-hidden": "true" }),
+        nav.logo
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "nav-links", children: nav.links.map((link) => /* @__PURE__ */ jsx(NavLink, { link }, link.label)) }),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          className: "menu-toggle",
+          "aria-label": menuOpen ? "Close menu" : "Open menu",
+          "aria-expanded": menuOpen,
+          "aria-controls": "mobileMenu",
+          onClick: () => setMenuOpen((v) => !v),
+          children: [
+            /* @__PURE__ */ jsx(motion.span, { animate: menuOpen ? { y: 6, rotate: 45 } : { y: 0, rotate: 0 }, transition: { duration: 0.35, ease: EASE } }),
+            /* @__PURE__ */ jsx(motion.span, { animate: { opacity: menuOpen ? 0 : 1 }, transition: { duration: 0.2 } }),
+            /* @__PURE__ */ jsx(motion.span, { animate: menuOpen ? { y: -6, rotate: -45 } : { y: 0, rotate: 0 }, transition: { duration: 0.35, ease: EASE } })
+          ]
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsx(AnimatePresence, { children: menuOpen && /* @__PURE__ */ jsx(
+      motion.div,
+      {
+        className: "mobile-menu",
+        id: "mobileMenu",
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-label": "Mobile navigation",
+        initial: { clipPath: "circle(0% at calc(100% - 45px) 40px)" },
+        animate: { clipPath: "circle(150% at calc(100% - 45px) 40px)" },
+        exit: { clipPath: "circle(0% at calc(100% - 45px) 40px)" },
+        transition: { duration: 0.6, ease: EASE },
+        onKeyDown: (e) => {
+          if (e.key === "Escape") closeMenu();
+        },
+        children: nav.links.map((link) => /* @__PURE__ */ jsx(
+          "a",
+          {
+            href: link.href,
+            "data-disabled": link.disabled || void 0,
+            onClick: (e) => {
+              if (link.disabled) e.preventDefault();
+              closeMenu();
+            },
+            children: link.label
+          },
+          link.label
+        ))
+      }
+    ) })
+  ] });
+}
+
+// src/components/Hero.jsx
+import React7, { useEffect as useEffect2, useRef as useRef5, useState as useState3 } from "react";
+import { Canvas } from "@react-three/fiber";
+
+// src/components/Reveal.jsx
+import React2 from "react";
+import { motion as motion2 } from "framer-motion";
+import { jsx as jsx2 } from "react/jsx-runtime";
+var EASE2 = [0.22, 1, 0.36, 1];
+var staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.02 } }
+};
+var revealItem = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE2 } }
+};
+function resolveMotionComponent(as) {
+  if (typeof as === "string") return motion2[as] || motion2.div;
+  return as || motion2.div;
+}
+function RevealGroup({
+  as,
+  className,
+  children,
+  amount = 0.3,
+  once = true,
+  mode = "scroll",
+  // 'scroll' (whileInView) or 'mount' (animate immediately, e.g. the hero)
+  ...rest
+}) {
+  const Component = resolveMotionComponent(as);
+  const triggerProps = mode === "mount" ? { animate: "visible" } : { whileInView: "visible", viewport: { once, amount } };
+  return /* @__PURE__ */ jsx2(Component, { className, initial: "hidden", variants: staggerContainer, ...triggerProps, ...rest, children });
+}
+function RevealItem({ as, className, children, ...rest }) {
+  const Component = resolveMotionComponent(as);
+  return /* @__PURE__ */ jsx2(Component, { className, variants: revealItem, ...rest, children });
+}
+
+// src/components/ErrorBoundary.jsx
+import React3 from "react";
+var ErrorBoundary = class extends React3.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, info) {
+    console.error("BIC UI error boundary caught:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? null;
+    }
+    return this.props.children;
+  }
+};
+
+// src/three/SealScene.jsx
+import React6, { useRef as useRef4 } from "react";
+import { useFrame as useFrame3, useThree as useThree2 } from "@react-three/fiber";
+
+// src/lib/damp.js
+function dampTowards(current, target, halfLife, dt) {
+  if (dt <= 0) return current;
+  const decay = Math.pow(2, -dt / Math.max(halfLife, 1e-4));
+  return target + (current - target) * decay;
+}
+
+// src/three/Medallion.jsx
+import React4, { useRef as useRef2 } from "react";
+import { useFrame } from "@react-three/fiber";
+import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
+function Medallion() {
+  const ringRef = useRef2(null);
+  const coreRef = useRef2(null);
+  useFrame((_state, rawDelta) => {
+    const dt = Math.min(rawDelta, 1 / 15);
+    if (ringRef.current) ringRef.current.rotation.y += dt * 0.22;
+    if (coreRef.current) {
+      coreRef.current.rotation.y -= dt * 0.5;
+      coreRef.current.rotation.x += dt * 0.18;
+    }
+  });
+  return /* @__PURE__ */ jsxs2("group", { children: [
+    /* @__PURE__ */ jsxs2("mesh", { ref: ringRef, castShadow: true, receiveShadow: true, children: [
+      /* @__PURE__ */ jsx3("torusGeometry", { args: [1.15, 0.09, 32, 100] }),
+      /* @__PURE__ */ jsx3(
+        "meshPhysicalMaterial",
+        {
+          color: "#c4991f",
+          metalness: 0.88,
+          roughness: 0.3,
+          iridescence: 0.35,
+          iridescenceIOR: 1.3,
+          iridescenceThicknessRange: [100, 400]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs2("mesh", { ref: coreRef, castShadow: true, receiveShadow: true, children: [
+      /* @__PURE__ */ jsx3("sphereGeometry", { args: [0.62, 64, 64] }),
+      /* @__PURE__ */ jsx3(
+        "meshPhysicalMaterial",
+        {
+          color: "#f3ecda",
+          roughness: 0.5,
+          metalness: 0.06,
+          clearcoat: 0.4,
+          clearcoatRoughness: 0.35,
+          emissive: "#c4991f",
+          emissiveIntensity: 0.06,
+          flatShading: false
+        }
+      )
+    ] })
+  ] });
+}
+
+// src/three/EagleParticles.jsx
+import React5, { useMemo, useRef as useRef3 } from "react";
+import { useFrame as useFrame2, useThree } from "@react-three/fiber";
+import * as THREE from "three";
+import { SimplexNoise as SimplexNoise2 } from "three/addons/math/SimplexNoise.js";
+
+// src/lib/eagleFormation.js
+import { SimplexNoise } from "three/addons/math/SimplexNoise.js";
+var shapeNoise = new SimplexNoise();
+var SCATTER_FREQ = 2.3;
+var SCATTER_AMOUNT = 0.05;
+function scatter(x, y, z) {
+  const nx = shapeNoise.noise3d(x * SCATTER_FREQ + 7.7, y * SCATTER_FREQ, z * SCATTER_FREQ);
+  const ny = shapeNoise.noise3d(x * SCATTER_FREQ, y * SCATTER_FREQ + 7.7, z * SCATTER_FREQ);
+  const nz = shapeNoise.noise3d(x * SCATTER_FREQ, y * SCATTER_FREQ, z * SCATTER_FREQ + 7.7);
+  return [x + nx * SCATTER_AMOUNT, y + ny * SCATTER_AMOUNT, z + nz * SCATTER_AMOUNT];
+}
+function rootWeightedT(u) {
+  return Math.pow(u, 1.55);
+}
+var BODY_FRACTION = 0.15;
+var TAIL_FRACTION_OF_BODY = 0.32;
+function bodyHome(localI, localCount) {
+  const tailCount = Math.max(Math.round(localCount * TAIL_FRACTION_OF_BODY), 3);
+  if (localI < tailCount) {
+    const tt = tailCount <= 1 ? 0 : localI / (tailCount - 1);
+    const spread = (tt - 0.5) * 0.5;
+    return [spread, -0.52 - tt * 0.26, -0.22 - tt * 0.4];
+  }
+  const torsoCount = Math.max(localCount - tailCount, 1);
+  const bi = localI - tailCount;
+  const bt = torsoCount <= 1 ? 0 : bi / (torsoCount - 1);
+  const x = Math.sin(bt * Math.PI * 1.3) * 0.045;
+  const y = -0.34 + bt * 0.92;
+  const z = 0.05 + Math.pow(bt, 1.5) * 0.26;
+  return [x, y, z];
+}
+function wingHome(localI, localCount, side) {
+  const u = localCount <= 1 ? 0 : localI / (localCount - 1);
+  const t = rootWeightedT(u);
+  const lane = (localI % 5 - 2) / 2;
+  const spanX = 1.75;
+  const spanZ = 1.05;
+  const rootOffset = 0.1;
+  const rootRise = 0.28;
+  const midLift = 0.32;
+  const tipDroop = 0.55;
+  let x = side * (rootOffset + t * spanX);
+  let y = rootRise + Math.sin(Math.PI * t) * midLift - Math.pow(t, 2.2) * tipDroop;
+  let z = -Math.pow(t, 1.6) * spanZ - 0.05;
+  const chord = Math.sin(Math.PI * Math.pow(t, 0.8)) * 0.16;
+  y += lane * chord * 0.5;
+  z += lane * chord * 0.9;
+  if (t > 0.85) {
+    const ft = (t - 0.85) / 0.15;
+    const angle = lane * 0.5;
+    x += side * Math.sin(angle) * ft * 0.32;
+    y += (Math.cos(angle) - 1) * ft * 0.3 - ft * ft * 0.1;
+    z -= Math.abs(lane) * ft * 0.12;
+  }
+  return [x, y, z];
+}
+function eagleHome(i, count) {
+  const bodyCount = Math.max(Math.round(count * BODY_FRACTION), 8);
+  const wingTotal = count - bodyCount;
+  const leftCount = Math.floor(wingTotal / 2);
+  const rightCount = wingTotal - leftCount;
+  let x, y, z;
+  if (i < bodyCount) {
+    [x, y, z] = bodyHome(i, bodyCount);
+  } else {
+    const wingI = i - bodyCount;
+    if (wingI < leftCount) {
+      [x, y, z] = wingHome(wingI, leftCount, -1);
+    } else {
+      [x, y, z] = wingHome(wingI - leftCount, rightCount, 1);
+    }
+  }
+  return scatter(x, y, z);
+}
+function buildEagleHomes(count) {
+  const homes = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const [x, y, z] = eagleHome(i, count);
+    homes[i * 3] = x;
+    homes[i * 3 + 1] = y;
+    homes[i * 3 + 2] = z;
+  }
+  return homes;
+}
+
+// src/three/EagleParticles.jsx
+import { jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
+var VERTEX_SHADER = `
+  attribute float aSize;
+  attribute vec3 aColor;
+  varying vec3 vColor;
+  varying float vFade;
+  void main() {
+    vColor = aColor;
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    float dist = -mvPosition.z;
+    gl_PointSize = aSize * (6.0 / max(dist, 0.001));
+    float t = smoothstep(3.0, 9.0, dist);
+    vFade = 1.0 - t * 0.65;
+    gl_Position = projectionMatrix * mvPosition;
+  }
+`;
+var FRAGMENT_SHADER = `
+  varying vec3 vColor;
+  varying float vFade;
+  void main() {
+    vec2 uv = gl_PointCoord - vec2(0.5);
+    float d = length(uv);
+    float alpha = smoothstep(0.5, 0.02, d) * vFade;
+    if (alpha < 0.02) discard;
+    gl_FragColor = vec4(vColor, alpha);
+  }
+`;
+var COUNT = 170;
+var BRASS = new THREE.Color("#e7be5a");
+var PAPER = new THREE.Color("#f3ecda");
+var SPRING = 3.4;
+var DAMPING_HALF_LIFE = 0.22;
+var REPEL_RADIUS = 1.15;
+var REPEL_STRENGTH = 5.2;
+var NOISE_FREQ = 0.5;
+var NOISE_SPEED = 0.18;
+var NOISE_AMP = 0.045;
+function EagleParticles() {
+  const pointsRef = useRef3(null);
+  const { raycaster, pointer, camera } = useThree();
+  const noise = useMemo(() => new SimplexNoise2(), []);
+  const { positions, velocities, homes, sizes, colors, plane, hitPoint } = useMemo(() => {
+    const homes2 = buildEagleHomes(COUNT);
+    const positions2 = new Float32Array(COUNT * 3);
+    const velocities2 = new Float32Array(COUNT * 3);
+    const sizes2 = new Float32Array(COUNT);
+    const colors2 = new Float32Array(COUNT * 3);
+    const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2);
+    for (let i = 0; i < COUNT; i++) {
+      positions2[i * 3] = (Math.random() - 0.5) * 7;
+      positions2[i * 3 + 1] = (Math.random() - 0.5) * 7;
+      positions2[i * 3 + 2] = (Math.random() - 0.5) * 4;
+      sizes2[i] = (3 + Math.random() * 5) * dpr;
+      const c = i % 6 === 0 ? BRASS : PAPER;
+      colors2[i * 3] = c.r;
+      colors2[i * 3 + 1] = c.g;
+      colors2[i * 3 + 2] = c.b;
+    }
+    return {
+      positions: positions2,
+      velocities: velocities2,
+      homes: homes2,
+      sizes: sizes2,
+      colors: colors2,
+      plane: new THREE.Plane(new THREE.Vector3(0, 0, 1), 0),
+      hitPoint: new THREE.Vector3()
+    };
+  }, []);
+  useFrame2((state, rawDelta) => {
+    const dt = Math.min(rawDelta, 1 / 15);
+    const geometry = pointsRef.current?.geometry;
+    if (!geometry) return;
+    const posAttr = geometry.attributes.position;
+    const arr = posAttr.array;
+    const time = state.clock.elapsedTime;
+    raycaster.setFromCamera(pointer, camera);
+    const hasHit = raycaster.ray.intersectPlane(plane, hitPoint);
+    for (let i = 0; i < COUNT; i++) {
+      const ix = i * 3;
+      const iy = ix + 1;
+      const iz = ix + 2;
+      const hx = homes[ix];
+      const hy = homes[iy];
+      const hz = homes[iz];
+      const nx = noise.noise4d(hx * NOISE_FREQ, hy * NOISE_FREQ, hz * NOISE_FREQ, time * NOISE_SPEED);
+      const ny = noise.noise4d(hx * NOISE_FREQ + 19.7, hy * NOISE_FREQ, hz * NOISE_FREQ, time * NOISE_SPEED);
+      const nz = noise.noise4d(hx * NOISE_FREQ, hy * NOISE_FREQ + 41.3, hz * NOISE_FREQ, time * NOISE_SPEED);
+      const targetX = hx + nx * NOISE_AMP;
+      const targetY = hy + ny * NOISE_AMP;
+      const targetZ = hz + nz * NOISE_AMP;
+      let ax = (targetX - arr[ix]) * SPRING;
+      let ay = (targetY - arr[iy]) * SPRING;
+      let az = (targetZ - arr[iz]) * SPRING;
+      if (hasHit) {
+        const dx = arr[ix] - hitPoint.x;
+        const dy = arr[iy] - hitPoint.y;
+        const dz = arr[iz] - hitPoint.z;
+        const distSq = dx * dx + dy * dy + dz * dz;
+        if (distSq < REPEL_RADIUS * REPEL_RADIUS) {
+          const dist = Math.sqrt(distSq) || 1e-3;
+          const n = 1 - dist / REPEL_RADIUS;
+          const eased = n * n * (3 - 2 * n);
+          const force = eased * REPEL_STRENGTH;
+          ax += dx / dist * force;
+          ay += dy / dist * force;
+          az += dz / dist * force;
+        }
+      }
+      velocities[ix] += ax * dt;
+      velocities[iy] += ay * dt;
+      velocities[iz] += az * dt;
+      const damp = Math.pow(2, -dt / DAMPING_HALF_LIFE);
+      velocities[ix] *= damp;
+      velocities[iy] *= damp;
+      velocities[iz] *= damp;
+      arr[ix] += velocities[ix] * dt;
+      arr[iy] += velocities[iy] * dt;
+      arr[iz] += velocities[iz] * dt;
+    }
+    posAttr.needsUpdate = true;
+  });
+  return /* @__PURE__ */ jsxs3("points", { ref: pointsRef, frustumCulled: false, children: [
+    /* @__PURE__ */ jsxs3("bufferGeometry", { children: [
+      /* @__PURE__ */ jsx4("bufferAttribute", { attach: "attributes-position", args: [positions, 3] }),
+      /* @__PURE__ */ jsx4("bufferAttribute", { attach: "attributes-aSize", args: [sizes, 1] }),
+      /* @__PURE__ */ jsx4("bufferAttribute", { attach: "attributes-aColor", args: [colors, 3] })
+    ] }),
+    /* @__PURE__ */ jsx4(
+      "shaderMaterial",
+      {
+        vertexShader: VERTEX_SHADER,
+        fragmentShader: FRAGMENT_SHADER,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      }
+    )
+  ] });
+}
+
+// src/three/SealScene.jsx
+import { Fragment as Fragment2, jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
+function SealScene() {
+  const tiltGroupRef = useRef4(null);
+  const tilt = useRef4({ x: 0, z: 0 });
+  const idleY = useRef4(0);
+  const slowFrames = useRef4(0);
+  const { pointer, gl } = useThree2();
+  useFrame3((_state, rawDelta) => {
+    const dt = Math.min(rawDelta, 1 / 15);
+    if (tiltGroupRef.current) {
+      idleY.current += dt * 0.18;
+      tilt.current.x = dampTowards(tilt.current.x, pointer.y * 0.22, 0.28, dt);
+      tilt.current.z = dampTowards(tilt.current.z, pointer.x * 0.18, 0.28, dt);
+      tiltGroupRef.current.rotation.set(tilt.current.x, idleY.current, tilt.current.z);
+    }
+    if (rawDelta > 0.028) {
+      slowFrames.current += 1;
+      if (slowFrames.current === 45 && gl.getPixelRatio() > 1) {
+        gl.setPixelRatio(1);
+      }
+    } else if (slowFrames.current > 0) {
+      slowFrames.current -= 1;
+    }
+  });
+  return /* @__PURE__ */ jsxs4(Fragment2, { children: [
+    /* @__PURE__ */ jsx5("ambientLight", { intensity: 0.6, color: "#f3ecda" }),
+    /* @__PURE__ */ jsx5(
+      "directionalLight",
+      {
+        position: [-3.2, 4.2, 4.5],
+        intensity: 1.15,
+        color: "#fff2d0",
+        castShadow: true,
+        "shadow-mapSize": [1024, 1024],
+        "shadow-camera-near": 1,
+        "shadow-camera-far": 15
+      }
+    ),
+    /* @__PURE__ */ jsx5("directionalLight", { position: [3, -1.5, -3], intensity: 0.55, color: "#e7be5a" }),
+    /* @__PURE__ */ jsxs4("group", { ref: tiltGroupRef, children: [
+      /* @__PURE__ */ jsx5(Medallion, {}),
+      /* @__PURE__ */ jsx5(EagleParticles, {})
+    ] }),
+    /* @__PURE__ */ jsxs4("mesh", { "rotation-x": -Math.PI / 2, "position-y": -1.6, receiveShadow: true, children: [
+      /* @__PURE__ */ jsx5("planeGeometry", { args: [8, 8] }),
+      /* @__PURE__ */ jsx5("shadowMaterial", { opacity: 0.22 })
+    ] })
+  ] });
+}
+
+// src/hooks/useMediaQuery.js
+import { useState as useState2, useEffect } from "react";
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState2(
+    () => typeof window !== "undefined" && typeof window.matchMedia === "function" ? window.matchMedia(query).matches : false
+  );
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mql = window.matchMedia(query);
+    const onChange = (e) => setMatches(e.matches);
+    setMatches(mql.matches);
+    if (mql.addEventListener) mql.addEventListener("change", onChange);
+    else mql.addListener(onChange);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", onChange);
+      else mql.removeListener(onChange);
+    };
+  }, [query]);
+  return matches;
+}
+function usePrefersReducedMotion() {
+  return useMediaQuery("(prefers-reduced-motion: reduce)");
+}
+function useIsCoarsePointer() {
+  return useMediaQuery("(pointer: coarse)");
+}
+function useIsNarrowViewport(breakpoint = 980) {
+  return useMediaQuery(`(max-width: ${breakpoint}px)`);
+}
+
+// src/components/Hero.jsx
+import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
+function Hero() {
+  const heroRef = useRef5(null);
+  const [inView, setInView] = useState3(true);
+  const [ready, setReady] = useState3(false);
+  const reducedMotion = usePrefersReducedMotion();
+  const coarsePointer = useIsCoarsePointer();
+  const narrow = useIsNarrowViewport(980);
+  const showEmblem = !reducedMotion && !coarsePointer && !narrow;
+  useEffect2(() => {
+    if (!showEmblem) return void 0;
+    const el = heroRef.current;
+    if (!el) return void 0;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [showEmblem]);
+  return /* @__PURE__ */ jsxs5("header", { className: "hero", id: "home", ref: heroRef, children: [
+    /* @__PURE__ */ jsx6("div", { className: "hero-glow", "aria-hidden": "true" }),
+    showEmblem && /* @__PURE__ */ jsx6("div", { className: `emblem-stage${ready ? " is-ready" : ""}`, "aria-hidden": "true", children: /* @__PURE__ */ jsx6(ErrorBoundary, { fallback: null, children: /* @__PURE__ */ jsx6(
+      Canvas,
+      {
+        dpr: [1, 2],
+        shadows: true,
+        gl: { alpha: true, antialias: true },
+        camera: { fov: 35, position: [0, 0.3, 6.2] },
+        frameloop: inView ? "always" : "never",
+        onCreated: () => setReady(true),
+        children: /* @__PURE__ */ jsx6(SealScene, {})
+      }
+    ) }) }),
+    /* @__PURE__ */ jsxs5(RevealGroup, { as: "div", className: "container hero-content", mode: "mount", children: [
+      /* @__PURE__ */ jsx6(RevealItem, { as: "span", className: "kicker", children: hero.eyebrow }),
+      /* @__PURE__ */ jsxs5(RevealItem, { as: "h1", children: [
+        hero.heading[0],
+        " ",
+        /* @__PURE__ */ jsx6("em", { children: hero.heading[1] })
+      ] }),
+      /* @__PURE__ */ jsx6(RevealItem, { as: "p", className: "hero-body", children: hero.body }),
+      /* @__PURE__ */ jsxs5(RevealItem, { as: "div", className: "hero-ctas", children: [
+        /* @__PURE__ */ jsx6("a", { href: hero.ctaPrimary.href, className: "btn btn-primary", children: hero.ctaPrimary.label }),
+        /* @__PURE__ */ jsx6("a", { href: hero.ctaSecondary.href, className: "btn btn-secondary", children: hero.ctaSecondary.label })
+      ] })
+    ] })
+  ] });
+}
+
+// src/components/HorizontalTrack.jsx
+import React11, { useRef as useRef7 } from "react";
+import { motion as motion6, useScroll as useScroll2, useSpring, useTransform as useTransform2 } from "framer-motion";
+
+// src/hooks/useTrackMetrics.js
+import { useRef as useRef6, useEffect as useEffect3, useState as useState4 } from "react";
+
+// src/lib/trackMath.js
+function measureTrack(wrapperEl, stickyEl) {
+  if (!wrapperEl || !stickyEl) return null;
+  const panels = Array.from(wrapperEl.children);
+  if (panels.length === 0) return null;
+  return {
+    stickyWidth: stickyEl.clientWidth,
+    panelOffsets: panels.map((p) => p.offsetLeft),
+    panelWidths: panels.map((p) => p.offsetWidth),
+    maxTranslate: Math.max(0, wrapperEl.scrollWidth - stickyEl.clientWidth)
+  };
+}
+function computeTranslateX(progress, metrics) {
+  if (!metrics) return 0;
+  return -progress * metrics.maxTranslate;
+}
+function computeNormDist(index, progress, metrics) {
+  if (!metrics) return 0;
+  const offset = metrics.panelOffsets[index] ?? 0;
+  const width = metrics.panelWidths[index] ?? 0;
+  const centerAtProgress = offset + width / 2 - progress * metrics.maxTranslate;
+  const viewportCenter = metrics.stickyWidth / 2 || 1;
+  const raw = (centerAtProgress - viewportCenter) / viewportCenter;
+  return Math.max(-1.5, Math.min(1.5, raw));
+}
+function computeActiveIndex(progress, metrics) {
+  if (!metrics || metrics.panelOffsets.length === 0) return 0;
+  let closest = 0;
+  let closestDist = Infinity;
+  metrics.panelOffsets.forEach((_, i) => {
+    const d = Math.abs(computeNormDist(i, progress, metrics));
+    if (d < closestDist) {
+      closestDist = d;
+      closest = i;
+    }
+  });
+  return closest;
+}
+
+// src/hooks/useTrackMetrics.js
+function useTrackMetrics(wrapperRef, stickyRef) {
+  const metricsRef = useRef6(null);
+  const [version, setVersion] = useState4(0);
+  useEffect3(() => {
+    const wrapperEl = wrapperRef.current;
+    const stickyEl = stickyRef.current;
+    if (!wrapperEl || !stickyEl) return void 0;
+    const remeasure = () => {
+      metricsRef.current = measureTrack(wrapperEl, stickyEl);
+      setVersion((v) => v + 1);
+    };
+    remeasure();
+    let frame = null;
+    const debouncedRemeasure = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(remeasure);
+    };
+    const ro = new ResizeObserver(debouncedRemeasure);
+    ro.observe(wrapperEl);
+    ro.observe(stickyEl);
+    window.addEventListener("orientationchange", debouncedRemeasure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("orientationchange", debouncedRemeasure);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+  return { metricsRef, version };
+}
+
+// src/components/TrackImagePanel.jsx
+import React8, { useState as useState5 } from "react";
+import { motion as motion3 } from "framer-motion";
+
+// src/hooks/usePanelMotion.js
+import { useTransform } from "framer-motion";
+function usePanelMotion(smoothProgress, metricsRef, index) {
+  const rotateY = useTransform(smoothProgress, (p) => computeNormDist(index, p, metricsRef.current) * -12);
+  const scale = useTransform(smoothProgress, (p) => 1 - Math.abs(computeNormDist(index, p, metricsRef.current)) * 0.08);
+  const z = useTransform(smoothProgress, (p) => -Math.abs(computeNormDist(index, p, metricsRef.current)) * 60);
+  return { rotateY, scale, z };
+}
+
+// src/components/TrackImagePanel.jsx
+import { jsx as jsx7, jsxs as jsxs6 } from "react/jsx-runtime";
+function PlaceholderMark() {
+  return /* @__PURE__ */ jsxs6("svg", { viewBox: "0 0 48 48", fill: "none", stroke: "#f7f1e3", strokeWidth: "1.1", strokeLinecap: "round", strokeLinejoin: "round", children: [
+    /* @__PURE__ */ jsx7("rect", { x: "4", y: "8", width: "40", height: "32", rx: "3", opacity: "0.55" }),
+    /* @__PURE__ */ jsx7("circle", { cx: "16.5", cy: "18.5", r: "3.1", opacity: "0.75" }),
+    /* @__PURE__ */ jsx7("path", { d: "M6 35l11-11.5 8 7.5 6-6.5 11 10.5", opacity: "0.75" })
+  ] });
+}
+function TrackImagePanel({ photo, accent = "brass", smoothProgress, metricsRef, index }) {
+  const [loaded, setLoaded] = useState5(false);
+  const [errored, setErrored] = useState5(false);
+  const showPhoto = Boolean(photo?.src) && !errored;
+  const { rotateY, scale, z } = usePanelMotion(smoothProgress, metricsRef, index);
+  return /* @__PURE__ */ jsxs6(
+    motion3.div,
+    {
+      className: `track-panel track-image accent-${accent}`,
+      style: { rotateY, scale, z, transformPerspective: 1200 },
+      children: [
+        /* @__PURE__ */ jsx7("div", { className: "track-image-frame", "aria-hidden": "true" }),
+        showPhoto ? /* @__PURE__ */ jsx7(
+          motion3.img,
+          {
+            src: photo.src,
+            alt: photo.alt || "",
+            loading: "lazy",
+            decoding: "async",
+            initial: { opacity: 0, scale: 1.06 },
+            animate: loaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.06 },
+            transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+            onLoad: () => setLoaded(true),
+            onError: () => setErrored(true)
+          }
+        ) : /* @__PURE__ */ jsx7("div", { className: "track-image-placeholder", children: /* @__PURE__ */ jsx7(PlaceholderMark, {}) }),
+        /* @__PURE__ */ jsx7("div", { className: "track-image-veil", "aria-hidden": "true" }),
+        photo?.badge && /* @__PURE__ */ jsxs6("div", { className: "track-badge", children: [
+          /* @__PURE__ */ jsx7("span", { className: "dot", "aria-hidden": "true" }),
+          photo.badge
+        ] })
+      ]
+    }
+  );
+}
+
+// src/components/TrackContentPanel.jsx
+import React9 from "react";
+import { motion as motion4 } from "framer-motion";
+import { jsx as jsx8, jsxs as jsxs7 } from "react/jsx-runtime";
+function TrackContentPanel({ panel, accent = "brass", smoothProgress, metricsRef, index }) {
+  const { rotateY, scale, z } = usePanelMotion(smoothProgress, metricsRef, index);
+  return /* @__PURE__ */ jsxs7(
+    motion4.div,
+    {
+      className: `track-panel track-content accent-${accent}`,
+      style: { rotateY, scale, z, transformPerspective: 1200 },
+      children: [
+        /* @__PURE__ */ jsx8("h4", { className: "kicker", children: panel.kicker }),
+        /* @__PURE__ */ jsx8("h3", { children: panel.title }),
+        panel.body && /* @__PURE__ */ jsx8("p", { children: panel.body }),
+        panel.items && /* @__PURE__ */ jsx8("ul", { className: "feature-list", children: panel.items.map((item) => /* @__PURE__ */ jsx8("li", { children: item }, item)) }),
+        panel.priceTag && /* @__PURE__ */ jsxs7("div", { className: "price-tag", children: [
+          /* @__PURE__ */ jsx8("span", { className: "price-tag-amount", children: panel.priceTag.amount }),
+          /* @__PURE__ */ jsx8("span", { className: "price-tag-note", children: panel.priceTag.note })
+        ] })
+      ]
+    }
+  );
+}
+
+// src/components/TrackDots.jsx
+import React10, { useState as useState6 } from "react";
+import { motion as motion5, useMotionValueEvent as useMotionValueEvent2 } from "framer-motion";
+import { jsx as jsx9 } from "react/jsx-runtime";
+function TrackDots({ count, progress, metricsRef, layoutId }) {
+  const [active, setActive] = useState6(0);
+  useMotionValueEvent2(progress, "change", (latest) => {
+    const idx = computeActiveIndex(latest, metricsRef.current);
+    setActive((prev) => prev === idx ? prev : idx);
+  });
+  return /* @__PURE__ */ jsx9("div", { className: "track-progress", role: "presentation", children: Array.from({ length: count }).map((_, i) => /* @__PURE__ */ jsx9("div", { className: "track-dot", children: active === i && /* @__PURE__ */ jsx9(
+    motion5.div,
+    {
+      className: "track-dot-fill",
+      layoutId,
+      transition: { type: "spring", stiffness: 380, damping: 32 }
+    }
+  ) }, i)) });
+}
+
+// src/components/HorizontalTrack.jsx
+import { jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
+function HorizontalTrack({ id, accent, surface, eyebrow, heading, body, photo, panels }) {
+  const sectionRef = useRef7(null);
+  const wrapperRef = useRef7(null);
+  const stickyRef = useRef7(null);
+  const { scrollYProgress } = useScroll2({ target: sectionRef, offset: ["start start", "end end"] });
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 26, mass: 0.4 });
+  const { metricsRef } = useTrackMetrics(wrapperRef, stickyRef);
+  const x = useTransform2(smoothProgress, (p) => computeTranslateX(p, metricsRef.current));
+  const headingOpacity = useTransform2(smoothProgress, [0, 0.05], [0, 1]);
+  const headingY = useTransform2(smoothProgress, [0, 0.05], [22, 0]);
+  const totalPanels = 1 + panels.length;
+  const isDark = surface === "dark";
+  return /* @__PURE__ */ jsx10(
+    "section",
+    {
+      id,
+      "data-track": true,
+      ref: sectionRef,
+      className: isDark ? "surface-dark" : void 0,
+      style: { height: `${totalPanels * 78}vh` },
+      children: /* @__PURE__ */ jsxs8("div", { className: "track-sticky", ref: stickyRef, children: [
+        /* @__PURE__ */ jsxs8(motion6.div, { className: "track-heading", style: { opacity: headingOpacity, y: headingY }, children: [
+          /* @__PURE__ */ jsx10("span", { className: "kicker", children: eyebrow }),
+          /* @__PURE__ */ jsx10("h2", { children: heading }),
+          /* @__PURE__ */ jsx10("p", { children: body })
+        ] }),
+        /* @__PURE__ */ jsxs8(motion6.div, { className: "track-wrapper", ref: wrapperRef, style: { x }, children: [
+          /* @__PURE__ */ jsx10(
+            TrackImagePanel,
+            {
+              photo,
+              accent,
+              smoothProgress,
+              metricsRef,
+              index: 0
+            }
+          ),
+          panels.map((panel, i) => /* @__PURE__ */ jsx10(
+            TrackContentPanel,
+            {
+              panel,
+              accent,
+              smoothProgress,
+              metricsRef,
+              index: i + 1
+            },
+            panel.title
+          ))
+        ] }),
+        /* @__PURE__ */ jsx10(TrackDots, { count: totalPanels, progress: smoothProgress, metricsRef, layoutId: `${id}-dot` })
+      ] })
+    }
+  );
+}
+
+// src/components/EnrollSection.jsx
+import React14 from "react";
+
+// src/components/InfoCard.jsx
+import React13, { useRef as useRef8 } from "react";
+import { motion as motion7, useSpring as useSpring2, useReducedMotion } from "framer-motion";
+
+// src/components/icons.jsx
+import React12 from "react";
+import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
+var common = {
+  width: 24,
+  height: 24,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.6,
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+};
+function LocationIcon() {
+  return /* @__PURE__ */ jsxs9("svg", { ...common, children: [
+    /* @__PURE__ */ jsx11("path", { d: "M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z" }),
+    /* @__PURE__ */ jsx11("circle", { cx: "12", cy: "9", r: "2.4" })
+  ] });
+}
+function PaymentIcon() {
+  return /* @__PURE__ */ jsxs9("svg", { ...common, children: [
+    /* @__PURE__ */ jsx11("rect", { x: "2.5", y: "5.5", width: "19", height: "13", rx: "2.2" }),
+    /* @__PURE__ */ jsx11("path", { d: "M2.5 9.8h19" }),
+    /* @__PURE__ */ jsx11("path", { d: "M6 14.5h5" })
+  ] });
+}
+function ContactIcon() {
+  return /* @__PURE__ */ jsxs9("svg", { ...common, children: [
+    /* @__PURE__ */ jsx11("rect", { x: "2.5", y: "5", width: "19", height: "14", rx: "2.2" }),
+    /* @__PURE__ */ jsx11("path", { d: "M3.5 6.5l8.5 7 8.5-7" })
+  ] });
+}
+var ICONS = { location: LocationIcon, payment: PaymentIcon, contact: ContactIcon };
+
+// src/components/InfoCard.jsx
+import { jsx as jsx12, jsxs as jsxs10 } from "react/jsx-runtime";
+function InfoCard({ card }) {
+  const Icon = ICONS[card.icon];
+  const ref = useRef8(null);
+  const prefersReducedMotion = useReducedMotion();
+  const rotateX = useSpring2(0, { stiffness: 300, damping: 24 });
+  const rotateY = useSpring2(0, { stiffness: 300, damping: 24 });
+  const handleMouseMove = (e) => {
+    if (prefersReducedMotion || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    rotateY.set(px * 8);
+    rotateX.set(py * -8);
+  };
+  const resetTilt = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+  return /* @__PURE__ */ jsxs10(
+    motion7.div,
+    {
+      ref,
+      className: "info-card",
+      style: { rotateX, rotateY, transformPerspective: 900 },
+      onMouseMove: handleMouseMove,
+      onMouseLeave: resetTilt,
+      whileHover: prefersReducedMotion ? void 0 : { y: -6 },
+      transition: { duration: 0.3 },
+      children: [
+        /* @__PURE__ */ jsx12("div", { className: "info-card-arc", "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx12("div", { className: "info-card-icon", children: /* @__PURE__ */ jsx12(Icon, {}) }),
+        /* @__PURE__ */ jsx12("h4", { children: card.heading }),
+        /* @__PURE__ */ jsx12("p", { children: card.body }),
+        card.meta && /* @__PURE__ */ jsx12("div", { className: "meta", children: card.meta }),
+        card.detail && /* @__PURE__ */ jsx12("div", { className: "detail-list", children: card.detail.map((d) => /* @__PURE__ */ jsxs10("div", { className: "detail-row", children: [
+          /* @__PURE__ */ jsx12("span", { children: d.label }),
+          d.href ? /* @__PURE__ */ jsx12("a", { href: d.href, children: d.value }) : /* @__PURE__ */ jsx12("span", { children: d.value })
+        ] }, d.label)) })
+      ]
+    }
+  );
+}
+
+// src/components/EnrollSection.jsx
+import { jsx as jsx13, jsxs as jsxs11 } from "react/jsx-runtime";
+function EnrollSection() {
+  return /* @__PURE__ */ jsx13("section", { className: "section", id: "enroll", children: /* @__PURE__ */ jsxs11("div", { className: "container", children: [
+    /* @__PURE__ */ jsxs11(RevealGroup, { as: "div", className: "section-header", children: [
+      /* @__PURE__ */ jsx13(RevealItem, { as: "span", className: "kicker", children: enroll.eyebrow }),
+      /* @__PURE__ */ jsx13(RevealItem, { as: "h2", children: enroll.heading }),
+      /* @__PURE__ */ jsx13(RevealItem, { as: "p", children: enroll.body })
+    ] }),
+    /* @__PURE__ */ jsx13(RevealGroup, { as: "div", className: "info-grid", amount: 0.15, children: enroll.cards.map((card) => /* @__PURE__ */ jsx13(RevealItem, { as: "div", children: /* @__PURE__ */ jsx13(InfoCard, { card }) }, card.heading)) })
+  ] }) });
+}
+
+// src/components/Footer.jsx
+import React15 from "react";
+import { jsx as jsx14, jsxs as jsxs12 } from "react/jsx-runtime";
+function Footer() {
+  const year = (/* @__PURE__ */ new Date()).getFullYear();
+  return /* @__PURE__ */ jsxs12("footer", { className: "site-footer", children: [
+    /* @__PURE__ */ jsxs12("div", { className: "container", children: [
+      /* @__PURE__ */ jsxs12("a", { href: "#home", className: "logo", children: [
+        /* @__PURE__ */ jsx14("span", { className: "dot", "aria-hidden": "true" }),
+        /* @__PURE__ */ jsx14("img", { src: siteLogo.src, alt: siteLogo.alt, loading: "lazy", className: "footer-logo-img" })
+      ] }),
+      /* @__PURE__ */ jsx14("div", { className: "site-footer-links", children: footer.links.map((link) => /* @__PURE__ */ jsx14("a", { href: link.href, children: link.label }, link.label)) })
+    ] }),
+    /* @__PURE__ */ jsxs12("div", { className: "site-footer-bottom", children: [
+      /* @__PURE__ */ jsx14("span", { children: footer.note }),
+      /* @__PURE__ */ jsxs12("span", { children: [
+        "\xA9 ",
+        year,
+        ". All rights reserved."
+      ] })
+    ] })
+  ] });
+}
+
+// src/App.jsx
+import { jsx as jsx15, jsxs as jsxs13 } from "react/jsx-runtime";
+function App() {
+  return /* @__PURE__ */ jsxs13(MotionConfig, { reducedMotion: "user", children: [
+    /* @__PURE__ */ jsx15("a", { href: "#main", className: "skip-link", children: "Skip to content" }),
+    /* @__PURE__ */ jsx15(Nav, {}),
+    /* @__PURE__ */ jsxs13("main", { id: "main", children: [
+      /* @__PURE__ */ jsx15(Hero, {}),
+      /* @__PURE__ */ jsx15(
+        HorizontalTrack,
+        {
+          id: bima.id,
+          accent: bima.accent,
+          eyebrow: bima.eyebrow,
+          heading: bima.heading,
+          body: bima.body,
+          photo: bima.photo,
+          panels: bima.panels
+        }
+      ),
+      /* @__PURE__ */ jsx15(
+        HorizontalTrack,
+        {
+          id: bifa.id,
+          accent: bifa.accent,
+          surface: bifa.surface,
+          eyebrow: bifa.eyebrow,
+          heading: bifa.heading,
+          body: bifa.body,
+          photo: bifa.photo,
+          panels: bifa.panels
+        }
+      ),
+      /* @__PURE__ */ jsx15(EnrollSection, {})
+    ] }),
+    /* @__PURE__ */ jsx15(Footer, {})
+  ] });
+}
+
+// src/main.jsx
+import { jsx as jsx16, jsxs as jsxs14 } from "react/jsx-runtime";
+function Fallback() {
+  return /* @__PURE__ */ jsxs14(
+    "div",
+    {
+      style: {
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        gap: 12,
+        textAlign: "center",
+        padding: 32,
+        fontFamily: "Inter, sans-serif",
+        background: "#F7F1E3",
+        color: "#17152A"
+      },
+      children: [
+        /* @__PURE__ */ jsx16("p", { style: { fontSize: "1.1rem", fontWeight: 600 }, children: "Something went wrong loading the page." }),
+        /* @__PURE__ */ jsx16("p", { style: { opacity: 0.7 }, children: "Please refresh, or reach the college directly at bimacad2024@gmail.com." })
+      ]
+    }
+  );
+}
+var container = document.getElementById("root");
+createRoot(container).render(
+  /* @__PURE__ */ jsx16(ErrorBoundary, { fallback: /* @__PURE__ */ jsx16(Fallback, {}), children: /* @__PURE__ */ jsx16(App, {}) })
+);
+window.__BIC_APP_MOUNTED__ = true;
+
+</script>
+</body>
+</html>

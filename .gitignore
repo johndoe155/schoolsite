@@ -1,7 +1,18 @@
+# Dependencies
 node_modules/
+
+# Builds
 dist/
+
+# Environment / secrets
 .env
-.env
-node_modules/
-dist/
+
+# Runtime data (sessions, temp files)
+data/news/sessions/
+*.tmp
+
+# Editor droppings
 *~
+
+# Local build tooling caches
+.cache_build/

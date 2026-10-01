@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@sendgrid/mail": "^8.1.2",
-    "cors": "^2.8.6",
-    "express": "^5.2.1"
-  }
-}

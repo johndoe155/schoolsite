@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bodija International — Contact</title>
+
+  <!-- Google Fonts chosen to match the screenshots: elegant display + geometric sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@600;700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ── BIC Shared Nav + Menu + Footer CSS ── -->
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/contact.css">
+</head>
+<body>
+
+  <!-- ── BIC Site Nav ── -->
+  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
+    <span id="hamburger"
+          role="button" tabindex="0"
+          aria-controls="mobileMenu" aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+      <div class="bic-nav-wordmark">
+        <strong>Bodija Int'l College</strong>
+        <span>Get In Touch</span>
+      </div>
+    </div>
+    <a href="/index.html" class="bic-nav-cta">Home <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+  </nav>
+  <!-- ── BIC Mobile Menu ── -->
+  
+
+  <main id="main">
+
+    <!-- ══════════════════════════════════════════════
+         HERO SECTION — silent luxury editorial opener
+    ════════════════════════════════════════════════ -->
+    <section class="lux-hero" aria-label="Contact page introduction">
+      <div class="lux-hero-watermark" aria-hidden="true"><span>Contact</span></div>
+      <div class="lux-wrap">
+        <div class="lux-hero-rule" role="presentation">
+          <span class="lux-hero-eyebrow">Bodija International College</span>
+        </div>
+        <h1 class="lux-hero-title">We Value<br><em>Your Voice</em></h1>
+        <p class="lux-hero-sub">Questions about admissions, campus tours, or partnerships? Reach out — we respond to every message with care and intention.</p>
+        <div class="lux-hero-bottom-rule" aria-hidden="true"><div class="lux-hero-bottom-rule-dot"></div></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         CONTACT GRID — form + sidebar
+    ════════════════════════════════════════════════ -->
+    <section class="lux-contact-section" aria-labelledby="contact-heading">
+      <div class="lux-wrap">
+        <div class="lux-contact-grid">
+
+          <!-- LEFT: Contact Form -->
+          <div class="reveal">
+            <div class="lux-form-surface" role="region" aria-labelledby="contact-heading">
+              <p class="lux-form-eyebrow">Send a Message</p>
+              <h2 id="contact-heading" class="lux-form-heading">Never Miss an Update</h2>
+              <p class="lux-form-desc">Fill the form and we'll reply within 2–3 business days. For urgent matters, call the number listed alongside.</p>
+              <form id="contactForm" novalidate>
+                <div class="lux-fields two-up" role="group" aria-label="Your name and email">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="name">Full Name <span aria-hidden="true">*</span></label>
+                    <input id="name" name="name" class="lux-input" type="text" autocomplete="name" required aria-required="true" placeholder="Your full name">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="email">Email Address <span aria-hidden="true">*</span></label>
+                    <input id="email" name="email" class="lux-input" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-fields" style="margin-top:32px;">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="subject">Subject <span aria-hidden="true">*</span></label>
+                    <input id="subject" name="subject" class="lux-input" type="text" required aria-required="true" placeholder="Admissions · Campus Tours · Partnerships">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-fields" style="margin-top:32px;">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="visitDate">Preferred Visiting Date <span aria-hidden="true">*</span></label>
+                    <input id="visitDate" name="visitDate" class="lux-input lux-input-date" type="date" required aria-required="true">
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-fields" style="margin-top:32px;">
+                  <div class="lux-field-group">
+                    <label class="lux-label" for="message">Your Message <span aria-hidden="true">*</span></label>
+                    <textarea id="message" name="message" class="lux-textarea" required aria-required="true" placeholder="Tell us how we can help…"></textarea>
+                    <div class="lux-field-line" aria-hidden="true"></div>
+                  </div>
+                </div>
+                <div class="lux-form-actions">
+                  <button type="submit" class="lux-btn-send">
+                    <span>Send Message</span>
+                    <svg class="lux-btn-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </button>
+                  <button type="reset" class="lux-btn-reset">Clear form</button>
+                </div>
+                <div id="formStatus" aria-live="polite"></div>
+                <p class="lux-privacy-note">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                  Your information is used solely to respond to this enquiry and is kept strictly confidential.
+                </p>
+              </form>
+            </div>
+          </div>
+
+          <!-- RIGHT: Info Panel + Map -->
+          <aside class="lux-sidebar" aria-label="Contact details and location">
+            <div class="lux-info-panel reveal reveal-delay-2">
+              <p class="lux-info-eyebrow">Direct Contact</p>
+              <div class="lux-info-items">
+                <div class="lux-info-item">
+                  <div class="lux-info-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C16.97 2 20 7 20 10.75c0 4.83-5.33 9.9-7.56 11.86a1 1 0 01-1.37 0C9.33 20.65 4 15.58 4 10.75 4 7 7.03 2 12 2z"/><circle cx="12" cy="10.5" r="2.2" fill="currentColor" stroke="none"/></svg>
+                  </div>
+                  <div class="lux-info-body">
+                    <strong>1-5, Tunde Lakanmi Crescent, Bodija, Ibadan</strong>
+                    <small>Office hours: Mon–Fri, 8:00–16:00</small>
+                  </div>
+                </div>
+                <div class="lux-info-item">
+                  <div class="lux-info-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.86 19.86 0 01.01 0 2 2 0 012 0h3a2 2 0 012 1.72c.12 1.05.36 2.07.71 3.03a2 2 0 01-.45 2.11L6.3 8.94a16.1 16.1 0 007.73 7.73l1.08-1.08a2 2 0 012.11-.45c.96.35 1.98.59 3.03.71A2 2 0 0122 16.92z"/></svg>
+                  </div>
+                  <div class="lux-info-body">
+                    <strong><a href="tel:+2348166061632">+234 816 606 1632</a></strong>
+                    <small>Call or WhatsApp</small>
+                  </div>
+                </div>
+                <div class="lux-info-item">
+                  <div class="lux-info-icon" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M3 8.8l9 5.2 9-5.2"/></svg>
+                  </div>
+                  <div class="lux-info-body">
+                    <strong><a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></strong>
+                    <small>General enquiries</small>
+                  </div>
+                </div>
+              </div>
+              <div class="lux-info-divider" aria-hidden="true"></div>
+              <div class="lux-info-socials" aria-label="Follow us on social media">
+                <a href="https://www.facebook.com/bicbisbodija" class="lux-social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Facebook" title="Facebook">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg>
+                </a>
+                <a href="https://x.com/bic_bis" class="lux-social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on X (formerly Twitter)" title="X">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/bic_bis" class="lux-social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram" title="Instagram">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="11.5" r="3"/><circle cx="17.6" cy="6.5" r="0.85" fill="currentColor" stroke="none"/></svg>
+                </a>
+              </div>
+            </div>
+            <div class="lux-map-surface reveal reveal-delay-3" role="region" aria-labelledby="map-title">
+              <div class="lux-map-header">
+                <h3 id="map-title" class="lux-map-title">Find Us</h3>
+                <p class="lux-map-desc">Near Bodija Market, Ibadan — get directions below.</p>
+              </div>
+              <iframe class="lux-map-frame" loading="lazy" title="Bodija International College map location" src="https://www.google.com/maps?q=Ibadan%20Bodija&output=embed" aria-label="Interactive map showing Bodija International College"></iframe>
+            </div>
+          </aside>
+
+        </div><!-- /lux-contact-grid -->
+      </div><!-- /lux-wrap -->
+    </section>
+
+  </main>
+ 
+
+  <!-- ── BIC Site Footer ── -->
+  <footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="bic-footer-wrap">
+      <div class="bic-footer-grid">
+        <!-- Left -->
+        <div>
+          <div class="bic-footer-logo-row">
+            <div class="bic-footer-logo">
+              <img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" />
+            </div>
+            <div class="bic-footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home &middot; Get In Touch</small>
+            </div>
+          </div>
+          <address class="bic-footer-addr">
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>
+          </address>
+          <div class="bic-social-row" aria-label="Follow us on social media">
+            <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+            </a>
+          </div>
+        </div>
+        <!-- Centre -->
+        <div>
+          <span class="bic-footer-col-title">Our Mission</span>
+          <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="bic-footer-discover">
+            Discover our values
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <div class="bic-footer-city-list" aria-label="Location">
+            <div class="bic-footer-city">Bodija</div>
+            <div class="bic-footer-city active">Ibadan</div>
+            <div class="bic-footer-city">Oyo State</div>
+          </div>
+        </div>
+        <!-- Right -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
+          <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>
+        </div>
+      </div>
+      <div class="bic-footer-bottom">
+        <span class="bic-footer-copy">
+          &copy; <span id="year"></span> Bodija International College. All rights reserved.
+        </span>
+      </div>
+    </div>
+  </footer>
+   
+  
+  
+<script>
+  (function () {
+    'use strict';
+
+    function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+    function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+    function getFocusable(container) {
+      if (!container) return [];
+      return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+        .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobileMenu');
+      if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+      var overlay = menu.querySelector('[data-overlay]');
+      var panel = menu.querySelector('.mobile-menu__panel');
+      var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+      var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+      var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+      function parseTime(s) {
+        if (!s) return 0;
+        var str = String(s).trim();
+        if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+        if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+        var n = parseFloat(str);
+        return isFinite(n) ? n : 0;
+      }
+
+      var rootStyles = getComputedStyle(document.documentElement);
+      var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+      var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+      var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+      var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+      var timeouts = [];
+      var lastFocused = null;
+
+      function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+      function preventScroll(enable){
+        if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+        else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+      }
+
+      function onKeyDown(e){
+        if (!menu.classList.contains('open')) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+        if (e.key === 'Tab') {
+          if (!panel) return;
+          var focusable = getFocusable(panel);
+          if (!focusable.length) { e.preventDefault(); return; }
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+
+      function focusTrap(e){
+        if (!menu.classList.contains('open')) return;
+        if (!panel) return;
+        if (panel.contains(e.target)) return;
+        e.stopPropagation();
+        var f = getFocusable(panel);
+        if (f.length) f[0].focus(); else panel.focus();
+      }
+
+      // --- START: Robust stacking & disabling of openers ---
+      // Ensure menu is appended to body to avoid ancestor stacking contexts
+      if (menu && menu.parentElement !== document.body) {
+        document.body.appendChild(menu);
+        overlay = menu.querySelector('[data-overlay]');
+        panel = menu.querySelector('.mobile-menu__panel');
+      }
+
+      // store for restoring open buttons state
+      var openerStateMap = new WeakMap();
+
+      function disableOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = {
+            tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+            pointerEvents: b.style.pointerEvents || null,
+            ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+          };
+          openerStateMap.set(b, prev);
+          try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+          b.style.pointerEvents = 'none';
+          try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+        });
+      }
+
+      function restoreOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = openerStateMap.get(b) || {};
+          if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+          else b.setAttribute('tabindex', prev.tabindex);
+          if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+          else b.style.pointerEvents = prev.pointerEvents;
+          if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+          else b.setAttribute('aria-hidden', prev.ariaHidden);
+          openerStateMap.delete(b);
+        });
+      }
+      // --- END: Robust stacking & disabling of openers ---
+
+      function openMobileMenu(){
+        if (menu.classList.contains('open')) return;
+        lastFocused = document.activeElement;
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+
+        // disable hamburgers / openers while menu is open
+        disableOpenButtons();
+
+        if (overlay) overlay.classList.remove('overlay-in');
+        if (panel) panel.classList.remove('panel-in');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+
+        var t = setTimeout(function(){
+          if (panel) {
+            panel.classList.add('panel-in');
+            var closeBtn = panel.querySelector('.mobile-menu__close');
+            if (closeBtn) closeBtn.focus({ preventScroll: true });
+          }
+        }, PANEL_DELAY);
+        timeouts.push(t);
+
+        document.addEventListener('focus', focusTrap, true);
+        document.addEventListener('keydown', onKeyDown);
+        if (overlay) overlay.addEventListener('click', overlayClick);
+        preventScroll(true);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+      }
+
+      function closeMobileMenu(){
+        if (!menu.classList.contains('open')) return;
+        clearAllTimeouts();
+        if (panel) panel.classList.remove('panel-in');
+
+        var t1 = setTimeout(function(){
+          var tHold = setTimeout(function(){
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tHide = setTimeout(function(){
+              menu.classList.remove('open');
+              menu.setAttribute('aria-hidden', 'true');
+              if (panel) panel.setAttribute('aria-hidden', 'true');
+
+              // restore hamburgers / openers to previous state
+              restoreOpenButtons();
+
+              preventScroll(false);
+              if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+            }, OVERLAY_DUR);
+            timeouts.push(tHide);
+          }, OVERLAY_HOLD);
+          timeouts.push(tHold);
+        }, PANEL_DUR);
+        timeouts.push(t1);
+
+        document.removeEventListener('focus', focusTrap, true);
+        document.removeEventListener('keydown', onKeyDown);
+        if (overlay) overlay.removeEventListener('click', overlayClick);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+      }
+
+      function overlayClick(){ closeMobileMenu(); }
+
+      // Attach listeners to openers
+      openButtons.forEach(function(btn){
+        if (!btn) return;
+        btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+        btn.addEventListener('keydown', function(ev){
+          var k = ev.key;
+          if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+        });
+      });
+
+      // Attach close buttons
+      externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+      window.openMobileMenu = openMobileMenu;
+      window.closeMobileMenu = closeMobileMenu;
+      window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+      // Preload background image if present
+      (function preloadBg(){
+        if (!panel) return;
+        var style = getComputedStyle(panel);
+        var bg = style.getPropertyValue('background-image') || '';
+        var url = '';
+        var start = bg.indexOf('url(');
+        var end = bg.lastIndexOf(')');
+        if (start !== -1 && end !== -1 && end > start) {
+          url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+        }
+        if (url) { var img = new Image(); img.src = url; }
+      })();
+
+    }); // DOMContentLoaded end
+
+  })();
+  </script>
+
+  <!-- Optional sticky helper (keeps parity with canonical source). Non-intrusive. -->
+  
+
+  <!-- Rest of your inline scripts (decoy injectors etc.) remain unchanged and follow -->
+  <!-- [existing inline scripts that were originally after the menu are preserved above] -->
+
+  
+
+  <!-- ── BIC Nav + Menu JS ── -->
+  <script>
+  (function () {
+    'use strict';
+    var nav = document.querySelector('.bic-site-nav');
+    if (nav) {
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu      = document.getElementById('mobileMenu');
+      var panel     = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay   = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openBtns  = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocus = null, timeouts = [];
+      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
+      if (!menu) return;
+      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
+      function scrollLock(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function trapFocus(e) {
+        if (!panel || !panel.contains(e.target)) {
+          var els = Array.from(panel.querySelectorAll(SEL));
+          if (els.length) els[0].focus({ preventScroll: true });
+        }
+      }
+      function onEsc(e) { if (e.key === 'Escape') close(); }
+      function open() {
+        if (menu.classList.contains('open')) return;
+        lastFocus = document.activeElement;
+        menu.classList.add('open'); menu.setAttribute('aria-hidden','false');
+        if (panel) panel.setAttribute('aria-hidden','false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () {
+          if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll:true }); }
+        }, PDELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', trapFocus, true);
+        document.addEventListener('keydown', onEsc);
+        if (overlay) overlay.addEventListener('click', close);
+        scrollLock(true);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
+      }
+      function close() {
+        if (!menu.classList.contains('open')) return;
+        clearTO();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () {
+          var tH = setTimeout(function () {
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tH2 = setTimeout(function () {
+              menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
+              if (panel) panel.setAttribute('aria-hidden','true');
+              openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+              scrollLock(false);
+              if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true });
+            }, ODUR);
+            timeouts.push(tH2);
+          }, OHOLD);
+          timeouts.push(tH);
+        }, PDUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', trapFocus, true);
+        document.removeEventListener('keydown', onEsc);
+        if (overlay) overlay.removeEventListener('click', close);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+      }
+      openBtns.forEach(function(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+        btn.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
+      });
+      closeBtns.forEach(function(btn) { if(!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
+      window.openMobileMenu  = open;
+      window.closeMobileMenu = close;
+      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
+      /* Floating sticky clone */
+      var orig = document.getElementById('hamburger');
+      if (orig) {
+        var fl = orig.cloneNode(true);
+        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
+        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
+        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
+        document.body.appendChild(fl);
+        function act(){ if (typeof open==='function') open(); }
+        fl.addEventListener('click', act);
+        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      }
+    });
+  }());
+  </script>
+  <div data-bic-menu="lux"></div>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/contact.js" defer></script>
+</body>
+</html>

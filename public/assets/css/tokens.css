@@ -1,0 +1,54 @@
+/* ============================================================
+   BIC — Shared Design Tokens
+   Single source of truth for the values every page reuses.
+   Loaded first on every page; page stylesheets may add
+   page-specific tokens but must not redefine these.
+   ============================================================ */
+
+:root {
+  /* ── Brand ─────────────────────────────────────────────── */
+  --bic-brand-indigo: #05014a;
+  --bic-brand-yellow: #FACC15;
+  --bic-brand-dark:   #0f172a;
+
+  /* ── Silent-luxury palette (contact / programs / news /
+        library pages) ─────────────────────────────────────── */
+  --bic-ink:          #18140F;
+  --bic-ink-60:       rgba(24,20,15,.6);
+  --bic-ink-12:       rgba(24,20,15,.12);
+  --bic-ebony:        #141210;
+  --bic-ebony-2:      #1E1A14;
+  --bic-ebony-border: rgba(255,255,255,.08);
+  --bic-ebony-muted:  rgba(230,218,196,.6);
+  --bic-parchment:    #F3EFE5;
+  --bic-surface:      #FDFAF5;
+  --bic-gold:         #B07D3F;
+  --bic-gold-light:   #C8963E;
+  --bic-gold-pale:    rgba(176,125,63,.10);
+  --bic-gold-border:  rgba(176,125,63,.22);
+
+  /* ── Typography ────────────────────────────────────────── */
+  --bic-font-display: 'Cormorant Garamond', Georgia, serif;
+  --bic-font-sc:      'Cormorant SC', Georgia, serif;
+  --bic-font-body:    'DM Sans', system-ui, sans-serif;
+
+  /* ── Layout ────────────────────────────────────────────── */
+  --bic-max:      1120px;
+  --bic-gutter:   clamp(20px, 4vw, 56px);
+  --bic-e2:       0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
+  --bic-r-sm:     6px;
+
+  /* ── Motion ────────────────────────────────────────────── */
+  --bic-dur-fast: 200ms;
+  --bic-dur-mid:  360ms;
+
+  /* ── Mobile menu system (used by every page's menu and by
+        assets/js/layout.js) ───────────────────────────────── */
+  --z-hamburger:      10002;
+  --z-overlay:        10003;
+  --z-panel:          10004;
+  --overlay-duration: 260ms;
+  --panel-duration:   360ms;
+  --panel-delay:      600ms;
+  --overlay-hold:     600ms;
+}

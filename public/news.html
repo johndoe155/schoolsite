@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bodija International College — School News</title>
+  <meta name="description" content="School News — Bodija International College. Campus announcements, features and events." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fonts -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Single (fixed) Google Fonts request with display=swap to avoid FOIT.
+       Combined families to reduce requests. KEEP display=swap. -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@600;700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ── BIC Shared Nav + Menu + Footer CSS ── -->
+  <!-- ── ADMIN SYSTEM STYLES ── -->
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/news.css">
+</head>
+<body>
+
+
+  <!-- ── BIC Site Nav ── -->
+  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
+    <span id="hamburger"
+          role="button" tabindex="0"
+          aria-controls="mobileMenu" aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+    <div class="bic-nav-brand" aria-label="Bodija International College home">
+      <div class="bic-nav-wordmark">
+        <strong>Bodija Int'l College</strong>
+        <span>School News</span>
+      </div>
+    </div>
+    <a href="/index.html" class="bic-nav-cta">Home<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+  </nav>
+  <!-- ── BIC Mobile Menu ── -->
+  
+
+  <main class="container" id="mainContent" style="padding-top: calc(68px + clamp(20px,4vw,56px));">
+
+    <!-- ── Hero masthead ── -->
+    <section class="hero reveal" aria-label="News masthead">
+      <div class="hero-card">
+
+        <!-- Left: Headline + Search -->
+        <div>
+          <div class="hero-eyebrow">
+            <span class="hero-eyebrow-rule" aria-hidden="true"></span>
+            <span class="hero-eyebrow-text">Bodija International College</span>
+          </div>
+
+          <h1 class="hero-title">
+            School News<br>
+            <em>&amp; Stories</em>
+          </h1>
+
+          <p class="hero-desc">
+            Stay informed with campus announcements, student achievements,
+            events, and features from across our school community.
+          </p>
+
+          <form id="searchForm" class="search-row" role="search" aria-label="Search news" method="get" action="">
+            <span class="search-icon-wrap" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+              </svg>
+            </span>
+            <input
+              id="searchInput"
+              class="search-input"
+              name="q"
+              type="search"
+              placeholder="Search headlines, categories or keywords…"
+              aria-label="Search news articles"
+              autocomplete="off"
+            />
+          </form>
+        </div>
+
+        <!-- Right: Featured + Filters -->
+        <aside class="hero-aside" aria-label="Featured story and filters">
+          <!-- Featured block -->
+          <div class="featured">
+            <div class="featured-label" aria-label="Featured story">Featured</div>
+            <p id="featuredExcerpt" class="featured-excerpt">
+              Read about our new STEM lab and what hands-on learning means for students
+            </p>
+            <a id="featuredLink" href="#" class="featured-link" aria-label="Read featured article">
+              Read feature
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Category filters -->
+          <div>
+            <div class="discover-label">Filter by category</div>
+            <div class="chips" id="categoryChips" role="tablist" aria-label="Filter news by category">
+              <!-- injected by JS -->
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ── Main content layout ── -->
+    <div class="layout">
+
+      <!-- News grid column -->
+      <section aria-label="News articles">
+        <div class="section-header">
+          <h2 class="section-title">Latest stories</h2>
+          <span class="section-count" id="pageInfo" aria-live="polite">Loading…</span>
+        </div>
+
+        <div class="news-grid" id="newsGrid" aria-live="polite" aria-relevant="additions removals">
+          <!-- Cards injected by JS -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrap" aria-label="Pagination navigation">
+          <div class="pg-info" id="pageInfoBottom" aria-hidden="true"></div>
+          <div class="pagination">
+            <button id="prevBtn" class="pg-btn" type="button" aria-label="Go to previous page">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Prev
+            </button>
+            <span class="pg-counter" id="pageCounter" aria-live="polite">—</span>
+            <button id="nextBtn" class="pg-btn" type="button" aria-label="Go to next page">
+              Next
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="panel" aria-labelledby="newsletterHeading">
+
+        <!-- Newsletter -->
+        <div class="panel-section">
+          <div class="panel-label">Newsletter</div>
+          <h3 id="newsletterHeading">Never Miss<br>an Update</h3>
+          <p class="panel-sub">Subscribe for the latest BIC news, events, and stories delivered to your inbox.</p>
+
+          <form class="newsletter" id="newsletterForm" novalidate>
+            <label for="newsletterEmail" class="sr-only">Your email address</label>
+            <input
+              id="newsletterEmail"
+              name="email"
+              type="email"
+              placeholder="Your email address"
+              required
+              autocomplete="email"
+            />
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+
+        <!-- Contact -->
+        <div class="panel-section">
+          <div class="panel-contact-title">Get in touch</div>
+          <address class="panel-address">
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State
+          </address>
+        </div>
+
+      </aside>
+    </div>
+
+  </main>
+
+
+  <!-- ── BIC Site Footer ── -->
+  <footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="bic-footer-wrap">
+      <div class="bic-footer-grid">
+        <!-- Left -->
+        <div>
+          <div class="bic-footer-logo-row">
+            <div class="bic-footer-logo">
+              <img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" />
+            </div>
+            <div class="bic-footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home &middot; Updates</small>
+            </div>
+          </div>
+          <address class="bic-footer-addr">
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>
+          </address>
+          <div class="bic-social-row" aria-label="Follow us on social media">
+            <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+            </a>
+          </div>
+        </div>
+        <!-- Centre -->
+        <div>
+          <span class="bic-footer-col-title">Our Mission</span>
+          <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="bic-footer-discover">
+            Discover our values
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <div class="bic-footer-city-list" aria-label="Location">
+            <div class="bic-footer-city">Bodija</div>
+            <div class="bic-footer-city active">Ibadan</div>
+            <div class="bic-footer-city">Oyo State</div>
+          </div>
+        </div>
+        <!-- Right -->
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
+          <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>
+        </div>
+      </div>
+      <div class="bic-footer-bottom">
+        <span class="bic-footer-copy">
+          &copy; <span id="year"></span> Bodija International College. All rights reserved.&nbsp;<a class="bic-adm-trigger" href="#admin" id="adminTrigger">Staff Login</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+<!-- Main site JS(unchanged) -->
+  <!-- Main site JS (REPLACE existing Main site JS with this block) -->
+
+
+  <!-- ---------------------------
+       INSERTED: Canonical menu JS (keeps original behavior)
+       - open/close
+       - focus trap
+       - ESC handling
+       - overlay click
+       - aria updates
+       - disable other openers while open
+       - preload bg (if set)
+       --------------------------- -->
+  <script>
+  (function () {
+    'use strict';
+
+    function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+    function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+    function getFocusable(container) {
+      if (!container) return [];
+      return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+        .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobileMenu');
+      if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+      var overlay = menu.querySelector('[data-overlay]');
+      var panel = menu.querySelector('.mobile-menu__panel');
+      var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+      var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+      var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+      function parseTime(s) {
+        if (!s) return 0;
+        var str = String(s).trim();
+        if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+        if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+        var n = parseFloat(str);
+        return isFinite(n) ? n : 0;
+      }
+
+      var rootStyles = getComputedStyle(document.documentElement);
+      var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+      var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+      var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+      var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+      var timeouts = [];
+      var lastFocused = null;
+
+      function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+      function preventScroll(enable){
+        if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+        else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+      }
+
+      function onKeyDown(e){
+        if (!menu.classList.contains('open')) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+        if (e.key === 'Tab') {
+          if (!panel) return;
+          var focusable = getFocusable(panel);
+          if (!focusable.length) { e.preventDefault(); return; }
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+
+      function focusTrap(e){
+        if (!menu.classList.contains('open')) return;
+        if (!panel) return;
+        if (panel.contains(e.target)) return;
+        e.stopPropagation();
+        var f = getFocusable(panel);
+        if (f.length) f[0].focus(); else panel.focus();
+      }
+
+      // --- START: Robust stacking & disabling of openers ---
+      // Ensure menu is appended to body to avoid ancestor stacking contexts
+      if (menu && menu.parentElement !== document.body) {
+        document.body.appendChild(menu);
+        overlay = menu.querySelector('[data-overlay]');
+        panel = menu.querySelector('.mobile-menu__panel');
+      }
+
+      // store for restoring open buttons state
+      var openerStateMap = new WeakMap();
+
+      function disableOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = {
+            tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+            pointerEvents: b.style.pointerEvents || null,
+            ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+          };
+          openerStateMap.set(b, prev);
+          try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+          b.style.pointerEvents = 'none';
+          try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+        });
+      }
+
+      function restoreOpenButtons() {
+        openButtons.forEach(function(b){
+          if (!b) return;
+          var prev = openerStateMap.get(b) || {};
+          if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+          else b.setAttribute('tabindex', prev.tabindex);
+          if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+          else b.style.pointerEvents = prev.pointerEvents;
+          if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+          else b.setAttribute('aria-hidden', prev.ariaHidden);
+          openerStateMap.delete(b);
+        });
+      }
+      // --- END: Robust stacking & disabling of openers ---
+
+      function openMobileMenu(){
+        if (menu.classList.contains('open')) return;
+        lastFocused = document.activeElement;
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+
+        // disable hamburgers / openers while menu is open
+        disableOpenButtons();
+
+        if (overlay) overlay.classList.remove('overlay-in');
+        if (panel) panel.classList.remove('panel-in');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+
+        var t = setTimeout(function(){
+          if (panel) {
+            panel.classList.add('panel-in');
+            var closeBtn = panel.querySelector('.mobile-menu__close');
+            if (closeBtn) closeBtn.focus({ preventScroll: true });
+          }
+        }, PANEL_DELAY);
+        timeouts.push(t);
+
+        document.addEventListener('focus', focusTrap, true);
+        document.addEventListener('keydown', onKeyDown);
+        if (overlay) overlay.addEventListener('click', overlayClick);
+        preventScroll(true);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+      }
+
+      function closeMobileMenu(){
+        if (!menu.classList.contains('open')) return;
+        clearAllTimeouts();
+        if (panel) panel.classList.remove('panel-in');
+
+        var t1 = setTimeout(function(){
+          var tHold = setTimeout(function(){
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tHide = setTimeout(function(){
+              menu.classList.remove('open');
+              menu.setAttribute('aria-hidden', 'true');
+              if (panel) panel.setAttribute('aria-hidden', 'true');
+
+              // restore hamburgers / openers to previous state
+              restoreOpenButtons();
+
+              preventScroll(false);
+              if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+            }, OVERLAY_DUR);
+            timeouts.push(tHide);
+          }, OVERLAY_HOLD);
+          timeouts.push(tHold);
+        }, PANEL_DUR);
+        timeouts.push(t1);
+
+        document.removeEventListener('focus', focusTrap, true);
+        document.removeEventListener('keydown', onKeyDown);
+        if (overlay) overlay.removeEventListener('click', overlayClick);
+        openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+      }
+
+      function overlayClick(){ closeMobileMenu(); }
+
+      // Attach listeners to openers
+      openButtons.forEach(function(btn){
+        if (!btn) return;
+        btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+        btn.addEventListener('keydown', function(ev){
+          var k = ev.key;
+          if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+        });
+      });
+
+      // Attach close buttons
+      externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+      window.openMobileMenu = openMobileMenu;
+      window.closeMobileMenu = closeMobileMenu;
+      window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+      // Preload background image if present
+      (function preloadBg(){
+        if (!panel) return;
+        var style = getComputedStyle(panel);
+        var bg = style.getPropertyValue('background-image') || '';
+        var url = '';
+        var start = bg.indexOf('url(');
+        var end = bg.lastIndexOf(')');
+        if (start !== -1 && end !== -1 && end > start) {
+          url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+        }
+        if (url) { var img = new Image(); img.src = url; }
+      })();
+
+    }); // DOMContentLoaded end
+
+  })();
+  </script>
+
+  <!-- Optional sticky helper (keeps parity with canonical source). Non-intrusive. -->
+  
+
+  <!-- Rest of your inline scripts (decoy injectors etc.) remain unchanged and follow -->
+  <!-- ══════════════════════════════════════════
+       ADMIN LOGIN OVERLAY
+  ══════════════════════════════════════════ -->
+  <div id="adminLogin" role="dialog" aria-modal="true" aria-label="Staff login">
+    <div class="adm-login-wrap">
+      <div class="adm-login-brand">
+        <span class="adm-bic">BIC</span>
+        <p>Bodija International College</p>
+      </div>
+      <div class="adm-login-card">
+        <h2>Staff Login</h2>
+        <p class="adm-subtitle">Enter your admin password to manage content.</p>
+        <div id="adminLoginError" class="adm-login-error" role="alert">
+          Incorrect password. Please try again.
+        </div>
+        <form id="adminLoginForm" novalidate>
+          <div class="adm-field">
+            <label for="adminPasswordInput">Password</label>
+            <input type="password" id="adminPasswordInput" autocomplete="current-password"
+              placeholder="Enter admin password" required />
+          </div>
+          <button type="submit" class="adm-login-submit">Sign In →</button>
+        </form>
+      </div>
+      <a class="adm-back-link" id="adminBackLink" href="#">← Back to News</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ADMIN PANEL OVERLAY
+  ══════════════════════════════════════════ -->
+  <div id="adminPanel" role="main" aria-label="Admin panel">
+    <!-- Top navigation bar -->
+    <div class="adm-topbar">
+      <div class="adm-topbar-left">
+        <span class="adm-topbar-bic">BIC</span>
+        <span class="adm-topbar-label">Content Admin</span>
+      </div>
+      <div class="adm-topbar-right">
+        <span class="adm-staff-badge">Logged in as Staff</span>
+        <button class="adm-logout-btn" id="adminLogoutBtn">Log Out</button>
+      </div>
+    </div>
+
+    <!-- Two-column body -->
+    <div class="adm-body">
+      <!-- Left column: Manage Articles -->
+      <div class="adm-card">
+        <div class="adm-card-title">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Manage Articles
+        </div>
+        <div id="adminArticleList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Right column: Add New Article -->
+      <div class="adm-card">
+        <div class="adm-card-title">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+          Add New Article
+        </div>
+        <form id="adminAddForm" novalidate>
+          <div class="adm-form-group">
+            <label for="newTitle">Headline *</label>
+            <input type="text" id="newTitle" placeholder="Article headline" required />
+          </div>
+          <div class="adm-form-row">
+            <div class="adm-form-group">
+              <label for="newCategory">Category *</label>
+              <select id="newCategory" required>
+                <option value="Science &amp; Technology">Science &amp; Technology</option>
+                <option value="Arts &amp; Humanities">Arts &amp; Humanities</option>
+                <option value="Business &amp; Economics">Business &amp; Economics</option>
+                <option value="Campus Life">Campus Life</option>
+                <option value="Sports">Sports</option>
+                <option value="Announcements">Announcements</option>
+              </select>
+            </div>
+            <div class="adm-form-group">
+              <label for="newDate">Publish Date *</label>
+              <input type="date" id="newDate" required />
+            </div>
+          </div>
+          <div class="adm-form-group">
+            <label for="newExcerpt">Short Excerpt *</label>
+            <input type="text" id="newExcerpt" placeholder="Brief summary shown on card" required />
+          </div>
+          <div class="adm-form-group">
+            <label>
+              Article Image
+              <span style="font-weight:400;text-transform:none;font-size:10px;opacity:0.55;margin-left:4px">optional · JPG PNG WebP GIF · max 5 MB</span>
+            </label>
+
+            <!-- Dropzone wrapper — keyboard-accessible, handles click + drag -->
+            <div id="imageDropzone"
+                 class="adm-dropzone"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Click or drag an image file to upload it"
+                 aria-describedby="dzSizeError">
+
+              <!-- Hidden file input (triggered programmatically) -->
+              <input type="file"
+                     id="newImage"
+                     accept="image/jpeg,image/png,image/gif,image/webp"
+                     style="display:none"
+                     aria-hidden="true" />
+
+              <!-- ① Idle / empty state -->
+              <div class="adm-dz-idle" id="dropzoneIdle">
+                <div class="adm-dz-icon" aria-hidden="true">
+                  <!-- Upload cloud icon -->
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.7"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 16 12 12 8 16"/>
+                    <line x1="12" y1="12" x2="12" y2="21"/>
+                    <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+                  </svg>
+                </div>
+                <p class="adm-dz-label">
+                  Drop an image here, or
+                  <span class="adm-dz-link">browse files</span>
+                </p>
+                <p class="adm-dz-hint">JPG · PNG · WebP · GIF &nbsp;·&nbsp; Max 5 MB</p>
+              </div>
+
+              <!-- ② Preview state (hidden until a file is chosen) -->
+              <div class="adm-dz-preview" id="dropzonePreview" style="display:none"
+                   aria-live="polite" aria-label="Image preview">
+                <img id="previewImg" src="" alt="Selected article image preview" />
+                <span class="adm-dz-filename" id="previewFilename" aria-hidden="true"></span>
+                <div class="adm-dz-overlay">
+                  <button type="button"
+                          id="removeImageBtn"
+                          class="adm-dz-remove"
+                          aria-label="Remove selected image">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"/>
+                      <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div><!-- /.adm-dropzone -->
+
+            <!-- File-size error (shown inline, not via alert) -->
+            <div id="dzSizeError" class="adm-dz-size-error" role="alert"></div>
+          </div>
+          <div class="adm-form-group">
+            <label for="newContent">Full Article Body *</label>
+            <textarea id="newContent" rows="5"
+              placeholder="Write the full article here. Separate paragraphs with a blank line." required></textarea>
+          </div>
+          <div class="adm-form-group" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="checkbox" id="newSetFeatured" style="width:auto;padding:0;border-radius:4px" />
+            <label for="newSetFeatured" style="text-transform:none;font-size:13px;font-weight:600;margin:0;cursor:pointer">
+              ★ Mark as featured story on publish
+            </label>
+          </div>
+          <button type="submit" class="adm-submit">Publish Article</button>
+          <div id="adminSuccessMsg" class="adm-success-msg" role="status">
+            ✓ Article published successfully!
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ADMIN SYSTEM JS
+  ══════════════════════════════════════════ -->
+  
+
+
+
+  <!-- ── Silent Luxury: Scroll-reveal + Polish ── -->
+  
+
+
+  <script>
+  (function () {
+    'use strict';
+    var nav = document.querySelector('.bic-site-nav');
+    if (nav) {
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu      = document.getElementById('mobileMenu');
+      var panel     = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay   = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openBtns  = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocus = null, timeouts = [];
+      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
+      if (!menu) return;
+      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
+      function scrollLock(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function trapFocus(e) {
+        if (!panel || !panel.contains(e.target)) {
+          var els = Array.from(panel.querySelectorAll(SEL));
+          if (els.length) els[0].focus({ preventScroll: true });
+        }
+      }
+      function onEsc(e) { if (e.key === 'Escape') close(); }
+      function open() {
+        if (menu.classList.contains('open')) return;
+        lastFocus = document.activeElement;
+        menu.classList.add('open'); menu.setAttribute('aria-hidden','false');
+        if (panel) panel.setAttribute('aria-hidden','false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () {
+          if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll:true }); }
+        }, PDELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', trapFocus, true);
+        document.addEventListener('keydown', onEsc);
+        if (overlay) overlay.addEventListener('click', close);
+        scrollLock(true);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
+      }
+      function close() {
+        if (!menu.classList.contains('open')) return;
+        clearTO();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () {
+          var tH = setTimeout(function () {
+            if (overlay) overlay.classList.remove('overlay-in');
+            var tH2 = setTimeout(function () {
+              menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
+              if (panel) panel.setAttribute('aria-hidden','true');
+              openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+              scrollLock(false);
+              if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true });
+            }, ODUR);
+            timeouts.push(tH2);
+          }, OHOLD);
+          timeouts.push(tH);
+        }, PDUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', trapFocus, true);
+        document.removeEventListener('keydown', onEsc);
+        if (overlay) overlay.removeEventListener('click', close);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+      }
+      openBtns.forEach(function(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+        btn.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
+      });
+      closeBtns.forEach(function(btn) { if(!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
+      window.openMobileMenu  = open;
+      window.closeMobileMenu = close;
+      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
+      /* Floating sticky clone */
+      var orig = document.getElementById('hamburger');
+      if (orig) {
+        var fl = orig.cloneNode(true);
+        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
+        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
+        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
+        document.body.appendChild(fl);
+        function act(){ if (typeof open==='function') open(); }
+        fl.addEventListener('click', act);
+        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      }
+    });
+  }());
+  </script>
+  <div data-bic-menu="lux"></div>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/news.js" defer></script>
+</body>
+</html>

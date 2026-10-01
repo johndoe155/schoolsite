@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bodija International College — Curriculum Resources</title>
+  <meta name="description" content="Access curriculum textbooks, past exams, and study guides." />
+
+  <!-- Fonts: Playfair Display (Serif) & Inter (Sans) for modern legibility -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Josefin+Sans:wght@600;700&family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- PDF.js for rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    // Configure worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            lux: {
+              navy: '#0b1220',
+              charcoal: '#0f1724',
+              gold: '#c59b53',
+              'gold-light': '#d4af6a',
+              cream: '#f7f5f2',
+              surface: 'rgba(255, 255, 255, 0.03)',
+              'surface-hover': 'rgba(255, 255, 255, 0.08)',
+              border: 'rgba(255, 255, 255, 0.08)',
+            }
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards',
+            'in-dialog': 'inDialog 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(16px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            inDialog: {
+              '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+              '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- ── BIC Shared Nav + Menu + Footer CSS ── -->
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/library.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-lux-gold text-lux-navy px-4 py-2 font-bold rounded">
+    Skip to content
+  </a>
+
+  <!-- ── BIC Site Nav ── -->
+  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
+    <span id="hamburger"
+          role="button"
+          tabindex="0"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+
+    <div class="bic-nav-brand" aria-label="Bodija International College home">
+      <div class="bic-nav-wordmark">
+        <strong>Bodija Int'l College</strong>
+        <span>Digital Library</span>
+      </div>
+    </div>
+
+    <div class="bic-nav-auth">
+      <!-- Staff auth controls (preserved) -->
+      <div id="auth-nav-guest">
+        <button
+          onclick="AdminSystem.openLogin()"
+          style="padding:9px 18px;border-radius:999px;border:1px solid rgba(24,20,15,.2);background:transparent;color:var(--bic-ink);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--bic-font-body);transition:all 200ms;"
+          onmouseover="this.style.borderColor='var(--bic-gold)';this.style.color='var(--bic-gold)'"
+          onmouseout="this.style.borderColor='rgba(24,20,15,.2)';this.style.color='var(--bic-ink)'"
+        >Staff Login</button>
+      </div>
+      <div id="auth-nav-staff">
+        <button
+          onclick="AdminSystem.openUpload()"
+          style="display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:var(--bic-gold-pale);border:1px solid var(--bic-gold-border);color:var(--bic-gold);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--bic-font-body);"
+        >
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          Upload
+        </button>
+        <button
+          onclick="AdminSystem.logout()"
+          style="font-size:12px;color:var(--bic-ink-60);background:none;border:none;cursor:pointer;font-family:var(--bic-font-body);padding:4px 8px;"
+        >Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  
+
+  <!-- Main Content -->
+  <main id="main-content" class="flex-grow px-4 sm:px-6 lg:px-8 py-8 lg:py-12" style="padding-top: calc(68px + 2rem);">
+    <div class="max-w-7xl mx-auto space-y-12">
+
+      <!-- Hero Section -->
+      <section class="relative text-center max-w-3xl mx-auto space-y-6">
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif text-lux-cream leading-tight">
+          Explore our <span class="text-lux-gold italic">curriculum</span> <br> & archives.
+        </h2>
+        <p class="text-lg text-white/60 max-w-xl mx-auto leading-relaxed">
+          Access thousands of textbooks, past exam papers, and supplementary study materials from anywhere.
+        </p>
+        
+        <!-- Search Bar -->
+        <form id="search-form" class="relative max-w-xl mx-auto group">
+          <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-white/40 group-focus-within:text-lux-gold transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input 
+            type="text" 
+            id="q" 
+            class="w-full bg-white/5 border border-white/10 text-white placeholder-white/30 rounded-full py-4 pl-12 pr-16 focus:bg-white/10 focus:border-lux-gold/50 focus:ring-0 transition-all shadow-lg"
+            placeholder="Search by title, subject, or year..."
+            autocomplete="off"
+            aria-label="Search resources"
+          >
+          <button type="submit" class="absolute right-2 top-2 bottom-2 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-semibold px-5 rounded-full transition-colors text-sm">
+            Find
+          </button>
+        </form>
+      </section>
+
+      <!-- Filters & Toolbar -->
+      <section class="glass-panel rounded-2xl p-4 md:p-6" aria-label="Filtering options">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          
+          <!-- Filter Chips Area -->
+          <div class="flex-1 space-y-3">
+            <div class="flex items-center gap-2 text-sm text-white/50 mb-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+              <span class="font-medium tracking-wider uppercase text-xs">Active Filters</span>
+            </div>
+            <div id="active-filters" class="flex flex-wrap gap-2 min-h-[32px]">
+              <span class="text-sm text-white/30 italic py-1" id="no-filters-msg">No filters applied</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex flex-wrap gap-3 items-end">
+            <!-- Type -->
+            <div class="relative min-w-[140px]">
+              <label for="filter-type" class="block text-xs text-white/40 font-medium mb-1 ml-1">Type</label>
+              <select id="filter-type" data-key="type" class="w-full appearance-none bg-lux-charcoal border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:border-lux-gold focus:ring-1 focus:ring-lux-gold transition-colors cursor-pointer">
+                <option value="">All Types</option>
+                <option value="Textbook">Textbook</option>
+                <option value="Exam Paper">Past Exam</option>
+                <option value="Study Guide">Study Guide</option>
+              </select>
+              <div class="pointer-events-none absolute right-3 bottom-3 text-white/40">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+
+            <!-- Subject -->
+            <div class="relative min-w-[140px]">
+              <label for="filter-subject" class="block text-xs text-white/40 font-medium mb-1 ml-1">Subject</label>
+              <select id="filter-subject" data-key="subject" class="w-full appearance-none bg-lux-charcoal border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:border-lux-gold focus:ring-1 focus:ring-lux-gold transition-colors cursor-pointer">
+                <option value="">All Subjects</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="History">History</option>
+                <option value="Literature">Literature</option>
+                <option value="Chemistry">Chemistry</option>
+              </select>
+              <div class="pointer-events-none absolute right-3 bottom-3 text-white/40">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+
+            <!-- Clear Button -->
+            <button id="clear-all" class="hidden mb-[2px] px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-sm font-medium transition-colors">
+              Clear
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status Bar -->
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-serif text-lux-cream" id="results-heading">Latest Resources</h3>
+        <span id="results-count" class="text-sm text-white/50 bg-white/5 px-3 py-1 rounded-full font-mono">0 items</span>
+      </div>
+
+      <!-- Live Region for A11y -->
+      <div id="aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+      <!-- Results Grid -->
+      <div id="results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 pb-12">
+        <!-- Content injected via JS -->
+      </div>
+      
+    </div>
+  </main>
+
+  <!-- ── BIC Site Footer ── -->
+  <footer class="bic-site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="bic-footer-wrap">
+      <div class="bic-footer-grid">
+        <div>
+          <div class="bic-footer-logo-row">
+            <div class="bic-footer-logo"><img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" /></div>
+            <div class="bic-footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home &middot; Digital Library</small>
+            </div>
+          </div>
+          <address class="bic-footer-addr">
+            1-5, Tunde Lakanmi Crescent<br>Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632">+234 816 606 1632</a>
+          </address>
+          <div class="bic-social-row" aria-label="Follow us on social media">
+            <a class="bic-social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="bic-social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <span class="bic-footer-col-title">Our Mission</span>
+          <p class="bic-footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="bic-footer-discover">Discover our values <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <div class="bic-footer-city-list" aria-label="Location">
+            <div class="bic-footer-city">Bodija</div>
+            <div class="bic-footer-city active">Ibadan</div>
+            <div class="bic-footer-city">Oyo State</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
+          <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>
+        </div>
+      </div>
+      <div class="bic-footer-bottom">
+        <span class="bic-footer-copy">&copy; <span id="year"></span> Bodija International College. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PREMIUM PDF LIGHTBOX -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+    
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-lux-navy/80 backdrop-blur-md" id="lightbox-backdrop"></div>
+    
+    <!-- Modal Container -->
+    <div class="absolute inset-0 flex items-center justify-center p-0 md:p-6 lg:p-8">
+      <div class="bg-[#1a1d21] w-full h-full md:rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 origin-center border border-white/10" id="lightbox-content">
+        
+        <!-- Top Toolbar -->
+        <div class="h-16 shrink-0 bg-[#0f1115] border-b border-white/5 flex items-center justify-between px-4 lg:px-6 relative z-10">
+          
+          <!-- Left: Title -->
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-lux-gold/10 text-lux-gold">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l5.414 5.414a1 1 0 01.586 1.414V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <div class="min-w-0">
+              <h3 id="lightbox-title" class="text-sm md:text-base font-medium text-white truncate">Document Viewer</h3>
+              <p class="text-[11px] text-white/40 uppercase tracking-widest hidden md:block">Read Only Preview</p>
+            </div>
+          </div>
+
+          <!-- Center: Pagination (Desktop) -->
+          <div class="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-[#25282e] rounded-lg p-1 border border-white/5">
+             <button id="prev-page" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-white/70 transition-colors disabled:opacity-30">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+             </button>
+             <span class="text-xs font-mono text-white/90 w-24 text-center">
+               <span id="page-num">1</span> / <span id="page-count">--</span>
+             </span>
+             <button id="next-page" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-white/70 transition-colors disabled:opacity-30">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+             </button>
+          </div>
+
+          <!-- Right: Actions -->
+          <div class="flex items-center gap-2 md:gap-4">
+             <button id="toggle-sidebar" class="hidden md:flex p-2 rounded-lg text-white/50 hover:bg-white/5 hover:text-white transition-colors" title="Toggle Thumbnails">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+             </button>
+             <div class="w-px h-6 bg-white/10 hidden md:block"></div>
+             <a id="download-btn" href="#" class="hidden md:flex items-center gap-2 px-4 py-2 bg-lux-gold text-lux-navy text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-lux-gold-light transition-colors" download>
+                <span>Download</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+             </a>
+             <button id="lightbox-close" class="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/70 hover:text-red-400 transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 flex overflow-hidden relative">
+          
+          <!-- Sidebar (Thumbnails) -->
+          <div id="pdf-sidebar" class="w-0 md:w-64 bg-[#131519] border-r border-white/5 flex-shrink-0 transition-all duration-300 overflow-y-auto hidden md:block">
+             <div class="p-4 space-y-4" id="thumbnail-container">
+                <!-- Thumbnails injected here -->
+             </div>
+          </div>
+
+          <!-- Main Scroll Container -->
+          <div id="pdf-scroll-container" class="flex-1 overflow-y-auto overflow-x-hidden bg-[#2d323b] relative p-4 md:p-8 pdf-scroll flex justify-center">
+             
+             <!-- PDF Canvas Wrapper -->
+             <div id="pdf-wrapper" class="w-full max-w-3xl transition-transform duration-200 origin-top">
+                <!-- Pages injected here -->
+             </div>
+
+             <!-- Floating Loading State -->
+             <div id="pdf-loader" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-3 bg-black/60 backdrop-blur px-8 py-6 rounded-xl">
+               <div class="w-8 h-8 border-2 border-lux-gold border-t-transparent rounded-full animate-spin"></div>
+               <p class="text-white/80 text-sm font-medium">Rendering PDF...</p>
+             </div>
+
+             <!-- Error State -->
+             <div id="pdf-error" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center max-w-sm">
+                <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-white font-serif text-xl mb-2">Preview Unavailable</h3>
+                <p class="text-white/50 text-sm mb-6">We couldn't render this document directly. It might be password protected or corrupted.</p>
+                <a id="error-download" href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-lux-gold text-lux-navy font-bold rounded hover:bg-lux-gold-light transition-colors">
+                  Download File
+                </a>
+             </div>
+
+          </div>
+
+          <!-- Bottom Floating Controls (Zoom) -->
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1d21]/90 backdrop-blur border border-white/10 rounded-full px-4 py-2 flex items-center gap-4 shadow-xl z-20">
+             <button id="zoom-out" class="text-white/70 hover:text-white transition-colors p-1" title="Zoom Out">
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+             </button>
+             <span id="zoom-level" class="text-xs font-mono text-white w-12 text-center">100%</span>
+             <button id="zoom-in" class="text-white/70 hover:text-white transition-colors p-1" title="Zoom In">
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+             </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ADMIN LOGIN MODAL
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="admin-login-modal" class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-lux-navy/80 backdrop-blur-md" id="login-modal-backdrop"></div>
+
+    <!-- Panel -->
+    <div class="admin-modal__panel relative w-full max-w-md mx-4">
+      <div class="glass-panel rounded-2xl p-8 shadow-2xl border border-white/10">
+
+        <!-- Header -->
+        <div class="flex items-start justify-between mb-8">
+          <div>
+            <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-lux-gold/10 mb-4">
+              <svg class="w-5 h-5 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <h2 id="login-modal-title" class="font-serif text-2xl text-lux-cream">Staff Portal</h2>
+            <p class="text-white/40 text-sm mt-1">Restricted to authorised personnel only.</p>
+          </div>
+          <button onclick="AdminSystem.closeLogin()" class="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-colors mt-1" aria-label="Close">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" onsubmit="AdminSystem.handleLogin(event)" class="space-y-5" novalidate>
+
+          <!-- Passcode -->
+          <div>
+            <label for="admin-passcode" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Passcode</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="admin-passcode"
+                name="passcode"
+                autocomplete="current-password"
+                required
+                placeholder="Enter staff passcode"
+                class="admin-input pr-12"
+              >
+              <button
+                type="button"
+                onclick="AdminSystem.togglePasscodeVisibility()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors p-1"
+                aria-label="Toggle visibility"
+                tabindex="-1"
+              >
+                <svg id="eye-icon-login" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div id="login-error" class="admin-error" role="alert">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span id="login-error-text">Incorrect passcode.</span>
+          </div>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            id="login-submit-btn"
+            class="w-full py-3 px-6 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-900/20"
+          >
+            <span id="login-btn-text">Log in</span>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ADMIN UPLOAD MODAL
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="admin-upload-modal" class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-lux-navy/80 backdrop-blur-md" id="upload-modal-backdrop"></div>
+
+    <!-- Panel -->
+    <div class="admin-modal__panel relative w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="glass-panel rounded-2xl shadow-2xl border border-white/10">
+
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between px-8 py-6 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-lux-gold/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            </div>
+            <div>
+              <h2 id="upload-modal-title" class="font-serif text-xl text-lux-cream">Upload Resource</h2>
+              <p class="text-white/40 text-xs mt-0.5">Add a PDF to the library catalog</p>
+            </div>
+          </div>
+          <button onclick="AdminSystem.closeUpload()" class="p-2 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-colors" aria-label="Close">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- ── Upload Form ── -->
+        <div id="upload-form-container" class="px-8 py-6 space-y-6">
+          <form id="upload-form" onsubmit="AdminSystem.handleUpload(event)" novalidate class="space-y-6">
+
+            <!-- Drag-drop zone -->
+            <div>
+              <label class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Document <span class="text-lux-gold/70">(PDF only, max 10 MB)</span></label>
+              <div
+                id="upload-dropzone"
+                class="upload-dropzone rounded-xl p-8 text-center cursor-pointer relative"
+                onclick="document.getElementById('file-upload-input').click()"
+              >
+                <input
+                  type="file"
+                  id="file-upload-input"
+                  name="file"
+                  accept="application/pdf"
+                  required
+                  class="sr-only-upload"
+                  onchange="AdminSystem.handleFileSelect(this)"
+                >
+                <!-- Idle state -->
+                <div id="dropzone-idle">
+                  <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-lux-gold/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                  </div>
+                  <p class="text-white/60 text-sm">Click to select or drag & drop a PDF</p>
+                  <p class="text-white/25 text-xs mt-1">PDF format · Maximum 10 MB</p>
+                </div>
+                <!-- Selected state -->
+                <div id="dropzone-selected" class="hidden">
+                  <div class="w-12 h-12 rounded-full bg-lux-gold/10 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l5.414 5.414a1 1 0 01.586 1.414V19a2 2 0 01-2 2z"/></svg>
+                  </div>
+                  <p id="selected-filename" class="text-lux-gold text-sm font-medium"></p>
+                  <p id="selected-filesize" class="text-white/30 text-xs mt-0.5"></p>
+                  <button type="button" onclick="AdminSystem.clearFileSelection(event)" class="text-xs text-white/30 hover:text-red-400 mt-2 transition-colors underline">Remove file</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Metadata grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Title (full width) -->
+              <div class="sm:col-span-2">
+                <label for="upload-title" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Title <span class="text-red-400">*</span></label>
+                <input type="text" id="upload-title" name="title" required placeholder="e.g. Advanced Calculus: Early Transcendentals" class="admin-input">
+              </div>
+
+              <!-- Subject -->
+              <div>
+                <label for="upload-subject" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Subject <span class="text-red-400">*</span></label>
+                <input type="text" id="upload-subject" name="subject" required placeholder="e.g. Mathematics" class="admin-input">
+              </div>
+
+              <!-- Type -->
+              <div class="relative">
+                <label for="upload-type" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Type <span class="text-red-400">*</span></label>
+                <select id="upload-type" name="type" required class="admin-input pr-8">
+                  <option value="Textbook">Textbook</option>
+                  <option value="Exam Paper">Past Exam</option>
+                  <option value="Study Guide">Study Guide</option>
+                  <option value="Syllabus">Syllabus</option>
+                </select>
+                <div class="pointer-events-none absolute right-3 bottom-3 text-white/30">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+
+              <!-- Year -->
+              <div>
+                <label for="upload-year" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Academic Year <span class="text-red-400">*</span></label>
+                <input type="number" id="upload-year" name="year" required min="1990" max="2030" placeholder="e.g. 2024" class="admin-input">
+              </div>
+
+              <!-- Author -->
+              <div>
+                <label for="upload-author" class="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Author <span class="text-white/25">(optional)</span></label>
+                <input type="text" id="upload-author" name="author" placeholder="e.g. J. Stewart" class="admin-input">
+              </div>
+            </div>
+
+            <!-- Progress bar (hidden until upload starts) -->
+            <div id="upload-progress-wrap" class="hidden">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs text-white/40">Uploading…</span>
+                <span id="upload-progress-pct" class="text-xs font-mono text-lux-gold">0%</span>
+              </div>
+              <div class="w-full bg-white/5 rounded-full overflow-hidden h-[3px]">
+                <div id="upload-progress-bar" class="upload-progress-bar"></div>
+              </div>
+            </div>
+
+            <!-- Error -->
+            <div id="upload-error" class="admin-error" role="alert">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span id="upload-error-text">Upload failed.</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 pt-2 border-t border-white/5">
+              <button type="button" onclick="AdminSystem.closeUpload()" class="px-5 py-2.5 rounded-lg border border-white/10 text-white/60 hover:bg-white/5 text-sm font-medium transition-colors">
+                Cancel
+              </button>
+              <button type="submit" id="upload-submit-btn" class="px-6 py-2.5 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-bold rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-amber-900/20 text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                <span id="upload-btn-text">Upload PDF</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- ── Upload Success State ── -->
+        <div id="upload-success-container" class="hidden px-8 py-12 text-center">
+          <div class="w-20 h-20 rounded-full bg-lux-gold/10 border border-lux-gold/20 flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-lux-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3 class="font-serif text-2xl text-lux-cream mb-2">Upload Complete</h3>
+          <p class="text-white/50 text-sm mb-6">The document has been saved and is now visible in the catalog.</p>
+          <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg px-5 py-3 mb-8 text-left">
+            <svg class="w-8 h-8 text-lux-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l5.414 5.414a1 1 0 01.586 1.414V19a2 2 0 01-2 2z"/></svg>
+            <div class="min-w-0">
+              <p id="success-filename" class="text-sm font-medium text-white truncate max-w-xs"></p>
+              <a id="success-view-link" href="#" target="_blank" class="text-xs text-lux-gold hover:text-lux-gold-light transition-colors mt-0.5 inline-block">View document ↗</a>
+            </div>
+          </div>
+          <div class="flex justify-center gap-3">
+            <button onclick="AdminSystem.resetUploadForm()" class="px-5 py-2.5 rounded-lg border border-white/10 text-white/70 hover:bg-white/5 text-sm font-medium transition-colors">
+              Upload Another
+            </button>
+            <button onclick="AdminSystem.closeUpload()" class="px-5 py-2.5 bg-lux-gold hover:bg-lux-gold-light text-lux-navy font-bold rounded-lg text-sm transition-all">
+              View Catalog
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <div class="bg-lux-gold text-lux-navy px-6 py-3 rounded-lg shadow-lg shadow-black/30 font-medium flex items-center gap-3">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span id="toast-msg">Action successful</span>
+    </div>
+  </div>
+  
+<script>
+    // menu.js
+// Extracted from prototypes.html (keeps original behavior and exports).
+(function () {
+  'use strict';
+
+  function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+  function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+  function getFocusable(container) {
+    if (!container) return [];
+    return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+      .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var menu = document.getElementById('mobileMenu');
+    if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+    var overlay = menu.querySelector('[data-overlay]');
+    var panel = menu.querySelector('.mobile-menu__panel');
+    var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+    var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+    var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+    function parseTime(s) {
+      if (!s) return 0;
+      var str = String(s).trim();
+      if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+      if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+      var n = parseFloat(str);
+      return isFinite(n) ? n : 0;
+    }
+
+    var rootStyles = getComputedStyle(document.documentElement);
+    var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+    var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+    var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+    var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+    var timeouts = [];
+    var lastFocused = null;
+
+    function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+    function preventScroll(enable){
+      if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+      else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+    }
+
+    function onKeyDown(e){
+      if (!menu.classList.contains('open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+      if (e.key === 'Tab') {
+        if (!panel) return;
+        var focusable = getFocusable(panel);
+        if (!focusable.length) { e.preventDefault(); return; }
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function focusTrap(e){
+      if (!menu.classList.contains('open')) return;
+      if (!panel) return;
+      if (panel.contains(e.target)) return;
+      e.stopPropagation();
+      var f = getFocusable(panel);
+      if (f.length) f[0].focus(); else panel.focus();
+    }
+
+    // Ensure menu is appended to body to avoid ancestor stacking contexts
+    if (menu && menu.parentElement !== document.body) {
+      document.body.appendChild(menu);
+      overlay = menu.querySelector('[data-overlay]');
+      panel = menu.querySelector('.mobile-menu__panel');
+    }
+
+    // store for restoring open buttons state
+    var openerStateMap = new WeakMap();
+
+    function disableOpenButtons() {
+      openButtons.forEach(function(b){
+        if (!b) return;
+        var prev = {
+          tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+          pointerEvents: b.style.pointerEvents || null,
+          ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+        };
+        openerStateMap.set(b, prev);
+        try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+        b.style.pointerEvents = 'none';
+        try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+      });
+    }
+
+    function restoreOpenButtons() {
+      openButtons.forEach(function(b){
+        if (!b) return;
+        var prev = openerStateMap.get(b) || {};
+        if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+        else b.setAttribute('tabindex', prev.tabindex);
+        if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+        else b.style.pointerEvents = prev.pointerEvents;
+        if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+        else b.setAttribute('aria-hidden', prev.ariaHidden);
+        openerStateMap.delete(b);
+      });
+    }
+
+    function openMobileMenu(){
+      if (menu.classList.contains('open')) return;
+      lastFocused = document.activeElement;
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      if (panel) panel.setAttribute('aria-hidden', 'false');
+
+      // disable hamburgers / openers while menu is open
+      disableOpenButtons();
+
+      if (overlay) overlay.classList.remove('overlay-in');
+      if (panel) panel.classList.remove('panel-in');
+      void (overlay && overlay.offsetWidth);
+      if (overlay) overlay.classList.add('overlay-in');
+
+      var t = setTimeout(function(){
+        if (panel) {
+          panel.classList.add('panel-in');
+          var closeBtn = panel.querySelector('.mobile-menu__close');
+          if (closeBtn) closeBtn.focus({ preventScroll: true });
+        }
+      }, PANEL_DELAY);
+      timeouts.push(t);
+
+      document.addEventListener('focus', focusTrap, true);
+      document.addEventListener('keydown', onKeyDown);
+      if (overlay) overlay.addEventListener('click', overlayClick);
+      preventScroll(true);
+      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+    }
+
+    function closeMobileMenu(){
+      if (!menu.classList.contains('open')) return;
+      clearAllTimeouts();
+      if (panel) panel.classList.remove('panel-in');
+
+      var t1 = setTimeout(function(){
+        var tHold = setTimeout(function(){
+          if (overlay) overlay.classList.remove('overlay-in');
+          var tHide = setTimeout(function(){
+            menu.classList.remove('open');
+            menu.setAttribute('aria-hidden', 'true');
+            if (panel) panel.setAttribute('aria-hidden', 'true');
+
+            // restore hamburgers / openers to previous state
+            restoreOpenButtons();
+
+            preventScroll(false);
+            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+          }, OVERLAY_DUR);
+          timeouts.push(tHide);
+        }, OVERLAY_HOLD);
+        timeouts.push(tHold);
+      }, PANEL_DUR);
+      timeouts.push(t1);
+
+      document.removeEventListener('focus', focusTrap, true);
+      document.removeEventListener('keydown', onKeyDown);
+      if (overlay) overlay.removeEventListener('click', overlayClick);
+      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+    }
+
+    function overlayClick(){ closeMobileMenu(); }
+
+    // Attach listeners to openers
+    openButtons.forEach(function(btn){
+      if (!btn) return;
+      btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+      btn.addEventListener('keydown', function(ev){
+        var k = ev.key;
+        if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+      });
+    });
+
+    // Attach close buttons
+    externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+    // Expose globals (keeps parity with prototype)
+    window.openMobileMenu = openMobileMenu;
+    window.closeMobileMenu = closeMobileMenu;
+    window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+    // Preload background image if present
+    (function preloadBg(){
+      if (!panel) return;
+      var style = getComputedStyle(panel);
+      var bg = style.getPropertyValue('background-image') || '';
+      var url = '';
+      var start = bg.indexOf('url(');
+      var end = bg.lastIndexOf(')');
+      if (start !== -1 && end !== -1 && end > start) {
+        url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+      }
+      if (url) { var img = new Image(); img.src = url; }
+    })();
+
+  }); // DOMContentLoaded end
+
+})();
+  </script>
+  <!-- Application Logic -->
+  
+  <!-- ══════════════════════════════════════════════════════════════
+       ADMIN SYSTEM — Auth · Upload · Modal Control
+  ══════════════════════════════════════════════════════════════ -->
+  
+
+  
+
+  <!-- ── BIC Nav + Menu JS ── -->
+  <script>
+  (function () {
+    'use strict';
+    var nav = document.querySelector('.bic-site-nav');
+    if (nav) {
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+      var menu = document.getElementById('mobileMenu');
+      var panel = menu ? menu.querySelector('.mobile-menu__panel') : null;
+      var overlay = menu ? menu.querySelector('.mobile-menu__overlay') : null;
+      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
+      var openBtns = [document.getElementById('hamburger')].filter(Boolean);
+      var lastFocus = null, timeouts = [];
+      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
+      if (!menu) return;
+      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
+      function scroll(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function trapFocus(e) { if (!panel || !panel.contains(e.target)) { var els = Array.from(panel.querySelectorAll(SEL)); if (els.length) els[0].focus({ preventScroll: true }); } }
+      function onEsc(e) { if (e.key === 'Escape') close(); }
+      function open() {
+        if (menu.classList.contains('open')) return;
+        lastFocus = document.activeElement;
+        menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false');
+        if (panel) panel.setAttribute('aria-hidden', 'false');
+        void (overlay && overlay.offsetWidth);
+        if (overlay) overlay.classList.add('overlay-in');
+        var t = setTimeout(function () { if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll: true }); } }, PDELAY);
+        timeouts.push(t);
+        document.addEventListener('focus', trapFocus, true);
+        document.addEventListener('keydown', onEsc);
+        if (overlay) overlay.addEventListener('click', close);
+        scroll(true);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
+      }
+      function close() {
+        if (!menu.classList.contains('open')) return;
+        clearTO();
+        if (panel) panel.classList.remove('panel-in');
+        var t1 = setTimeout(function () { var tH = setTimeout(function () { if (overlay) overlay.classList.remove('overlay-in'); var tH2 = setTimeout(function () { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); if (panel) panel.setAttribute('aria-hidden','true'); openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); }); scroll(false); if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true }); }, ODUR); timeouts.push(tH2); }, OHOLD); timeouts.push(tH); }, PDUR);
+        timeouts.push(t1);
+        document.removeEventListener('focus', trapFocus, true);
+        document.removeEventListener('keydown', onEsc);
+        if (overlay) overlay.removeEventListener('click', close);
+        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
+      }
+      openBtns.forEach(function(btn) {
+        if (!btn) return;
+        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
+        btn.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
+      });
+      closeBtns.forEach(function(btn) { if (!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
+      window.openMobileMenu = open; window.closeMobileMenu = close;
+      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
+      var orig = document.getElementById('hamburger');
+      if (orig) {
+        var fl = orig.cloneNode(true);
+        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
+        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
+        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
+        document.body.appendChild(fl);
+        function act(){ if (typeof open==='function') open(); }
+        fl.addEventListener('click', act);
+        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+      }
+    });
+  }());
+  </script>
+  <div data-bic-menu="lux"></div>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/library.js" defer></script>
+</body>
+</html>

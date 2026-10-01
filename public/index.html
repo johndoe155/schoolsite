@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bodija International College — Excellence in Education</title>
+  <meta name="description" content="Empowering future leaders through excellence in education, science, arts, and technology.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@300;400;500;600&family=Josefin+Sans:wght@600;700&family=Playfair+Display:wght@600;700&family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+  document.documentElement.classList.add('fonts-loading');
+  document.fonts.load('700 1em "Cormorant SC"').then(()=> {
+    document.documentElement.classList.remove('fonts-loading');
+    document.documentElement.classList.add('fonts-loaded');
+  });
+  </script>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          display: ['Abril Fatface', 'serif'],
+          brand: ['Josefin Sans', 'sans-serif'],
+          serif: ['Playfair Display', 'serif'],
+        },
+        colors: {
+          brand: { indigo: '#05014a', yellow: '#FACC15', dark: '#0f172a' }
+        },
+        borderRadius: { '3xl': '1.5rem' },
+        keyframes: {
+          fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        },
+        animation: { fadeIn: 'fadeIn 0.5s ease-in-out forwards' },
+      }
+    }
+  }
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Abril Fatface', 'serif'],
+            brand: ['Josefin Sans', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+            cormorant: ['Cormorant SC', 'serif'],
+            'cormorant-infant': ['Cormorant Infant', 'serif'],
+          },
+          colors: {
+            brand: {
+              indigo: '#05014a',
+              yellow: '#FACC15',
+              dark: '#0f172a',
+              cream: '#FAF6EF',
+              stone: '#D6D3D1',
+            }
+          },
+          borderRadius: { '3xl': '1.5rem', '4xl': '2rem' },
+          keyframes: {
+            fadeInUp:   { '0%': { opacity:'0', transform:'translateY(32px)' }, '100%': { opacity:'1', transform:'translateY(0)' } },
+            fadeInLeft: { '0%': { opacity:'0', transform:'translateX(-32px)' }, '100%': { opacity:'1', transform:'translateX(0)' } },
+            fadeInRight:{ '0%': { opacity:'0', transform:'translateX(32px)' }, '100%': { opacity:'1', transform:'translateX(0)' } },
+            drawLine:   { '0%': { transform:'scaleY(0)' }, '100%': { transform:'scaleY(1)' } },
+            shimmer:    { '0%': { backgroundPosition: '-200% center' }, '100%': { backgroundPosition: '200% center' } },
+            quoteScale: { '0%': { opacity:'0', transform:'scale(0.7) rotate(-8deg)' }, '100%': { opacity:'1', transform:'scale(1) rotate(0deg)' } },
+          },
+          animation: {
+            fadeInUp:   'fadeInUp 0.75s cubic-bezier(0.22,1,0.36,1) both',
+            fadeInLeft: 'fadeInLeft 0.75s cubic-bezier(0.22,1,0.36,1) both',
+            fadeInRight:'fadeInRight 0.75s cubic-bezier(0.22,1,0.36,1) both',
+            drawLine:   'drawLine 1.2s cubic-bezier(0.22,1,0.36,1) both',
+            shimmer:    'shimmer 3s linear infinite',
+            quoteScale: 'quoteScale 0.6s cubic-bezier(0.34,1.56,0.64,1) both',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer components {
+      .btn-primary {
+        @apply relative overflow-hidden inline-flex items-center justify-center gap-3 px-10 py-4 bg-brand-yellow text-brand-indigo text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] rounded-full transition-all duration-500 ease-out shadow-xl shadow-brand-yellow/20 hover:shadow-2xl hover:shadow-brand-yellow/40 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-yellow/70 focus:ring-offset-2 focus:ring-offset-transparent;
+      }
+      .btn-primary::before {
+        @apply content-[''] absolute top-0 left-[-100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg] transition-transform duration-700 ease-out;
+      }
+      .btn-primary:hover::before { @apply left-[200%]; }
+      .btn-secondary {
+        @apply inline-flex items-center justify-center gap-3 px-10 py-4 bg-white/5 border border-white/20 backdrop-blur-md text-white text-xs sm:text-sm font-medium uppercase tracking-[0.2em] rounded-full transition-all duration-500 ease-out hover:bg-white/10 hover:border-white/50 hover:shadow-lg hover:shadow-white/5 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent;
+      }
+    }
+    .fonts-loading .logo { /* fallback look */ }
+    .fonts-loaded  .logo { font-family: 'Cormorant SC', serif; }
+  </style>
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/home.css">
+</head>
+<body class="antialiased bg-slate-50 text-slate-800">
+
+  <!-- Initial Loader -->
+  <div id="loader" class="loader-overlay" aria-hidden="false">
+    <div class="loader">
+      <div class="bic">BIC</div>
+    </div>
+  </div>
+
+  <!-- CMS Data Object -->
+  
+
+  <!-- Header -->
+  <header class="fixed inset-x-0 top-0 z-40 transition-all duration-300" id="mainHeader">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Brand -->
+        <div class="flex items-center gap-4 z-50">
+          <a href="#" class="brand-btn group" aria-label="Bodija International College Home">
+            BIC
+          </a>
+          <span class="hidden sm:block text-lg font-semibold tracking-tight text-white mix-blend-difference">
+            Bodija International College
+          </span>
+        </div>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-white mix-blend-difference" aria-label="Primary">
+          <a class="hover:text-brand-yellow transition-colors" href="#home">Home</a>
+          <a class="hover:text-brand-yellow transition-colors" href="#about">About</a>
+          <a class="hover:text-brand-yellow transition-colors" href="#academics">Academics</a>
+          <a class="hover:text-brand-yellow transition-colors" href="#gallery">Gallery</a>
+          <a class="hover:text-brand-yellow transition-colors" href="#contact">Contact</a>
+        </nav>
+
+<!-- mobile menu opener -->
+<button id="hamburger"
+        aria-controls="mobileMenu"
+        aria-expanded="false"
+        aria-label="Open menu"
+        tabindex="0"
+        class="lg:hidden p-2 focus:outline-none z-[60] relative" aria-label="Toggle Mobile Menu">
+  <svg class="icon text-slate-900" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>  
+</button>
+
+<!-- Mobile menu -->
+
+  </header>
+
+  <main id="main">
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative w-full h-[100dvh] min-h-[600px] flex items-end overflow-hidden">
+
+      <!-- Media Layer: Video -> (once) -> Endless Image Slideshow.
+           Isolated in its own stacking context (isolation:isolate) so its
+           internal opacity/crossfade transitions can never bleed into,
+           or trigger repaint of, sibling layers like the overlay below. -->
+      <div id="heroMedia" class="absolute inset-0 -z-20 bg-slate-50" style="isolation:isolate;">
+        <div id="heroPoster" class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 opacity-0" aria-hidden="true"></div>
+
+        <div id="videoContainer" class="absolute inset-0 w-full h-full transition-opacity duration-1000">
+          <!-- Video injected by JS; plays exactly once -->
+        </div>
+
+        <div id="heroSlideshow" class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-1000" aria-hidden="true">
+          <!-- 5 crossfading <img> slides injected by JS -->
+        </div>
+      </div>
+
+      <!-- Static Dark Overlay: structurally separate from the media layer above.
+           Locked to opacity:1 with all transitions/animations disabled via the
+           #heroOverlay CSS rule, so it is fully rigid regardless of anything
+           happening in the video/slideshow crossfade. -->
+      <div id="heroOverlay" class="absolute inset-0 -z-10 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" aria-hidden="true"></div>
+
+      <!-- Content -->
+      <div class="relative z-10 w-full max-w-7xl mx-auto px-6 pb-24 sm:pb-32 text-white">
+        <div class="max-w-4xl">
+          <div id="heroEyebrow" class="inline-block opacity-0 px-5 py-1.5 mb-9 text-xs font-medium tracking-[0.2em] uppercase bg-brand-yellow/5 text-brand-yellow border border-brand-yellow/30 rounded-full backdrop-blur-md transition-all duration-300 hover:bg-brand-yellow/10">
+  Welcome
+</div>
+
+          <h1 id="heroTitle" class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.9] mb-6 opacity-0 translate-y-8">
+            Success Through<br/>Labour
+          </h1>
+
+          <p id="heroKicker" style="font-family: Quicksand" class="text-lg sm:text-xl text-slate-300 max-w-2xl mb-10 opacity-0 translate-y-8 font-light leading-relaxed">
+            Empowering future leaders through excellence in education, character building, and community service.
+          </p>
+
+          <div class="flex flex-wrap gap-4 opacity-0 translate-y-8" id="heroButtons">
+            <a id="ctaPrimary" href="/programs.html" class="btn-primary group">
+              <span class="relative z-10">Explore Programs</span>
+              <div class="absolute inset-0 bg-white/20 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+            </a>
+            <a id="ctaSecondary" href="#contact" class="btn-secondary group">
+              <span>Contact Admissions</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+      </div>
+    </section>
+
+    <!-- PINNED STORY SECTION -->
+    <section id="about" class="bg-[#D6D3D1] py-24 relative">
+      <div class="max-w-7xl mx-auto px-6">
+
+        <!-- Pinned Panel 1 -->
+        <article class="pinned-panel min-h-[80vh] grid lg:grid-cols-2 gap-16 items-center mb-32">
+          <div class="panel-left space-y-6">
+            <span class="reveal opacity-0 text-brand-indigo font-bold tracking-widest uppercase text-sm">  About BIC
+            </span>
+
+            <h2 class="text-4xl md:text-5xl font-display text-slate-900 leading-tight">A Legacy of Excellence</h2>
+            <p style="font-family: Quicksand" class="text-lg text-slate-600 leading-relaxed">
+              Bodija International College is dedicated to fostering academic excellence, creativity, and community engagement. We believe in a holistic approach to education that prepares students for the challenges of the modern world.
+            </p>
+            <ul class="space-y-4 pt-4">
+              <li style="font-family: Montserrat" class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
+                <span class="reveal opacity-0 w-2 h-2 rounded-full bg-brand-yellow"></span> Global Curriculum Standards
+              </li>
+              <li style="font-family: Montserrat" class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
+                <span class="reveal opacity-0 w-2 h-2 rounded-full bg-brand-yellow"></span> 10:1 Student-Teacher Ratio
+              </li>
+              <li style="font-family: Montserrat" class="slide-in-on-scroll flex items-center gap-3 text-slate-700">
+                <span class="reveal opacity-0 w-2 h-2 rounded-full bg-brand-yellow"></span> Award-winning STEM Program
+              </li>
+            </ul>
+          </div>
+          <div class="panel-right relative">
+             <div class="grid grid-cols-1 gap-6">
+               <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-100 transform hover:-translate-y-1">
+                 <div class="w-12 h-12 bg-indigo-50 rounded-md flex items-center justify-center text-brand-indigo mb-4">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                 </div>
+                 <h3 style="font-family: Cormorant SC" class="reveal opacity-0 text-2xl font-bold mb-2">Modern Labs</h3>
+                 <p style="font-family: Quicksand" class="reveal opacity-0 text-slate-600">Equipped with the latest technology to facilitate hands-on learning in sciences.</p>
+               </div>
+               <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-100 transform hover:-translate-y-1">
+                 <div class="w-12 h-12 bg-indigo-50 rounded-md flex items-center justify-center text-brand-indigo mb-4">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                 </div>
+                 <h3 style="font-family: Cormorant SC" class="reveal opacity-0 text-2xl font-bold mb-2">Library & Research</h3>
+                 <p style="font-family: Quicksand" class="reveal opacity-0 text-slate-600">A vast collection of physical and digital resources to support academic inquiry.</p>
+               </div>
+             </div>
+          </div>
+        </article>
+
+        <!-- Pinned Panel 2 (Programs) -->
+        <article id="academics" class="pinned-panel min-h-[80vh] flex flex-col justify-center">
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-indigo font-bold tracking-widest uppercase text-sm">Academics</span>
+            <h2 class="text-4xl md:text-5xl font-display text-slate-900 mt-4 mb-6">Our Programs</h2>
+            <p style="font-family: Quicksand" class="text-lg text-slate-600">Project-based learning, interdisciplinary teams, and mentorship prepare students for the real world.</p>
+          </div>
+
+          <div id="programGrid" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+            <!-- Populated via JS -->
+          </div>
+        </article>
+      </div>
+    </section>
+
+<!-- MESSAGE FROM THE ADMINISTRATION -->
+<section id="bic-message" class="py-28 md:py-36 relative overflow-hidden">
+
+  <div class="absolute top-0 right-0 w-1/3 h-full pointer-events-none" aria-hidden="true"
+       style="background: linear-gradient(135deg, transparent 0%, rgba(5,1,74,0.03) 100%);"></div>
+
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+
+    <div class="text-center mb-16 md:mb-20">
+      <div class="bic-reveal ornament-divider text-brand-indigo mb-6 max-w-xs mx-auto">
+        <span class="section-eyebrow text-brand-indigo">Administration</span>
+      </div>
+      <h2 class="bic-reveal font-serif text-4xl md:text-6xl font-semibold text-brand-indigo leading-tight" style="--delay:100ms;">
+        A Message of<br/>
+        <em style="font-family:'Cormorant Infant',serif; font-weight:300; color:#4a4580;">Purpose &amp; Promise</em>
+      </h2>
+    </div>
+
+    <div class="grid gap-12 lg:gap-20 items-center">
+
+      <div class="bic-reveal from-left flex justify-center lg:justify-center" style="--delay:0ms;">
+  <div class="admin-photo-frame w-full max-w-[320px]">
+    <div class="admin-photo-inner">
+      <img src="/assets/media/princi.jpg" alt="Principal, Bodija International College"
+           class="w-full h-full object-cover object-center" />
+
+      <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;" aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 320 420" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.06;">
+          <circle cx="160" cy="210" r="120" stroke="#FACC15" stroke-width="1"/>
+          <circle cx="160" cy="210" r="150" stroke="#FACC15" stroke-width="0.5"/>
+          <line x1="0" y1="210" x2="320" y2="210" stroke="#FACC15" stroke-width="0.5"/>
+          <line x1="160" y1="0" x2="160" y2="420" stroke="#FACC15" stroke-width="0.5"/>
+          <polygon points="160,60 260,315 60,315" stroke="#FACC15" stroke-width="0.5" fill="none"/>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+      <div class="bic-reveal from-right" style="--delay:150ms;">
+        <div class="bic-quote-block relative pl-4 pt-6">
+
+          <span class="quote-glyph" aria-hidden="true">&ldquo;</span>
+
+          <blockquote class="relative z-10">
+            <p class="text-2xl md:text-3xl lg:text-[2rem] leading-relaxed font-light text-brand-indigo mb-8"
+               style="font-family:'Cormorant Infant',serif; font-style:italic; line-height:1.55;">
+               I have predictively seen the brighter future because our educators have the connections to guide you to your choice of university and to your new career through careful selection of subjects in the  Child Protection Unit, but the creativity in you is what defines your future.
+
+               At BIC, our subjects are tailored to benefit your future interest. Be inspired to make an impact. This is my verdict.
+            </p>
+
+            <hr class="gold-rule animate mb-6" />
+
+            <footer class="flex items-center justify-center">
+              <div>
+                <cite class="not-italic block text-brand-indigo font-semibold tracking-wide" style="font-family:'Playfair Display',serif; font-size:1rem;">
+                  The Founding Chairman
+                </cite>
+                <span class="section-eyebrow text-slate-500 text-[0.6rem]">
+                  Bodija International College, Ibadan
+                </span>
+              </div>
+            </footer>
+          </blockquote>
+
+        </div>
+
+        <div class="mt-12 grid grid-cols-3 gap-6 border-t border-brand-indigo/10 pt-10">
+          <div class="bic-reveal" style="--delay:250ms;">
+            <div class="text-3xl font-bold text-brand-indigo mb-1" style="font-family:'Cormorant SC',serif;">30<span class="text-brand-yellow">+</span></div>
+            <div class="text-xs text-slate-500 uppercase tracking-widest" style="font-family:'Josefin Sans',sans-serif;">Years of Excellence</div>
+          </div>
+          <div class="bic-reveal" style="--delay:330ms;">
+            <div class="text-3xl font-bold text-brand-indigo mb-1" style="font-family:'Cormorant SC',serif;">5K<span class="text-brand-yellow">+</span></div>
+            <div class="text-xs text-slate-500 uppercase tracking-widest" style="font-family:'Josefin Sans',sans-serif;">Alumni Worldwide</div>
+          </div>
+          <div class="bic-reveal" style="--delay:410ms;">
+            <div class="text-3xl font-bold text-brand-indigo mb-1" style="font-family:'Cormorant SC',serif;">10<span class="text-brand-yellow">:1</span></div>
+            <div class="text-xs text-slate-500 uppercase tracking-widest" style="font-family:'Josefin Sans',sans-serif;">Student–Teacher Ratio</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+    <!-- GALLERY SECTION -->
+    <section id="gallery" class="bg-slate-900 text-white py-12 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-64 h-64 bg-brand-yellow/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-indigo/20 rounded-full blur-3xl"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+          <div>
+            <h2 style="font-family: Cormorant SC" class="reveal opacity-0 font-display font-bold text-5xl md:text-6xl mb-4">Life at BIC</h2>
+            <p style="font-family: Quicksand" class="text-slate-400 max-w-md">Explore our campus, events, and student activities through our lens.</p>
+          </div>
+          <div class="hidden md:block pb-2">
+            <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">Swipe to explore</span>
+          </div>
+        </div>
+
+<div id="publicGalleryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <div class="col-span-full flex items-center justify-center py-16 text-slate-500 text-sm" id="galleryLoader">
+    Loading gallery…
+  </div>
+</div>
+
+
+    </div>
+</section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-24 bg-white">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <span class="slide-in-on-scroll text-brand-indigo font-bold tracking-widest uppercase text-sm">Admissions</span>
+          <h2 class="reveal opacity-0 text-4xl md:text-5xl font-display text-slate-900 mt-4">Start Your Journey</h2>
+          <p class="mt-4 text-slate-600 max-w-2xl mx-auto">We are accepting applications for the next academic session. Contact us for inquiries or to schedule a campus tour.</p>
+        </div>
+
+        <div class="grid gap-12 items-start">
+
+          <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+            <h3 class="text-2xl font-bold text-slate-900 mb-6 font-serif">Contact Information</h3>
+            <div class="space-y-8">
+              <div class="flex gap-4">
+                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-brand-indigo shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+  <circle cx="12" cy="10" r="3"></circle>
+</svg>
+                </div>
+                <div>
+                  <h4 style="font-family: Montserrat" class="slide-in-on-scroll font-semibold text-slate-900">Visit Us</h4>
+                  <p style="font-family: Quicksand" class="font-md text-slate-600 mt-1">1-5, Tunde Lakanmi Crescent, Bodija<br>Ibadan, Oyo State</p>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-brand-indigo shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+  <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+                </div>
+                <div>
+              <h4 style="font-family: Montserrat" class="slide-in-on-scroll font-semibold text-slate-900">Email Us</h4>
+                  <a href="mailto:bicbis95@gmail.com" style="font-family: Quicksand" class="font-md text-brand-indigo hover:underline mt-1 block">bicbis95@gmail.com</a>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-brand-indigo shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+</svg>
+                </div>
+                <div>
+                  <h4 style="font-family: Montserrat" class="slide-in-on-scroll font-semibold text-slate-900">Call Us</h4>
+                  <a href="tel:+234 816 606 1632" style="font-family: Quicksand" class="font-md text-brand-indigo hover:underline mt-1 block">+234 816 606 1632</a>
+                  <p class="text-xs text-slate-500 mt-1">Mon-Fri, 8am - 4pm</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 rounded-2xl overflow-hidden h-48 bg-slate-200 border border-slate-200">
+               <iframe 
+                src="https://www.google.com/maps?q=7.4240,3.9076&z=15&output=embed" 
+                class="w-full h-full border-0" 
+                loading="lazy" 
+                title="School Location Map">
+               </iframe>
+            </div>
+          </div>
+
+          <form id="contactForm" class="bg-white p-8 rounded shadow-xl border border-slate-100" novalidate>
+            <div class="space-y-6">
+
+              <div class="relative">
+                <input type="text" id="name" name="name" required style="font-family: Montserrat" class="peer w-full px-4 py-2 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 transition-all" placeholder="John Doe">
+                <label for="name" style="font-family: Montserrat" class="absolute left-4 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Full Name</label>
+              </div>
+
+              <div class="relative">
+                <input type="email" id="email" name="email" required   style="font-family: Montserrat" class="peer w-full px-4 py-2 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 transition-all" placeholder="john@example.com">
+                <label for="email" style="font-family: Montserrat" class="absolute left-4 top-1 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Email Address</label>
+              </div>
+
+              <div class="relative">
+                <textarea id="message" name="message" required rows="2" style="font-family: Montserrat" class="peer w-full px-4 py-3 pt-6 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent placeholder-transparent bg-slate-50 resize-none transition-all" placeholder="Message"></textarea>
+                <label for="message" style="font-family: Montserrat" class="absolute left-4 top-1 text-xs font-md text-slate-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-400 peer-placeholder-shown:top-3.5 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-indigo">Your Message</label>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <input type="checkbox" id="consent" required style="accent-color: #0f172a;"
+                  class="w-5 h-5 text-brand-indigo border-slate-300 rounded focus:ring-brand-indigo transition-colors cursor-pointer">
+                <label for="consent" class="text-sm text-slate cursor-pointer select-none">I agree to the processing of my personal data.</label>
+              </div>
+
+              <button type="submit" id="submitBtn" class="reveal opacity-0 w-full btn-primary justify-center">
+                <span id="btnText">Send Message</span>
+                <svg id="btnSpinner" class="hidden animate-spin ml-2 h-5 w-5 text-brand-indigo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              </button>
+
+              <div id="formStatus" class="sr-only" role="status" aria-live="polite"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-left bg-[#05014a] pt-12 pb-16 text-gray-200">
+    <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 gap-10">
+
+      <div class="space-y-6">
+        <div class="flex items-center gap-3">
+          <div class="w-24 h-24 rounded-sm flex items-center justify-center overflow-hidden">
+            <img src="/assets/img/logo.png" alt="Your Company" class="w-full h-full object-contain" loading="lazy" />
+            </div>
+
+  <div>
+    <h1 style="font-family: Cormorant SC;" class="text-2xl font-semibold">Bodija Int'l College</h1>
+    <p style="font-family: Quicksand;" class="text-lg text-gray-500">Success through Labor</p>
+  </div>
+</div>
+
+        <p class="reveal opacity-0 text-slate-500 font-bold tracking-widest uppercase text-xs">How we make it happen</p>
+        <h1 class="slide-in-on-scroll mt-12 font-display text-white text-[50px] leading-[0.92] tracking-[-0.015em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.7)] max-w-[520px]">
+  Building<br/>deep human<br/>connection<br/>that sparks<br/>success
+</h1>
+
+      </div>
+
+      <div class="flex flex-col justify-between">
+        <div>
+          <p style="font-family: Montserrat;" class="reveal opacity-0 muted leading-relaxed max-w-xl text-sm mb-4">
+            We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+
+            <p style="font-family: Montserrat;" class="muted leading-relaxed max-w-xl text-sm">Our vision is confident, adaptable learners who succeed academically and as responsible citizens. With measurable progress, clear communication, and strong family partnerships, we balance joy and excellence to turn potential into practice.
+          </p>
+
+<div class="flex items-center mt-6 gap-3">
+  <a class="social-circle" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z" fill="currentColor"/>
+    </svg>
+  </a>
+  <a class="social-circle" href="https://www.instagram.com/bic_bis?igsh=MXdxMGFubnpteTEzeg==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z" fill="currentColor"/>
+    </svg>
+  </a>
+  <a class="social-circle" target="_blank" rel="noopener noreferrer" aria-label="Dribbble" title="Dribbble">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 16.1c-1.64-1.9-3.95-3.1-6.6-3.47 1.01-2.47 2.37-4.6 3.27-5.77 2.22 1.39 3.8 3.63 3.86 6.24.01.35-.25.66-.53.99zM7.9 6.1c1.27 1.02 2.44 3.22 3.19 5.3-2.86.25-5.29 1.2-6.99 2.7A7.96 7.96 0 017.9 6.1z" fill="currentColor"/>
+    </svg>
+  </a>
+  <a class="social-circle" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Twitter" title="Twitter">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M22 5.92c-.63.28-1.3.48-2 .56.72-.43 1.28-1.12 1.54-1.95-.67.4-1.42.69-2.22.85A3.5 3.5 0 0016.5 4c-1.93 0-3.5 1.6-3.5 3.57 0 .28.03.55.09.81-2.9-.15-5.48-1.6-7.2-3.8-.3.5-.47 1.09-.47 1.72 0 1.22.6 2.3 1.52 2.93-.56-.02-1.09-.18-1.55-.44v.05c0 1.66 1.19 3.04 2.77 3.35-.29.08-.59.12-.9.12-.22 0-.44-.02-.65-.06.45 1.36 1.76 2.36 3.31 2.39A7.03 7.03 0 014 19.54c1.96 1.26 4.3 2 6.82 2 8.18 0 12.66-7.3 12.66-13.64v-.62c.86-.63 1.6-1.4 2.18-2.3-.78.36-1.62.62-2.5.73z" fill="currentColor"/>
+    </svg>
+  </a>
+</div>
+
+        <div class="mt-6 pt-6 border-t border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="text-sm muted">We'd love to hear from you — <a href="mailto:bicbis95@gmail.com" class="text-white font-medium">bicbis95@gmail.com</a></div>
+
+      <div class=" items-end justify-end">
+        <div class="tagline">
+          Success<br/>Through<br/>Labor 
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 mt-10">
+      <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div  class="text-sm muted">&copy; <span id="year"></span> Bodija International College. All rights reserved.&nbsp;<a class="adm-staff-trigger" href="/admin.html" id="adminTrigger">Staff Login</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="fixed inset-0 z-[60] bg-black/95 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image Gallery">
+
+    <button id="lbClose" class="absolute top-6 right-6 text-white/70 hover:text-white z-[70] p-2 focus:outline-none focus:ring-2 focus:ring-white rounded-full">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      <span class="sr-only">Close Gallery</span>
+    </button>
+
+    <button id="lbPrev" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/10 p-3 rounded-full z-[70] transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      <span class="sr-only">Previous Image</span>
+    </button>
+
+    <button id="lbNext" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/10 p-3 rounded-full z-[70] transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      <span class="sr-only">Next Image</span>
+    </button>
+
+    <div class="relative w-full h-full p-4 sm:p-12 flex flex-col items-center justify-center">
+      <img id="lbImg" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl transition-transform duration-300" loading="lazy">
+
+      <div id="lbCaption" class="mt-4 text-center">
+        <h3 id="lbTitle" class="text-white text-xl font-display font-medium"></h3>
+        <p id="lbCounter" class="text-slate-400 text-sm mt-1 font-mono tracking-widest">1 / 5</p>
+      </div>
+
+      <div id="lbLoader" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="w-10 h-10 border-4 border-white/20 border-t-brand-yellow rounded-full animate-spin"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <script>
+    // menu.js
+(function () {
+  'use strict';
+
+  function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
+  function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
+
+  function getFocusable(container) {
+    if (!container) return [];
+    return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
+      .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var menu = document.getElementById('mobileMenu');
+    if (!menu) { console.warn('mobileMenu element not found.'); return; }
+
+    var overlay = menu.querySelector('[data-overlay]');
+    var panel = menu.querySelector('.mobile-menu__panel');
+    var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
+    var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
+    var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
+
+    function parseTime(s) {
+      if (!s) return 0;
+      var str = String(s).trim();
+      if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
+      if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
+      var n = parseFloat(str);
+      return isFinite(n) ? n : 0;
+    }
+
+    var rootStyles = getComputedStyle(document.documentElement);
+    var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
+    var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
+    var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
+    var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
+
+    var timeouts = [];
+    var lastFocused = null;
+
+    function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
+
+    function preventScroll(enable){
+      if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+      else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+    }
+
+    function onKeyDown(e){
+      if (!menu.classList.contains('open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
+      if (e.key === 'Tab') {
+        if (!panel) return;
+        var focusable = getFocusable(panel);
+        if (!focusable.length) { e.preventDefault(); return; }
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function focusTrap(e){
+      if (!menu.classList.contains('open')) return;
+      if (!panel) return;
+      if (panel.contains(e.target)) return;
+      e.stopPropagation();
+      var f = getFocusable(panel);
+      if (f.length) f[0].focus(); else panel.focus();
+    }
+
+    if (menu && menu.parentElement !== document.body) {
+      document.body.appendChild(menu);
+      overlay = menu.querySelector('[data-overlay]');
+      panel = menu.querySelector('.mobile-menu__panel');
+    }
+
+    var openerStateMap = new WeakMap();
+
+    function disableOpenButtons() {
+      openButtons.forEach(function(b){
+        if (!b) return;
+        var prev = {
+          tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
+          pointerEvents: b.style.pointerEvents || null,
+          ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
+        };
+        openerStateMap.set(b, prev);
+        try { b.setAttribute('tabindex', '-1'); } catch (e) {}
+        b.style.pointerEvents = 'none';
+        try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
+      });
+    }
+
+    function restoreOpenButtons() {
+      openButtons.forEach(function(b){
+        if (!b) return;
+        var prev = openerStateMap.get(b) || {};
+        if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
+        else b.setAttribute('tabindex', prev.tabindex);
+        if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
+        else b.style.pointerEvents = prev.pointerEvents;
+        if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
+        else b.setAttribute('aria-hidden', prev.ariaHidden);
+        openerStateMap.delete(b);
+      });
+    }
+
+    function openMobileMenu(){
+      if (menu.classList.contains('open')) return;
+      lastFocused = document.activeElement;
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      if (panel) panel.setAttribute('aria-hidden', 'false');
+
+      disableOpenButtons();
+
+      if (overlay) overlay.classList.remove('overlay-in');
+      if (panel) panel.classList.remove('panel-in');
+      void (overlay && overlay.offsetWidth);
+      if (overlay) overlay.classList.add('overlay-in');
+
+      var t = setTimeout(function(){
+        if (panel) {
+          panel.classList.add('panel-in');
+          var closeBtn = panel.querySelector('.mobile-menu__close');
+          if (closeBtn) closeBtn.focus({ preventScroll: true });
+        }
+      }, PANEL_DELAY);
+      timeouts.push(t);
+
+      document.addEventListener('focus', focusTrap, true);
+      document.addEventListener('keydown', onKeyDown);
+      if (overlay) overlay.addEventListener('click', overlayClick);
+      preventScroll(true);
+      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
+    }
+
+    function closeMobileMenu(){
+      if (!menu.classList.contains('open')) return;
+      clearAllTimeouts();
+      if (panel) panel.classList.remove('panel-in');
+
+      var t1 = setTimeout(function(){
+        var tHold = setTimeout(function(){
+          if (overlay) overlay.classList.remove('overlay-in');
+          var tHide = setTimeout(function(){
+            menu.classList.remove('open');
+            menu.setAttribute('aria-hidden', 'true');
+            if (panel) panel.setAttribute('aria-hidden', 'true');
+
+            restoreOpenButtons();
+
+            preventScroll(false);
+            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
+          }, OVERLAY_DUR);
+          timeouts.push(tHide);
+        }, OVERLAY_HOLD);
+        timeouts.push(tHold);
+      }, PANEL_DUR);
+      timeouts.push(t1);
+
+      document.removeEventListener('focus', focusTrap, true);
+      document.removeEventListener('keydown', onKeyDown);
+      if (overlay) overlay.removeEventListener('click', overlayClick);
+      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
+    }
+
+    function overlayClick(){ closeMobileMenu(); }
+
+    openButtons.forEach(function(btn){
+      if (!btn) return;
+      btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
+      btn.addEventListener('keydown', function(ev){
+        var k = ev.key;
+        if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
+      });
+    });
+
+    externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
+
+    window.openMobileMenu = openMobileMenu;
+    window.closeMobileMenu = closeMobileMenu;
+    window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
+
+    (function preloadBg(){
+      if (!panel) return;
+      var style = getComputedStyle(panel);
+      var bg = style.getPropertyValue('background-image') || '';
+      var url = '';
+      var start = bg.indexOf('url(');
+      var end = bg.lastIndexOf(')');
+      if (start !== -1 && end !== -1 && end > start) {
+        url = bg.slice(start + 4, end).replace(/['\"]/g, '');
+      }
+      if (url) { var img = new Image(); img.src = url; }
+    })();
+
+  });
+
+})();
+  </script>
+
+  
+
+<script src="/assets/js/main.js" defer></script>
+  <div data-bic-menu="home"></div>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/home.js" defer></script>
+</body>
+</html>

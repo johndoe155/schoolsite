@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Explore Programs — Bodija International College</title>
+  <meta name="description" content="Explore programs at Bodija International College — Science & Technology, Arts & Humanities, Business & Economics." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/programs.css">
+</head>
+<body>
+
+  <!-- ====================================================
+       SITE NAVIGATION
+       ==================================================== -->
+  <nav class="site-nav" id="siteNav" aria-label="Site navigation">
+    <!-- BIC hamburger — preserving id="hamburger" for existing JS -->
+    <span id="hamburger"
+          role="button"
+          tabindex="0"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+          aria-label="Open navigation menu">BIC</span>
+  </nav>
+
+  <!-- ====================================================
+       MOBILE MENU
+       ==================================================== -->
+  
+
+  <!-- ====================================================
+       HERO
+       ==================================================== -->
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero__bg" role="img" aria-label="Students collaborating in a modern academic environment"></div>
+    <div class="hero__grain" aria-hidden="true"></div>
+    <div class="hero__vignette" aria-hidden="true"></div>
+    <div class="hero__content wrap">
+      <span class="hero__eyebrow">Bodija International College · Ibadan</span>
+      <h1 class="hero__title" id="hero-title">
+        Explore our<br><em>Programs</em>
+      </h1>
+      <p class="hero__subtitle">
+        Three pathways. Each pairs rigorous coursework with real-world projects, mentorship, and a capstone to launch your future.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn-gold" href="#programs-overview">View programs</a>
+        <a class="btn btn-ghost" href="#apply">Contact Admissions</a>
+        <span style="font-size:13px; color:rgba(200,190,170,.5); letter-spacing:.03em;">bicbis95@gmail.com</span>
+      </div>
+    </div>
+    <div class="hero__scroll" aria-hidden="true">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       PROGRAMS OVERVIEW
+       ==================================================== -->
+  <section class="section programs-section" id="programs-overview" aria-labelledby="programs-title">
+    <div class="wrap">
+      <header class="section-header reveal">
+        <span class="label-sc">Academic pathways</span>
+        <h2 class="section-title" id="programs-title">Three distinct<br>programs of study</h2>
+        <p class="section-body">
+          We deliver world-class educational experiences built on personalized mentorship and sustainable professional development goals.
+        </p>
+      </header>
+
+      <div class="programs-grid" role="list">
+
+        <!-- Sciences -->
+        <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-sci"
+                 style="transition-delay:.05s">
+          <div class="prog-card__img" style="background-image:url('/assets/img/science1.jpg');" aria-hidden="true"></div>
+          <div class="prog-card__gradient" aria-hidden="true"></div>
+          <div class="prog-card__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="prog-card__body">
+            <span class="prog-card__label">Sciences</span>
+            <h3 class="prog-card__title" id="prog-sci">Frontiers of<br>Discovery</h3>
+            <p class="prog-card__desc">Pushing the boundaries of what is known and what is possible.</p>
+            <div class="prog-card__chips">
+              <span class="chip">Innovation</span>
+              <span class="chip">Systems</span>
+              <span class="chip">Research</span>
+            </div>
+          </div>
+          <a href="#sci-tech" class="sr-only">Explore Science &amp; Technology program</a>
+        </article>
+
+        <!-- Arts -->
+        <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-arts"
+                 style="transition-delay:.15s">
+          <div class="prog-card__img" style="background-image:url('/assets/img/arts1.jpg');" aria-hidden="true"></div>
+          <div class="prog-card__gradient" aria-hidden="true"></div>
+          <div class="prog-card__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="prog-card__body">
+            <span class="prog-card__label">Arts</span>
+            <h3 class="prog-card__title" id="prog-arts">The Human<br>Narrative</h3>
+            <p class="prog-card__desc">An exploration of culture, history, and the art of being human.</p>
+            <div class="prog-card__chips">
+              <span class="chip">Culture</span>
+              <span class="chip">Expression</span>
+              <span class="chip">Humanities</span>
+            </div>
+          </div>
+          <a href="#arts" class="sr-only">Explore Arts &amp; Humanities program</a>
+        </article>
+
+        <!-- Commerce -->
+        <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-comm"
+                 style="transition-delay:.25s">
+          <div class="prog-card__img" style="background-image:url('/assets/img/comm1.jpg');" aria-hidden="true"></div>
+          <div class="prog-card__gradient" aria-hidden="true"></div>
+          <div class="prog-card__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+          <div class="prog-card__body">
+            <span class="prog-card__label">Commerce</span>
+            <h3 class="prog-card__title" id="prog-comm">Commerce &amp;<br>Quantitative Analysis</h3>
+            <p class="prog-card__desc">Decoding the economic forces that drive modern industry and growth.</p>
+            <div class="prog-card__chips">
+              <span class="chip">Market</span>
+              <span class="chip">Management</span>
+              <span class="chip">Economics</span>
+            </div>
+          </div>
+          <a href="#business" class="sr-only">Explore Business &amp; Economics program</a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ====================================================
+       PROGRAM DETAILS + SIDEBAR
+       ==================================================== -->
+  <section class="section bg-parchment" aria-label="Detailed program information">
+    <div class="wrap">
+      <div class="detail-layout">
+
+        <!-- ── MAIN COLUMN ─────────────────────────────── -->
+        <main class="detail-main" id="main-content">
+
+          <!-- ── SCIENCE & TECHNOLOGY ── -->
+          <article class="program-section reveal" id="sci-tech" aria-labelledby="sci-title">
+            <header class="program-section__header">
+              <span class="program-tag">Science &amp; Technology</span>
+              <h2 class="program-title" id="sci-title">Hands-on science for the builders of tomorrow</h2>
+              <p class="program-desc">The pathway focuses on hands-on lab work, robotics, programming, and design thinking. Students build prototypes, write firmware, analyze data, and complete an industry capstone.</p>
+            </header>
+            <div class="program-section__body">
+
+              <span class="sub-heading">Learning Outcomes</span>
+              <div class="outcomes-grid" aria-label="Learning outcomes">
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Hands-on labs</strong><small>Robotics kits, electronics and sensors.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Coding &amp; firmware</strong><small>Python, C/C++ and embedded systems.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Prototype design</strong><small>Electromechanical prototyping and testing.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Industry mentorship</strong><small>Capstone with external partners.</small></div>
+                </div>
+              </div>
+
+              <div class="curriculum-section">
+                <span class="sub-heading">Curriculum Snapshot</span>
+                <div class="timeline" role="list">
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 1</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Foundations of Science</li><li>Intro to Robotics</li><li>Mathematics for Engineers</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 2</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Electronics &amp; Circuits</li><li>Embedded Programming</li><li>Data &amp; Sensors</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 3</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Advanced Robotics</li><li>AI &amp; Machine Learning</li><li>Capstone Project</li></ul></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projects-section">
+                <span class="sub-heading">Capstone Examples</span>
+                <div class="projects-grid">
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=70" alt="Autonomous Field Drone project">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Autonomous Field Drone</div>
+                      <div class="project-card__sub">Sensors and navigation</div>
+                    </div>
+                  </div>
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=70" alt="Smart Water Monitor project">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Smart Water Monitor</div>
+                      <div class="project-card__sub">IoT sensors &amp; analytics</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="sub-heading">Frequently Asked</span>
+              <div class="faq-list">
+                <details class="faq">
+                  <summary>Who should apply?</summary>
+                  <div class="faq-answer">Curious students interested in STEM. No prior experience needed.</div>
+                </details>
+                <details class="faq">
+                  <summary>Are internships available?</summary>
+                  <div class="faq-answer">Yes — Year 2 and 3 placements with partner firms are available.</div>
+                </details>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- ── ARTS & HUMANITIES ── -->
+          <article class="program-section reveal" id="arts" aria-labelledby="arts-title" style="transition-delay:.1s">
+            <header class="program-section__header">
+              <span class="program-tag">Arts &amp; Humanities</span>
+              <h2 class="program-title" id="arts-title">Creative inquiry across culture &amp; expression</h2>
+              <p class="program-desc">The pathway emphasizes visual arts, literature, history, and media — combining expression, critical thinking, research, and public-facing projects.</p>
+            </header>
+            <div class="program-section__body">
+
+              <span class="sub-heading">Learning Outcomes</span>
+              <div class="outcomes-grid" aria-label="Learning outcomes">
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.72 1.7-1.6 0-.41-.15-.78-.42-1.07-.27-.29-.44-.68-.44-1.11 0-.9 1.14-1.63 2.16-1.63H18c2.2 0 4-1.8 4-4 0-5.5-4.5-10-10-10z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Creative practice</strong><small>Studio skills, digital art and performance.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Writing &amp; analysis</strong><small>Literary and critical thinking skills.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Communication</strong><small>Presentations, curation and portfolio work.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5 5 0 0 1 0 7.07l-7.07 7.07a1 1 0 0 1-1.42 0L4.86 11.65a5 5 0 1 1 7.07-7.07l.35.35.35-.35a5 5 0 0 1 7.07 0z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Community projects</strong><small>Collaborations with local cultural partners.</small></div>
+                </div>
+              </div>
+
+              <div class="curriculum-section">
+                <span class="sub-heading">Curriculum Snapshot</span>
+                <div class="timeline" role="list">
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 1</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Introduction to Visual Arts</li><li>Foundations of Literature</li><li>Creative Writing</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 2</div>
+                    <div class="year-inner"><ul class="year-modules"><li>History &amp; Cultural Studies</li><li>Digital Media</li><li>Research Methods</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 3</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Advanced Studio Practice</li><li>Curation &amp; Criticism</li><li>Capstone Exhibition</li></ul></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projects-section">
+                <span class="sub-heading">Featured Projects</span>
+                <div class="projects-grid">
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?auto=format&fit=crop&w=800&q=70" alt="Community Mural art project">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Community Mural</div>
+                      <div class="project-card__sub">Public art &amp; design process</div>
+                    </div>
+                  </div>
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=70" alt="Student Literary Magazine">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Student Literary Magazine</div>
+                      <div class="project-card__sub">Curated texts &amp; interviews</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="sub-heading">Frequently Asked</span>
+              <div class="faq-list">
+                <details class="faq">
+                  <summary>Do I need prior art experience?</summary>
+                  <div class="faq-answer">No. Beginners and experienced students are welcome; fundamentals are taught early on.</div>
+                </details>
+                <details class="faq">
+                  <summary>Is there exhibition space?</summary>
+                  <div class="faq-answer">Yes — students show work in on-campus galleries and community venues.</div>
+                </details>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- ── BUSINESS & ECONOMICS ── -->
+          <article class="program-section reveal" id="business" aria-labelledby="biz-title" style="transition-delay:.2s">
+            <header class="program-section__header">
+              <span class="program-tag">Business &amp; Economics</span>
+              <h2 class="program-title" id="biz-title">Practical business education for the real economy</h2>
+              <p class="program-desc">Economics, accounting, entrepreneurship, and project-based learning that builds real-world business planning skills and industry connections.</p>
+            </header>
+            <div class="program-section__body">
+
+              <span class="sub-heading">Learning Outcomes</span>
+              <div class="outcomes-grid" aria-label="Learning outcomes">
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Financial literacy</strong><small>Accounting basics and personal finance.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Entrepreneurship</strong><small>Business planning and market research.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Team projects</strong><small>Start-up simulations &amp; client projects.</small></div>
+                </div>
+                <div class="outcome-item">
+                  <div class="outcome-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  </div>
+                  <div class="outcome-text"><strong>Industry links</strong><small>Partnerships with local businesses for placements.</small></div>
+                </div>
+              </div>
+
+              <div class="curriculum-section">
+                <span class="sub-heading">Curriculum Snapshot</span>
+                <div class="timeline" role="list">
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 1</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Principles of Economics</li><li>Business Communication</li><li>Intro to Accounting</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 2</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Marketing &amp; Sales</li><li>Financial Management</li><li>Entrepreneurship Lab</li></ul></div>
+                  </div>
+                  <div class="year-block" role="listitem">
+                    <div class="year-label">Yr 3</div>
+                    <div class="year-inner"><ul class="year-modules"><li>Business Strategy</li><li>Internship / Client Project</li><li>Capstone Business Plan</li></ul></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projects-section">
+                <span class="sub-heading">Capstone Examples</span>
+                <div class="projects-grid">
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=800&q=70" alt="Student startup pitch day">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Start-up Launch</div>
+                      <div class="project-card__sub">Student teams launched local ventures.</div>
+                    </div>
+                  </div>
+                  <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=70" alt="Financial literacy workshop">
+                    <div class="project-card__body">
+                      <div class="project-card__title">Financial Literacy Workshops</div>
+                      <div class="project-card__sub">Community workshops and consultancy projects.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="sub-heading">Frequently Asked</span>
+              <div class="faq-list">
+                <details class="faq">
+                  <summary>Are scholarships available?</summary>
+                  <div class="faq-answer">Merit and need-based awards are available — contact admissions for details.</div>
+                </details>
+                <details class="faq">
+                  <summary>Can I start a business while studying?</summary>
+                  <div class="faq-answer">Yes — our entrepreneurship lab supports student start-ups with mentorship and seed resources.</div>
+                </details>
+              </div>
+
+            </div>
+          </article>
+
+        </main>
+
+        <!-- ── SIDEBAR ─────────────────────────────────── -->
+        <aside class="sidebar" aria-label="Admissions information">
+
+          <!-- Contact Form Card -->
+          <div class="sidebar-card reveal" style="transition-delay:.3s">
+            <div class="sidebar-card__header">
+              <h3 class="sidebar-card__title">Admissions help</h3>
+              <p class="sidebar-card__sub">Schedule a call, request a brochure, or ask about scholarships.</p>
+            </div>
+            <div class="sidebar-card__body">
+              <form id="contact-form" aria-label="Request information from admissions" novalidate>
+                <div class="form-field">
+                  <label for="name">Your name</label>
+                  <input id="name" name="name" type="text" placeholder="Full name" required autocomplete="name" />
+                </div>
+                <div class="form-field">
+                  <label for="email">Email address</label>
+                  <input id="email" name="email" type="email" placeholder="name@example.com" required autocomplete="email" />
+                </div>
+                <div class="form-field">
+                  <label for="interest">Program of interest</label>
+                  <select id="interest" name="interest">
+                    <option value="sci">Science &amp; Technology</option>
+                    <option value="arts">Arts &amp; Humanities</option>
+                    <option value="biz">Business &amp; Economics</option>
+                  </select>
+                </div>
+                <button type="submit" class="form-submit">Request information</button>
+                <div id="contact-msg" aria-live="polite" style="display:none"></div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Quick Info -->
+          <div class="info-strip reveal" style="transition-delay:.45s">
+            <div class="info-row">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a>
+            </div>
+            <div class="info-row">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.58 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.03a16 16 0 0 0 6.06 6.06l1.39-1.38a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.03z"></path></svg>
+              <a href="tel:+2348166061632">+234 816 606 1632</a>
+            </div>
+            <div class="info-row">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span>Mon – Fri, 08:00 – 16:00</span>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       APPLY CTA
+       ==================================================== -->
+  <div style="padding: 0 0 clamp(48px, 8vh, 96px);" class="bg-parchment">
+    <div class="cta-section" id="apply" aria-labelledby="apply-title">
+      <div aria-hidden="true" class="cta-bg-text">BIC</div>
+
+      <div class="reveal">
+        <span class="cta-label">Next steps</span>
+        <h2 class="cta-title" id="apply-title">Ready to join?</h2>
+        <p class="cta-sub">Apply to a program or contact Admissions for guidance and scholarship details.</p>
+      </div>
+
+      <div class="cta-actions reveal" style="transition-delay:.15s">
+        <a class="btn btn-gold contact-btn"
+           href="/contact.html"
+           id="contactBtn"
+           aria-controls="contactPanel"
+           aria-expanded="false">
+          Contact us
+        </a>
+        <a class="btn btn-ghost" href="mailto:bicbis95@gmail.com">
+          Email directly
+        </a>
+      </div>
+
+      <!-- Contact panel -->
+      <div id="contactPanel" class="contact-panel" aria-hidden="true" data-open="false"
+           role="region" aria-label="Contact details">
+        <div class="contact-content">
+          <p><strong>Admissions Office</strong></p>
+          <p>Email: <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></p>
+          <p>Phone: <a href="tel:+2348166061632">+234 816 606 1632</a></p>
+          <p style="margin-bottom:0">Office hours: Mon – Fri, 08:00 – 16:00</p>
+        </div>
+      </div>
+      <div id="contactAnnouncer" class="sr-only" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       FOOTER
+       ==================================================== -->
+  <footer class="site-footer" role="contentinfo" aria-label="Site footer">
+    <div class="wrap">
+      <div class="footer-grid">
+
+        <!-- Left -->
+        <div>
+          <div class="footer-logo-row">
+            <div class="footer-logo">
+              <img src="/assets/img/logo.png" alt="Bodija International College" loading="lazy" />
+            </div>
+            <div class="footer-wordmark">
+              <strong>Bodija International College</strong>
+              <small>Home · Our Programs</small>
+            </div>
+          </div>
+          <address>
+            1-5, Tunde Lakanmi Crescent<br>
+            Bodija, Ibadan, Oyo State<br>
+            <a href="tel:+2348166061632" aria-label="Call BIC">+234 816 606 1632</a>
+          </address>
+          <div class="social-row" aria-label="Follow us on social media">
+            <a class="social-link" href="https://www.facebook.com/bicbisbodija" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.06 5.66 21.13 10.44 21.93v-6.85H8.08v-2.95h2.36V9.41c0-2.34 1.39-3.63 3.52-3.63 1.02 0 2.08.18 2.08.18v2.29h-1.17c-1.15 0-1.51.72-1.51 1.46v1.76h2.57l-.41 2.95h-2.16V21.9C18.34 21.13 22 17.06 22 12.07z"/></svg>
+            </a>
+            <a class="social-link" href="https://www.instagram.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zM12 8.8a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4zM17.5 6.2a.9.9 0 11-1.8 0 .9.9 0 011.8 0z"/></svg>
+            </a>
+            <a class="social-link" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 5.92c-.63.28-1.3.48-2 .56.72-.43 1.28-1.12 1.54-1.95-.67.4-1.42.69-2.22.85A3.5 3.5 0 0016.5 4c-1.93 0-3.5 1.6-3.5 3.57 0 .28.03.55.09.81-2.9-.15-5.48-1.6-7.2-3.8-.3.5-.47 1.09-.47 1.72 0 1.22.6 2.3 1.52 2.93-.56-.02-1.09-.18-1.55-.44v.05c0 1.66 1.19 3.04 2.77 3.35-.29.08-.59.12-.9.12-.22 0-.44-.02-.65-.06.45 1.36 1.76 2.36 3.31 2.39A7.03 7.03 0 014 19.54c1.96 1.26 4.3 2 6.82 2 8.18 0 12.66-7.3 12.66-13.64v-.62c.86-.63 1.6-1.4 2.18-2.3-.78.36-1.62.62-2.5.73z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Center -->
+        <div>
+          <span class="footer-col-title">Our Mission</span>
+          <p class="footer-body">We see childhood as a launchpad. Through hands-on STEAM, project-based learning, and personalized instruction, we blend joyful discovery with high expectations so every child is known, challenged, and supported to build curiosity, resilience, collaboration, and ethical leadership.</p>
+          <a href="#values" class="footer-discover">
+            Discover our values
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <div class="footer-city-list" aria-label="Location">
+            <div class="footer-city">Bodija</div>
+            <div class="footer-city active">Ibadan</div>
+            <div class="footer-city">Oyo State</div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div style="display:flex; align-items:flex-end; justify-content: flex-end;">
+          <div class="footer-tagline" aria-label="Success Through Labor">
+            Success<br>Through<br>Labor
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-copy">
+          &copy; <span id="year"></span> Bodija International College. All rights reserved.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================
+       SCRIPTS
+       ==================================================== -->
+  
+
+  <div data-bic-menu="lux"></div>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/programs.js" defer></script>
+</body>
+</html>
