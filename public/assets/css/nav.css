@@ -51,7 +51,7 @@
   --nav-accent-soft: rgba(231, 190, 90, 0.16);
   --nav-toggle-border: rgba(243, 239, 229, 0.30);
 
-  --mask-bg: #02001f;
+  --mask-bg: #05014a;
   --panel-bg: #0a0554;
   --menu-text: rgba(196, 202, 232, 0.78);
   --menu-heading: #dfe8ff;
@@ -117,7 +117,7 @@ html.bic-is-transitioning::after {
   background: #141210; /* paper default */
   transform: translate3d(0, 0, 0);
 }
-html.bic-transit--hero.bic-is-transitioning::after { background: #02001f; }
+html.bic-transit--hero.bic-is-transitioning::after { background: #05014a; }
 html.bic-transit--hero-dark.bic-is-transitioning::after { background: #0e0c1b; }
 html.bic-transit--navy.bic-is-transitioning::after { background: #070d18; }
 /* the reveal: cover slides away to the RIGHT */
@@ -254,8 +254,12 @@ html.bic-transit-go.bic-is-transitioning::after {
 
 /* While the menu is open the bar vanishes INSTANTLY (no fade ghost over
    the dark panel) and stops intercepting clicks — only the morphed toggle
-   floats above the menu. The smooth fades return when the class is removed. */
-.bic-nav--open {
+   floats above the menu. The smooth fades return when the class is removed.
+   Doubled .bic-nav prefix: must out-specify .bic-nav.bic-nav--scrolled,
+   otherwise the scrolled glass background survives over the menu.
+   transform is pinned + transitions disabled so a bar that was hidden by
+   the scroll director snaps into place on open instead of dropping in. */
+.bic-nav.bic-nav--open {
   z-index: 1200;
   pointer-events: none;
   background: transparent;
@@ -263,7 +267,8 @@ html.bic-transit-go.bic-is-transitioning::after {
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0, 0, 0);
+  transition: none;
 }
 .bic-nav--open .bic-nav__brand,
 .bic-nav--open .bic-nav__cta,
@@ -271,7 +276,17 @@ html.bic-transit-go.bic-is-transitioning::after {
   opacity: 0; pointer-events: none; transform: translate3d(0, -8px, 0);
   transition: none;
 }
-.bic-nav--open .bic-nav__toggle { pointer-events: auto; }
+.bic-nav--open .bic-nav__toggle {
+  pointer-events: auto;
+  /* keep the floating close button legible over every dark panel */
+  color: var(--menu-heading);
+  border-color: var(--menu-line);
+  background: transparent;
+}
+.bic-nav--open .bic-nav__toggle:hover {
+  color: var(--menu-accent); border-color: var(--menu-accent);
+  background: var(--menu-accent-soft);
+}
 
 /* ============================================================
    DUAL-OVERLAY MENU

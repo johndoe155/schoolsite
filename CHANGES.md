@@ -533,3 +533,25 @@ accent on hover; `scrollbar-width: thin` for Firefox).
 
 Verified: 202 + 20 assertions green; timing probe confirms 340ms panel
 delay and 81% mask coverage at panel launch.
+
+## Phase 10 polish round (owner notes)
+
+1. **Mask colour restored.** The hero-theme blank overlay reverts from
+   the experiment (#02001f) back to its original #05014a (transit cover
+   included). The readability fix stays — it came from the 340ms solo
+   window, not the colour.
+2. **Nav never appears over the menu — real root cause found.** The
+   vanished-bar overrides on `.bic-nav--open` had ONE-class specificity
+   while `.bic-nav.bic-nav--scrolled` has TWO — so after any scroll the
+   opaque glass background out-cascaded `background: transparent` and
+   the bar sat visibly over the panel on every page. The open state is
+   now `.bic-nav.bic-nav--open` (wins the cascade), with transform
+   pinned and transitions disabled so a hidden bar snaps rather than
+   drops in. The floating toggle also recolours to the menu palette so
+   the close button stays legible over every dark panel.
+3. **Timing consistency proven site-wide.** A real-CSS probe boots all
+   six pages: panel delay computes to 340ms on every page (one shared
+   stylesheet + one set of JS constants — no page-specific timing
+   exists), and the scrolled+open bar computes transparent everywhere.
+
+Verified: 202 + 20 assertions green, 6-page computed-style probe clean.
