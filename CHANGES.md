@@ -457,3 +457,30 @@ reveals from beneath the mask. Escape closes, focus is trapped and restored,
 - validate_refine suite extended to assert the new nav (113 assertions pass).
 - All 7 pages return HTTP 200; internal link sweep clean.
 
+
+## Phase 10 revision round (owner feedback)
+
+1. **Overlay choreography corrected — everything from the left.**
+   Open: the blank mask wipes in **from the left**, then (+120ms) the menu
+   panel wipes over it, also from the left. Navigate: the same blank mask
+   wipes in again from the left **over** the open panel, the route changes
+   under it, and the cover slides away **to the right** revealing the
+   destination page. Close: reverse sweep back out to the left. The old
+   right-entrance / panel-sweeps-left choreography is gone.
+2. **Menu panel restyled on the original landing-page menu.** The heavy
+   treatment (serif labels, numbering, bordered rows, pill CTA, fine print)
+   is replaced by the landing menu's own look: Montserrat weight-300 links
+   at `clamp(28px, 9vw, 56px)`, `0.6px` letter-spacing, muted colour rising
+   to the theme highlight with a 4px nudge on hover, generous vertical
+   rhythm, socials in the footer. Background is now a **solid colour** per
+   theme (no image/gradient). "On this page" anchors keep the same voice at
+   a smaller size.
+3. **Logo ring removed** from the nav bar — the crest is now bare.
+4. The transit flag now carries the departing page's theme id, so the
+   cross-page cover matches the mask colour exactly (paper/hero/hero-dark/
+   navy) instead of a single neutral tone.
+
+Verified: rebuilt jsdom suite — 202 assertions across all 6 pages
+(structure, left-entrance classes, under-cover navigation with theme flag,
+snippet → arrival right-slide reveal, scroll director, 40-click toggle
+storm, scroll barrage, resize) — all passing.

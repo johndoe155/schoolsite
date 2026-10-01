@@ -6,12 +6,19 @@
 
    Layers (z-index):
      900   .bic-nav  (1200 while the menu is open — toggle floats)
-    1000   .bic-menu__mask    (Overlay A — blank mask)
+    1000   .bic-menu__mask    (Overlay A — blank mask, 1150 while covering)
     1100   .bic-menu__panel   (Overlay B — menu content)
     9000   html.bic-is-transitioning::after (cross-page transit cover)
 
-   Motion: transform/opacity only. Wipes cubic-bezier(0.76,0,0.24,1);
-   entrances cubic-bezier(0.16,1,0.3,1).
+   Choreography — everything slides FROM THE LEFT:
+     open      mask wipes in → +120ms the panel wipes over it,
+               items stagger in
+     close     reverse sweep back out to the left
+     navigate  the blank mask wipes in again over the panel → route
+               changes under cover → cover slides away TO THE RIGHT,
+               revealing the destination page
+
+   Motion: transform/opacity only. Wipes cubic-bezier(0.76,0,0.24,1).
    ============================================================ */
 
 /* ── Themes ────────────────────────────────────────────────── */
@@ -28,12 +35,11 @@
 
   --mask-bg: #141210;
   --panel-bg: #1e1a14;
-  --menu-text: rgba(233, 225, 210, 0.92);
+  --menu-text: rgba(214, 205, 188, 0.82);
   --menu-heading: #f4efe2;
-  --menu-muted: rgba(230, 218, 196, 0.55);
+  --menu-muted: rgba(230, 218, 196, 0.50);
   --menu-line: rgba(230, 218, 196, 0.10);
   --menu-accent: #c8963e;
-  --menu-accent-soft: rgba(200, 150, 62, 0.14);
 }
 .bic-nav[data-nav-theme="hero"], .bic-menu[data-nav-theme="hero"] {
   --nav-top-bg: transparent;
@@ -46,13 +52,12 @@
   --nav-toggle-border: rgba(243, 239, 229, 0.30);
 
   --mask-bg: #05014a;
-  --panel-bg: #141054;
-  --menu-text: rgba(229, 231, 245, 0.92);
-  --menu-heading: #ffffff;
-  --menu-muted: rgba(203, 210, 235, 0.55);
+  --panel-bg: #0a0554;
+  --menu-text: rgba(196, 202, 232, 0.78);
+  --menu-heading: #dfe8ff;
+  --menu-muted: rgba(203, 210, 235, 0.50);
   --menu-line: rgba(255, 255, 255, 0.10);
   --menu-accent: #facc15;
-  --menu-accent-soft: rgba(250, 204, 21, 0.14);
 }
 .bic-nav[data-nav-theme="hero-dark"], .bic-menu[data-nav-theme="hero-dark"] {
   --nav-top-bg: transparent;
@@ -65,13 +70,12 @@
   --nav-toggle-border: rgba(231, 190, 90, 0.40);
 
   --mask-bg: #0e0c1b;
-  --panel-bg: #181435;
-  --menu-text: rgba(243, 236, 218, 0.90);
+  --panel-bg: #141127;
+  --menu-text: rgba(228, 220, 200, 0.78);
   --menu-heading: #f3ecda;
-  --menu-muted: rgba(243, 236, 218, 0.55);
+  --menu-muted: rgba(243, 236, 218, 0.50);
   --menu-line: rgba(247, 241, 227, 0.10);
   --menu-accent: #e7be5a;
-  --menu-accent-soft: rgba(231, 190, 90, 0.14);
 }
 .bic-nav[data-nav-theme="navy"], .bic-menu[data-nav-theme="navy"] {
   --nav-top-bg: rgba(11, 18, 32, 0.70);
@@ -84,13 +88,12 @@
   --nav-toggle-border: rgba(197, 155, 83, 0.40);
 
   --mask-bg: #070d18;
-  --panel-bg: #0d1526;
-  --menu-text: rgba(230, 235, 245, 0.90);
+  --panel-bg: #0c1424;
+  --menu-text: rgba(200, 210, 230, 0.78);
   --menu-heading: #f7f5f2;
-  --menu-muted: rgba(199, 210, 232, 0.52);
+  --menu-muted: rgba(199, 210, 232, 0.48);
   --menu-line: rgba(255, 255, 255, 0.08);
   --menu-accent: #c59b53;
-  --menu-accent-soft: rgba(197, 155, 83, 0.14);
 }
 
 /* On paper pages the scrolled bar swaps to ink text; on dark-hero themes
@@ -104,12 +107,23 @@
   --nav-toggle-border: rgba(24, 20, 15, 0.18);
 }
 
-/* Cross-page transit cover (matches nothing theme-specific on purpose) */
+/* Cross-page transit cover — matches the departing page's mask colour.
+   nav.js sets the flag value to the theme id; the head snippet on every
+   page applies the matching bic-transit--<theme> class before paint. */
 html.bic-is-transitioning::after {
   content: "";
   position: fixed; inset: 0;
   z-index: 9000;
-  background: #0a0812;
+  background: #141210; /* paper default */
+  transform: translate3d(0, 0, 0);
+}
+html.bic-transit--hero.bic-is-transitioning::after { background: #05014a; }
+html.bic-transit--hero-dark.bic-is-transitioning::after { background: #0e0c1b; }
+html.bic-transit--navy.bic-is-transitioning::after { background: #070d18; }
+/* the reveal: cover slides away to the RIGHT */
+html.bic-transit-go.bic-is-transitioning::after {
+  transform: translate3d(101%, 0, 0);
+  transition: transform 640ms cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 /* ============================================================
@@ -147,17 +161,15 @@ html.bic-is-transitioning::after {
   gap: var(--space-4);
 }
 
-/* Brand */
+/* Brand — bare logo, no ring */
 .bic-nav__brand {
   display: flex; align-items: center; gap: 12px;
   text-decoration: none; color: inherit;
   transition: opacity 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .bic-nav__crest {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 40px; height: 40px;
   overflow: hidden; flex-shrink: 0;
-  border: 1px solid var(--nav-toggle-border);
-  background: rgba(255, 255, 255, 0.06);
 }
 .bic-nav__crest img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .bic-nav__wordmark { display: flex; flex-direction: column; gap: 1px; line-height: 1.15; }
@@ -252,146 +264,146 @@ html.bic-is-transitioning::after {
 .bic-menu { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
 .bic-menu--live { pointer-events: auto; }
 
-/* Overlay A — blank mask */
+/* Overlay A — blank mask (rests off-screen LEFT, wipes in from the left) */
 .bic-menu__mask {
   position: absolute; inset: 0; z-index: 1000;
   background: var(--mask-bg);
-  transform: translate3d(101%, 0, 0);
-  transition: transform 560ms cubic-bezier(0.76, 0, 0.24, 1);
+  transform: translate3d(-101%, 0, 0);
+  transition: transform 480ms cubic-bezier(0.76, 0, 0.24, 1);
   will-change: transform;
 }
-.bic-menu__mask--transit { background: #0a0812; }
 
-/* Overlay B — content layer */
+/* Overlay B — content layer (also from the left, a beat after the mask) */
 .bic-menu__panel {
   position: absolute; inset: 0; z-index: 1100;
-  background: var(--panel-bg);
+  background: var(--panel-bg); /* solid — modelled on the landing menu */
   color: var(--menu-text);
-  transform: translate3d(101%, 0, 0);
-  transition: transform 560ms cubic-bezier(0.76, 0, 0.24, 1);
+  transform: translate3d(-101%, 0, 0);
+  transition: transform 480ms cubic-bezier(0.76, 0, 0.24, 1);
   will-change: transform;
   overflow-y: auto; overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   -webkit-font-smoothing: antialiased;
 }
 
 /* State choreography (driven by nav.js) */
 .bic-menu--open .bic-menu__mask { transform: translate3d(0, 0, 0); }
-.bic-menu--open .bic-menu__panel { transform: translate3d(0, 0, 0); transition-delay: 140ms; }
-.bic-menu--closing .bic-menu__panel { transform: translate3d(101%, 0, 0); transition-delay: 0ms; }
-.bic-menu--closing .bic-menu__mask { transform: translate3d(101%, 0, 0); transition-delay: 120ms; }
-/* navigate-away: panel sweeps left, mask stays covering */
-.bic-menu--leaving .bic-menu__panel { transform: translate3d(-101%, 0, 0); }
-/* arrive on target page: mask covering, then reveal left */
-.bic-menu--covered .bic-menu__mask { transform: translate3d(0, 0, 0); transition: none; }
-.bic-menu--reveal .bic-menu__mask { transform: translate3d(-101%, 0, 0); }
+.bic-menu--open .bic-menu__panel { transform: translate3d(0, 0, 0); transition-delay: 120ms; }
+.bic-menu--closing .bic-menu__panel { transform: translate3d(-101%, 0, 0); transition-delay: 0ms; }
+.bic-menu--closing .bic-menu__mask { transform: translate3d(-101%, 0, 0); transition-delay: 100ms; }
 
-/* ── Panel content ─────────────────────────────────────────── */
+/* navigate-away: the blank mask wipes in again FROM THE LEFT, over the panel */
+.bic-menu--covering .bic-menu__mask {
+  z-index: 1150;
+  transition: none;
+  transform: translate3d(-101%, 0, 0);
+}
+.bic-menu--cover-go .bic-menu__mask {
+  transition: transform 440ms cubic-bezier(0.76, 0, 0.24, 1);
+  transform: translate3d(0, 0, 0);
+}
+
+/* ── Panel content — modelled on the original landing-page menu ── */
 .bic-menu__inner {
   min-height: 100%;
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 92px clamp(24px, 6vw, 80px) 40px;
+  padding: clamp(88px, 12vh, 120px) 32px 32px;
   display: flex; flex-direction: column;
+  box-sizing: border-box;
 }
-.bic-menu__top {
-  display: flex; align-items: center; gap: 12px;
-  padding-bottom: var(--space-4);
-  border-bottom: 1px solid var(--menu-line);
-  margin-bottom: clamp(24px, 5vh, 48px);
-}
-.bic-menu__top .bic-nav__crest { width: 36px; height: 36px; border-color: var(--menu-line); }
+.bic-menu__top { margin-bottom: clamp(24px, 7vh, 72px); }
 .bic-menu__brand-text {
   font-family: var(--font-ui);
-  font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--menu-muted);
 }
 
-.bic-menu__links { display: flex; flex-direction: column; }
+.bic-menu__links {
+  display: flex; flex-direction: column;
+  gap: clamp(10px, 3.2vh, 22px);
+  align-items: flex-start;
+  width: 100%;
+}
 .bic-menu__link {
   --i: 0;
-  display: flex; align-items: baseline; gap: 18px;
-  padding: clamp(12px, 2.2vh, 20px) 4px;
-  border-bottom: 1px solid var(--menu-line);
-  text-decoration: none; color: var(--menu-text);
-  opacity: 0; transform: translate3d(0, 26px, 0);
+  display: block;
+  text-decoration: none;
+  color: var(--menu-text);
+  font-family: var(--font-ui);
+  font-weight: 300;
+  letter-spacing: 0.6px;
+  font-size: clamp(28px, 9vw, 56px);
+  line-height: 0.95;
+  -webkit-font-smoothing: antialiased;
+  opacity: 0; transform: translate3d(-28px, 0, 0);
   transition:
-    opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 480ms cubic-bezier(0.16, 1, 0.3, 1),
-    color 220ms ease, padding-left 260ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 140ms ease;
 }
 .bic-menu--open .bic-menu__link {
   opacity: 1; transform: translate3d(0, 0, 0);
-  transition-delay: calc(340ms + var(--i) * 40ms), calc(340ms + var(--i) * 40ms), 0ms, 0ms;
+  transition-delay: calc(240ms + var(--i) * 40ms), calc(240ms + var(--i) * 40ms), 0ms;
 }
-.bic-menu--closing .bic-menu__link, .bic-menu--leaving .bic-menu__link {
-  opacity: 0; transform: translate3d(0, -14px, 0);
+.bic-menu--closing .bic-menu__link, .bic-menu--covering .bic-menu__link {
+  opacity: 0; transform: translate3d(-14px, 0, 0);
   transition: opacity 180ms ease, transform 180ms ease; transition-delay: 0ms;
 }
-.bic-menu__num {
-  font-family: var(--font-ui);
-  font-size: 11px; font-weight: 500; letter-spacing: 0.18em;
-  color: var(--menu-muted);
-  min-width: 24px;
-  transition: color 220ms ease;
+.bic-menu__link:hover, .bic-menu__link:focus-visible {
+  color: var(--menu-heading);
+  transform: translate3d(4px, 0, 0);
+  outline: none;
 }
-.bic-menu__label {
-  font-family: var(--font-display);
-  font-size: clamp(1.7rem, 1rem + 3.4vw, 2.9rem);
-  font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+.bic-menu__link.is-active { color: var(--menu-heading); }
+/* "On this page" anchors — same voice, smaller */
+.bic-menu__link--small {
+  font-size: clamp(17px, 3.6vw, 24px);
+  font-weight: 400; letter-spacing: 0.4px;
 }
-.bic-menu__link:hover, .bic-menu__link:focus-visible { color: var(--menu-heading); padding-left: 10px; outline: none; }
-.bic-menu__link:hover .bic-menu__num, .bic-menu__link:focus-visible .bic-menu__num { color: var(--menu-accent); }
-.bic-menu__link.is-active .bic-menu__label { color: var(--menu-heading); }
-.bic-menu__link.is-active .bic-menu__num { color: var(--menu-accent); }
 
 .bic-menu__group-title {
   font-family: var(--font-ui);
   font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--menu-muted);
-  margin: var(--space-5) 0 var(--space-2);
-  opacity: 0; transform: translate3d(0, 18px, 0);
-  transition: opacity 480ms cubic-bezier(0.16, 1, 0.3, 1), transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  margin: clamp(26px, 5vh, 44px) 0 clamp(8px, 1.6vh, 14px);
+  opacity: 0; transform: translate3d(-16px, 0, 0);
+  transition: opacity 460ms cubic-bezier(0.16, 1, 0.3, 1), transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.bic-menu--open .bic-menu__group-title { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 600ms; }
-.bic-menu--closing .bic-menu__group-title, .bic-menu--leaving .bic-menu__group-title { opacity: 0; transition: opacity 150ms ease; }
+.bic-menu--open .bic-menu__group-title { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 520ms; }
+.bic-menu--closing .bic-menu__group-title, .bic-menu--covering .bic-menu__group-title { opacity: 0; transition: opacity 150ms ease; }
 
-/* Panel footer: socials + CTA + fine print */
+/* Panel footer: socials + CTA (plain, like the landing menu) */
 .bic-menu__foot {
   margin-top: auto;
-  padding-top: clamp(28px, 5vh, 48px);
-  display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
-  opacity: 0; transform: translate3d(0, 22px, 0);
-  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1), transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  padding-top: clamp(28px, 6vh, 56px);
+  padding-bottom: 4vh;
+  display: flex; align-items: center; gap: 18px;
+  opacity: 0; transform: translate3d(-16px, 0, 0);
+  transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.bic-menu--open .bic-menu__foot { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 640ms; }
-.bic-menu--closing .bic-menu__foot, .bic-menu--leaving .bic-menu__foot { opacity: 0; transition: opacity 150ms ease; }
+.bic-menu--open .bic-menu__foot { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 560ms; }
+.bic-menu--closing .bic-menu__foot, .bic-menu--covering .bic-menu__foot { opacity: 0; transition: opacity 150ms ease; }
 .bic-menu__socials { display: flex; gap: 10px; }
 .bic-menu__socials .social-circle { width: 40px; height: 40px; border-color: var(--menu-line); color: var(--menu-muted); }
 .bic-menu__socials .social-circle:hover { border-color: var(--menu-accent); color: var(--menu-heading); }
 .bic-menu__cta {
-  display: inline-flex; align-items: center; gap: 8px;
   margin-left: auto;
-  padding: 12px 22px; border-radius: 999px;
-  font-family: var(--font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
-  color: var(--menu-heading);
-  background: var(--menu-accent-soft);
-  border: 1px solid var(--menu-accent);
-  text-decoration: none;
-  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), background-color 240ms ease;
-}
-.bic-menu__cta:hover { transform: translateY(-2px); background: var(--menu-accent); color: #141210; }
-.bic-menu__fine {
-  width: 100%;
-  font-family: var(--font-body); font-size: 12px; letter-spacing: 0.04em;
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--menu-muted);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--menu-line);
+  transition: color 200ms ease, border-color 200ms ease;
 }
+.bic-menu__cta:hover { color: var(--menu-heading); border-color: var(--menu-accent); }
 
 /* ============================================================
    Reduced motion — everything lands instantly, still functional
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .bic-nav, .bic-menu__mask, .bic-menu__panel, .bic-menu__link,
-  .bic-menu__foot, .bic-menu__group-title, .bic-nav__lines span {
+  .bic-menu__foot, .bic-menu__group-title, .bic-nav__lines span,
+  html.bic-transit-go.bic-is-transitioning::after {
     transition-duration: 1ms !important;
     transition-delay: 0ms !important;
   }

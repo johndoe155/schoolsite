@@ -6,13 +6,15 @@
 
    Requires: <header class="bic-nav" data-nav-theme="…"> static
    markup in the page. Builds Overlay A (mask) + Overlay B (panel)
-   itself and owns all of their choreography:
+   itself and owns all of their choreography — everything slides
+   in FROM THE LEFT:
 
-     open     A wipes in → +140ms B wipes over it → 40ms-staggered
-              items slide up
-     close    reverse sweep
-     navigate panel sweeps left under the mask → route changes under
-              cover → target page reveals from under the mask
+     open     blank mask wipes in → +120ms the panel wipes over it,
+              items stagger in
+     close    reverse sweep back out to the left
+     navigate the blank mask wipes in again over the panel → route
+              changes under cover → cover slides away TO THE RIGHT,
+              revealing the destination page
    ============================================================ */
 (function () {
   'use strict';
@@ -29,10 +31,11 @@
   window.BIC_SITEMAP = SITEMAP;
 
   var FLAG = 'bic.menuNav';
-  var MASK_MS = 560;
-  var PANEL_DELAY = 140;
-  var CLOSE_MS = 760;
-  var NAV_MS = 460;
+  var MASK_MS = 480;
+  var PANEL_DELAY = 120;
+  var CLOSE_MS = 720;
+  var COVER_MS = 440;
+  var NAV_MS = 520;
   var SCROLL_THRESHOLD = 12;
   var SCROLL_TOP = 10;
   var SCROLL_HIDE_AFTER = 90;
@@ -45,14 +48,6 @@
     '<a class="social-circle" href="https://x.com/bic_bis" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" title="X / Twitter">' +
     '<svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg></a>';
 
-  var CLOSE_ICON =
-    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
-    '<path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
-    '<path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-
-  var ARROW =
-    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
-    '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
 
   var header = null, toggle = null, menu = null, mask = null, panel = null;
   var state = 'closed'; // closed | opening | open | closing | navigating
@@ -64,7 +59,6 @@
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   function currentPath() {
@@ -81,6 +75,9 @@
   }
 
   /* ── Menu construction ───────────────────────────────────── */
+  function themeOf() {
+    return (header && header.getAttribute('data-nav-theme')) || 'paper';
+  }
   function readExtraLinks() {
     var raw = header.getAttribute('data-bic-extra-links');
     if (!raw) return [];
@@ -96,17 +93,15 @@
     SITEMAP.forEach(function (item) {
       var active = item.href === path ? ' is-active' : '';
       html += '<a class="bic-menu__link' + active + '" href="' + item.href + '" style="--i:' + i + '">' +
-        '<span class="bic-menu__num">' + pad2(i + 1) + '</span>' +
-        '<span class="bic-menu__label">' + esc(item.label) + '</span></a>';
+        esc(item.label) + '</a>';
       i += 1;
     });
     var extraHtml = '';
     if (extras.length) {
       extraHtml += '<p class="bic-menu__group-title">On this page</p>';
       extras.forEach(function (item) {
-        extraHtml += '<a class="bic-menu__link" href="' + esc(item.href) + '" style="--i:' + i + '">' +
-          '<span class="bic-menu__num">' + pad2(i + 1) + '</span>' +
-          '<span class="bic-menu__label">' + esc(item.label) + '</span></a>';
+        extraHtml += '<a class="bic-menu__link bic-menu__link--small" href="' + esc(item.href) + '" style="--i:' + i + '">' +
+          esc(item.label) + '</a>';
         i += 1;
       });
     }
@@ -125,14 +120,12 @@
       '<div class="bic-menu__panel" role="dialog" aria-modal="true" aria-label="Site menu" tabindex="-1">' +
       '  <div class="bic-menu__inner">' +
       '    <div class="bic-menu__top">' +
-      '      <span class="bic-nav__crest"><img src="/assets/img/logo.png" alt="" loading="lazy"></span>' +
       '      <span class="bic-menu__brand-text">Bodija International College</span>' +
       '    </div>' +
       '    <nav class="bic-menu__links" aria-label="Site">' + html + extraHtml + '</nav>' +
       '    <div class="bic-menu__foot">' +
       '      <div class="bic-menu__socials" aria-label="Follow us on social media">' + SOCIALS + '</div>' +
-      '      <a class="bic-menu__cta" href="' + esc(ctaHref) + '">' + esc(ctaLabel) + ' ' + ARROW + '</a>' +
-      '      <p class="bic-menu__fine">Bodija International College &middot; Bodija, Ibadan, Oyo State</p>' +
+      '      <a class="bic-menu__cta" href="' + esc(ctaHref) + '">' + esc(ctaLabel) + '</a>' +
       '    </div>' +
       '  </div>' +
       '</div>';
@@ -235,42 +228,47 @@
     if (state === 'navigating') return;
     state = 'navigating';
     clearTimers();
-    menu.classList.remove('bic-menu--open');
-    menu.classList.add('bic-menu--leaving'); // panel sweeps left; mask stays covering
     header.classList.remove('bic-nav--open');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Open menu');
     document.removeEventListener('keydown', onKeyDown);
     document.removeEventListener('focus', onFocusCapture, true);
+
+    /* the blank mask wipes in again FROM THE LEFT over the open panel */
+    menu.classList.add('bic-menu--covering');   // mask: no transition, back to -101%, above the panel
+    void mask.offsetWidth;                      // commit the reset frame
+    menu.classList.add('bic-menu--cover-go');   // mask wipes in to cover
+
     later(function () {
-      try { sessionStorage.setItem(FLAG, '1'); } catch (e) { /* private mode */ }
+      try { sessionStorage.setItem(FLAG, themeOf()); } catch (e) { /* private mode */ }
       window.location.href = href;
     }, NAV_MS);
     // failsafe: if navigation never happens, restore the menu quietly
     later(function () {
       if (state !== 'navigating') return;
-      menu.classList.remove('bic-menu--leaving', 'bic-menu--live');
+      menu.classList.remove('bic-menu--covering', 'bic-menu--cover-go', 'bic-menu--live');
       menu.setAttribute('aria-hidden', 'true');
-      header.classList.remove('bic-nav--open');
       preventScroll(false);
       state = 'closed';
     }, 4000);
   }
 
-  /* Arriving on a page while a transition is in flight */
+  /* Arriving on a page with a transition in flight: the head snippet has
+     already raised the full-screen cover (html.bic-is-transitioning::after,
+     coloured per theme). Slide it away TO THE RIGHT to reveal this page. */
   function arrivalSequence() {
-    if (!menu) return;
-    menu.classList.add('bic-menu--live', 'bic-menu--covered');
-    mask.classList.add('bic-menu__mask--transit');
-    document.documentElement.classList.remove('bic-is-transitioning');
+    var root = document.documentElement;
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        menu.classList.remove('bic-menu--covered');
-        menu.classList.add('bic-menu--reveal');
+        root.classList.add('bic-transit-go');
         later(function () {
-          menu.classList.remove('bic-menu--reveal', 'bic-menu--live');
-          mask.classList.remove('bic-menu__mask--transit');
-        }, MASK_MS + 120);
+          root.className = root.className
+            .replace(/\bbic-transit-go\b/g, '')
+            .replace(/\bbic-is-transitioning\b/g, '')
+            .replace(/\bbic-transit--[a-z-]+\b/g, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+        }, 720);
       });
     });
   }
@@ -326,9 +324,12 @@
     buildMenu(extras);
     fillDesktopLinks(extras);
 
-    /* arriving mid-transition? reveal from under the mask */
+    /* arriving mid-transition? reveal from under the cover */
     var flagged = false;
-    try { flagged = sessionStorage.getItem(FLAG) === '1'; sessionStorage.removeItem(FLAG); } catch (e) { /* no-op */ }
+    try {
+      flagged = !!sessionStorage.getItem(FLAG);
+      sessionStorage.removeItem(FLAG);
+    } catch (e) { /* no-op */ }
     if (flagged) arrivalSequence();
 
     toggle.addEventListener('click', function () {
@@ -341,7 +342,10 @@
     window.addEventListener('pageshow', function (e) {
       if (e.persisted) {
         var f = false;
-        try { f = sessionStorage.getItem(FLAG) === '1'; sessionStorage.removeItem(FLAG); } catch (err) { /* no-op */ }
+        try {
+          f = !!sessionStorage.getItem(FLAG);
+          sessionStorage.removeItem(FLAG);
+        } catch (err) { /* no-op */ }
         if (f) arrivalSequence();
       }
     });
@@ -358,6 +362,21 @@
     open: openMenu,
     close: closeMenu,
     get state() { return state; },
-    get element() { return menu; }
+    get element() { return menu; },
+    /* QA hook: hard-reset the state machine (used by the jsdom suites) */
+    _reset: function () {
+      clearTimers();
+      state = 'closed';
+      if (menu) {
+        menu.className = 'bic-menu';
+        menu.setAttribute('aria-hidden', 'true');
+      }
+      if (header) header.classList.remove('bic-nav--open');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+      }
+      preventScroll(false);
+    }
   };
 })();

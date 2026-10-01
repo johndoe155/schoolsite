@@ -3,12 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script>/* Phase 10 page-transition cover: applied before first paint when a menu navigation is in flight */
+<script>/* BIC transit cover: full-screen mask in the departing page's theme;
+  nav.js slides it away to the right once the target page is live */
   try {
-    if (sessionStorage.getItem('bic.menuNav') === '1') {
-      document.documentElement.className += ' bic-is-transitioning';
+    var bicTransit = sessionStorage.getItem('bic.menuNav');
+    if (bicTransit) {
+      document.documentElement.className += ' bic-is-transitioning bic-transit--' + (/^[a-z-]+$/.test(bicTransit) ? bicTransit : 'paper');
       setTimeout(function () {
-        document.documentElement.className = document.documentElement.className.replace(/\bbic-is-transitioning\b/g, '');
+        var el = document.documentElement;
+        if (!/\bbic-transit-go\b/.test(el.className)) el.className += ' bic-transit-go'; /* failsafe reveal */
+        setTimeout(function () {
+          el.className = el.className
+            .replace(/\bbic-transit-go\b|\bbic-is-transitioning\b|\bbic-transit--[a-z-]+\b/g, '')
+            .replace(/\s{2,}/g, ' ').trim();
+        }, 800);
       }, 4000);
     }
   } catch (e) { /* no-op */ }</script>
