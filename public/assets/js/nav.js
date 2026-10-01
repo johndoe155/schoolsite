@@ -71,9 +71,20 @@
   function vibrate(ms) {
     try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* no-op */ }
   }
+  var lockedY = 0;
   function preventScroll(on) {
+    if (on) {
+      lockedY = window.scrollY || window.pageYOffset || 0;
+    }
     document.documentElement.style.overflow = on ? 'hidden' : '';
     document.body.style.overflow = on ? 'hidden' : '';
+    /* Guard: if the browser clamped or lost the scroll position while
+       locking (legacy pages pinned html/body to 100% height used to
+       collapse the scroll range and snap the page to the top), put the
+       reader back where they were. */
+    if (!on && (window.scrollY || window.pageYOffset || 0) !== lockedY) {
+      try { window.scrollTo(0, lockedY); } catch (e) { /* no-op */ }
+    }
   }
 
   /* ── Menu construction ───────────────────────────────────── */

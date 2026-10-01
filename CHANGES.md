@@ -555,3 +555,33 @@ delay and 81% mask coverage at panel launch.
    exists), and the scrolled+open bar computes transparent everywhere.
 
 Verified: 202 + 20 assertions green, 6-page computed-style probe clean.
+
+## Phase 10 fix round — contact/news menu-open glitches
+
+**Root cause (not the header).** contact.css and news.css carried a
+legacy lux rule `html, body { height: 100% }` — the ONLY two pages
+with it, and the only two pages glitching. When the menu locks scroll
+(overflow:hidden on html+body), body clips its tall content to its
+100%-height box and html is exactly viewport-sized, so the document's
+scrollable range collapses and the browser clamps the scroll offset to
+0 — the page snaps to the top while the mask is still sweeping in.
+Contact: "goes back to the hero". News: "content disappears / elements
+shift" (same snap, plus scrollbar reflow). Pages without the rule keep
+their scroll position through the lock, hence no glitch elsewhere.
+
+**Fixes**
+- Removed `html, body { height: 100% }` from contact.css and news.css
+  (dead legacy: no layout depends on body height; every remaining
+  height:100% resolves against a sized parent).
+- Belt and braces: nav.js preventScroll now records scrollY on lock and
+  restores it on unlock if the browser clamped/lost it.
+
+**Header approach note.** The overlays already visually cover the
+header (bar contents vanish instantly; opaque panel above everything
+but the floating close toggle). Flipping z-order to literally park the
+header under the overlays would bury the toggle — the only mobile close
+button — forcing it to be relocated for zero visual gain, so the
+current model stays; the glitches had a different cause (above).
+
+Verified: new 18-assertion scroll-lock guard probe (both pages, real
+lock/unlock with simulated clamp) + 202 + 20 suites green.
