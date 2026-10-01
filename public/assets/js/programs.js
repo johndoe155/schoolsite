@@ -119,27 +119,6 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 
-    // ── Sticky floating hamburger ──────────────────
-    (function addStickyHamburger () {
-      var original = document.getElementById('hamburger');
-      if (!original) return;
-      var floating = original.cloneNode(true);
-      floating.id = 'hamburgerSticky';
-      floating.classList.add('brand-btn--fixed');
-      floating.setAttribute('aria-controls', 'mobileMenu');
-      floating.setAttribute('aria-label', 'Open menu');
-      floating.setAttribute('role', 'button');
-      floating.setAttribute('tabindex', '0');
-      document.body.appendChild(floating);
-      function activate () {
-        if (typeof window.openMobileMenu === 'function') window.openMobileMenu();
-        else original.click();
-      }
-      floating.addEventListener('click', activate);
-      floating.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
-      });
-    })();
 
   }());
 })();

@@ -396,3 +396,64 @@ Same guard audit done for programs/news/library/main — all safe.
   from that environment (page degrades to the static standard version by
   design). The module script itself was verified clean: syntax check, and a
   stubbed-CDN jsdom execution reaches `render()` with no errors.
+
+---
+
+# Phase 10 — Cinematic unified navigation + dual-overlay menu/transitions
+
+## What landed
+
+**One nav bar, everywhere.** A single reusable `<header class="bic-nav">`
+now renders on index, contact, programs, news, library and academies —
+identical hierarchy, padding, blur and branding on every page. admin.html
+stays nav-free by design. The bar carries the crest + wordmark, a JS-filled
+desktop link row, a page CTA, and a **morphing hamburger→X toggle** (the old
+"BIC" text trigger is retired). Glassmorphism via backdrop-blur, micro-border,
+clean type — themed per page through `data-nav-theme`:
+
+| page | theme | CTA |
+| --- | --- | --- |
+| index | hero | Get In Touch → /contact.html |
+| contact / programs / news | paper | Home → /index.html |
+| library | navy | Home → /index.html (+ Staff auth controls preserved) |
+| academies | hero-dark | Enroll → #enroll |
+
+**Smart scroll director.** `nav.js` runs an rAF-throttled scroll director
+(transform-only `translateY(-110%)` hide) with an accumulator threshold
+(~12px): down-scroll past 90px hides the bar, any up-scroll or `scrollY ≤ 10`
+shows it. The bar is pinned visible at the top and while the menu is open.
+No layout thrash — reads `scrollY`, writes one class, batched in rAF.
+
+**Dual-overlay menu = page-transition engine.** `nav.js` injects
+`#bic-menu` with two overlays — **A** a blank mask, **B** the content panel
+(links with numbering + stagger, socials, CTA, fine print). Opening sweeps A
+in, then B over it with items staggering up 40ms apart. Clicking an internal
+link: preventDefault → the panel sweeps left **under the still-covering
+mask** → a `sessionStorage` flag is set → the route changes under a
+full-screen cover (`html.bic-is-transitioning::after`) → the arriving page
+reveals from beneath the mask. Escape closes, focus is trapped and restored,
+`aria-expanded`/`aria-controls`/`role=dialog` are wired, body scroll locks.
+
+## Performance & a11y
+- Motion uses **transform/opacity only** (no left/top/width/height).
+- Luxury easing `cubic-bezier(0.76,0,0.24,1)` for wipes; entrances use
+  `cubic-bezier(0.16,1,0.3,1)`.
+- Full `prefers-reduced-motion` fallback (instant states).
+- Focus trap + Escape + focus restore + `aria-modal` dialog semantics.
+
+## Removed (dead/legacy)
+- layout.js menu markup + behaviour (~230 lines) — now footer/years only.
+- Old per-page nav CSS in home/contact/programs/news/library (~40–140 rules
+  each) and the duplicate BIC_SITEMAP.
+- `enableStickyHamburger` floating-clone systems in contact/news/programs JS.
+- The Tailwind header on index.html, the inline menu.js scripts, and the
+  `data-bic-menu` placeholder mechanism.
+- academies' static `.bic-site-nav` block + its inline nav CSS/scroll script.
+
+## Verification
+- jsdom boots all 6 nav pages: unified header, 6-link sitemap, dual-overlay
+  menu, open/close/escape/scroll-lock, navigation-under-mask flag flow,
+  rapid-toggle + fast-scroll + resize stress — all green.
+- validate_refine suite extended to assert the new nav (113 assertions pass).
+- All 7 pages return HTTP 200; internal link sweep clean.
+

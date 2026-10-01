@@ -1,0 +1,398 @@
+/* ============================================================
+   BIC — Unified Navigation & Cinematic Menu System
+   ------------------------------------------------------------
+   One bar + one dual-overlay menu for the whole site.
+   Loaded after tokens.css on every public page.
+
+   Layers (z-index):
+     900   .bic-nav  (1200 while the menu is open — toggle floats)
+    1000   .bic-menu__mask    (Overlay A — blank mask)
+    1100   .bic-menu__panel   (Overlay B — menu content)
+    9000   html.bic-is-transitioning::after (cross-page transit cover)
+
+   Motion: transform/opacity only. Wipes cubic-bezier(0.76,0,0.24,1);
+   entrances cubic-bezier(0.16,1,0.3,1).
+   ============================================================ */
+
+/* ── Themes ────────────────────────────────────────────────── */
+.bic-nav, .bic-menu {
+  /* paper (default): parchment pages */
+  --nav-top-bg: rgba(243, 239, 229, 0.82);
+  --nav-scroll-bg: rgba(253, 250, 245, 0.94);
+  --nav-text: #18140f;
+  --nav-text-soft: rgba(24, 20, 15, 0.62);
+  --nav-line: rgba(24, 20, 15, 0.10);
+  --nav-accent: #b07d3f;
+  --nav-accent-soft: rgba(176, 125, 63, 0.12);
+  --nav-toggle-border: rgba(24, 20, 15, 0.18);
+
+  --mask-bg: #141210;
+  --panel-bg: #1e1a14;
+  --menu-text: rgba(233, 225, 210, 0.92);
+  --menu-heading: #f4efe2;
+  --menu-muted: rgba(230, 218, 196, 0.55);
+  --menu-line: rgba(230, 218, 196, 0.10);
+  --menu-accent: #c8963e;
+  --menu-accent-soft: rgba(200, 150, 62, 0.14);
+}
+.bic-nav[data-nav-theme="hero"], .bic-menu[data-nav-theme="hero"] {
+  --nav-top-bg: transparent;
+  --nav-scroll-bg: rgba(243, 239, 229, 0.92);
+  --nav-text: #f3efe5;
+  --nav-text-soft: rgba(243, 239, 229, 0.66);
+  --nav-line: transparent;
+  --nav-accent: #e7be5a;
+  --nav-accent-soft: rgba(231, 190, 90, 0.16);
+  --nav-toggle-border: rgba(243, 239, 229, 0.30);
+
+  --mask-bg: #05014a;
+  --panel-bg: #141054;
+  --menu-text: rgba(229, 231, 245, 0.92);
+  --menu-heading: #ffffff;
+  --menu-muted: rgba(203, 210, 235, 0.55);
+  --menu-line: rgba(255, 255, 255, 0.10);
+  --menu-accent: #facc15;
+  --menu-accent-soft: rgba(250, 204, 21, 0.14);
+}
+.bic-nav[data-nav-theme="hero-dark"], .bic-menu[data-nav-theme="hero-dark"] {
+  --nav-top-bg: transparent;
+  --nav-scroll-bg: rgba(247, 241, 227, 0.92);
+  --nav-text: #f7f1e3;
+  --nav-text-soft: rgba(243, 236, 218, 0.64);
+  --nav-line: transparent;
+  --nav-accent: #e7be5a;
+  --nav-accent-soft: rgba(196, 153, 31, 0.16);
+  --nav-toggle-border: rgba(231, 190, 90, 0.40);
+
+  --mask-bg: #0e0c1b;
+  --panel-bg: #181435;
+  --menu-text: rgba(243, 236, 218, 0.90);
+  --menu-heading: #f3ecda;
+  --menu-muted: rgba(243, 236, 218, 0.55);
+  --menu-line: rgba(247, 241, 227, 0.10);
+  --menu-accent: #e7be5a;
+  --menu-accent-soft: rgba(231, 190, 90, 0.14);
+}
+.bic-nav[data-nav-theme="navy"], .bic-menu[data-nav-theme="navy"] {
+  --nav-top-bg: rgba(11, 18, 32, 0.70);
+  --nav-scroll-bg: rgba(8, 13, 24, 0.90);
+  --nav-text: #f7f5f2;
+  --nav-text-soft: rgba(247, 245, 242, 0.62);
+  --nav-line: rgba(255, 255, 255, 0.08);
+  --nav-accent: #c59b53;
+  --nav-accent-soft: rgba(197, 155, 83, 0.14);
+  --nav-toggle-border: rgba(197, 155, 83, 0.40);
+
+  --mask-bg: #070d18;
+  --panel-bg: #0d1526;
+  --menu-text: rgba(230, 235, 245, 0.90);
+  --menu-heading: #f7f5f2;
+  --menu-muted: rgba(199, 210, 232, 0.52);
+  --menu-line: rgba(255, 255, 255, 0.08);
+  --menu-accent: #c59b53;
+  --menu-accent-soft: rgba(197, 155, 83, 0.14);
+}
+
+/* On paper pages the scrolled bar swaps to ink text; on dark-hero themes
+   the scrolled bar is a light glass — both land on the same ink palette. */
+.bic-nav[data-nav-theme="hero"].bic-nav--scrolled,
+.bic-nav[data-nav-theme="hero-dark"].bic-nav--scrolled {
+  --nav-text: #18140f;
+  --nav-text-soft: rgba(24, 20, 15, 0.62);
+  --nav-line: rgba(24, 20, 15, 0.10);
+  --nav-accent: #b07d3f;
+  --nav-toggle-border: rgba(24, 20, 15, 0.18);
+}
+
+/* Cross-page transit cover (matches nothing theme-specific on purpose) */
+html.bic-is-transitioning::after {
+  content: "";
+  position: fixed; inset: 0;
+  z-index: 9000;
+  background: #0a0812;
+}
+
+/* ============================================================
+   THE BAR
+   ============================================================ */
+.bic-nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 900;
+  color: var(--nav-text);
+  background: var(--nav-top-bg);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--nav-line);
+  transition:
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 360ms ease,
+    border-color 360ms ease,
+    box-shadow 360ms ease,
+    color 360ms ease;
+  will-change: transform;
+}
+.bic-nav.bic-nav--scrolled {
+  background: var(--nav-scroll-bg);
+  border-bottom-color: var(--nav-line);
+  box-shadow: 0 12px 32px rgba(14, 12, 27, 0.07);
+}
+.bic-nav.bic-nav--hidden { transform: translate3d(0, -110%, 0); }
+
+.bic-nav__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  height: var(--nav-height);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Brand */
+.bic-nav__brand {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: inherit;
+  transition: opacity 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bic-nav__crest {
+  width: 40px; height: 40px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0;
+  border: 1px solid var(--nav-toggle-border);
+  background: rgba(255, 255, 255, 0.06);
+}
+.bic-nav__crest img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.bic-nav__wordmark { display: flex; flex-direction: column; gap: 1px; line-height: 1.15; }
+.bic-nav__wordmark strong {
+  font-family: var(--font-ui);
+  font-size: 13.5px; font-weight: 600; letter-spacing: 0.06em;
+  color: var(--nav-text);
+  transition: color 360ms ease;
+}
+.bic-nav__wordmark small {
+  font-family: var(--font-body);
+  font-size: 11px; letter-spacing: 0.04em;
+  color: var(--nav-text-soft);
+  transition: color 360ms ease;
+}
+
+/* Optional desktop links (populated by nav.js where configured) */
+.bic-nav__links {
+  display: none; align-items: center; gap: 26px;
+}
+.bic-nav__links a {
+  font-family: var(--font-ui);
+  font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--nav-text-soft);
+  text-decoration: none;
+  transition: color 220ms ease;
+}
+.bic-nav__links a:hover, .bic-nav__links a:focus-visible { color: var(--nav-accent); }
+@media (min-width: 1024px) { .bic-nav__links:not(:empty) { display: flex; } }
+
+/* Right side: CTA + toggle */
+.bic-nav__actions {
+  display: flex; align-items: center; gap: 12px;
+  transition: opacity 300ms ease;
+}
+.bic-nav__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px; border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 500; letter-spacing: 0.03em;
+  color: var(--nav-text);
+  border: 1px solid var(--nav-toggle-border);
+  background: transparent;
+  text-decoration: none; white-space: nowrap;
+  transition: color 240ms ease, border-color 240ms ease, background-color 240ms ease, transform 240ms ease;
+}
+.bic-nav__cta:hover { color: var(--nav-accent); border-color: var(--nav-accent); background: var(--nav-accent-soft); transform: translateY(-1px); }
+.bic-nav__cta svg { transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1); }
+.bic-nav__cta:hover svg { transform: translateX(3px); }
+.bic-nav__cta:focus-visible { outline: 2px solid var(--nav-accent); outline-offset: 3px; }
+@media (max-width: 640px) { .bic-nav__cta { display: none; } }
+
+/* Toggle — morphing hamburger → X */
+.bic-nav__toggle {
+  position: relative; z-index: 1200;
+  width: 44px; height: 44px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--nav-text);
+  background: transparent;
+  border: 1px solid var(--nav-toggle-border);
+  cursor: pointer;
+  transition:
+    color 240ms ease, border-color 240ms ease, background-color 240ms ease,
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.bic-nav__toggle:hover { border-color: var(--nav-accent); color: var(--nav-accent); background: var(--nav-accent-soft); transform: translateY(-1px); }
+.bic-nav__toggle:active { transform: translateY(0) scale(0.94); }
+.bic-nav__toggle:focus-visible { outline: 2px solid var(--nav-accent); outline-offset: 3px; }
+.bic-nav__lines { position: relative; width: 18px; height: 13px; display: block; }
+.bic-nav__lines span {
+  position: absolute; left: 0; right: 0; height: 1.6px; border-radius: 2px;
+  background: currentColor;
+  transition: transform 420ms cubic-bezier(0.76, 0, 0.24, 1), opacity 260ms ease;
+}
+.bic-nav__lines span:nth-child(1) { top: 0; }
+.bic-nav__lines span:nth-child(2) { top: 5.7px; }
+.bic-nav__lines span:nth-child(3) { top: 11.4px; }
+.bic-nav--open .bic-nav__lines span:nth-child(1) { transform: translate3d(0, 5.7px, 0) rotate(45deg); }
+.bic-nav--open .bic-nav__lines span:nth-child(2) { opacity: 0; transform: scale3d(0.1, 1, 1); }
+.bic-nav--open .bic-nav__lines span:nth-child(3) { transform: translate3d(0, -5.7px, 0) rotate(-45deg); }
+
+/* While the menu is open the bar goes quiet — only the morphed toggle floats */
+.bic-nav--open { z-index: 1200; background: transparent; border-bottom-color: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.bic-nav--open .bic-nav__brand,
+.bic-nav--open .bic-nav__cta,
+.bic-nav--open .bic-nav__links { opacity: 0; pointer-events: none; transform: translate3d(0, -8px, 0); }
+
+/* ============================================================
+   DUAL-OVERLAY MENU
+   ============================================================ */
+.bic-menu { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+.bic-menu--live { pointer-events: auto; }
+
+/* Overlay A — blank mask */
+.bic-menu__mask {
+  position: absolute; inset: 0; z-index: 1000;
+  background: var(--mask-bg);
+  transform: translate3d(101%, 0, 0);
+  transition: transform 560ms cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+}
+.bic-menu__mask--transit { background: #0a0812; }
+
+/* Overlay B — content layer */
+.bic-menu__panel {
+  position: absolute; inset: 0; z-index: 1100;
+  background: var(--panel-bg);
+  color: var(--menu-text);
+  transform: translate3d(101%, 0, 0);
+  transition: transform 560ms cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+  overflow-y: auto; overscroll-behavior: contain;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* State choreography (driven by nav.js) */
+.bic-menu--open .bic-menu__mask { transform: translate3d(0, 0, 0); }
+.bic-menu--open .bic-menu__panel { transform: translate3d(0, 0, 0); transition-delay: 140ms; }
+.bic-menu--closing .bic-menu__panel { transform: translate3d(101%, 0, 0); transition-delay: 0ms; }
+.bic-menu--closing .bic-menu__mask { transform: translate3d(101%, 0, 0); transition-delay: 120ms; }
+/* navigate-away: panel sweeps left, mask stays covering */
+.bic-menu--leaving .bic-menu__panel { transform: translate3d(-101%, 0, 0); }
+/* arrive on target page: mask covering, then reveal left */
+.bic-menu--covered .bic-menu__mask { transform: translate3d(0, 0, 0); transition: none; }
+.bic-menu--reveal .bic-menu__mask { transform: translate3d(-101%, 0, 0); }
+
+/* ── Panel content ─────────────────────────────────────────── */
+.bic-menu__inner {
+  min-height: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 92px clamp(24px, 6vw, 80px) 40px;
+  display: flex; flex-direction: column;
+}
+.bic-menu__top {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--menu-line);
+  margin-bottom: clamp(24px, 5vh, 48px);
+}
+.bic-menu__top .bic-nav__crest { width: 36px; height: 36px; border-color: var(--menu-line); }
+.bic-menu__brand-text {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--menu-muted);
+}
+
+.bic-menu__links { display: flex; flex-direction: column; }
+.bic-menu__link {
+  --i: 0;
+  display: flex; align-items: baseline; gap: 18px;
+  padding: clamp(12px, 2.2vh, 20px) 4px;
+  border-bottom: 1px solid var(--menu-line);
+  text-decoration: none; color: var(--menu-text);
+  opacity: 0; transform: translate3d(0, 26px, 0);
+  transition:
+    opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 480ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 220ms ease, padding-left 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bic-menu--open .bic-menu__link {
+  opacity: 1; transform: translate3d(0, 0, 0);
+  transition-delay: calc(340ms + var(--i) * 40ms), calc(340ms + var(--i) * 40ms), 0ms, 0ms;
+}
+.bic-menu--closing .bic-menu__link, .bic-menu--leaving .bic-menu__link {
+  opacity: 0; transform: translate3d(0, -14px, 0);
+  transition: opacity 180ms ease, transform 180ms ease; transition-delay: 0ms;
+}
+.bic-menu__num {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.18em;
+  color: var(--menu-muted);
+  min-width: 24px;
+  transition: color 220ms ease;
+}
+.bic-menu__label {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 1rem + 3.4vw, 2.9rem);
+  font-weight: 400; line-height: 1.05; letter-spacing: -0.01em;
+}
+.bic-menu__link:hover, .bic-menu__link:focus-visible { color: var(--menu-heading); padding-left: 10px; outline: none; }
+.bic-menu__link:hover .bic-menu__num, .bic-menu__link:focus-visible .bic-menu__num { color: var(--menu-accent); }
+.bic-menu__link.is-active .bic-menu__label { color: var(--menu-heading); }
+.bic-menu__link.is-active .bic-menu__num { color: var(--menu-accent); }
+
+.bic-menu__group-title {
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--menu-muted);
+  margin: var(--space-5) 0 var(--space-2);
+  opacity: 0; transform: translate3d(0, 18px, 0);
+  transition: opacity 480ms cubic-bezier(0.16, 1, 0.3, 1), transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bic-menu--open .bic-menu__group-title { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 600ms; }
+.bic-menu--closing .bic-menu__group-title, .bic-menu--leaving .bic-menu__group-title { opacity: 0; transition: opacity 150ms ease; }
+
+/* Panel footer: socials + CTA + fine print */
+.bic-menu__foot {
+  margin-top: auto;
+  padding-top: clamp(28px, 5vh, 48px);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+  opacity: 0; transform: translate3d(0, 22px, 0);
+  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1), transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bic-menu--open .bic-menu__foot { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: 640ms; }
+.bic-menu--closing .bic-menu__foot, .bic-menu--leaving .bic-menu__foot { opacity: 0; transition: opacity 150ms ease; }
+.bic-menu__socials { display: flex; gap: 10px; }
+.bic-menu__socials .social-circle { width: 40px; height: 40px; border-color: var(--menu-line); color: var(--menu-muted); }
+.bic-menu__socials .social-circle:hover { border-color: var(--menu-accent); color: var(--menu-heading); }
+.bic-menu__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-left: auto;
+  padding: 12px 22px; border-radius: 999px;
+  font-family: var(--font-ui); font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--menu-heading);
+  background: var(--menu-accent-soft);
+  border: 1px solid var(--menu-accent);
+  text-decoration: none;
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), background-color 240ms ease;
+}
+.bic-menu__cta:hover { transform: translateY(-2px); background: var(--menu-accent); color: #141210; }
+.bic-menu__fine {
+  width: 100%;
+  font-family: var(--font-body); font-size: 12px; letter-spacing: 0.04em;
+  color: var(--menu-muted);
+}
+
+/* ============================================================
+   Reduced motion — everything lands instantly, still functional
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .bic-nav, .bic-menu__mask, .bic-menu__panel, .bic-menu__link,
+  .bic-menu__foot, .bic-menu__group-title, .bic-nav__lines span {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}

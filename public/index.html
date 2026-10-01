@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script>/* Phase 10 page-transition cover: applied before first paint when a menu navigation is in flight */
+  try {
+    if (sessionStorage.getItem('bic.menuNav') === '1') {
+      document.documentElement.className += ' bic-is-transitioning';
+      setTimeout(function () {
+        document.documentElement.className = document.documentElement.className.replace(/\bbic-is-transitioning\b/g, '');
+      }, 4000);
+    }
+  } catch (e) { /* no-op */ }</script>
   <title>Bodija International College — Excellence in Education</title>
   <meta name="description" content="Empowering future leaders through excellence in education, science, arts, and technology.">
 
@@ -86,6 +95,7 @@
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/footer.css">
   <link rel="stylesheet" href="/assets/css/home.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
 </head>
 <body class="antialiased bg-slate-50 text-slate-800">
 
@@ -99,44 +109,27 @@
   <!-- CMS Data Object -->
   
 
-  <!-- Header -->
-  <header class="fixed inset-x-0 top-0 z-40 transition-all duration-300" id="mainHeader">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-[68px]">
-        <!-- Brand -->
-        <div class="flex items-center gap-4 z-50">
-          <a href="#" class="brand-btn group" aria-label="Bodija International College Home">
-            BIC
-          </a>
-          <span class="hidden sm:block text-lg font-semibold tracking-tight text-white mix-blend-difference">
-            Bodija International College
-          </span>
-        </div>
-
-        <!-- Desktop Nav -->
-        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-white mix-blend-difference" aria-label="Primary">
-          <a class="hover:text-brand-yellow transition-colors" href="#home">Home</a>
-          <a class="hover:text-brand-yellow transition-colors" href="#about">About</a>
-          <a class="hover:text-brand-yellow transition-colors" href="#academics">Academics</a>
-          <a class="hover:text-brand-yellow transition-colors" href="#gallery">Gallery</a>
-          <a class="hover:text-brand-yellow transition-colors" href="#contact">Contact</a>
-        </nav>
-
-<!-- mobile menu opener -->
-<button id="hamburger"
-        aria-controls="mobileMenu"
-        aria-expanded="false"
-        aria-label="Open menu"
-        tabindex="0"
-        class="lg:hidden p-2 focus:outline-none z-[60] relative" aria-label="Toggle Mobile Menu">
-  <svg class="icon text-slate-900" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-  </svg>  
-</button>
-
-<!-- Mobile menu -->
-
-  </header>
+<!-- ── BIC Unified Nav ── -->
+<header class="bic-nav" data-nav-theme="hero" data-nav-active="/index.html"
+        data-bic-extra-links='[{"href":"#home","label":"Home"},{"href":"#about","label":"About"},{"href":"#academics","label":"Academics"},{"href":"#gallery","label":"Gallery"},{"href":"#contact","label":"Contact"}]'
+        data-nav-cta-label="Get In Touch" data-nav-cta-href="/contact.html">
+  <div class="bic-nav__inner">
+    <a class="bic-nav__brand" href="/index.html" aria-label="Bodija International College — home">
+      <span class="bic-nav__crest"><img src="/assets/img/logo.png" alt="" loading="lazy"></span>
+      <span class="bic-nav__wordmark">
+        <strong>Bodija Int&rsquo;l College</strong>
+        <small>Excellence in Education</small>
+      </span>
+    </a>
+    <nav class="bic-nav__links" aria-label="Section"></nav>
+    <div class="bic-nav__actions">
+      <a class="bic-nav__cta" href="/contact.html">Get In Touch <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <button class="bic-nav__toggle" type="button" aria-controls="bic-menu" aria-expanded="false" aria-label="Open menu">
+        <span class="bic-nav__lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
 
   <main id="main">
 
@@ -513,213 +506,12 @@
   </div>
 
   
-  <script>
-    // menu.js
-(function () {
-  'use strict';
-
-  function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
-  function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
-
-  function getFocusable(container) {
-    if (!container) return [];
-    return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
-      .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var menu = document.getElementById('mobileMenu');
-    if (!menu) { console.warn('mobileMenu element not found.'); return; }
-
-    var overlay = menu.querySelector('[data-overlay]');
-    var panel = menu.querySelector('.mobile-menu__panel');
-    var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
-    var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
-    var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
-
-    function parseTime(s) {
-      if (!s) return 0;
-      var str = String(s).trim();
-      if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
-      if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
-      var n = parseFloat(str);
-      return isFinite(n) ? n : 0;
-    }
-
-    var rootStyles = getComputedStyle(document.documentElement);
-    var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
-    var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
-    var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
-    var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
-
-    var timeouts = [];
-    var lastFocused = null;
-
-    function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
-
-    function preventScroll(enable){
-      if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
-      else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
-    }
-
-    function onKeyDown(e){
-      if (!menu.classList.contains('open')) return;
-      if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
-      if (e.key === 'Tab') {
-        if (!panel) return;
-        var focusable = getFocusable(panel);
-        if (!focusable.length) { e.preventDefault(); return; }
-        var first = focusable[0], last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-    }
-
-    function focusTrap(e){
-      if (!menu.classList.contains('open')) return;
-      if (!panel) return;
-      if (panel.contains(e.target)) return;
-      e.stopPropagation();
-      var f = getFocusable(panel);
-      if (f.length) f[0].focus(); else panel.focus();
-    }
-
-    if (menu && menu.parentElement !== document.body) {
-      document.body.appendChild(menu);
-      overlay = menu.querySelector('[data-overlay]');
-      panel = menu.querySelector('.mobile-menu__panel');
-    }
-
-    var openerStateMap = new WeakMap();
-
-    function disableOpenButtons() {
-      openButtons.forEach(function(b){
-        if (!b) return;
-        var prev = {
-          tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
-          pointerEvents: b.style.pointerEvents || null,
-          ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
-        };
-        openerStateMap.set(b, prev);
-        try { b.setAttribute('tabindex', '-1'); } catch (e) {}
-        b.style.pointerEvents = 'none';
-        try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
-      });
-    }
-
-    function restoreOpenButtons() {
-      openButtons.forEach(function(b){
-        if (!b) return;
-        var prev = openerStateMap.get(b) || {};
-        if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
-        else b.setAttribute('tabindex', prev.tabindex);
-        if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
-        else b.style.pointerEvents = prev.pointerEvents;
-        if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
-        else b.setAttribute('aria-hidden', prev.ariaHidden);
-        openerStateMap.delete(b);
-      });
-    }
-
-    function openMobileMenu(){
-      if (menu.classList.contains('open')) return;
-      lastFocused = document.activeElement;
-      menu.classList.add('open');
-      menu.setAttribute('aria-hidden', 'false');
-      if (panel) panel.setAttribute('aria-hidden', 'false');
-
-      disableOpenButtons();
-
-      if (overlay) overlay.classList.remove('overlay-in');
-      if (panel) panel.classList.remove('panel-in');
-      void (overlay && overlay.offsetWidth);
-      if (overlay) overlay.classList.add('overlay-in');
-
-      var t = setTimeout(function(){
-        if (panel) {
-          panel.classList.add('panel-in');
-          var closeBtn = panel.querySelector('.mobile-menu__close');
-          if (closeBtn) closeBtn.focus({ preventScroll: true });
-        }
-      }, PANEL_DELAY);
-      timeouts.push(t);
-
-      document.addEventListener('focus', focusTrap, true);
-      document.addEventListener('keydown', onKeyDown);
-      if (overlay) overlay.addEventListener('click', overlayClick);
-      preventScroll(true);
-      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
-    }
-
-    function closeMobileMenu(){
-      if (!menu.classList.contains('open')) return;
-      clearAllTimeouts();
-      if (panel) panel.classList.remove('panel-in');
-
-      var t1 = setTimeout(function(){
-        var tHold = setTimeout(function(){
-          if (overlay) overlay.classList.remove('overlay-in');
-          var tHide = setTimeout(function(){
-            menu.classList.remove('open');
-            menu.setAttribute('aria-hidden', 'true');
-            if (panel) panel.setAttribute('aria-hidden', 'true');
-
-            restoreOpenButtons();
-
-            preventScroll(false);
-            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
-          }, OVERLAY_DUR);
-          timeouts.push(tHide);
-        }, OVERLAY_HOLD);
-        timeouts.push(tHold);
-      }, PANEL_DUR);
-      timeouts.push(t1);
-
-      document.removeEventListener('focus', focusTrap, true);
-      document.removeEventListener('keydown', onKeyDown);
-      if (overlay) overlay.removeEventListener('click', overlayClick);
-      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
-    }
-
-    function overlayClick(){ closeMobileMenu(); }
-
-    openButtons.forEach(function(btn){
-      if (!btn) return;
-      btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
-      btn.addEventListener('keydown', function(ev){
-        var k = ev.key;
-        if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
-      });
-    });
-
-    externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
-
-    window.openMobileMenu = openMobileMenu;
-    window.closeMobileMenu = closeMobileMenu;
-    window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
-
-    (function preloadBg(){
-      if (!panel) return;
-      var style = getComputedStyle(panel);
-      var bg = style.getPropertyValue('background-image') || '';
-      var url = '';
-      var start = bg.indexOf('url(');
-      var end = bg.lastIndexOf(')');
-      if (start !== -1 && end !== -1 && end > start) {
-        url = bg.slice(start + 4, end).replace(/['\"]/g, '');
-      }
-      if (url) { var img = new Image(); img.src = url; }
-    })();
-
-  });
-
-})();
-  </script>
+  
 
   
 
 <script src="/assets/js/main.js" defer></script>
-  <div data-bic-menu="home"></div>
+  <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/layout.js"></script>
   <script src="/assets/js/home.js" defer></script>
 </body>

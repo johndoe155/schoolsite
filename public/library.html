@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>/* Phase 10 page-transition cover: applied before first paint when a menu navigation is in flight */
+  try {
+    if (sessionStorage.getItem('bic.menuNav') === '1') {
+      document.documentElement.className += ' bic-is-transitioning';
+      setTimeout(function () {
+        document.documentElement.className = document.documentElement.className.replace(/\bbic-is-transitioning\b/g, '');
+      }, 4000);
+    }
+  } catch (e) { /* no-op */ }</script>
   <title>Bodija International College — Curriculum Resources</title>
   <meta name="description" content="Access curriculum textbooks, past exams, and study guides." />
 
@@ -67,6 +76,7 @@
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/footer.css">
   <link rel="stylesheet" href="/assets/css/library.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -74,47 +84,38 @@
     Skip to content
   </a>
 
-  <!-- ── BIC Site Nav ── -->
-  <nav class="bic-site-nav" id="bic-site-nav" aria-label="Site navigation">
-    <span id="hamburger"
-          role="button"
-          tabindex="0"
-          aria-controls="mobileMenu"
-          aria-expanded="false"
-          aria-label="Open navigation menu">BIC</span>
-
-    <div class="bic-nav-brand" aria-label="Bodija International College home">
-      <div class="bic-nav-wordmark">
-        <strong>Bodija Int'l College</strong>
-        <span>Digital Library</span>
+<!-- ── BIC Unified Nav ── -->
+<header class="bic-nav" data-nav-theme="navy" data-nav-active="/library.html"
+        data-nav-cta-label="Home" data-nav-cta-href="/index.html">
+  <div class="bic-nav__inner">
+    <a class="bic-nav__brand" href="/index.html" aria-label="Bodija International College — home">
+      <span class="bic-nav__crest"><img src="/assets/img/logo.png" alt="" loading="lazy"></span>
+      <span class="bic-nav__wordmark">
+        <strong>Bodija Int&rsquo;l College</strong>
+        <small>Digital Library</small>
+      </span>
+    </a>
+    <nav class="bic-nav__links" aria-label="Section"></nav>
+    <div class="bic-nav__actions">
+      <div class="bic-nav-auth">
+        <div id="auth-nav-guest">
+          <button onclick="AdminSystem.openLogin()" style="padding:9px 18px;border-radius:999px;border:1px solid rgba(24,20,15,.2);background:transparent;color:var(--bic-ink);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--bic-font-body);transition:all 200ms;" onmouseover="this.style.borderColor='var(--bic-gold)';this.style.color='var(--bic-gold)'" onmouseout="this.style.borderColor='rgba(24,20,15,.2)';this.style.color='var(--bic-ink)'">Staff Login</button>
+        </div>
+        <div id="auth-nav-staff">
+          <button onclick="AdminSystem.openUpload()" style="display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:var(--bic-gold-pale);border:1px solid var(--bic-gold-border);color:var(--bic-gold);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--bic-font-body);">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            Upload
+          </button>
+          <button onclick="AdminSystem.logout()" style="font-size:12px;color:var(--bic-ink-60);background:none;border:none;cursor:pointer;font-family:var(--bic-font-body);padding:4px 8px;">Log out</button>
+        </div>
       </div>
+      <a class="bic-nav__cta" href="/index.html">Home <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <button class="bic-nav__toggle" type="button" aria-controls="bic-menu" aria-expanded="false" aria-label="Open menu">
+        <span class="bic-nav__lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
     </div>
-
-    <div class="bic-nav-auth">
-      <!-- Staff auth controls (preserved) -->
-      <div id="auth-nav-guest">
-        <button
-          onclick="AdminSystem.openLogin()"
-          style="padding:9px 18px;border-radius:999px;border:1px solid rgba(24,20,15,.2);background:transparent;color:var(--bic-ink);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--bic-font-body);transition:all 200ms;"
-          onmouseover="this.style.borderColor='var(--bic-gold)';this.style.color='var(--bic-gold)'"
-          onmouseout="this.style.borderColor='rgba(24,20,15,.2)';this.style.color='var(--bic-ink)'"
-        >Staff Login</button>
-      </div>
-      <div id="auth-nav-staff">
-        <button
-          onclick="AdminSystem.openUpload()"
-          style="display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:var(--bic-gold-pale);border:1px solid var(--bic-gold-border);color:var(--bic-gold);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--bic-font-body);"
-        >
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-          Upload
-        </button>
-        <button
-          onclick="AdminSystem.logout()"
-          style="font-size:12px;color:var(--bic-ink-60);background:none;border:none;cursor:pointer;font-family:var(--bic-font-body);padding:4px 8px;"
-        >Log out</button>
-      </div>
-    </div>
-  </nav>
+  </div>
+</header>
 
   
 
@@ -586,217 +587,7 @@
     </div>
   </div>
   
-<script>
-    // menu.js
-// Extracted from prototypes.html (keeps original behavior and exports).
-(function () {
-  'use strict';
 
-  function qs(selector, ctx = document) { return (ctx || document).querySelector(selector); }
-  function qsa(selector, ctx = document) { return Array.from((ctx || document).querySelectorAll(selector)); }
-
-  function getFocusable(container) {
-    if (!container) return [];
-    return qsa("a[href], button:not([disabled]), textarea, input:not([type=hidden]):not([disabled]), select:not([disabled]), [tabindex]:not([tabindex=\"-1\"])", container)
-      .filter(function(el){ return el.offsetParent !== null || el.getClientRects().length; });
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var menu = document.getElementById('mobileMenu');
-    if (!menu) { console.warn('mobileMenu element not found.'); return; }
-
-    var overlay = menu.querySelector('[data-overlay]');
-    var panel = menu.querySelector('.mobile-menu__panel');
-    var closeBtns = Array.prototype.slice.call(menu.querySelectorAll('.mobile-menu__close'));
-    var openButtons = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="mobileMenu"], [data-mobile-open], .mobile-open, .mobile-toggle, #mobileOpenBtn'));
-    var externalCloseButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mobile-close], .mobile-close, .mobile-menu__close, [data-mobile-toggle="close"]'));
-
-    function parseTime(s) {
-      if (!s) return 0;
-      var str = String(s).trim();
-      if (str.indexOf('ms', str.length - 2) !== -1) return parseFloat(str);
-      if (str.indexOf('s', str.length - 1) !== -1) return parseFloat(str) * 1000;
-      var n = parseFloat(str);
-      return isFinite(n) ? n : 0;
-    }
-
-    var rootStyles = getComputedStyle(document.documentElement);
-    var OVERLAY_DUR = parseTime(rootStyles.getPropertyValue('--overlay-duration')) || 220;
-    var PANEL_DUR   = parseTime(rootStyles.getPropertyValue('--panel-duration')) || 340;
-    var PANEL_DELAY = parseTime(rootStyles.getPropertyValue('--panel-delay')) || 120;
-    var OVERLAY_HOLD = parseTime(rootStyles.getPropertyValue('--overlay-hold')) || 0;
-
-    var timeouts = [];
-    var lastFocused = null;
-
-    function clearAllTimeouts(){ timeouts.forEach(function(i){ clearTimeout(i); }); timeouts = []; }
-
-    function preventScroll(enable){
-      if (enable) { document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
-      else { document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
-    }
-
-    function onKeyDown(e){
-      if (!menu.classList.contains('open')) return;
-      if (e.key === 'Escape') { e.preventDefault(); closeMobileMenu(); return; }
-      if (e.key === 'Tab') {
-        if (!panel) return;
-        var focusable = getFocusable(panel);
-        if (!focusable.length) { e.preventDefault(); return; }
-        var first = focusable[0], last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-    }
-
-    function focusTrap(e){
-      if (!menu.classList.contains('open')) return;
-      if (!panel) return;
-      if (panel.contains(e.target)) return;
-      e.stopPropagation();
-      var f = getFocusable(panel);
-      if (f.length) f[0].focus(); else panel.focus();
-    }
-
-    // Ensure menu is appended to body to avoid ancestor stacking contexts
-    if (menu && menu.parentElement !== document.body) {
-      document.body.appendChild(menu);
-      overlay = menu.querySelector('[data-overlay]');
-      panel = menu.querySelector('.mobile-menu__panel');
-    }
-
-    // store for restoring open buttons state
-    var openerStateMap = new WeakMap();
-
-    function disableOpenButtons() {
-      openButtons.forEach(function(b){
-        if (!b) return;
-        var prev = {
-          tabindex: b.hasAttribute('tabindex') ? b.getAttribute('tabindex') : null,
-          pointerEvents: b.style.pointerEvents || null,
-          ariaHidden: b.hasAttribute('aria-hidden') ? b.getAttribute('aria-hidden') : null
-        };
-        openerStateMap.set(b, prev);
-        try { b.setAttribute('tabindex', '-1'); } catch (e) {}
-        b.style.pointerEvents = 'none';
-        try { b.setAttribute('aria-hidden', 'true'); } catch (e) {}
-      });
-    }
-
-    function restoreOpenButtons() {
-      openButtons.forEach(function(b){
-        if (!b) return;
-        var prev = openerStateMap.get(b) || {};
-        if (prev.tabindex === null || prev.tabindex === undefined) b.removeAttribute('tabindex');
-        else b.setAttribute('tabindex', prev.tabindex);
-        if (prev.pointerEvents === null || prev.pointerEvents === undefined) b.style.removeProperty('pointer-events');
-        else b.style.pointerEvents = prev.pointerEvents;
-        if (prev.ariaHidden === null || prev.ariaHidden === undefined) b.removeAttribute('aria-hidden');
-        else b.setAttribute('aria-hidden', prev.ariaHidden);
-        openerStateMap.delete(b);
-      });
-    }
-
-    function openMobileMenu(){
-      if (menu.classList.contains('open')) return;
-      lastFocused = document.activeElement;
-      menu.classList.add('open');
-      menu.setAttribute('aria-hidden', 'false');
-      if (panel) panel.setAttribute('aria-hidden', 'false');
-
-      // disable hamburgers / openers while menu is open
-      disableOpenButtons();
-
-      if (overlay) overlay.classList.remove('overlay-in');
-      if (panel) panel.classList.remove('panel-in');
-      void (overlay && overlay.offsetWidth);
-      if (overlay) overlay.classList.add('overlay-in');
-
-      var t = setTimeout(function(){
-        if (panel) {
-          panel.classList.add('panel-in');
-          var closeBtn = panel.querySelector('.mobile-menu__close');
-          if (closeBtn) closeBtn.focus({ preventScroll: true });
-        }
-      }, PANEL_DELAY);
-      timeouts.push(t);
-
-      document.addEventListener('focus', focusTrap, true);
-      document.addEventListener('keydown', onKeyDown);
-      if (overlay) overlay.addEventListener('click', overlayClick);
-      preventScroll(true);
-      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'true'); });
-    }
-
-    function closeMobileMenu(){
-      if (!menu.classList.contains('open')) return;
-      clearAllTimeouts();
-      if (panel) panel.classList.remove('panel-in');
-
-      var t1 = setTimeout(function(){
-        var tHold = setTimeout(function(){
-          if (overlay) overlay.classList.remove('overlay-in');
-          var tHide = setTimeout(function(){
-            menu.classList.remove('open');
-            menu.setAttribute('aria-hidden', 'true');
-            if (panel) panel.setAttribute('aria-hidden', 'true');
-
-            // restore hamburgers / openers to previous state
-            restoreOpenButtons();
-
-            preventScroll(false);
-            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus({ preventScroll: true });
-          }, OVERLAY_DUR);
-          timeouts.push(tHide);
-        }, OVERLAY_HOLD);
-        timeouts.push(tHold);
-      }, PANEL_DUR);
-      timeouts.push(t1);
-
-      document.removeEventListener('focus', focusTrap, true);
-      document.removeEventListener('keydown', onKeyDown);
-      if (overlay) overlay.removeEventListener('click', overlayClick);
-      openButtons.forEach(function(b){ if (b && b.setAttribute) b.setAttribute('aria-expanded', 'false'); });
-    }
-
-    function overlayClick(){ closeMobileMenu(); }
-
-    // Attach listeners to openers
-    openButtons.forEach(function(btn){
-      if (!btn) return;
-      btn.addEventListener('click', function(ev){ ev.preventDefault(); openMobileMenu(); });
-      btn.addEventListener('keydown', function(ev){
-        var k = ev.key;
-        if (k === 'Enter' || k === ' ' || k === 'Spacebar') { ev.preventDefault(); openMobileMenu(); }
-      });
-    });
-
-    // Attach close buttons
-    externalCloseButtons.concat(closeBtns).forEach(function(btn){ if (!btn) return; btn.addEventListener('click', function(ev){ ev.preventDefault(); closeMobileMenu(); }); });
-
-    // Expose globals (keeps parity with prototype)
-    window.openMobileMenu = openMobileMenu;
-    window.closeMobileMenu = closeMobileMenu;
-    window.toggleMobileMenu = function(){ if (menu.classList.contains('open')) closeMobileMenu(); else openMobileMenu(); };
-
-    // Preload background image if present
-    (function preloadBg(){
-      if (!panel) return;
-      var style = getComputedStyle(panel);
-      var bg = style.getPropertyValue('background-image') || '';
-      var url = '';
-      var start = bg.indexOf('url(');
-      var end = bg.lastIndexOf(')');
-      if (start !== -1 && end !== -1 && end > start) {
-        url = bg.slice(start + 4, end).replace(/['\"]/g, '');
-      }
-      if (url) { var img = new Image(); img.src = url; }
-    })();
-
-  }); // DOMContentLoaded end
-
-})();
-  </script>
   <!-- Application Logic -->
   
   <!-- ══════════════════════════════════════════════════════════════
@@ -807,80 +598,8 @@
   
 
   <!-- ── BIC Nav + Menu JS ── -->
-  <script>
-  (function () {
-    'use strict';
-    var nav = document.querySelector('.bic-site-nav');
-    if (nav) {
-      window.addEventListener('scroll', function () {
-        nav.classList.toggle('scrolled', window.scrollY > 60);
-      }, { passive: true });
-    }
-    var yearEl = document.getElementById('year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-    document.addEventListener('DOMContentLoaded', function () {
-      var menu = document.getElementById('mobileMenu');
-      var panel = menu ? menu.querySelector('.mobile-menu__panel') : null;
-      var overlay = menu ? menu.querySelector('.mobile-menu__overlay') : null;
-      var closeBtns = menu ? Array.from(menu.querySelectorAll('.mobile-menu__close')) : [];
-      var openBtns = [document.getElementById('hamburger')].filter(Boolean);
-      var lastFocus = null, timeouts = [];
-      var PDUR = 360, PDELAY = 60, ODUR = 260, OHOLD = 80;
-      if (!menu) return;
-      function clearTO() { timeouts.forEach(clearTimeout); timeouts = []; }
-      function scroll(on) { document.body.style.overflow = on ? 'hidden' : ''; }
-      var SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
-      function trapFocus(e) { if (!panel || !panel.contains(e.target)) { var els = Array.from(panel.querySelectorAll(SEL)); if (els.length) els[0].focus({ preventScroll: true }); } }
-      function onEsc(e) { if (e.key === 'Escape') close(); }
-      function open() {
-        if (menu.classList.contains('open')) return;
-        lastFocus = document.activeElement;
-        menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false');
-        if (panel) panel.setAttribute('aria-hidden', 'false');
-        void (overlay && overlay.offsetWidth);
-        if (overlay) overlay.classList.add('overlay-in');
-        var t = setTimeout(function () { if (panel) { panel.classList.add('panel-in'); var cb = panel.querySelector('.mobile-menu__close'); if (cb) cb.focus({ preventScroll: true }); } }, PDELAY);
-        timeouts.push(t);
-        document.addEventListener('focus', trapFocus, true);
-        document.addEventListener('keydown', onEsc);
-        if (overlay) overlay.addEventListener('click', close);
-        scroll(true);
-        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','true'); });
-      }
-      function close() {
-        if (!menu.classList.contains('open')) return;
-        clearTO();
-        if (panel) panel.classList.remove('panel-in');
-        var t1 = setTimeout(function () { var tH = setTimeout(function () { if (overlay) overlay.classList.remove('overlay-in'); var tH2 = setTimeout(function () { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); if (panel) panel.setAttribute('aria-hidden','true'); openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); }); scroll(false); if (lastFocus && typeof lastFocus.focus==='function') lastFocus.focus({ preventScroll:true }); }, ODUR); timeouts.push(tH2); }, OHOLD); timeouts.push(tH); }, PDUR);
-        timeouts.push(t1);
-        document.removeEventListener('focus', trapFocus, true);
-        document.removeEventListener('keydown', onEsc);
-        if (overlay) overlay.removeEventListener('click', close);
-        openBtns.forEach(function(b){ if(b) b.setAttribute('aria-expanded','false'); });
-      }
-      openBtns.forEach(function(btn) {
-        if (!btn) return;
-        btn.addEventListener('click', function(e){ e.preventDefault(); open(); });
-        btn.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); open(); } });
-      });
-      closeBtns.forEach(function(btn) { if (!btn) return; btn.addEventListener('click', function(e){ e.preventDefault(); close(); }); });
-      window.openMobileMenu = open; window.closeMobileMenu = close;
-      window.toggleMobileMenu = function(){ if(menu.classList.contains('open')) close(); else open(); };
-      var orig = document.getElementById('hamburger');
-      if (orig) {
-        var fl = orig.cloneNode(true);
-        fl.id = 'hamburgerSticky'; fl.classList.add('brand-btn--fixed');
-        fl.setAttribute('aria-controls','mobileMenu'); fl.setAttribute('aria-label','Open menu');
-        fl.setAttribute('role','button'); fl.setAttribute('tabindex','0');
-        document.body.appendChild(fl);
-        function act(){ if (typeof open==='function') open(); }
-        fl.addEventListener('click', act);
-        fl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
-      }
-    });
-  }());
-  </script>
-  <div data-bic-menu="lux"></div>
+  
+  <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/layout.js"></script>
   <script src="/assets/js/library.js" defer></script>
 </body>

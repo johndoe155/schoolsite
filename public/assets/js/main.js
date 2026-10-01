@@ -398,28 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // --- 7. Header Scroll Effect ---
-  window.addEventListener('scroll', () => {
-    const header = document.getElementById('mainHeader');
-    const brandBtn = document.querySelector('.brand-btn');
-    if (!header) return;
-    
-    if (window.scrollY > 100) {
-      header.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
-      header.querySelectorAll('nav a, span.font-semibold').forEach(el => {
-        el.classList.remove('text-white', 'mix-blend-difference');
-        el.classList.add('text-slate-900');
-      });
-      if (brandBtn) brandBtn.classList.add('scrolled');
-    } else {
-      header.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
-      header.querySelectorAll('nav a, span.font-semibold').forEach(el => {
-        el.classList.add('text-white', 'mix-blend-difference');
-        el.classList.remove('text-slate-900');
-      });
-      if (brandBtn) brandBtn.classList.remove('scrolled');
-    }
-  });
 
   // --- 8. Footer Year ---
   const currentYearEl = document.getElementById('currentYear');

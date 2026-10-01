@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script>/* Phase 10 page-transition cover: applied before first paint when a menu navigation is in flight */
+  try {
+    if (sessionStorage.getItem('bic.menuNav') === '1') {
+      document.documentElement.className += ' bic-is-transitioning';
+      setTimeout(function () {
+        document.documentElement.className = document.documentElement.className.replace(/\bbic-is-transitioning\b/g, '');
+      }, 4000);
+    }
+  } catch (e) { /* no-op */ }</script>
   <title>Explore Programs — Bodija International College</title>
   <meta name="description" content="Explore programs at Bodija International College — Science & Technology, Arts & Humanities, Business & Economics." />
 
@@ -13,21 +22,30 @@
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/footer.css">
   <link rel="stylesheet" href="/assets/css/programs.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
 </head>
 <body>
 
-  <!-- ====================================================
-       SITE NAVIGATION
-       ==================================================== -->
-  <nav class="site-nav" id="siteNav" aria-label="Site navigation">
-    <!-- BIC hamburger — preserving id="hamburger" for existing JS -->
-    <span id="hamburger"
-          role="button"
-          tabindex="0"
-          aria-controls="mobileMenu"
-          aria-expanded="false"
-          aria-label="Open navigation menu">BIC</span>
-  </nav>
+<!-- ── BIC Unified Nav ── -->
+<header class="bic-nav" data-nav-theme="paper" data-nav-active="/programs.html"
+        data-nav-cta-label="Home" data-nav-cta-href="/index.html">
+  <div class="bic-nav__inner">
+    <a class="bic-nav__brand" href="/index.html" aria-label="Bodija International College — home">
+      <span class="bic-nav__crest"><img src="/assets/img/logo.png" alt="" loading="lazy"></span>
+      <span class="bic-nav__wordmark">
+        <strong>Bodija Int&rsquo;l College</strong>
+        <small>Our Programs</small>
+      </span>
+    </a>
+    <nav class="bic-nav__links" aria-label="Section"></nav>
+    <div class="bic-nav__actions">
+      <a class="bic-nav__cta" href="/index.html">Home <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <button class="bic-nav__toggle" type="button" aria-controls="bic-menu" aria-expanded="false" aria-label="Open menu">
+        <span class="bic-nav__lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
 
   <!-- ====================================================
        MOBILE MENU
@@ -532,7 +550,7 @@
        ==================================================== -->
   
 
-  <div data-bic-menu="lux"></div>
+  <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/layout.js"></script>
   <script src="/assets/js/programs.js" defer></script>
 </body>
