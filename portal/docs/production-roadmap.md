@@ -146,3 +146,8 @@ one rather than the ones a reviewer finds in the code.
 | C7 | README/roadmap/runbook quoted stale test counts and backup behaviour that did not exist | Corrected throughout |
 
 Suites after phase 7: API **229/229** · web smoke **56/56**.
+
+Suites after phase 9 (2026-10-03, the corrections pass): API **300/300** · web smoke **108/108**
+through the public origin. That pass closed the report-card/receipt printing gap, the one-pupil-at-a-time
+gradebook, the newsletter that could be collected but not sent, and the read-only family side of
+messaging (migrations `0020`, `0021`).

@@ -174,3 +174,32 @@ Status key: **Accepted** = agreed, build it · **Proposed** = awaiting sign-off 
 5. **Invited students always land with a `students` row** (grade from invite or accept body, auto `STU-####` admission if absent) — an account without a roster record can never be fee- or grade-visible.
 
 **Consequences.** Go-live for a school = runbook (`docs/pilot-runbook.md`), not a data-migration project. Cost: any later SIS must treat the portal as upstream or a reconciliation step is required — flagged in the reconciliation report, which is the pilot's acceptance gate.
+
+---
+
+## Update — 2026-10-03 · families may reply, and open a thread
+
+The Phase-1 decision above kept parents read-only in messaging, and the note predicted exactly how
+it would be reversed: "enabling parent replies later is a policy flip, zero migrations".
+It was reversed on 2026-10-03 because the school's own teachers were asking parents questions
+("can you confirm Sola's pickup?") in a channel the parent could not answer.
+
+What actually landed:
+
+- **`0020_messaging_family_reply.sql`** — `msgs_ins` now admits the thread's author *or* a
+  verified guardian of the thread's pupil; the guardian must be active, `can_view` and verified
+  (the same condition the SELECT policy already used, so "can read" and "can answer" are the same
+  set). New capability `messaging:reply`, granted to `teacher` and `parent`.
+- **`0021_messaging_family_can_open.sql`** — a guardian may open a thread, but only with a teacher
+  who teaches that pupil. The row is stamped with the *teacher* as author, which is what keeps
+  visibility unchanged: it lands in that one teacher's inbox and is not broadcast to the staffroom.
+- **Unchanged on purpose:** threads remain invisible to pupils (staff↔family channel), closing a
+  thread is still the teaching side's move, and the blanket `parent_read_only` guard still blocks
+  every other mutating endpoint — this one route opts in via `@ParentWrite()`, as do fee payment
+  and confirming one's own guardian link.
+
+The counter-arguments were weighed and rejected: a recipient-picker privacy leak does not arise
+because the teacher list is computed from `section_staff` ∖ revoked roles and returns names only;
+a parent-initiated thread cannot bypass section scope because `assertTeaches` is checked under a
+service actor; and the audit trail records `thread.opened_by_family` / `message.posted_by_family`
+distinctly from staff actions.

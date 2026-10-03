@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
+import BulkEntry from "./bulk-entry";
 
 interface RosterRow { studentUserId: string; admissionNo: string; displayName: string }
 interface GradeRow {
@@ -88,8 +89,23 @@ export default function Gradebook({ sectionId, roster, grades, exams }: {
       {err && <div className="alert err" role="alert">{err}</div>}
       {info && <div className="alert ok" role="status">{info}</div>}
 
-      <form className="card" onSubmit={addGrade}>
-        <h2 style={{ marginTop: 0 }}>Record a grade</h2>
+      {/* The class-sized job first: this is what marking actually looks like. */}
+      <BulkEntry sectionId={sectionId} roster={roster} grades={grades} exams={exams}
+        onSaved={(msg) => { setInfo(msg); setErr(""); }} />
+
+      <div className="row" style={{ marginTop: 16 }}>
+        <button className="btn ghost" onClick={release} disabled={busy}>
+          Release all to students &amp; parents
+        </button>
+        {unreleased > 0 && <span className="muted">{unreleased} mark(s) not yet released.</span>}
+      </div>
+
+      <form className="card" onSubmit={addGrade} style={{ marginTop: 16 }}>
+        <h2 style={{ marginTop: 0 }}>Record one mark</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          For a single pupil, or to attach a longer comment to one mark. A whole class goes
+          through the table above.
+        </p>
         <div className="grid cols2">
           <div>
             <label htmlFor="student">Student</label>
@@ -132,10 +148,8 @@ export default function Gradebook({ sectionId, roster, grades, exams }: {
         <label htmlFor="feedback">Feedback (optional)</label>
         <input id="feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} maxLength={2000} />
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn" disabled={busy || !studentId}>Save grade</button>
-          <button type="button" className="btn ghost" onClick={release} disabled={busy}>Release all to students &amp; parents</button>
+          <button className="btn" disabled={busy || !studentId}>Save mark</button>
         </div>
-        {unreleased > 0 && <div className="muted" style={{ marginTop: 8 }}>{unreleased} grade(s) not yet released.</div>}
       </form>
 
       <form className="card" onSubmit={scheduleExam}>

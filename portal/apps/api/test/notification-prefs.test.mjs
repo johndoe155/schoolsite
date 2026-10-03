@@ -31,7 +31,7 @@ const { withActor, SERVICE } = require("../dist/db/actor.js");
 const { issueEnrollToken } = require("../dist/auth/enroll-token.js");
 const { enqueue, enqueueAbsence } = require("../dist/notify/notify.service.js");
 const {
-  OPTIONAL_KINDS, unsubscribeToken, verifyUnsubscribeToken, wantsKind, isOptional,
+  OPTIONAL_KINDS, unsubscribeToken, verifyUnsubscribeToken, wantsKind, isOptional, kindsForRole,
 } = require("../dist/notify/preferences.js");
 const { renderEmail } = require("../dist/notify/templates/index.js");
 const { users, notifications, guardians } = require("../dist/db/schema.js");
@@ -125,12 +125,25 @@ test("the advertised URL is no longer a 404", async () => {
   // has to exist and has to be the preferences page.
   const res = await request(server).get("/api/v1/account/notifications").set(auth("parent"));
   assert.equal(res.status, 200, JSON.stringify(res.body));
-  assert.equal(res.body.data.length, OPTIONAL_KINDS.length);
+  /* A parent is shown the family categories only — not "replies from
+     families", which is mail only a member of staff can receive. The total
+     count is still asserted so a category cannot silently vanish from both
+     audiences. */
+  assert.equal(res.body.data.length, kindsForRole("parent").length);
+  assert.equal(kindsForRole("parent").length + kindsForRole("teacher").length,
+    OPTIONAL_KINDS.length, "every category belongs to exactly one audience");
   for (const p of res.body.data) {
     assert.equal(p.enabled, true, "absent preference means subscribed");
     assert.ok(p.label && p.detail.length > 10, `${p.kind} explains itself in plain words`);
   }
   assert.match(res.body.note, /always sent/i);
+
+  // The staff side of the same endpoint: family categories are not offered.
+  const staff = await request(server).get("/api/v1/account/notifications").set(auth("admin"));
+  assert.equal(staff.status, 200, JSON.stringify(staff.body));
+  assert.deepEqual(staff.body.data.map((p) => p.kind), kindsForRole("school_admin"));
+  assert.ok(!staff.body.data.some((p) => p.detail.includes("your child")),
+    "a member of staff is not offered alerts about a child they do not have");
 });
 
 /* ── the preference actually changes behaviour ───────────────────────────── */

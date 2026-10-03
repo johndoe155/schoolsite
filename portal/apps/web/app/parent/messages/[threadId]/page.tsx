@@ -15,7 +15,7 @@ export default async function ParentThread({ params }: { params: Promise<{ threa
   return (
     <Shell session={session}>
       <Link href="/parent/messages" className="muted">← Messages</Link>
-      <ThreadView thread={detail.thread} messages={detail.messages} canReply={false} meId={session.userId} />
+      <ThreadView thread={detail.thread} messages={detail.messages} canReply meId={session.userId} />
     </Shell>
   );
 }

@@ -135,6 +135,21 @@ export const ThreadCreateBody = z.object({
 });
 export type ThreadCreateBody = z.infer<typeof ThreadCreateBody>;
 
+/**
+ * A guardian opening a thread with a teacher of their child (0021).
+ *
+ * The teacher is chosen, not inferred: the family decides who they need to
+ * reach, and the API refuses anyone who does not teach that pupil. The first
+ * message travels with the thread so a parent cannot open an empty one.
+ */
+export const FamilyThreadCreateBody = z.object({
+  child_user_id: z.string().uuid(),
+  teacher_user_id: z.string().uuid(),
+  subject: z.string().min(1).max(200),
+  body_text: z.string().min(1).max(4000),
+});
+export type FamilyThreadCreateBody = z.infer<typeof FamilyThreadCreateBody>;
+
 export const MessageBody = z.object({
   /* A message may be a file with a short covering note, so text is optional
      when an attachment is present — "see attached" is a sentence, not a body. */

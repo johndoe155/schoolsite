@@ -15,7 +15,7 @@ export default async function TeacherThread({ params }: { params: Promise<{ thre
   return (
     <Shell session={session}>
       <Link href="/teacher/messages" className="muted">← Messages</Link>
-      <ThreadView thread={detail.thread} messages={detail.messages} canReply meId={session.userId} />
+      <ThreadView thread={detail.thread} messages={detail.messages} canReply canClose meId={session.userId} />
     </Shell>
   );
 }

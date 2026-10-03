@@ -30,7 +30,7 @@ export default async function TermsOfService() {
       <p>You agree not to: (a) access data belonging to other users without authorisation; (b) upload malicious code; (c) attempt to bypass security controls; (d) use the Service for unlawful purposes; (e) impersonate another person.</p>
 
       <h2>4. Parent/Guardian Access</h2>
-      <p>Parent accounts are read-only by design. Parents may view their linked children&apos;s academic records, messages, fees, exams, and transport. Parents may initiate fee payments for their linked children. Parents may not modify academic records, send messages on behalf of teachers, or access other families&apos; data.</p>
+      <p>Parent accounts may view their linked children&apos;s academic records, messages, fees, exams, and transport. Parents may initiate fee payments for their linked children, confirm their own guardian link, manage their own email preferences, and reply in message threads about their children. Everything else is read-only: parents may not modify academic records, open or close staff threads, or access other families&apos; data.</p>
 
       <h2>5. Fees and Payments</h2>
       <p>Fee amounts are set by the school. Payments are processed by Paystack (a third-party payment processor). The portal does not store card details. Refund policies are determined by the school.</p>

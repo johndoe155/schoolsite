@@ -84,8 +84,31 @@ ok("section link found", !!sectionId, String(teacherHome.body).slice(0,200));
 const date = new Date().toISOString().slice(0,10);
 const attPage = await call(jt, `/teacher/attendance/${sectionId}?date=${date}`, {});
 ok("attendance register renders roster", attPage.status === 200 && String(attPage.body).includes("Sola Student"), `status ${attPage.status}`);
+const rosterForGradebook = await call(jt, `/api/v1/sections/${sectionId}/roster`, {});
 const gbPage = await call(jt, `/teacher/gradebook/${sectionId}`, {});
-ok("gradebook renders", gbPage.status === 200 && String(gbPage.body).includes("Record a grade"));
+ok("gradebook renders the class-sized entry grid",
+  gbPage.status === 200 && String(gbPage.body).includes("Enter marks for the class")
+    && String(gbPage.body).includes("Record one mark"), `status ${gbPage.status}`);
+
+/* Saving a class set is now one request. The endpoint always accepted a batch;
+   this asserts the path the grid uses actually works end to end, because that
+   is the whole point of the change (a per-pupil loop would still pass a page
+   render check). */
+const bulkLabel = `Smoke Classwork ${Date.now()}`;
+const bulkItems = rosterForGradebook.body.data.slice(0, 2).map((r, i) => ({
+  student_user_id: r.studentUserId, source_type: "custom", label: bulkLabel,
+  points: String(60 + i), max_points: "100",
+}));
+const bulkSave = await call(jt, `/api/v1/sections/${sectionId}/grades/bulk`, {
+  method: "POST", headers: { "idempotency-key": crypto.randomUUID() },
+  body: JSON.stringify({ items: bulkItems }),
+});
+ok("a whole column of marks saves in one request",
+  bulkSave.status === 201 && bulkSave.body.written === bulkItems.length,
+  JSON.stringify(bulkSave.body).slice(0, 140));
+const gbAfter = await call(jt, `/teacher/gradebook/${sectionId}`, {});
+ok("the saved set is listed on the gradebook",
+  gbAfter.status === 200 && String(gbAfter.body).includes(bulkLabel), `status ${gbAfter.status}`);
 
 // 6. mutating call through BFF needs x-csrf + idempotency key: save attendance
 const roster = await call(jt, `/api/v1/sections/${sectionId}/roster`, {});
@@ -144,11 +167,43 @@ ok("message posted via BFF", postMsg.status === 201 && postMsg.body.senderName =
 const threadPage = await call(jt, `/teacher/messages/${thread.body.id}`, {});
 ok("teacher thread view renders", threadPage.status === 200 && String(threadPage.body).includes("Smoke thread"), `status ${threadPage.status}`);
 
-// parent sees the thread read-only
+// parent reads the thread and answers in it (0020)
 const pmsgPage = await call(jp, "/parent/messages", {});
 ok("parent messages inbox shows thread", pmsgPage.status === 200 && String(pmsgPage.body).includes("Smoke thread"), `status ${pmsgPage.status}`);
 const pthreadPage = await call(jp, `/parent/messages/${thread.body.id}`, {});
-ok("parent thread read-only banner", pthreadPage.status === 200 && String(pthreadPage.body).includes("Read-only view") && String(pthreadPage.body).includes("Hello from smoke"), `status ${pthreadPage.status}`);
+ok("parent thread view shows the message thread",
+  pthreadPage.status === 200 && String(pthreadPage.body).includes("Hello from smoke")
+    && !String(pthreadPage.body).includes("Read-only view"),
+  `status ${pthreadPage.status}`);
+const pReply = await call(jp, `/api/v1/threads/${thread.body.id}/messages`, {
+  method: "POST", body: JSON.stringify({ body_text: "Thanks, noted from smoke." }),
+});
+ok("a guardian can reply in a thread about their child",
+  pReply.status === 201 && pReply.body.senderName === "Paula Parent",
+  JSON.stringify(pReply.body).slice(0, 140));
+const pReplies = await call(jp, `/parent/messages/${thread.body.id}`, {});
+ok("the guardian's own reply is in the thread",
+  pReplies.status === 200 && String(pReplies.body).includes("noted from smoke"),
+  `status ${pReplies.status}`);
+
+// …and can open one, with a teacher of their child (0021)
+const childTeachers = await call(jp, `/api/v1/family/children/${threadStudent}/teachers`, {});
+ok("a guardian is offered the teachers who teach their child",
+  childTeachers.status === 200 && childTeachers.body.data.length >= 1
+    && !!childTeachers.body.data[0].name, JSON.stringify(childTeachers.body).slice(0, 160));
+const familyThread = await call(jp, "/api/v1/threads/family", {
+  method: "POST",
+  body: JSON.stringify({
+    child_user_id: threadStudent, teacher_user_id: childTeachers.body.data[0].id,
+    subject: "Smoke parent thread", body_text: "Please may we talk about pick-up.",
+  }),
+});
+ok("a guardian can open a thread with their child's teacher",
+  familyThread.status === 201 && !!familyThread.body.id, JSON.stringify(familyThread.body).slice(0, 140));
+const familyThreadView = await call(jp, `/parent/messages/${familyThread.body.id}`, {});
+ok("the opened thread is readable by the guardian",
+  familyThreadView.status === 200 && String(familyThreadView.body).includes("pick-up"),
+  `status ${familyThreadView.status}`);
 
 // parent notification inbox (message_received)
 const pInbox = await call(jp, "/api/v1/notifications", {});
@@ -243,6 +298,11 @@ const prefsGet = await call(jp, "/api/v1/account/notifications", {});
 // `length === 4` failed for the right reason (the API had one more category)
 // while telling you nothing about which one was missing.
 const PREF_KINDS = ["absence_recorded", "grade_released", "message_received", "assignment_posted", "daily_digest"];
+/* "Replies from families" is staff-only mail: it must not be offered to a
+   guardian, and it must be offered to a teacher. */
+ok("preferences are filtered to what this role can actually receive",
+  !prefsGet.body.data?.some((p) => p.kind === "family_message"),
+  JSON.stringify(prefsGet.body.data?.map((p) => p.kind)));
 ok("preferences list every opt-outable category",
   prefsGet.status === 200
     && PREF_KINDS.every((k) => prefsGet.body.data?.some((p) => p.kind === k))
@@ -435,6 +495,58 @@ ok("offline register page is served and precached by the worker",
   `status ${offReg.status}`);
 const icon192 = await call(jar(), "/icon-192.png", {});
 ok("PWA icons are served", icon192.status === 200, `status ${icon192.status}`);
+
+/* ── printable documents (report cards, receipts) ──────────────────────────
+   The portal had no printable output: a report card was text on a screen and a
+   payment was a row in a table. These routes are what a parent prints or saves
+   as a PDF, so assert they render the document — and that the wrong person
+   cannot get one. */
+const rcAnon = await call(jar(), `/print/report-card/${threadStudent}`, {});
+ok("a report card is not printable without signing in",
+  rcAnon.status === 307 && String(rcAnon.location ?? "").includes("/login"),
+  `${rcAnon.status} ${rcAnon.location}`);
+
+// generate snapshots so there is something to print
+const terms = await call(ja, "/api/v1/terms", {});
+const TERM_FOR_CARDS = terms.body.data?.[0]?.id;
+const gen = await call(ja, "/api/v1/report-cards/generate", {
+  method: "POST", body: JSON.stringify({ term_id: TERM_FOR_CARDS }),
+});
+ok("report cards generate", gen.status === 201, JSON.stringify(gen.body).slice(0, 120));
+
+const rcParent = await call(jp, `/print/report-card/${threadStudent}`, {});
+ok("a guardian can print their child's report card",
+  rcParent.status === 200 && String(rcParent.body).includes("Report card")
+    && String(rcParent.body).includes("Sola Student")
+    && String(rcParent.body).includes("Admission no."),
+  `status ${rcParent.status}`);
+const rcStudent = await call(js, `/print/report-card/${threadStudent}`, {});
+ok("a pupil can print their own report card",
+  rcStudent.status === 200 && String(rcStudent.body).includes("Report card"),
+  `status ${rcStudent.status}`);
+const rcPrintCss = String(rcParent.body).includes("sheet__signatures");
+ok("the printed card carries the school's document furniture (signature lines)", rcPrintCss);
+
+const feesParent = await call(jp, `/print/fees/${threadStudent}`, {});
+ok("a guardian can print receipts and a statement",
+  feesParent.status === 200 && String(feesParent.body).includes("Receipt")
+    && String(feesParent.body).includes("Outstanding")
+    && String(feesParent.body).includes("Paid in full"),
+  `status ${feesParent.status}`);
+const feesStudent = await call(js, `/print/fees/${threadStudent}`, {});
+ok("a pupil can print their own statement",
+  feesStudent.status === 200 && String(feesStudent.body).toLowerCase().includes("statement"),
+  `status ${feesStudent.status}`);
+// A pupil may not print a statement for somebody else (the endpoint is self-scoped).
+const other = await call(js, "/print/fees/00000000-0000-0000-0000-000000000001", {});
+ok("a pupil cannot print another pupil's statement", other.status === 404, `status ${other.status}`);
+
+// The sheet must carry the print stylesheet that hides the app's chrome.
+const cssHref = String(rcParent.body).match(/href="([^"]+\.css)"/)?.[1];
+const printCss = cssHref ? await call(jar(), cssHref.replace(BASE, ""), {}) : null;
+ok("the print stylesheet is served with the page",
+  !!printCss && printCss.status === 200 && String(printCss.body).includes("@media print"),
+  cssHref ?? "no stylesheet link found");
 
 // security headers from helmet
 const hdr = await call(jar(), "/api/v1/health", {});

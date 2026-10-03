@@ -25,31 +25,60 @@ export const OPTIONAL_KINDS = [
   "message_received",
   "assignment_posted",
   "daily_digest",
+  "family_message",
 ] as const;
 export type OptionalKind = (typeof OPTIONAL_KINDS)[number];
 
-export const KIND_LABELS: Record<OptionalKind, { label: string; detail: string }> = {
+/**
+ * Who each category is actually sent to: the family (parents and pupils) or
+ * the staff. Without this the preference screen showed every category to
+ * everyone — a teacher was offered "Absence alerts: sent the moment a teacher
+ * marks your child absent", which describes a mail they will never receive and
+ * cannot act on. The screen now lists only the categories that can reach the
+ * person reading it.
+ */
+export type KindAudience = "family" | "staff";
+
+export const KIND_LABELS: Record<OptionalKind, { label: string; detail: string; audience: KindAudience }> = {
   absence_recorded: {
     label: "Absence alerts",
     detail: "Sent the moment a teacher marks your child absent from a lesson.",
+    audience: "family",
   },
   grade_released: {
     label: "New marks",
     detail: "Sent when a teacher publishes marks for a class.",
+    audience: "family",
   },
   message_received: {
     label: "Messages from staff",
     detail: "Sent when a teacher or the office starts or replies to a thread about your child.",
+    audience: "family",
   },
   assignment_posted: {
     label: "Homework and class materials",
     detail: "Sent when a teacher sets homework or posts a resource for one of your classes.",
+    audience: "family",
   },
   daily_digest: {
     label: "Daily summary",
     detail: "One email at the end of a day on which something happened, instead of several.",
+    audience: "family",
+  },
+  family_message: {
+    label: "Replies from families",
+    detail: "Sent when a parent or guardian answers a message thread you opened.",
+    audience: "staff",
   },
 };
+
+const FAMILY_ROLES = new Set(["parent", "student"]);
+
+/** The categories a person in this role can actually receive. */
+export function kindsForRole(activeRole: string | undefined): OptionalKind[] {
+  const audience: KindAudience = FAMILY_ROLES.has(activeRole ?? "") ? "family" : "staff";
+  return OPTIONAL_KINDS.filter((k) => KIND_LABELS[k].audience === audience);
+}
 
 /**
  * Security and account mail is never opt-outable. Being told your password

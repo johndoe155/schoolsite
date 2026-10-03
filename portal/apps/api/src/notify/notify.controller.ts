@@ -11,7 +11,7 @@ import { insertAudit } from "../common/audit";
 import { ParentWrite, Perm } from "../common/guards";
 import { outboxStats, requeueNotification } from "./notify.service";
 import {
-  KIND_LABELS, OPTIONAL_KINDS, getPrefs, normalisePrefs, verifyUnsubscribeToken, wantsKind,
+  KIND_LABELS, kindsForRole, getPrefs, normalisePrefs, verifyUnsubscribeToken, wantsKind,
 } from "./preferences";
 import { NotificationPrefsBody } from "@portal/contracts";
 import type { Request } from "express";
@@ -152,7 +152,10 @@ export class NotifyController {
     const p = req.principal!;
     const prefs = await withActor(this.db, SERVICE, (tx) => getPrefs(tx, p.userId));
     return {
-      data: OPTIONAL_KINDS.map((kind) => ({
+      /* Only the categories that can reach this role: a teacher is not
+         offered absence alerts about a child, and a parent is not offered
+         notifications about their own replies. */
+      data: kindsForRole(p.activeRole).map((kind) => ({
         kind,
         label: KIND_LABELS[kind].label,
         detail: KIND_LABELS[kind].detail,
@@ -186,7 +189,7 @@ export class NotifyController {
         entityType: "user", entityId: p.userId, before, after: next, ip: req.ip,
       });
       return {
-        data: OPTIONAL_KINDS.map((kind) => ({
+        data: kindsForRole(p.activeRole).map((kind) => ({
           kind, label: KIND_LABELS[kind].label, detail: KIND_LABELS[kind].detail,
           enabled: wantsKind(next, kind),
         })),

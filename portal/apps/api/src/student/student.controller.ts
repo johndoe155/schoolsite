@@ -13,6 +13,31 @@ import type { Request } from "express";
 export class StudentController {
   constructor(@Inject(DB_TOKEN) private db: Db) {}
 
+  /**
+   * The pupil's own record: name, admission number, year group.
+   *
+   * Students hold only self:read, and there was no endpoint they could reach
+   * for their own details — which is why the printable report card had no
+   * admission number to put on it. Scoped to the caller with no id parameter at
+   * all, so there is nothing to tamper with.
+   */
+  @Get("student/profile")
+  @Perm("self:read")
+  async myProfile(@Req() req: Request) {
+    const p = req.principal!;
+    return withActor(this.db, { userId: p.userId, role: p.activeRole }, async (tx) => {
+      const [row] = await tx.select({
+        userId: students.userId, admissionNo: students.admissionNo,
+        gradeLevel: students.gradeLevel, displayName: users.displayName,
+      }).from(students).innerJoin(users, eq(users.id, students.userId))
+        .where(eq(students.userId, p.userId)).limit(1);
+      /* A parent or a staff account calling this has no students row; that is
+         not an error worth a 500 — it is simply "no profile of your own". */
+      if (!row) return { userId: p.userId, displayName: p.displayName, admissionNo: null, gradeLevel: null };
+      return row;
+    });
+  }
+
   @Get("student/grades")
   @Perm("self:read")
   async myGrades(@Req() req: Request) {

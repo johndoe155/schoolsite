@@ -253,6 +253,36 @@ export function renderEmail(kind: string, payload: Record<string, unknown>, ctx:
       };
     }
 
+    /**
+     * Staff side of a family reply (migration 0020).
+     *
+     * Distinct from message_received, which greets a guardian and links into
+     * /parent/messages. A teacher who received that one would be sent to a
+     * page they cannot open, in language addressed to somebody else.
+     */
+    case "family_message": {
+      const threadSubject = r.threadSubject ?? String(payload.subject ?? "");
+      const threadId = String(payload.thread_id ?? "");
+      const sender = String(payload.sender_name ?? "A parent or guardian");
+      const url = threadId ? `${brand.webOrigin}/teacher/messages/${encodeURIComponent(threadId)}` : `${brand.webOrigin}/teacher/messages`;
+      return {
+        subject: threadSubject ? `${sender} replied: ${threadSubject}` : `${sender} replied`,
+        ...renderLayout({
+          brand, heading: "A family has replied", greeting: recipientName,
+          reason: `You received this because you opened this message thread at ${school}.`,
+          manageUrl: unsub?.managePrefsUrl,
+          blocks: [
+            { p: threadSubject
+              ? `${sender} has replied in "${threadSubject}".`
+              : `${sender} has replied in a message thread you opened.` },
+            { p: "For privacy, the reply itself is only readable in the portal." },
+            { button: { label: "Read and answer", url } },
+          ],
+        }),
+        headers: baseHeaders(brand, true, unsub),
+      };
+    }
+
     case "assignment_posted": {
       // Homework is set for a CLASS. The useful facts for a pupil or a parent
       // are: what, which subject, and by when — and the link has to land on a

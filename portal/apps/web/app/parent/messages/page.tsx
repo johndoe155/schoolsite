@@ -1,16 +1,24 @@
 import Link from "next/link";
 import { requireRole, apiGet } from "@/lib/session";
 import Shell from "@/components/shell";
+import NewFamilyThread from "./new-family-thread";
 
 interface Thread { id: string; subject: string; status: string; createdAt: string; studentName: string }
+interface Child { studentUserId: string; displayName: string | null; verified: string | null }
 
 export default async function ParentMessages() {
   const session = await requireRole("parent");
-  const threads = await apiGet<{ data: Thread[] }>("/threads");
+  const [threads, kids] = await Promise.all([
+    apiGet<{ data: Thread[] }>("/threads"),
+    apiGet<{ data: Child[] }>("/parent/children"),
+  ]);
   return (
     <Shell session={session}>
       <h1>Messages</h1>
-      <p className="muted">Threads from your children’s teachers. Parent accounts are read-only by design.</p>
+      <p className="muted">
+        Threads about your children. Open one to read it and reply — your child’s teacher is
+        notified when you answer.
+      </p>
       <div className="card">
         {(threads?.data ?? []).length === 0 ? <div className="muted">No messages yet.</div> : (
           <table>
@@ -27,6 +35,7 @@ export default async function ParentMessages() {
           </table>
         )}
       </div>
+      <NewFamilyThread children={kids?.data ?? []} />
     </Shell>
   );
 }

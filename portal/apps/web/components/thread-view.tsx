@@ -10,8 +10,8 @@ interface Message {
 }
 interface Thread { id: string; subject: string; status: string; studentName: string | null }
 
-export default function ThreadView({ thread, messages, canReply, meId }: {
-  thread: Thread; messages: Message[]; canReply: boolean; meId: string;
+export default function ThreadView({ thread, messages, canReply, canClose, meId }: {
+  thread: Thread; messages: Message[]; canReply: boolean; canClose?: boolean; meId: string;
 }) {
   const [text, setText] = useState("");
   const [err, setErr] = useState("");
@@ -34,9 +34,11 @@ export default function ThreadView({ thread, messages, canReply, meId }: {
       setText(""); setAttachment(null);
       router.refresh();
     } catch (e: any) {
-      setErr(e?.code === "parent_read_only"
-        ? "Parent accounts are read-only — your teacher will follow up here."
-        : e?.message ?? "Could not send");
+      setErr(e?.code === "thread_closed"
+        ? "This thread has been closed. Ask the school office to reopen it."
+        : e?.code === "parent_read_only"
+          ? "Your account cannot post here — please contact the school office."
+          : e?.message ?? "Could not send");
     }
     setBusy(false);
   }
@@ -108,7 +110,9 @@ export default function ThreadView({ thread, messages, canReply, meId }: {
             <button className="btn" disabled={busy || pct !== null || (!text.trim() && !attachment)}>
               {attachment ? "Send with attachment" : "Send"}
             </button>
-            <button type="button" className="btn ghost" onClick={close} disabled={busy}>Close thread</button>
+            {canClose && (
+              <button type="button" className="btn ghost" onClick={close} disabled={busy}>Close thread</button>
+            )}
           </div>
         </form>
       )}

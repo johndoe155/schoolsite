@@ -273,3 +273,113 @@ body.portal-root :focus-visible {
 @media (prefers-reduced-motion: reduce) {
   body.portal-root * { transition-duration: 0.01ms !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Printable documents — report cards, fee receipts and statements
+   (/print/... routes)
+
+   The portal had no printable output at all: a report card was text on a
+   screen, a payment was a row in a table, and a parent who wanted a record had
+   to ask the office to write one. These routes render a single sheet, and this
+   block is what turns that sheet into a document — on screen it is paper-like;
+   on paper (or "Save as PDF") the chrome, buttons and background colours go
+   away and only the school's own information is left.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+body.portal-root .sheet-actions {
+  max-width: 820px; margin: 0 auto var(--space-3);
+  display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap;
+  padding: var(--space-3) var(--space-3) 0;
+}
+body.portal-root .sheet-actions__hint { margin-left: auto; }
+
+body.portal-root .sheet {
+  max-width: 820px;
+  margin: 0 auto var(--space-5);
+  padding: 32px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--e2);
+  font-size: var(--fs-small);
+}
+body.portal-root .sheet__head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+  border-bottom: 2px solid var(--brand);
+}
+body.portal-root .sheet__school { font-family: var(--font-display); font-size: var(--fs-h3); line-height: 1.1; }
+body.portal-root .sheet__address { color: var(--muted); font-size: var(--fs-micro); margin-top: 4px; }
+body.portal-root .sheet__doc { text-align: right; }
+body.portal-root .sheet__doc-title {
+  font-family: var(--font-ui); font-weight: var(--weight-bold);
+  text-transform: uppercase; letter-spacing: var(--tracking-caps);
+  font-size: var(--fs-micro);
+}
+body.portal-root .sheet__doc-meta { color: var(--muted); font-size: var(--fs-micro); }
+body.portal-root .sheet__facts {
+  display: grid; gap: var(--space-2);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-bottom: var(--space-3);
+}
+body.portal-root .sheet__label {
+  display: block; font-family: var(--font-ui); font-size: var(--fs-micro);
+  text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--muted);
+}
+body.portal-root .sheet__block { margin-bottom: var(--space-4); break-inside: avoid; }
+body.portal-root .sheet__block-head {
+  display: flex; gap: var(--space-2); align-items: baseline; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-bottom: var(--space-2);
+}
+body.portal-root .sheet__grade { margin-left: auto; }
+body.portal-root .sheet__meta-row {
+  display: flex; gap: var(--space-4); flex-wrap: wrap;
+  color: var(--muted); font-size: var(--fs-micro); margin-top: 4px;
+}
+body.portal-root .sheet table th, body.portal-root .sheet table td { padding: 6px 8px; }
+body.portal-root .sheet__muted { color: var(--muted); }
+body.portal-root .sheet__note { color: var(--muted); font-size: var(--fs-micro); margin-top: var(--space-3); }
+body.portal-root .sheet__signatures {
+  display: flex; gap: var(--space-4); margin-top: 48px;
+  break-inside: avoid;
+}
+body.portal-root .sheet__signatures div {
+  flex: 1; border-top: 1px solid var(--ink); padding-top: 6px;
+  font-size: var(--fs-micro); color: var(--muted);
+}
+body.portal-root .receipt {
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: var(--space-3); margin-bottom: var(--space-3);
+  break-inside: avoid;
+}
+body.portal-root .receipt__head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+
+@media print {
+  /* Everything that is navigation or interaction disappears; what remains is
+     the document. Colours are forced to black on white so a card printed on
+     the office printer does not come out grey. */
+  body.portal-root { background: #fff; }
+  body.portal-root .sheet-actions,
+  body.portal-root .skip,
+  body.portal-root nav,
+  body.portal-root .pwa-prompt { display: none !important; }
+  body.portal-root .sheet {
+    max-width: none; margin: 0; padding: 0;
+    border: 0; border-radius: 0; box-shadow: none;
+    font-size: 11pt; color: #000;
+  }
+  body.portal-root .sheet__school { font-size: 18pt; }
+  body.portal-root .sheet table { font-size: 10pt; }
+  body.portal-root .sheet th, body.portal-root .sheet td { border-color: #999; }
+  body.portal-root .receipt, body.portal-root .sheet__block { break-inside: avoid; }
+  body.portal-root .sheet a { color: #000; text-decoration: none; }
+  /* A4 with the printer's own margin: nothing important sits in the unprintable
+     edge of the sheet. */
+  @page { size: A4; margin: 14mm; }
+}

@@ -21,7 +21,7 @@ export default async function TeacherMessages() {
   return (
     <Shell session={session}>
       <h1>Messages</h1>
-      <p className="muted">Threads you author about your students. Parents read them; replies stay read-only on their side.</p>
+      <p className="muted">Threads you opened about your students. Families can read them and reply; you will be emailed when they do.</p>
       <NewThread sections={sections?.data ?? []} rosters={rosters} />
       <div className="card">
         {(threads?.data ?? []).length === 0 ? <div className="muted">No threads yet.</div> : (

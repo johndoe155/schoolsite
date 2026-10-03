@@ -144,6 +144,22 @@ export async function enqueueMessagePosted(tx: Db, studentUserId: string, thread
   }
 }
 
+/**
+ * A parent or guardian replied in a thread → the teacher who opened it.
+ *
+ * Until migration 0020 there was nothing to notify anyone about: the family
+ * side could not post. The teacher is the only recipient — the other guardians
+ * already read the thread when they choose to, and mailing them their
+ * co-parent's reply would turn one message into a round of notification noise.
+ * The reply itself stays in the portal; the email only says it is there.
+ */
+export async function enqueueFamilyMessage(
+  tx: Db, teacherUserId: string, threadId: string, subject: string, senderName: string,
+) {
+  await enqueue(tx, { recipientUserId: teacherUserId, channel: "email", kind: "family_message",
+    payload: { thread_id: threadId, subject, sender_name: senderName } });
+}
+
 /* ── retry policy ─────────────────────────────────────────────────────────── */
 
 /**

@@ -92,7 +92,14 @@ export default async function ChildPage({ params }: { params: Promise<{ childId:
         )}
       </div>
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Report card</h2>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <h2 style={{ marginTop: 0, marginBottom: 0 }}>Report card</h2>
+          {card ? (
+            <Link className="btn ghost" href={`/print/report-card/${childId}`}>
+              Print / Save as PDF
+            </Link>
+          ) : null}
+        </div>
         {!card ? <div className="muted">No report-card snapshot has been generated yet.</div> : (
           <>
             <div className="muted">{card.snapshot.term} · generated {card.snapshot.generatedAt.slice(0, 10)}</div>
@@ -182,7 +189,14 @@ export default async function ChildPage({ params }: { params: Promise<{ childId:
       </div>
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Fees</h2>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <h2 style={{ marginTop: 0, marginBottom: 0 }}>Fees</h2>
+          {invoices.length > 0 ? (
+            <Link className="btn ghost" href={`/print/fees/${childId}`}>
+              Receipts &amp; statement
+            </Link>
+          ) : null}
+        </div>
         {invoices.length === 0 ? <div className="muted">No invoices.</div> : (
           <table>
             <thead><tr><th>Label</th><th>Amount</th><th>Status</th><th>Due</th><th></th></tr></thead>

@@ -102,7 +102,7 @@ test("teacher opens thread for own student; other teacher refused", async () => 
   assert.equal(denied.body.code, "outside_section_scope");
 });
 
-test("parent reads thread/messages; writes refused; student sees nothing", async () => {
+test("parent reads the thread and answers in it (0020)", async () => {
   const post = await request(server).post(`/api/v1/threads/${threadId}/messages`).set(auth("t1"))
     .send({ body_text: "Sola did great this week." });
   assert.equal(post.status, 201, JSON.stringify(post.body));
@@ -116,10 +116,19 @@ test("parent reads thread/messages; writes refused; student sees nothing", async
   assert.equal(detail.status, 200);
   assert.equal(detail.body.messages.length, 1);
 
-  const parentWrite = await request(server).post(`/api/v1/threads/${threadId}/messages`).set(auth("p1"))
-    .send({ body_text: "thanks!" });
-  assert.equal(parentWrite.status, 403);
-  assert.equal(parentWrite.body.code, "parent_read_only");
+  /* Phase 1 made this a 403 (parent_read_only). Migration 0020 replaced that
+     with a real reply, which is the whole point of the change — a guardian who
+     could read a question and not answer it had no way to use this page. */
+  const reply = await request(server).post(`/api/v1/threads/${threadId}/messages`).set(auth("p1"))
+    .send({ body_text: "Thank you — she has been practising at home." });
+  assert.equal(reply.status, 201, JSON.stringify(reply.body));
+  assert.equal(reply.body.senderUserId, ids.p1);
+
+  // …and the teacher sees it in the same thread.
+  const after = await request(server).get(`/api/v1/threads/${threadId}`).set(auth("t1"));
+  assert.equal(after.status, 200);
+  assert.equal(after.body.messages.length, 2);
+  assert.equal(after.body.messages.at(-1).bodyText, "Thank you — she has been practising at home.");
 
   const studentView = await request(server).get("/api/v1/threads").set(auth("s1"));
   assert.equal(studentView.status, 200);
@@ -127,6 +136,73 @@ test("parent reads thread/messages; writes refused; student sees nothing", async
 
   const outsider = await request(server).get(`/api/v1/threads/${threadId}`).set(auth("t2"));
   assert.equal(outsider.status, 404); // RLS-invisible ⇒ not found
+
+  /* The other teacher cannot post into a thread they are not part of, even
+     though they teach the same pupil: the reply exception is scoped to the
+     family of THAT thread, not to every member of staff. */
+  const otherTeacher = await request(server).post(`/api/v1/threads/${threadId}/messages`).set(auth("t2"))
+    .send({ body_text: "jumping in" });
+  assert.equal(otherTeacher.status, 404);
+
+  /* A parent of *nobody in this thread* gets nothing: a brand-new parent
+     account with no guardian link cannot even see that the thread exists. */
+  const outsiderEmail = `outsider.${Date.now()}@school.example`;
+  const made = await request(server).post("/api/v1/users").set(auth("admin"))
+    .send({ email: outsiderEmail, display_name: "Out Sider",
+      password: "Passw0rd!Policy1", roles: ["parent"] });
+  assert.equal(made.status, 201, JSON.stringify(made.body));
+  await loginAs("outsider", outsiderEmail, "Passw0rd!Policy1");
+  const strangerReply = await request(server).post(`/api/v1/threads/${threadId}/messages`)
+    .set(auth("outsider")).send({ body_text: "hello" });
+  assert.equal(strangerReply.status, 404); // RLS hides the thread entirely
+});
+
+test("a guardian can open a thread with a teacher who teaches their child (0021)", async () => {
+  const teachers = await request(server).get(`/api/v1/family/children/${ids.s1}/teachers`).set(auth("p1"));
+  assert.equal(teachers.status, 200, JSON.stringify(teachers.body));
+  assert.deepEqual(teachers.body.data.map((t) => t.id), [ids.t1],
+    "only the teacher who actually teaches the child is offered");
+  assert.ok(teachers.body.data[0].name, "the name is included, nothing else");
+
+  const opened = await request(server).post("/api/v1/threads/family").set(auth("p1"))
+    .send({ child_user_id: ids.s1, teacher_user_id: ids.t1,
+      subject: "Pick-up on Friday", body_text: "Her aunt will collect her at 12:30." });
+  assert.equal(opened.status, 201, JSON.stringify(opened.body));
+
+  // The chosen teacher sees it in their own list and can answer.
+  const teacherList = await request(server).get("/api/v1/threads").set(auth("t1"));
+  assert.ok(teacherList.body.data.some((t) => t.id === opened.body.id));
+
+  const detail = await request(server).get(`/api/v1/threads/${opened.body.id}`).set(auth("t1"));
+  assert.equal(detail.status, 200);
+  assert.equal(detail.body.messages.length, 1);
+  assert.equal(detail.body.messages[0].senderUserId, ids.p1, "the parent is the sender");
+
+  // The other teacher still cannot see it — a family-started thread is not
+  // broadcast to the whole staffroom.
+  const other = await request(server).get(`/api/v1/threads/${opened.body.id}`).set(auth("t2"));
+  assert.equal(other.status, 404);
+
+  // A teacher of nobody gets an empty list, not somebody else's roster.
+  const strangers = await request(server).get(`/api/v1/family/children/${ids.s1}/teachers`).set(auth("outsider"));
+  assert.equal(strangers.status, 404);
+
+  // Writing about a child who is not yours, or to a teacher who does not teach
+  // them, is refused.
+  const notMine = await request(server).post("/api/v1/threads/family").set(auth("outsider"))
+    .send({ child_user_id: ids.s1, teacher_user_id: ids.t1, subject: "x", body_text: "y" });
+  assert.equal(notMine.status, 404);
+  const wrongTeacher = await request(server).post("/api/v1/threads/family").set(auth("p1"))
+    .send({ child_user_id: ids.s1, teacher_user_id: ids.t2, subject: "x", body_text: "y" });
+  assert.equal(wrongTeacher.status, 403);
+});
+
+test("a guardian's reply notifies the teacher who opened the thread", async () => {
+  const pending = await withActor(db, SERVICE, (tx) =>
+    tx.select({ kind: notifications.kind, recipientUserId: notifications.recipientUserId })
+      .from(notifications).where(eq(notifications.kind, "family_message")));
+  assert.ok(pending.length >= 1, "expected a family_message row in the outbox");
+  assert.equal(pending.at(-1).recipientUserId, ids.t1);
 });
 
 test("teacher message enqueues guardian notification", async () => {

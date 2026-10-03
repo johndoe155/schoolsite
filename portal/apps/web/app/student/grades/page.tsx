@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireRole, apiGet } from "@/lib/session";
 import Shell from "@/components/shell";
 
@@ -44,7 +45,14 @@ export default async function StudentGrades() {
         )}
       </div>
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Report card</h2>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <h2 style={{ marginTop: 0, marginBottom: 0 }}>Report card</h2>
+          {card ? (
+            <Link className="btn ghost" href={`/print/report-card/${session.userId}`}>
+              Print / Save as PDF
+            </Link>
+          ) : null}
+        </div>
         {!card ? <div className="muted">No report-card snapshot has been generated yet.</div> : (
           <>
             <div className="muted">{card.snapshot.term} · generated {card.snapshot.generatedAt.slice(0, 10)}</div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireRole, apiGet } from "@/lib/session";
 import Shell from "@/components/shell";
 
@@ -80,7 +81,14 @@ export default async function StudentHome() {
       </div>
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Fees</h2>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <h2 style={{ marginTop: 0, marginBottom: 0 }}>Fees</h2>
+          {invoices.length > 0 ? (
+            <Link className="btn ghost" href={`/print/fees/${session.userId}`}>
+              Receipts &amp; statement
+            </Link>
+          ) : null}
+        </div>
         {invoices.length === 0 ? <div className="muted">No invoices.</div> : (
           <table>
             <thead><tr><th>Label</th><th>Amount</th><th>Status</th><th>Due</th></tr></thead>
