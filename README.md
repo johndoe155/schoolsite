@@ -7,18 +7,73 @@ server** from one clean folder hierarchy.
 
 ## Quick start
 
+Requires **Node ≥ 20.19**.
+
 ```bash
+# ── The marketing site on its own ───────────────────────────────────
 npm install
-cp .env.example .env   # then fill in real values
-npm start              # → http://localhost:4040
+cp .env.example .env    # then fill in real values
+npm start               # → http://localhost:4040
 ```
+
+The site runs standalone. Portal links will show a "portal is not responding"
+page until you also do this:
+
+```bash
+# ── …with the portal ────────────────────────────────────────────────
+npm run portal:install  # install the portal monorepo's dependencies
+npm run portal:build    # build contracts → API → web  (once, or after changes)
+
+npm run portal          # terminal 1: portal API :8080 + web :3000
+npm start               # terminal 2: the site :4040, proxying /portal
+```
+
+Then open **http://localhost:4040** — one origin for everything:
+
+| URL | What |
+| --- | --- |
+| `/` | Home and the rest of the marketing site |
+| `/portal` | Portal sign-in → your dashboard |
+| `/portal/api/v1/health` | Portal API health |
+| `/api/health` | Site API health |
+
+`npm run portal` seeds a demo roster the first time it starts. Sign in with
+`s1@school.example` / `Passw0rd!` (student) or `admin@school.example` /
+`Passw0rd!` (admin — staff accounts are then asked for two-factor setup).
+
+### Portal commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run portal` | Runs the API and web together; stops both if either dies |
+| `npm run portal:build` | Rebuild after changing portal code |
+| `npm run portal:reset` | Wipe the dev database and re-seed it |
+| `npm run portal:test` | The API suite (256 tests) |
+| `npm run portal:smoke` | The web checks (61) — run `portal:reset` first |
+| `npm run tokens:sync` | Re-copy `tokens.css` into the portal |
+| `npm run tokens:check` | Fail if the portal's token copy has drifted |
+
+The portal runs on **PGlite** (Postgres compiled to WASM, in-process) in
+development — nothing to install. Production needs a real `DATABASE_URL`; the
+API refuses to boot without it rather than silently falling back. The portal
+has ~64 variables of its own, documented in `portal/.env.example`.
+
+For the full picture — why the portal is proxied rather than merged, how the
+two session systems coexist, and what was verified — see
+[`PORTAL-INTEGRATION-PLAN.md`](PORTAL-INTEGRATION-PLAN.md).
 
 ## Project layout
 
 ```
-├── server.js               One Express server for the entire site
-├── package.json            Single dependency set
+├── server.js               One Express server for the entire site,
+│                           and the single public door for the portal
+├── package.json            Site dependencies + portal orchestration scripts
 ├── .env.example            Every configuration knob, documented
+├── portal/                 The portal monorepo (NestJS API + Next.js web).
+│                           Own workspace, lockfile and .gitignore
+├── scripts/                portal.js (runs both portal processes),
+│                           sync-tokens.js (token vendoring + drift guard)
+├── .github/workflows/      site.yml + portal.yml
 ├── public/                 Everything served statically
 │   ├── index.html          Home
 │   ├── programs.html       Our Programs

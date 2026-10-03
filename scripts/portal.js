@@ -25,12 +25,18 @@ const ROOT = path.join(__dirname, '..');
 
 const PUBLIC_ORIGIN = process.env.PUBLIC_WEB_ORIGIN || `http://localhost:${process.env.PORT || 4040}/portal`;
 
+/* Ports are declared once here and reused below, so overriding PORTAL_API_PORT
+   does not also require hand-setting API_INTERNAL and PORTAL_API_URL. */
+const API_PORT = process.env.PORTAL_API_PORT || '8080';
+const WEB_PORT = process.env.PORTAL_WEB_PORT || '3000';
+const API_ORIGIN = process.env.PORTAL_API_URL || `http://127.0.0.1:${API_PORT}`;
+
 /* Every emailed link and the Paystack callback_url are built from
    PUBLIC_WEB_ORIGIN, and it must carry the /portal basePath or recipients land
    on a 404. It also has to be set on the worker, not just the API. */
 const API_ENV = {
   ...process.env,
-  PORT: process.env.PORTAL_API_PORT || '8080',
+  PORT: API_PORT,
   SEED_DEMO: process.env.SEED_DEMO ?? 'true',
   COOKIE_SECURE: process.env.COOKIE_SECURE ?? 'false',
   SMTP_VERIFY_ON_BOOT: process.env.SMTP_VERIFY_ON_BOOT ?? 'false',
@@ -49,8 +55,8 @@ const API_ENV = {
 
 const WEB_ENV = {
   ...process.env,
-  PORT: process.env.PORTAL_WEB_PORT || '3000',
-  API_INTERNAL: process.env.API_INTERNAL || 'http://127.0.0.1:8080',
+  PORT: WEB_PORT,
+  API_INTERNAL: process.env.API_INTERNAL || API_ORIGIN,
   PUBLIC_WEB_ORIGIN: PUBLIC_ORIGIN,
 };
 
@@ -100,5 +106,5 @@ function shutdown(code) {
 process.on('SIGINT', () => shutdown(0));
 process.on('SIGTERM', () => shutdown(0));
 
-console.log(`[portal] api → :${API_ENV.PORT}   web → :${WEB_ENV.PORT}   public origin → ${PUBLIC_ORIGIN}`);
+console.log(`[portal] api → :${API_PORT}   web → :${WEB_PORT}   public origin → ${PUBLIC_ORIGIN}`);
 console.log('[portal] start the site with `npm start` — it proxies /portal on :' + (process.env.PORT || 4040));

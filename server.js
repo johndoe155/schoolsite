@@ -41,8 +41,13 @@ const IS_VERCEL  = !!process.env.VERCEL;
    marketing site alone (the links then 404 rather than the whole server dying
    when the portal processes are down). */
 const PORTAL_ENABLED = process.env.PORTAL_ENABLED !== 'false';
-const PORTAL_WEB_URL = process.env.PORTAL_WEB_URL || 'http://127.0.0.1:3000';
-const PORTAL_API_URL = process.env.PORTAL_API_URL || 'http://127.0.0.1:8080';
+/* Accept either a full URL or just a port, so PORTAL_API_PORT=8090 is enough —
+   scripts/portal.js reads the *_PORT names, and having two schemes for one
+   setting means the proxy silently points at the wrong process. */
+const PORTAL_WEB_URL = process.env.PORTAL_WEB_URL
+  || `http://127.0.0.1:${process.env.PORTAL_WEB_PORT || 3000}`;
+const PORTAL_API_URL = process.env.PORTAL_API_URL
+  || `http://127.0.0.1:${process.env.PORTAL_API_PORT || 8080}`;
 const DATA_DIR   = IS_VERCEL ? '/tmp/data' : path.join(__dirname, 'data');
 
 /* Gallery (staff admin) */
