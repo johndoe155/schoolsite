@@ -1,0 +1,81 @@
+name: Site CI
+
+# The marketing site has no build step and no unit tests — it is Express
+# serving static HTML. What actually breaks here is a syntax error in
+# server.js, a vendored token file drifting from its source, or a route
+# that stops answering after a change to the middleware order (which is
+# exactly what the portal proxy made fragile: it must stay ahead of the
+# body parsers, express.static and the /api catch-all).
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: site-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Server boots and routes answer
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Syntax check
+        run: |
+          node --check server.js
+          node --check scripts/portal.js
+          node --check scripts/sync-tokens.js
+
+      - name: Vendored tokens are in sync
+        # portal/apps/web/app/tokens.css is a copy of
+        # public/assets/css/tokens.css. If someone edits the source and
+        # forgets `npm run tokens:sync`, the portal silently ships the old
+        # palette — and the Docker build would not catch it.
+        run: npm run tokens:check
+
+      - name: Boot the site (portal disabled) and smoke every route
+        env:
+          PORT: 4040
+          PORTAL_ENABLED: "false"
+          SESSION_SECRET: ci-only-secret-not-for-production
+          ADMIN_TOKEN: ci-only-token
+          NEWS_ADMIN_PASSWORD: ci-only-password
+          STAFF_PASSCODE: ci-only-passcode
+        run: |
+          node server.js &
+          SRV=$!
+          trap 'kill $SRV 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 40); do
+            curl -fsS http://127.0.0.1:4040/api/health >/dev/null 2>&1 && break
+            sleep 0.5
+          done
+
+          fail=0
+          for p in / /programs.html /news.html /library.html \
+                   /academies.html /contact.html /admin.html \
+                   /api/health /api/posts /api/assets /api/gallery /api/config; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:4040$p")
+            if [ "$code" != "200" ]; then echo "FAIL $p -> $code"; fail=1; else echo "ok   $p"; fi
+          done
+
+          # The nav must still carry the portal entry point.
+          curl -fsS http://127.0.0.1:4040/assets/js/nav.js | grep -q "'/portal'" \
+            || { echo "FAIL: nav.js lost its Portal link"; fail=1; }
+          curl -fsS http://127.0.0.1:4040/assets/js/layout.js | grep -q 'bic-footer-portal' \
+            || { echo "FAIL: footer lost its portal link"; fail=1; }
+
+          exit $fail

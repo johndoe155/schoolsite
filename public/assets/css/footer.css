@@ -215,3 +215,27 @@
   transition: opacity 0.15s;
 }
 .bic-adm-trigger:hover { opacity: 0.8; }
+
+/* ── Portal link (PORTAL-INTEGRATION-PLAN.md §3.2d) ──────────
+   Unlike Staff Login this is a destination families use daily,
+   so it reads as a link rather than a utility affordance.      */
+.bic-footer-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.bic-footer-portal {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-cream);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-accent);
+  padding-bottom: 2px;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.bic-footer-portal:hover {
+  color: var(--color-accent-bright);
+  border-color: var(--color-accent-bright);
+}

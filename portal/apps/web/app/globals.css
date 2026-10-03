@@ -1,0 +1,275 @@
+/* ============================================================
+   Portal global styles — rebased onto the BIC design tokens.
+   ------------------------------------------------------------
+   Every colour, radius, shadow, spacing and motion value below
+   resolves to a token in tokens.css (vendored copy of
+   public/assets/css/tokens.css — regenerate with
+   `npm run tokens:sync`, verify with `npm run tokens:check`).
+   Nothing here hardcodes a brand colour.
+
+   TYPOGRAPHY (PORTAL-INTEGRATION-PLAN.md Q6): the portal keeps
+   a strict `font-src 'self'` CSP, so no webfonts are loaded.
+   The token font *stacks* are still used, which means headings
+   fall through to Georgia and prose to Trebuchet/Verdana —
+   system fonts that already read as the BIC editorial voice
+   without a third-party request on a page holding PII.
+
+   SCOPING: every element/class rule is prefixed with
+   body.portal-root. The site's own stylesheets define .btn
+   (40 hits), :focus-visible (22), .card (14), .chip (7) and
+   .container (4); today the two documents never meet, but the
+   prefix makes that permanent rather than accidental.
+   ============================================================ */
+
+@import "./tokens.css";
+
+:root {
+  /* Palette — BIC parchment + deep indigo + antique gold */
+  --bg:        var(--color-paper);          /* #f6f7fb → #F3EFE5 */
+  --card:      var(--color-surface);        /* #ffffff → #FDFAF5 */
+  --card-2:    var(--color-surface-2);
+  --ink:       var(--color-ink);            /* #0f172a → #18140F */
+  --muted:     var(--color-ink-60);         /* #64748b → rgba(24,20,15,.60) */
+  --line:      var(--color-border);         /* #e2e8f0 → #E4DCCB */
+  --brand:     var(--color-brand);          /* #4338ca → #05014A */
+  --brand-strong: var(--color-brand-strong);
+  --brand-ink: var(--color-cream);          /* #ffffff → #F4EFE2 */
+  --accent:    var(--color-accent);         /* antique gold */
+  --ok:        var(--color-success);
+  --warn:      var(--color-warning);
+  --bad:       var(--color-danger);
+  --info:      var(--color-brand-strong);
+
+  /* Radii / elevation / motion straight from the token scale */
+  --r-sm: var(--radius-xs);
+  --r-md: var(--radius-md);
+  --r-pill: var(--radius-pill);
+  --e1: var(--shadow-1);
+  --e2: var(--shadow-2);
+  --dur: var(--dur-fast);
+  --ease: var(--ease-out);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+
+*, body.portal-root * { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body.portal-root {
+  background: var(--bg);
+  color: var(--ink);
+  font: var(--fs-body)/var(--lh-body) var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.portal-root a { color: var(--brand); text-decoration: none; }
+body.portal-root a:hover { color: var(--brand-strong); text-decoration: underline; }
+
+body.portal-root h1 {
+  font: var(--weight-bold) var(--fs-h3)/var(--lh-heading) var(--font-display);
+  letter-spacing: var(--tracking-heading);
+  margin: var(--space-1) 0 var(--space-2);
+}
+body.portal-root h2 {
+  font: var(--weight-semibold) var(--fs-h5)/var(--lh-heading) var(--font-display);
+  margin: var(--space-3) 0 var(--space-1);
+}
+
+/* ── Layout ───────────────────────────────────────────────── */
+
+body.portal-root .container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--space-3) 90px;
+}
+
+body.portal-root .topbar {
+  position: sticky; top: 0; z-index: 5;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--e1);
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  min-height: var(--nav-height);
+}
+body.portal-root .topbar .brand {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-heading);
+  font-size: var(--fs-h5);
+}
+body.portal-root .topbar .spacer { flex: 1; }
+body.portal-root .topbar .who { color: var(--muted); font-size: var(--fs-small); }
+
+/* Exit to the marketing site, which lives outside basePath. */
+body.portal-root .topbar .site-link {
+  font: var(--weight-semibold) var(--fs-small)/1 var(--font-ui);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+body.portal-root .topbar .site-link:hover {
+  color: var(--brand);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+body.portal-root .tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  display: flex;
+}
+body.portal-root .tabbar a {
+  flex: 1; text-align: center;
+  padding: 10px var(--space-1) 12px;
+  color: var(--muted);
+  font: var(--weight-medium) var(--fs-caption)/var(--lh-ui) var(--font-ui);
+  min-height: 44px;
+}
+body.portal-root .tabbar a.on { color: var(--brand); font-weight: var(--weight-bold); }
+
+@media (min-width: 768px) {
+  body.portal-root .tabbar {
+    position: static; border: 0; background: transparent;
+    gap: var(--space-2); padding: var(--space-2) 0;
+  }
+  body.portal-root .tabbar a {
+    flex: 0 0 auto;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--r-pill);
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  body.portal-root .tabbar a.on { border-color: var(--accent); }
+  body.portal-root .container { padding-bottom: var(--space-6); }
+}
+
+/* ── Surfaces ─────────────────────────────────────────────── */
+
+body.portal-root .card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--e1);
+  padding: var(--space-3);
+  margin: var(--space-3) 0;
+}
+
+body.portal-root .stat {
+  padding: var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--e1);
+}
+body.portal-root .stat .n {
+  font: var(--weight-bold) var(--fs-h3)/1 var(--font-display);
+}
+
+body.portal-root .row { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; }
+body.portal-root .grid { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
+@media (min-width: 768px) {
+  body.portal-root .grid.cols2 { grid-template-columns: 1fr 1fr; }
+  body.portal-root .grid.cols3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+body.portal-root .muted { color: var(--muted); font-size: var(--fs-small); }
+
+/* ── Controls ─────────────────────────────────────────────── */
+
+body.portal-root .btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: var(--brand-ink);
+  font: var(--weight-semibold) var(--fs-small)/1 var(--font-ui);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  text-decoration: none;
+}
+body.portal-root .btn:hover { background: var(--brand-strong); border-color: var(--brand-strong); text-decoration: none; }
+body.portal-root .btn.ghost { background: transparent; color: var(--brand); border-color: var(--line); }
+body.portal-root .btn.ghost:hover { border-color: var(--accent); background: var(--color-brand-tint); }
+body.portal-root .btn.danger { background: var(--bad); border-color: var(--bad); color: var(--color-white); }
+body.portal-root .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+body.portal-root input, body.portal-root select {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-3);
+  font: inherit;
+  background: var(--color-white);
+  width: 100%;
+}
+body.portal-root label {
+  font: var(--weight-medium) var(--fs-small)/var(--lh-ui) var(--font-ui);
+  color: var(--muted);
+  display: block;
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+body.portal-root table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+body.portal-root th {
+  font-family: var(--font-ui);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+body.portal-root th, body.portal-root td {
+  text-align: left;
+  padding: var(--space-2) var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Attendance chips — tinted from the semantic tokens, not hardcoded hex. */
+body.portal-root .chip {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  border-radius: var(--r-pill);
+  padding: var(--space-2) var(--space-3);
+  min-height: 36px;
+  border: 1px solid var(--line);
+  background: var(--color-white);
+  cursor: pointer;
+  font: var(--weight-medium) var(--fs-small)/1 var(--font-ui);
+}
+body.portal-root .chip.on-present { background: color-mix(in srgb, var(--ok) 10%, white);   border-color: var(--ok);   color: var(--ok);   font-weight: var(--weight-bold); }
+body.portal-root .chip.on-late    { background: color-mix(in srgb, var(--warn) 12%, white); border-color: var(--warn); color: var(--warn); font-weight: var(--weight-bold); }
+body.portal-root .chip.on-absent  { background: color-mix(in srgb, var(--bad) 10%, white);  border-color: var(--bad);  color: var(--bad);  font-weight: var(--weight-bold); }
+body.portal-root .chip.on-excused { background: color-mix(in srgb, var(--info) 10%, white); border-color: var(--info); color: var(--info); font-weight: var(--weight-bold); }
+
+/* ── Feedback ─────────────────────────────────────────────── */
+
+body.portal-root .alert {
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  margin: var(--space-2) 0;
+  font-size: var(--fs-small);
+  border: 1px solid transparent;
+}
+body.portal-root .alert.err  { background: color-mix(in srgb, var(--bad)  8%, white); color: var(--bad);  border-color: var(--bad); }
+body.portal-root .alert.ok   { background: color-mix(in srgb, var(--ok)   8%, white); color: var(--ok);   border-color: var(--ok); }
+body.portal-root .alert.warn { background: color-mix(in srgb, var(--warn) 10%, white); color: #92400e;    border-color: var(--warn); }
+
+body.portal-root .skip { position: absolute; left: -9999px; }
+body.portal-root .skip:focus { left: var(--space-2); top: var(--space-2); z-index: 100; background: var(--card); padding: var(--space-2); }
+
+body.portal-root :focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.portal-root * { transition-duration: 0.01ms !important; }
+}

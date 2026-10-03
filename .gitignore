@@ -18,3 +18,7 @@ data/news/sessions/
 .cache_build/
 .vercel
 .env*
+
+# Portal (Next.js build output; PGlite dev database)
+.next/
+portal/data/

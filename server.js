@@ -32,6 +32,17 @@ const PORT       = Number(process.env.PORT) || 4040;
 const NODE_ENV   = process.env.NODE_ENV || 'development';
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const IS_VERCEL  = !!process.env.VERCEL;
+
+/* ── Portal (see PORTAL-INTEGRATION-PLAN.md) ──────────────────────────────── */
+/* The portal is a separate Next.js + NestJS monorepo under portal/. This server
+   is the single public door: it proxies /portal/** to Next and
+   /portal/api/v1/** to the API, so the portal is same-origin with the site and
+   its session cookie stays first-party. Set PORTAL_ENABLED=false to run the
+   marketing site alone (the links then 404 rather than the whole server dying
+   when the portal processes are down). */
+const PORTAL_ENABLED = process.env.PORTAL_ENABLED !== 'false';
+const PORTAL_WEB_URL = process.env.PORTAL_WEB_URL || 'http://127.0.0.1:3000';
+const PORTAL_API_URL = process.env.PORTAL_API_URL || 'http://127.0.0.1:8080';
 const DATA_DIR   = IS_VERCEL ? '/tmp/data' : path.join(__dirname, 'data');
 
 /* Gallery (staff admin) */
@@ -115,6 +126,75 @@ function sanitize(str, maxLength) {
 /* ── App + global middleware ──────────────────────────────────────────────── */
 
 const app = express();
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PORTAL PROXY  (must precede express.static and the /api 404 catch-all)
+   ══════════════════════════════════════════════════════════════════════════
+   /portal/api/v1/**  →  NestJS  (prefix stripped; the API's own global prefix
+                                 is already "api/v1")
+   /portal/**         →  Next.js (prefix KEPT; Next runs with basePath=/portal)
+
+   This block is registered FIRST — before cors(), express.json(),
+   express.urlencoded() and session(). Body parsers consume the request
+   stream, and a proxy that runs after them forwards an empty body and
+   hangs. Portal traffic also has no use for the site's session store.
+
+   Direct-to-API rather than via Next's own rewrite so that roster CSV uploads
+   (multipart, several MB) do not make an extra hop, and so /portal/api/v1/health
+   still answers when the Next process is down. */
+
+if (PORTAL_ENABLED) {
+  const { createProxyMiddleware } = require('http-proxy-middleware');
+
+  /* The portal's rate limiting and audit log both key on the real client IP,
+     so the API must be told it sits behind exactly one proxy hop. */
+  const portalProxyBase = {
+    changeOrigin: true,
+    xfwd: true,
+    logLevel: 'warn',
+    onError: (err, _req, res) => {
+      const wantsJson = String(_req.originalUrl || '').includes('/api/');
+      console.error(`[portal] proxy error → ${err.code || err.message}`);
+      if (res.headersSent) return res.end();
+      res.status(502);
+      if (wantsJson) {
+        res.json({ error: 'Portal service unavailable. Is the portal API running? (npm run portal:api)' });
+      } else {
+        res.type('html').send(
+          '<!doctype html><meta charset="utf-8"><title>Portal unavailable</title>' +
+          '<body style="font:16px/1.6 system-ui;padding:48px;max-width:40rem;margin:auto">' +
+          '<h1 style="font:700 1.5rem Georgia,serif">The portal is not responding</h1>' +
+          '<p>The school portal service could not be reached. If you are running this ' +
+          'locally, start it with <code>npm run portal</code>.</p>' +
+          '<p><a href="/">← Back to the website</a></p></body>');
+      }
+    },
+  };
+
+  /* NO Express mount path here — deliberately.
+     app.use('/portal', …) makes Express strip '/portal' off req.url before the
+     middleware sees it, and http-proxy-middleware v3 forwards req.url. The
+     result is Next receiving '/login' instead of '/portal/login' (a 404 page
+     rendered with a 404 status) and the API receiving '/v1/health' instead of
+     '/api/v1/health'. Using hpm's own pathFilter keeps req.url intact. */
+
+  /* API first — the more specific filter must win over the /portal catch-all. */
+  app.use(createProxyMiddleware({
+    ...portalProxyBase,
+    target: PORTAL_API_URL,
+    pathFilter: '/portal/api',
+    pathRewrite: { '^/portal': '' },          /* /portal/api/v1/x → /api/v1/x */
+  }));
+
+  app.use(createProxyMiddleware({
+    ...portalProxyBase,
+    target: PORTAL_WEB_URL,
+    pathFilter: '/portal',                     /* /portal/x → /portal/x (basePath) */
+  }));
+
+  console.log(`[portal] proxying /portal → ${PORTAL_WEB_URL}, /portal/api → ${PORTAL_API_URL}`);
+}
+
 
 /* CORS allow-list for API routes. Same-origin browsers send no Origin header
    and are always allowed; set ALLOWED_ORIGINS=https://a.com,https://b.com to

@@ -1,0 +1,181 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# School Portal — production-shaped topology on one host.
+#   • postgres is on an internal network only (no published port)
+#   • api + worker are internal-only; the web BFF is internal too
+#   • Caddy is the sole ingress: terminates TLS (automatic ACME certs for real
+#     domains, internal CA on localhost) and forwards to web:3000
+#   • browsers only ever talk to caddy:443 — Secure cookies work everywhere
+# Managed PaaS alternative: drop the postgres service, point DATABASE_URL at
+# Neon/Supabase (eu-west-1) — see docs/phase-1-architecture.md + ADR-010.
+#
+# TRUST_PROXY accounting: caddy → web(Next rewrite) → api ⇒ the API sees two
+# proxy hops appending X-Forwarded-For, so TRUST_PROXY=2 (see .env.example).
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: portal
+      POSTGRES_USER: portal_owner
+      POSTGRES_PASSWORD: ${POSTGRES_OWNER_PASSWORD:?set in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/bootstrap-compose.sql:/docker-entrypoint-initdb.d/10-bootstrap.sql:ro
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portal_owner -d portal"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build: .
+    restart: unless-stopped
+    command: ["node", "apps/api/dist/main.js"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://portal_owner:${POSTGRES_OWNER_PASSWORD:?}@postgres:5432/portal
+      APP_SECRET: ${APP_SECRET:?set in .env — >=32 chars}
+      COOKIE_SECURE: "true"
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://portal.school.example}
+      # caddy → web → api: two forwarding hops (review-2).
+      TRUST_PROXY: ${TRUST_PROXY:-2}
+      WORKER_INPROC: "false"
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY:-}
+      PAYSTACK_API_BASE: ${PAYSTACK_API_BASE:-https://api.paystack.co}
+      SMTP_URL: ${SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-portal@school.example}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:?set in .env}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:?set in .env}
+      # Written by the backup sidecar; surfaced on /api/v1/health so a backup
+      # chain that silently stopped becomes visible instead of being assumed.
+      BACKUP_HEARTBEAT_FILE: /var/lib/portal/state/last-backup.json
+      BACKUP_VERIFY_FILE: /var/lib/portal/state/last-restore-test.json
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_ENCRYPTION_KEY: ${BACKUP_ENCRYPTION_KEY:-}
+      IMPORT_TMP_DIR: /var/lib/portal/imports
+    volumes:
+      - portal_state:/var/lib/portal/state
+      - portal_imports:/var/lib/portal/imports
+    networks: [internal]
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      # /health is 503 (⇒ wget exit 8) when the DB is unreachable, so this
+      # healthcheck genuinely tracks DB connectivity (review-2).
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 4s
+      retries: 6
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: ["node", "apps/api/dist/worker/main.js"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://portal_owner:${POSTGRES_OWNER_PASSWORD:?}@postgres:5432/portal
+      APP_SECRET: ${APP_SECRET:?}
+      # The worker RENDERS the emails, so it needs the public origin as much as
+      # the API does. Without it every link in every message pointed at
+      # http://127.0.0.1:3000 — the recipient's own machine — while the portal
+      # itself looked perfectly healthy.
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://portal.school.example}
+      SMTP_URL: ${SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-portal@school.example}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
+      WORKER_INTERVAL_MS: "5000"
+      # The worker processes roster import jobs, so it must see the same
+      # uploaded files the API parked.
+      IMPORT_TMP_DIR: /var/lib/portal/imports
+    volumes:
+      - portal_imports:/var/lib/portal/imports
+    networks: [internal]
+    depends_on:
+      postgres: { condition: service_healthy }
+      api: { condition: service_healthy }
+
+  web:
+    build: .
+    restart: unless-stopped
+    command: ["npm", "start", "-w", "@portal/web"]
+    environment:
+      NODE_ENV: production
+      API_INTERNAL: http://api:8080
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://portal.school.example}
+    networks: [internal]
+    depends_on:
+      api: { condition: service_healthy }
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Nightly encrypted backup + weekly restore drill. The runbook promises both;
+  # this service is what actually performs them. Without it scripts/backup.sh
+  # is just a file in the repo that nobody runs.
+  # ───────────────────────────────────────────────────────────────────────────
+  backup:
+    build:
+      context: .
+      dockerfile: ops/backup/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://portal_owner:${POSTGRES_OWNER_PASSWORD:?}@postgres:5432/portal
+      BACKUP_ENCRYPTION_KEY: ${BACKUP_ENCRYPTION_KEY:?set in .env — openssl rand -base64 32}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-35}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_ENDPOINT: ${BACKUP_S3_ENDPOINT:-}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:-auto}
+      BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-portal}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      BACKUP_CRON: ${BACKUP_CRON:-15 02 * * *}
+      BACKUP_VERIFY_CRON: ${BACKUP_VERIFY_CRON:-40 03 * * 0}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - portal_backups:/var/lib/portal/backups
+      - portal_state:/var/lib/portal/state
+    networks: [internal]
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      # Unhealthy once the newest backup is older than 36 hours.
+      test: ["CMD-SHELL", "find /var/lib/portal/state/last-backup.json -mmin -2160 | grep -q . || exit 1"]
+      interval: 10m
+      timeout: 10s
+      retries: 3
+      start_period: 5m
+
+  # review-2: TLS termination IN the stack. Caddy obtains ACME certs
+  # automatically when PORTAL_DOMAIN is a real domain pointed at this host;
+  # on localhost it uses its internal CA (trusted after `caddy trust` or
+  # adding /data/caddy/pki to the client trust store). HTTP:80 redirects
+  # to HTTPS. HSTS is added by the app middleware when PUBLIC_WEB_ORIGIN is
+  # https (see apps/web/middleware.ts).
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      PORTAL_DOMAIN: ${PORTAL_DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ops/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [internal]
+    depends_on:
+      - web
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
+  portal_backups:   # encrypted dumps staged before/alongside the offsite copy
+  portal_state:     # backup + restore-drill heartbeats, read by /health
+  portal_imports:   # roster CSVs in flight between the API and the worker
+
+networks:
+  internal:
+    driver: bridge

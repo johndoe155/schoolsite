@@ -28,7 +28,11 @@
     { href: '/news.html',      label: 'Updates' },
     { href: '/library.html',   label: 'Digital Library' },
     { href: '/academies.html', label: 'BIMA \u00b7 BIFA' },
-    { href: '/contact.html',   label: 'Get In Touch' }
+    { href: '/contact.html',   label: 'Get In Touch' },
+    /* The portal is a separate Next.js app proxied in by server.js under
+       /portal — see PORTAL-INTEGRATION-PLAN.md. It renders in both the desktop
+       bar and the overlay menu from this single list. */
+    { href: '/portal',         label: 'Portal' }
   ];
   window.BIC_SITEMAP = SITEMAP;
 

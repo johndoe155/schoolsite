@@ -50,7 +50,14 @@
       '    </div>' +
       '    <div class="bic-footer-bottom">' +
       '      <span class="bic-footer-copy">&copy; <span id="year">' + new Date().getFullYear() + '</span> Bodija International College. All rights reserved.</span>' +
-      '      <a class="bic-adm-trigger" href="' + (adminHref || '/admin.html') + '"' + (adminId ? ' id="' + adminId + '"' : '') + '>Staff Login</a>' +
+      /* Portal is a real destination for parents, students and staff, so it gets
+         a visible link — unlike the deliberately faint Staff Login beside it.
+         The portal lives outside the site's own routes: see
+         PORTAL-INTEGRATION-PLAN.md. */
+      '      <span class="bic-footer-actions">' +
+      '        <a class="bic-footer-portal" href="/portal">Parent &amp; Student Portal</a>' +
+      '        <a class="bic-adm-trigger" href="' + (adminHref || '/admin.html') + '"' + (adminId ? ' id="' + adminId + '"' : '') + '>Staff Login</a>' +
+      '      </span>' +
       '    </div>' +
       '  </div>' +
       '</footer>';

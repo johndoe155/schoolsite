@@ -5,10 +5,20 @@
   "description": "Bodija International College — unified school website (home, programs, contact, news, digital library, academies, gallery admin)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "portal:install": "npm install --prefix portal",
+    "portal:build": "npm run build --prefix portal",
+    "portal:api": "node portal/apps/api/dist/main.js",
+    "portal:web": "npm run start --prefix portal/apps/web",
+    "portal": "node scripts/portal.js",
+    "portal:test": "npm run test --prefix portal/apps/api",
+    "portal:smoke": "npm run smoke --prefix portal/apps/web",
+    "portal:reset": "node -e \"require('fs').rmSync('portal/data',{recursive:true,force:true});console.log('[portal] dev PGlite database reset — it will be re-seeded on next start')\"",
+    "tokens:sync": "node scripts/sync-tokens.js",
+    "tokens:check": "node scripts/sync-tokens.js --check"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.19.0"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -16,6 +26,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "express-session": "^1.18.2",
+    "http-proxy-middleware": "^3.0.7",
     "multer": "^2.0.2",
     "nodemailer": "^9.0.1",
     "session-file-store": "^1.5.0"
