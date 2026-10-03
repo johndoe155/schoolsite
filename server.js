@@ -248,6 +248,42 @@ const app = express();
 if (process.env.TRUST_PROXY) app.set('trust proxy', Number(process.env.TRUST_PROXY) || process.env.TRUST_PROXY);
 else if (NODE_ENV === 'production') app.set('trust proxy', 1);
 
+/* ── Security headers: first in the stack ─────────────────────────────────────
+   This block used to sit at the BOTTOM of the middleware chain, after the HTML
+   nonce middleware ended HTML requests with res.send() and after the /api
+   routes answered on their own. The consequence was measured:
+   / returned the CSP and nothing else — no X-Content-Type-Options, no
+   X-Frame-Options, no Referrer-Policy, no Permissions-Policy — while a CSS file
+   returned all of them (static assets fall through to later middleware and HTML
+   pages never did), and /api/* returned none at all.
+
+   Order matters more than the middleware itself, so it is registered here,
+   above the proxy and above every route: nothing can answer a request before
+   this has run. The CSP is a nonce-less default at this point; the nonce
+   middleware further down overwrites it for HTML.
+   ------------------------------------------------------------------------- */
+app.use((req, res, next) => {
+  /* The portal sets its own CSP, XFO and HSTS (apps/web/proxy.ts). Leave those
+     responses alone — a default CSP from the site would only fight them. */
+  if (req.path.startsWith('/portal')) return next();
+  res.setHeader('Content-Security-Policy', SITE_CSP.replace('%NONCE%', ''));
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  /* HSTS only over TLS. A browser that is told to remember an https:// upgrade
+     for a site it reached over http:// will refuse to connect — so this is
+     gated on the same signal the session cookie uses (X-Forwarded-Proto from
+     the TLS terminator), not on NODE_ENV alone. Behind Caddy that header is
+     always set; on localhost it is not, and localhost keeps working. */
+  const proto = req.headers['x-forwarded-proto'] ?? (req.secure ? 'https' : 'http');
+  if (String(proto).split(',')[0].trim() === 'https') {
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains');
+  }
+  next();
+});
+
+
 /* ══════════════════════════════════════════════════════════════════════════
    PORTAL PROXY  (must precede express.static and the /api 404 catch-all)
    ══════════════════════════════════════════════════════════════════════════
@@ -921,16 +957,6 @@ app.use((req, res, next) => {
     console.error(`[html] ${rel}: ${err.message}`);
     return next(err);
   }
-});
-
-app.use((_req, res, next) => {
-  res.setHeader('Content-Security-Policy', res.getHeader('Content-Security-Policy')
-    || SITE_CSP.replace('%NONCE%', ''));
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  next();
 });
 
 /* ══════════════════════════════════════════════════════════════════════════

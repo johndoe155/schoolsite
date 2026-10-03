@@ -2,15 +2,50 @@
  * Phase 6 headline proof: bootstrap a REAL school from an EMPTY database.
  * No SEED_DEMO, no demo users — one bootstrap admin, then the whole school
  * (identity, calendar, students, guardians, classes, fees) via the admin API
- * and the CSV importer. Run against the live API on :8080 with:
- *   BOOTSTRAP_ADMIN_EMAIL/PASSWORD set, SEED_DEMO unset.
- * Usage: node apps/api/live/bootstrap-live.mjs
+ * and the CSV importer.
+ *
+ * ⚠ THIS IS A PROOF SCRIPT, NOT THE GO-LIVE BOOTSTRAP.
+ * It creates invented pupils ("Amina Bello", "Chidi Okafor"…), renames the
+ * school to "Bright Future Academy" and sets a grading scale. Run it only
+ * against a throwaway database. Two guards make that hard to get wrong:
+ *
+ *   1. The bootstrap admin's email and password MUST be given. There is no
+ *      default password. (There used to be one — `Passw0rd!Policy1`, printed
+ *      in this file and in the runbook. An account created with a published
+ *      password is not a bootstrap admin, it is a back door.)
+ *   2. It refuses to run unless LIVE_PROOF=1 is set explicitly, and refuses
+ *      a database that already has a school name configured unless
+ *      LIVE_PROOF_FORCE=1 is also set — so it cannot quietly overwrite a real
+ *      school's identity if someone runs it by muscle memory.
+ *
+ * Usage:  LIVE_PROOF=1 BOOTSTRAP_ADMIN_EMAIL=you@school.ng \
+ *           BOOTSTRAP_ADMIN_PASSWORD='…' node apps/api/live/bootstrap-live.mjs
  */
 import { execFileSync } from "node:child_process";
 
 const API = process.env.API_BASE ?? "http://127.0.0.1:8080";
-const ADMIN_EMAIL = process.env.BOOTSTRAP_ADMIN_EMAIL ?? "bootstrap@school.example";
-const ADMIN_PW = process.env.BOOTSTRAP_ADMIN_PASSWORD ?? "Passw0rd!Policy1";
+const ADMIN_EMAIL = process.env.BOOTSTRAP_ADMIN_EMAIL ?? "";
+const ADMIN_PW = process.env.BOOTSTRAP_ADMIN_PASSWORD ?? "";
+
+function die(msg) {
+  console.error(`\n✗ ${msg}\n`);
+  console.error("  Usage: LIVE_PROOF=1 BOOTSTRAP_ADMIN_EMAIL=you@school.ng \\");
+  console.error("           BOOTSTRAP_ADMIN_PASSWORD='a-real-password' \\");
+  console.error("           node apps/api/live/bootstrap-live.mjs\n");
+  process.exit(2);
+}
+
+if (process.env.LIVE_PROOF !== "1") {
+  die("this script writes invented pupils and renames the school.\n" +
+      "  Set LIVE_PROOF=1 to confirm you are pointing it at a throwaway database.");
+}
+if (!ADMIN_EMAIL || !ADMIN_PW) {
+  die("BOOTSTRAP_ADMIN_EMAIL and BOOTSTRAP_ADMIN_PASSWORD are required.\n" +
+      "  There is deliberately no default: see the header of this file.");
+}
+if (ADMIN_PW.length < 12) {
+  die("BOOTSTRAP_ADMIN_PASSWORD must be at least 12 characters.");
+}
 
 let pass = 0, fail = 0;
 const ok = (name, cond, extra = "") => { cond ? (pass++, console.log("PASS", name)) : (fail++, console.log("FAIL", name, extra)); };
@@ -36,6 +71,11 @@ const { totpCode } = await import("../dist/crypto/totp.js");
 
 /* ── 0. the login page is the school's before anyone authenticates ─────── */
 const anonSchool = await call("/api/v1/school");
+if (anonSchool.body?.name && anonSchool.body.name !== "School Portal"
+    && process.env.LIVE_PROOF_FORCE !== "1") {
+  die(`this database already belongs to "${anonSchool.body.name}".\n` +
+      "  Refusing to rename it and inject proof data. Set LIVE_PROOF_FORCE=1 if you really mean it.");
+}
 ok("GET /school is public on an empty DB", anonSchool.status === 200 && anonSchool.body.name === "School Portal", JSON.stringify(anonSchool.body).slice(0, 120));
 
 /* ── 1. bootstrap admin: password login, then the ops-CLI enroll token ─── */

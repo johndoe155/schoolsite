@@ -57,9 +57,16 @@ services:
       BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
       BACKUP_ENCRYPTION_KEY: ${BACKUP_ENCRYPTION_KEY:-}
       IMPORT_TMP_DIR: /var/lib/portal/imports
+      # Classwork, homework attachments and message attachments. NOT on the
+      # image's writable layer: without this, every worksheet a teacher uploads
+      # vanishes the next time the container is recreated, and the rows pointing
+      # at it survive in Postgres — so the portal shows a download link that
+      # 404s. The backup sidecar archives this volume with the site content.
+      FILES_DIR: /var/lib/portal/files
     volumes:
       - portal_state:/var/lib/portal/state
       - portal_imports:/var/lib/portal/imports
+      - portal_files:/var/lib/portal/files
     networks: [internal]
     depends_on:
       postgres: { condition: service_healthy }
@@ -191,12 +198,13 @@ services:
     volumes:
       - portal_backups:/var/lib/portal/backups
       - portal_state:/var/lib/portal/state
-      # The marketing site's content is not in Postgres. Read-only, so a bug in
-      # the backup job cannot damage the live site.
+      # Everything the school owns that is not in Postgres. Read-only, so a bug
+      # in the backup job cannot damage the live site.
       - site_data:/site/data:ro
       - site_gallery:/site/gallery:ro
       - site_uploads:/site/uploads:ro
       - site_library:/site/library:ro
+      - portal_files:/portal/files:ro
     networks: [internal]
     depends_on:
       postgres: { condition: service_healthy }
@@ -241,6 +249,7 @@ volumes:
   site_gallery:     # gallery image uploads
   site_uploads:     # news article images
   site_library:     # library PDFs
+  portal_files:     # portal uploads: classwork, homework + message attachments
 
 networks:
   internal:

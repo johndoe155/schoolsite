@@ -150,11 +150,13 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
   -pass env:BACKUP_ENCRYPTION_KEY -in "$STAGED" -out /dev/null 2>/dev/null \
   || die $E_VERIFY "the dump cannot be decrypted with BACKUP_ENCRYPTION_KEY — backup aborted"
 
-# ── 2b. The marketing site's own content ─────────────────────────────────────
-# News posts, the library, the gallery and the newsletter list do not live in
-# Postgres. They are JSON files and uploads in four Docker volumes that nothing
-# backed up at all — a sidecar that only dumps Postgres means a full restore
-# brings the portal back and wipes the school's website. Mounted read-only by
+# ── 2b. Everything that is not in Postgres ──────────────────────────────────
+# The marketing site's content (news posts, library PDFs, gallery, newsletter
+# list) and the portal's own file store (classwork, homework attachments and
+# message attachments) are files in Docker volumes, not database rows. Nothing
+# backed them up at all — a sidecar that only dumps Postgres means a full
+# restore brings the portal back, wipes the school's website, and leaves every
+# uploaded worksheet as a download link that 404s. Mounted read-only by
 # docker-compose; absent in a portal-only or test deployment, so this is
 # skipped rather than fatal.
 SITE_DIRS=()
@@ -163,7 +165,7 @@ SITE_DIRS=()
 # test failed — the archive was silently skipped even when the volumes were
 # mounted. That is the worst kind of bug here, because skipping looks like
 # success in the log.
-read -r -a _site_candidates <<< "${SITE_CONTENT_DIRS:-/site/data /site/gallery /site/uploads /site/library}"
+read -r -a _site_candidates <<< "${SITE_CONTENT_DIRS:-/site/data /site/gallery /site/uploads /site/library /portal/files}"
 for d in "${_site_candidates[@]}"; do
   [ -d "$d" ] && SITE_DIRS+=("$d")
 done
@@ -192,7 +194,15 @@ if [ "${#SITE_DIRS[@]}" -gt 0 ] && [ "${BACKUP_SKIP_DUMP:-}" != "true" ]; then
     || die $E_VERIFY "the site archive cannot be decrypted — backup aborted"
   log "site archive ${SITE_SIZE} bytes, decrypt verified"
 else
-  log "no site content volumes mounted — skipping site archive"
+  # Say which of the two reasons it was. The old message claimed "no volumes
+  # mounted" whenever the archive was skipped, including when it was skipped
+  # because BACKUP_SKIP_DUMP was set — and a log that states the wrong reason
+  # is worse than no log, because it is believed.
+  if [ "${BACKUP_SKIP_DUMP:-}" = "true" ]; then
+    log "BACKUP_SKIP_DUMP=true (test mode) — skipping the site archive as well"
+  else
+    log "no site content volumes mounted — skipping site archive"
+  fi
 fi
 
 

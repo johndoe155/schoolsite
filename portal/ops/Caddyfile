@@ -30,6 +30,15 @@
 {$PORTAL_DOMAIN:localhost} {
 	encode zstd gzip
 
+	# HSTS at the edge as well as in the app. The site sets it whenever it sees
+	# X-Forwarded-Proto: https, but the header belongs on the connection the
+	# browser actually made — and Caddy is the only component that knows TLS
+	# was really used. Kept out of localhost so local dev is not poisoned.
+	@tls {
+		expression {http.request.tls.version} != ""
+	}
+	header @tls Strict-Transport-Security "max-age=63072000; includeSubDomains"
+
 	reverse_proxy site:4040 {
 		# Preserve the real client so the site's rate limiters and the API's
 		# req.ip accounting see the visitor rather than the proxy.

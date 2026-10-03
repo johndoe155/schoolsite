@@ -9,6 +9,8 @@ dist/
 
 # Runtime data (sessions, temp files)
 data/news/sessions/
+# Portal file uploads, when the API happens to be run from the repo root
+data/files/
 *.tmp
 
 # Editor droppings

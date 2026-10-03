@@ -18,6 +18,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ── Dependency advisories ───────────────────────────────────────────────────
+  # Deliberately NOT `npm audit --audit-level=high`: that fails forever on the
+  # braces/micromatch ReDoS, which has no patched release (npm's only "fix" is
+  # a semver-major rewrite of Tailwind or a downgrade of the proxy). The gate
+  # in scripts/audit-gate.mjs fails on advisories that ARE fixable in place and
+  # prints the unfixable ones on every run so they stay visible.
+  audit:
+    name: Dependency gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run audit:site
+
   site:
     name: Server boots and routes answer
     runs-on: ubuntu-latest
@@ -77,6 +96,35 @@ jobs:
             || { echo "FAIL: nav.js lost its Portal link"; fail=1; }
           curl -fsS http://127.0.0.1:4040/assets/js/layout.js | grep -q 'bic-footer-portal' \
             || { echo "FAIL: footer lost its portal link"; fail=1; }
+
+          # P1-16: these headers used to reach every response EXCEPT the HTML
+          # pages and /api/*, because the middleware that set them was
+          # registered after the nonce middleware that ends HTML responses with
+          # res.send(). Nothing caught it — the route loop above only checked
+          # status codes. Assert it on a page, an asset, an API response and 404.
+          check_headers() { # path
+            h=$(curl -sI "http://127.0.0.1:4040$1")
+            for want in x-content-type-options x-frame-options referrer-policy permissions-policy; do
+              printf '%s' "$h" | grep -qi "^$want:" || { echo "FAIL $1 missing $want"; fail=1; }
+            done
+            printf '%s' "$h" | grep -qi "^content-security-policy:" || { echo "FAIL $1 missing CSP"; fail=1; }
+          }
+          check_headers /
+          check_headers /news.html
+          check_headers /assets/js/main.js
+          check_headers /api/health
+          check_headers /no-such-page
+
+          # HSTS only behind TLS: sending it over plain http would pin a
+          # browser to https on a host that cannot answer it.
+          if curl -sI -H 'X-Forwarded-Proto: https' http://127.0.0.1:4040/ | grep -qi '^strict-transport-security:'; then
+            echo "ok   HSTS present when TLS was used"
+          else
+            echo "FAIL: no Strict-Transport-Security behind TLS"; fail=1
+          fi
+          if curl -sI http://127.0.0.1:4040/ | grep -qi '^strict-transport-security:'; then
+            echo "FAIL: HSTS sent over plain http"; fail=1
+          fi
 
           exit $fail
 
@@ -141,6 +189,13 @@ jobs:
           expect /portal/api/v1/school 200
           expect /portal/api/v1/students 401     # auth gate still in front of routing
           expect /api/health 200                  # site API unaffected
+          # Phase 8: installable portal + the page a teacher needs with no
+          # signal. Both are static files under the web app's public dir, so
+          # they are exactly the kind of thing a basePath mistake breaks.
+          expect /portal/sw.js 200
+          expect /portal/manifest.webmanifest 200
+          expect /portal/offline-register 200
+          expect /portal/icon-192.png 200
 
           # The redirect must carry the basePath, or every emailed link 404s.
           loc=$(curl -s -o /dev/null -w '%{redirect_url}' http://127.0.0.1:4040/portal)
