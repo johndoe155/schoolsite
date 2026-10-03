@@ -128,6 +128,8 @@ if (STAFF_PASSCODE === 'admin123')
   console.warn('⚠️  STAFF_PASSCODE is the default — set it in .env before going live.');
 if (!process.env.SESSION_SECRET)
   console.warn('⚠️  SESSION_SECRET not set — news admin sessions will not survive restarts.');
+if (!process.env.NEWSLETTER_SECRET && !process.env.SESSION_SECRET)
+  console.warn('⚠️  NEWSLETTER_SECRET / SESSION_SECRET not set — unsubscribe links in sent newsletters will stop working after a restart.');
 
 /* ── Production boot gate ───────────────────────────────────────────────────
    These used to be warnings, which means a school could go live with the
@@ -145,6 +147,8 @@ if (NODE_ENV === 'production') {
     if ((process.env[name] || weak) === weak) problems.push(`${name} is still the published default`);
   }
   if (!process.env.SESSION_SECRET) problems.push('SESSION_SECRET is not set (a random one would invalidate every session on restart)');
+  if (!process.env.NEWSLETTER_SECRET && !process.env.SESSION_SECRET)
+    problems.push('NEWSLETTER_SECRET is not set (unsubscribe links already sent would stop working)');
   if (!ADMIN_TOKEN) problems.push('ADMIN_TOKEN is not set');
   if (ADMIN_TOKEN && ADMIN_TOKEN.length < 24) problems.push('ADMIN_TOKEN is shorter than 24 characters');
   if (problems.length) {
@@ -232,6 +236,19 @@ function sanitize(str, maxLength) {
   return str
     .replace(/[\r\n\t]/g, ' ')      // no CRLF — that is header injection
     .replace(/[\u0000-\u001f\u007f]/g, '')  // strip other control characters
+    .slice(0, maxLength)
+    .trim();
+}
+
+/* Same rules, but paragraph breaks survive. Newsletters are written in
+   paragraphs, and the single-line sanitize() collapsed every one of them onto
+   one line. Newlines still cannot reach a mail header: the subject is
+   sanitized with the strict version. */
+function sanitizeMultiline(str, maxLength) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/\r\n?/g, '\n')
+    .replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, '')
     .slice(0, maxLength)
     .trim();
 }
@@ -498,8 +515,300 @@ app.post('/api/newsletter', contactLimiter, (req, res) => {
 
 /* Staff read the list. Same passcode gate as the news admin. */
 app.get('/api/newsletter', requireNewsAuth, (_req, res) => {
-  res.json({ count: readSubscribers().length, subscribers: readSubscribers() });
+  const list = readSubscribers();
+  res.json({
+    count: list.length,
+    subscribers: list,
+    /* What the send screen needs to show before anyone commits: how many
+       people would receive a message, and when the last one went out. */
+    campaigns: readCampaigns().map(campaign => ({
+      id: campaign.id, subject: campaign.subject, startedAt: campaign.startedAt,
+      sent: campaign.sent.length, failed: campaign.failed.length,
+      completedAt: campaign.completedAt || null,
+    })).slice(-10).reverse(),
+  });
 });
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NEWSLETTER — sending. The list could be collected but never written to:
+   the only way to reach subscribers was to export the file and paste it into
+   another mail client, which nobody was going to do. See
+   PRODUCTION-READINESS-GAPS.md.
+
+   Sending is split into preview → send, because a school newsletter is
+   irreversible: there is no "unsent". `preview: true` answers "how many people
+   and to what" without sending anything, and a real send must say
+   `confirm: true`.
+
+   A send covers at most NEWSLETTER_SEND_MAX recipients. Larger lists continue
+   on the next call against the same campaign id, which is what the admin
+   screen does in a loop — a single request that held a connection open while
+   it delivered 20,000 emails would time out somewhere and the operator would
+   have no idea what had gone out.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+const NEWSLETTER_SECRET = process.env.NEWSLETTER_SECRET || SESSION_SECRET;
+const NEWSLETTER_LOG    = path.join(NEWS_DATA_DIR, 'newsletter-log.json');
+const NEWSLETTER_SEND_MAX = 400;   // per request; the UI loops until done
+const NEWSLETTER_SUBJECT_MAX = 160;
+const NEWSLETTER_BODY_MAX    = 20000;
+
+const newsletterSendLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,                         // ~12,000 recipients per quarter hour
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many send requests — please wait a few minutes.' },
+});
+
+const readCampaigns = () => {
+  const log = readJSON(NEWSLETTER_LOG, []);
+  return Array.isArray(log) ? log : [];
+};
+
+/**
+ * Unsubscribe link for one address.
+ *
+ * The token is an HMAC of the address, so it cannot be guessed from someone
+ * else's link and does not have to be stored. Changing NEWSLETTER_SECRET (or
+ * SESSION_SECRET, which it falls back to) invalidates every link in every
+ * message already delivered — which is why the default is a warning at boot.
+ */
+function unsubscribeToken(email) {
+  return crypto.createHmac('sha256', NEWSLETTER_SECRET).update(email).digest('base64url');
+}
+
+/* The address the recipient's mail client will actually reach. Set
+   PUBLIC_ORIGIN when the site is behind a proxy that does not report the
+   public host; otherwise the request's own host is right. */
+function unsubscribeUrl(email, req) {
+  const origin = (process.env.PUBLIC_ORIGIN || (req
+    ? `${req.protocol}://${req.get('host')}`
+    : '')).replace(/\/+$/, '');
+  return `${origin}/api/newsletter/unsubscribe?e=${encodeURIComponent(email)}&t=${unsubscribeToken(email)}`;
+}
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
+}
+
+/* Turn the plain text the staff member typed into the message that goes out.
+   Plain text is the source of truth: it is what most clients show, what the
+   school can keep in the log, and what cannot smuggle markup into an inbox. */
+function newsletterMime({ text, email, subject, req }) {
+  const url = unsubscribeUrl(email, req);
+  const body = String(text).trim();
+  const paragraphs = body.split(/\n{2,}/).map(chunk =>
+    `<p style="margin:0 0 1em">${escapeHtml(chunk).replace(/\n/g, '<br>')}</p>`).join('');
+  const html =
+    `<!doctype html><html><body style="font-family:Montserrat,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#242430">` +
+    paragraphs +
+    `<hr style="border:none;border-top:1px solid #e6e6ee;margin:2em 0 1em">` +
+    `<p style="font-size:12px;color:#6b6b78;margin:0">` +
+    `You are receiving this because you subscribed to updates from Bodija International College. ` +
+    `<a href="${url}" style="color:#05014A">Unsubscribe</a>.</p>` +
+    `</body></html>`;
+  return {
+    subject,
+    text: `${body}\n\n---\nUnsubscribe: ${url}\n`,
+    html,
+    headers: {
+      /* RFC 8058 one-click: a mail client can unsubscribe without opening a
+         browser, and without the subscriber having to be "logged in". */
+      'List-Unsubscribe': `<${url}>, <mailto:${TO_EMAIL || 'bicbis95@gmail.com'}?subject=unsubscribe>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    },
+  };
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+app.post('/api/newsletter/send', requireNewsAuth, newsletterSendLimiter, async (req, res) => {
+  const subject = sanitize(req.body?.subject, NEWSLETTER_SUBJECT_MAX);
+  const text    = sanitizeMultiline(req.body?.text, NEWSLETTER_BODY_MAX);
+  const preview = req.body?.preview === true;
+  const confirm = req.body?.confirm === true;
+  const testTo  = sanitize(req.body?.test_to, 254);
+
+  if (!subject || !text) {
+    return res.status(400).json({ error: 'A subject and a message body are both required.' });
+  }
+
+  const list = readSubscribers();
+
+  /* Preview: the number the operator must agree to before anything is sent. */
+  if (preview) {
+    const campaigns = readCampaigns();
+    const last = campaigns[campaigns.length - 1];
+    return res.json({
+      ok: true, preview: true, recipients: list.length, subject,
+      last_campaign: last
+        ? { subject: last.subject, startedAt: last.startedAt, sent: last.sent.length }
+        : null,
+    });
+  }
+
+  if (!mailer) {
+    console.error('[newsletter] send requested but SMTP is not configured.');
+    return res.status(503).json({ error: 'Email is not configured on this server, so nothing was sent. Set SMTP_HOST, SMTP_USER, SMTP_PASS and TO_EMAIL.' });
+  }
+
+  /* Test send: one copy to an address the operator names, so a real newsletter
+     can be checked in an actual inbox before it goes to the whole list. */
+  if (testTo) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testTo)) {
+      return res.status(400).json({ error: 'That test address does not look like an email address.' });
+    }
+    try {
+      await mailer.sendMail({
+        from: `"Bodija International College" <${SMTP_USER}>`,
+        to: testTo,
+        ...newsletterMime({ text, email: testTo, subject: `[TEST] ${subject}`, req }),
+      });
+      return res.json({ ok: true, test: true, to: testTo });
+    } catch (err) {
+      console.error('[newsletter] test send failed:', err.message);
+      return res.status(502).json({ error: `The test message could not be sent: ${err.message}` });
+    }
+  }
+
+  if (!confirm) {
+    return res.status(400).json({ error: 'Sending needs confirm: true — use preview first to check the audience.' });
+  }
+  if (list.length === 0) {
+    return res.json({ ok: true, campaign_id: null, sent: 0, failed: [], remaining: 0, recipients: 0 });
+  }
+
+  /* One campaign per subject unless the caller pins an id, so a continuation
+     after a partial send never mails the first batch twice. `let` because the
+     log is capped after a send and rows may be dropped from it. */
+  let campaigns = readCampaigns();
+  let campaign = req.body?.campaign_id
+    ? campaigns.find(c => c.id === req.body.campaign_id)
+    : null;
+  if (req.body?.campaign_id && !campaign) {
+    return res.status(404).json({ error: 'Unknown campaign id.' });
+  }
+  /* A pruned campaign has had its recipient list dropped, so "who has already
+     had this" is unknowable — continuing it would mail the first batch twice.
+     Refuse, and let the operator start a fresh one. */
+  if (campaign && campaign.pruned) {
+    return res.status(409).json({ error: 'That campaign’s recipient list has been trimmed, so it cannot be continued safely. Start a new send.' });
+  }
+  if (!campaign) {
+    campaign = {
+      id: crypto.randomBytes(8).toString('hex'),
+      subject, text,
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      sent: [], failed: [],
+    };
+    campaigns.push(campaign);
+  } else if (campaign.subject !== subject) {
+    /* Editing the subject mid-campaign would split one newsletter into two. */
+    return res.status(409).json({ error: `This campaign is already sending "${campaign.subject}". Start a new campaign to change the subject.` });
+  }
+
+  const alreadySent = new Set(campaign.sent);
+  const queue = list.filter(r => !alreadySent.has(r.email)).slice(0, NEWSLETTER_SEND_MAX);
+  let sentThisRequest = 0;
+
+  /* Deliver with a little concurrency: fast enough for a school list, gentle
+     enough that a shared SMTP host does not start refusing connections. */
+  const CONCURRENCY = 5;
+  let cursor = 0;
+  async function worker() {
+    while (cursor < queue.length) {
+      const sub = queue[cursor++];
+      try {
+        await mailer.sendMail({
+          from: `"Bodija International College" <${SMTP_USER}>`,
+          to: sub.email,
+          ...newsletterMime({ text: campaign.text, email: sub.email, subject: campaign.subject, req }),
+        });
+        campaign.sent.push(sub.email);
+        sentThisRequest += 1;
+      } catch (err) {
+        campaign.failed.push({ email: sub.email, error: err.message, at: new Date().toISOString() });
+        console.error(`[newsletter] delivery to ${sub.email} failed:`, err.message);
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, queue.length) }, worker));
+
+  const remaining = list.filter(r => !campaign.sent.includes(r.email)).length;
+  if (remaining === 0) campaign.completedAt = new Date().toISOString();
+
+  /* Keep the log bounded without losing the record of what was sent.
+     The bulky part of a campaign is its list of recipients; that list exists
+     so an interrupted send can be resumed without mailing the first batch
+     twice, so it is only dropped once the campaign has FINISHED, and the row
+     stays behind as a summary. An unfinished campaign is never touched.
+     Past 50 rows the oldest summaries go entirely. */
+  for (const c of campaigns.slice(0, -20)) {
+    if (!c.completedAt || c.pruned) continue;
+    c.sent = [];
+    c.failed = c.failed.slice(0, 5);
+    c.pruned = true;
+  }
+  if (campaigns.length > 50) {
+    const surplus = campaigns.length - 50;
+    const droppable = campaigns.slice(0, surplus).filter(c => c.pruned);
+    if (droppable.length) {
+      campaigns = campaigns.filter(c => !droppable.includes(c));
+    }
+  }
+  writeJSON(NEWSLETTER_LOG, campaigns);
+
+  return res.json({
+    ok: true,
+    campaign_id: campaign.id,
+    subject: campaign.subject,
+    recipients: list.length,
+    /* sent = campaign total (what the progress bar shows); sent_now = this
+       request, so a 400-message chunk can be told apart from the whole job. */
+    sent: campaign.sent.length,
+    sent_now: sentThisRequest,
+    failed: campaign.failed.slice(-20),
+    remaining,
+    done: remaining === 0,
+  });
+});
+
+/* Unsubscribe. GET is the link in the email; POST is the RFC 8058 one-click
+   that a mail client fires with an empty body. */
+function handleUnsubscribe(req, res) {
+  const email = String((req.query.e || req.body?.e || '')).trim().toLowerCase();
+  const token = String((req.query.t || req.body?.t || ''));
+  /* A bad or missing token is treated as "already unsubscribed" rather than an
+     error: an expired link must never leave someone stuck on the list, and a
+     response that says "that address is/isn't subscribed" would turn this
+     endpoint into a membership oracle. */
+  const valid = email && token && safeEqual(token, unsubscribeToken(email));
+
+  if (valid) {
+    const list = readSubscribers();
+    const next = list.filter(r => r.email !== email);
+    if (next.length !== list.length) {
+      writeJSON(SUBSCRIBERS_FILE, next);
+      console.log(`[newsletter] unsubscribed ${email} (${next.length} remaining)`);
+    }
+  } else if (email) {
+    console.warn('[newsletter] unsubscribe link rejected (bad token) for a supplied address');
+  }
+
+  if (req.method === 'POST') return res.json({ ok: true });
+  return res.redirect(303, '/newsletter-unsubscribed.html');
+}
+
+app.get('/api/newsletter/unsubscribe', handleUnsubscribe);
+app.post('/api/newsletter/unsubscribe', handleUnsubscribe);
 
 app.post('/api/contact', contactLimiter, async (req, res) => {
   const name    = sanitize(req.body?.name,    100);

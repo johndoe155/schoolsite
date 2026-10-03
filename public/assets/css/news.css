@@ -1277,3 +1277,52 @@ aside.panel {
 }
 .adm-dz-size-error.visible {  display: block;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   Newsletter send panel (staff)
+   The subscriber list could be collected but not written to; this is
+   the missing half of that feature. Full width under the two cards so
+   the audience count and the send button are on the same screen.
+   ══════════════════════════════════════════════════════════════════ */
+.adm-card--wide {  grid-column: 1 / -1;
+}
+@media(max-width: 768px) {  .adm-card--wide { grid-column: auto; }
+}
+.adm-newsletter-note {
+  font-family: 'Montserrat', sans-serif; font-size: 13px;
+  color: var(--ink-60, #5b5b66); line-height: 1.6; margin: 0 0 18px;
+}
+.adm-newsletter-actions {
+  display: flex; gap: 12px; align-items: center; margin-top: 4px;
+}
+.adm-newsletter-actions .adm-submit {  width: auto; flex: 1;
+}
+.adm-newsletter-test,
+.adm-newsletter-preview {
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+  border-radius: 9px; padding: 10px 16px; cursor: pointer; white-space: nowrap;
+  border: 1.5px solid var(--navy); background: #fff; color: var(--navy);
+  transition: background .15s, color .15s;
+}
+.adm-newsletter-preview {  flex: 0 0 auto;
+}
+.adm-newsletter-test:hover,
+.adm-newsletter-preview:hover {  background: #f4f6fb;
+}
+.adm-newsletter-actions .adm-submit:disabled {
+  background: #c9ccd6; cursor: not-allowed; box-shadow: none;
+}
+.adm-newsletter-progress {  margin-top: 14px;
+}
+.adm-newsletter-bar {
+  height: 8px; border-radius: 999px; background: #e9ebf2; overflow: hidden;
+}
+.adm-newsletter-bar span {
+  display: block; height: 100%; width: 0; background: var(--navy);
+  border-radius: 999px; transition: width .3s;
+}
+.adm-newsletter-progress .adm-hint {  margin-top: 6px;
+}
+.adm-hint {
+  font-family: 'Montserrat', sans-serif; font-size: 12px; color: #6b6b78;
+}

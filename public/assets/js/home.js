@@ -389,7 +389,8 @@ window.__CMS__ = {
 
             btnSpinner.classList.add('hidden');
             btnText.textContent = 'Message Sent!';
-            formStatus.textContent = 'Thank you — your message has been sent.';
+            formStatus.textContent = 'Thank you — your message has been sent. ' +
+              ((window.BIC_INFO && window.BIC_INFO.replySentence) || 'We reply within 2\u20133 business days.');
             formStatus.classList.remove('sr-only');
 
             setTimeout(() => {

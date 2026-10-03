@@ -62,7 +62,8 @@
         });
         const data = await response.json();
         if (response.ok) {
-          showMessage('success', data.message || 'Thank you. Your message has been sent successfully.');
+          showMessage('success', data.message || ('Thank you. Your message has been sent successfully. ' +
+            ((window.BIC_INFO && window.BIC_INFO.replySentence) || 'We reply within 2\u20133 business days.')));
           form.reset();
         } else {
           showMessage('error', data.error || 'Something went wrong. Please try again.');

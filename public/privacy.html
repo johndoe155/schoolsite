@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Privacy Notice — Bodija International College</title>
+  <meta name="description" content="What Bodija International College does with the personal data you send through this website, how long it is kept, and how to ask us to delete it.">
+  <link rel="icon" type="image/png" href="/assets/img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/footer.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
+
+  <style>
+    /* Page-local, namespaced, same approach as 404.html: one short prose page
+       is not worth a stylesheet other pages have to download. */
+    .bic-legal { padding: clamp(2.5rem, 7vw, 5rem) 1.25rem; }
+    .bic-legal__inner { max-width: 46rem; margin-inline: auto; }
+    .bic-legal__eyebrow {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--bic-colour-muted, #5b5b66); margin: 0 0 .5rem;
+    }
+    .bic-legal h1 {
+      font-family: var(--bic-font-display, "Abril Fatface", serif);
+      font-size: clamp(1.9rem, 5vw, 2.9rem); line-height: 1.1; margin: 0 0 1rem;
+      color: var(--bic-colour-navy, #05014A);
+    }
+    .bic-legal h2 {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      font-size: 1.05rem; margin: 2.25rem 0 .6rem; color: var(--bic-colour-navy, #05014A);
+    }
+    .bic-legal p, .bic-legal li, .bic-legal address {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      line-height: 1.7; color: #33333c; margin: 0 0 .9rem;
+    }
+    .bic-legal ul { padding-left: 1.15rem; margin: 0 0 1rem; }
+    .bic-legal a { color: var(--bic-colour-navy, #05014A); }
+    .bic-legal__meta {
+      font-size: .85rem; color: var(--bic-colour-muted, #5b5b66);
+      border-left: 3px solid var(--bic-colour-navy, #05014A); padding-left: .85rem;
+    }
+    .bic-legal__card {
+      background: #f7f7fa; border: 1px solid #e6e6ee; border-radius: 14px;
+      padding: 1.25rem 1.35rem; margin: 1.5rem 0;
+    }
+    .bic-legal__card p:last-child { margin-bottom: 0; }
+    .bic-legal__address { font-style: normal; }
+    .bic-legal :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  </style>
+</head>
+<body>
+
+  <header class="bic-nav" data-nav-theme="paper" data-nav-active=""
+          data-nav-cta-label="Contact us" data-nav-cta-href="/contact.html">
+  </header>
+
+  <main class="bic-legal" id="main-content">
+    <div class="bic-legal__inner">
+      <p class="bic-legal__eyebrow">Bodija International College</p>
+      <h1>Privacy Notice</h1>
+
+      <p class="bic-legal__meta">
+        This notice covers <strong>this website</strong> — the contact and admissions
+        enquiry forms, and the newsletter. The parent, student and staff
+        <a href="/portal">portal</a> holds much more data and has its own, longer
+        <a href="/portal/legal/privacy">Privacy Policy</a>.
+        Last updated: <time datetime="2026-10-03">3 October 2026</time>.
+      </p>
+
+      <div class="bic-legal__card">
+        <p><strong>In one paragraph:</strong> if you send us a message or join the
+        newsletter, we keep what you typed, use it to answer you or to send you
+        updates, and keep it no longer than we need it. We do not sell it, and we
+        do not use it for anything else. You can ask us to delete it at any time
+        and we will.</p>
+      </div>
+
+      <h2>1. Who is responsible for your data</h2>
+      <p>
+        Bodija International College (BIC) is the data controller. Write to
+        <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a> or use the
+        postal address below for anything to do with your personal data, including
+        the requests listed in section 5.
+      </p>
+      <!-- Kept as static text on purpose: this page must stand on its own even
+           if a script fails to load. CI (.github/workflows/site.yml) fails the
+           build if it stops matching site-info.js. -->
+      <address class="bic-legal__address">
+        1-5 Osuntokun Avenue<br>
+        Off Tunde Lakanmi Street, Crescent<br>
+        Oyo
+      </address>
+
+      <h2>2. What we collect, and why</h2>
+      <ul>
+        <li>
+          <strong>Contact &amp; admissions forms.</strong> Your name, email address
+          and message, plus your IP address and browser user-agent. We use the
+          message to reply to you; we keep the IP address and user-agent so that
+          the form cannot be used to flood our inbox. If you send an enquiry as a
+          parent, it may contain information about your child — please send only
+          what we need to answer you.
+        </li>
+        <li>
+          <strong>Newsletter.</strong> Your email address, the date you subscribed
+          and the IP address you subscribed from. Used to send school news and to
+          keep the list clean. Every newsletter carries a one-click unsubscribe.
+        </li>
+        <li>
+          <strong>Server logs.</strong> Short-lived request logs (IP, path,
+          timestamp) kept for security and troubleshooting.
+        </li>
+      </ul>
+      <p>
+        We do not run advertising or analytics trackers on this site, and we set
+        no cookies of our own beyond what is needed to keep the site working.
+        Embedded maps and other third-party content, where present, may set their
+        own cookies under their own policies.
+      </p>
+
+      <h2>3. Who else sees it</h2>
+      <p>
+        We do not sell personal data and we do not share it for marketing. It is
+        accessible only to the staff who need it to answer you, and to the service
+        providers who host the site and deliver our email on our behalf. We may
+        disclose data where the law requires it. We do not transfer it outside
+        Nigeria except to those providers, who process it under contract.
+      </p>
+
+      <h2>4. How long we keep it</h2>
+      <p>
+        Enquiries are kept for <strong>12 months</strong> after the last message in
+        the thread, then deleted. Newsletter subscriptions are kept until you
+        unsubscribe. Server logs are rotated short. Anything we must keep for a
+        legal reason is kept for the period the law requires and nothing longer.
+      </p>
+
+      <h2>5. Your rights</h2>
+      <p>
+        Under the Nigeria Data Protection Act 2023 you may ask us to show you the
+        data we hold about you, correct it, delete it, or stop using it, and you
+        may object to how we are using it. Email
+        <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a> and we will act
+        on the request within the period the law allows. If you are not satisfied
+        with our answer you may complain to the Nigeria Data Protection Commission.
+      </p>
+
+      <h2>6. Children</h2>
+      <p>
+        This website is not intended for children to use on their own. Enquiries
+        about a pupil should be sent by a parent, guardian or another adult.
+        Pupils&rsquo; records are held in the school&rsquo;s management systems, not
+        on this website.
+      </p>
+
+      <h2>7. Changes</h2>
+      <p>
+        If this notice changes in a way that affects you, we will update this page
+        and show the new date at the top.
+      </p>
+
+      <p><a href="/contact.html">&larr; Back to contact us</a></p>
+    </div>
+  </main>
+
+  <div data-bic-footer data-bic-footer-theme="warm"></div>
+
+  <script src="/assets/js/site-info.js"></script>
+  <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/layout.js"></script>
+</body>
+</html>

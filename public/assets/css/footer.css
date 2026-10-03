@@ -239,3 +239,23 @@
   color: var(--color-accent-bright);
   border-color: var(--color-accent-bright);
 }
+/* Privacy notice link: quieter than the portal link — it is a legal
+   destination, not a call to action — but present on every page, because the
+   home-page consent checkbox points here. */
+.bic-footer-privacy {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  font-weight: var(--weight-medium);
+  color: var(--footer-muted);
+  text-decoration: none;
+}
+.bic-footer-privacy:hover { color: var(--color-cream); text-decoration: underline; }
+/* Postal address in the footer contact strip. */
+.bic-footer-address {
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-style: normal;
+  color: var(--footer-muted);
+  line-height: 1.5;
+}
+.bic-footer-email { margin-top: .25rem; }

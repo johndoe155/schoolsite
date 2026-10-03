@@ -111,6 +111,13 @@
         msg.style.display = 'block';
         msg.style.color = ok ? '' : '#a11';
       }
+      /* How long the school takes to answer, read from the shared facts so this
+         cannot drift from the contact page. Falls back to the literal if
+         site-info.js is not on the page. */
+      function replyPromise() {
+        var info = (typeof window !== 'undefined') && window.BIC_INFO;
+        return (info && info.replyPromise) || '2\u20133 business days';
+      }
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var fd       = new FormData(form);
@@ -141,7 +148,8 @@
           })
           .then(function (r) {
             if (r.ok) {
-              say(r.data.message || 'Thank you — admissions will be in touch within one business day.', true);
+              say(r.data.message ||
+                  ('Thank you — admissions will reply within ' + replyPromise() + '.'), true);
               form.reset();
             } else {
               say(r.data.error || 'Something went wrong. Please try again.', false);

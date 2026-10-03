@@ -745,6 +745,186 @@
       setTimeout(function(){ t.remove(); }, 2400);
     }
 
+    // ── Newsletter → /api/newsletter* ─────────────────────────────────
+    /* The subscriber list was collected for months with no way to send to it.
+       Sending is deliberately two-step: "Check audience" fetches the count and
+       enables the send button; the send button is disabled again the moment
+       the message is edited, so the number on screen always belongs to the
+       message about to go out. Delivery is chunked by the server (400 per
+       request) and this screen loops until `remaining` is zero, showing
+       progress — a single request for a 20,000-person list would time out
+       somewhere and nobody would know what had been delivered. */
+    function setupNewsletter(){
+      var form = document.getElementById('adminNewsletterForm');
+      if(!form) return;
+
+      var countEl    = document.getElementById('newsletterCount');
+      var statusEl   = document.getElementById('nlStatus');
+      var errEl      = document.getElementById('nlError');
+      var sendBtn    = document.getElementById('nlSendBtn');
+      var previewBtn = document.getElementById('nlPreviewBtn');
+      var testBtn    = document.getElementById('nlTestBtn');
+      var progressEl = document.getElementById('nlProgress');
+      var barEl      = document.getElementById('nlProgressBar');
+      var progTextEl = document.getElementById('nlProgressText');
+
+      var audience      = null;   // null = "not checked yet, or edited since"
+      var resumeId      = null;   // an interrupted campaign with this subject
+      var sending       = false;
+
+      function subject(){ return (document.getElementById('nlSubject').value||'').trim(); }
+      function body(){ return (document.getElementById('nlBody').value||'').trim(); }
+
+      function showStatus(msg){
+        statusEl.textContent = msg ? '✓ ' + msg : '';
+        statusEl.style.display = msg ? 'block' : 'none';
+      }
+      function showError(msg){
+        errEl.textContent = msg || '';
+        errEl.style.display = msg ? 'block' : 'none';
+      }
+      function setProgress(sent, total){
+        if(!total) return;
+        progressEl.hidden = false;
+        var pct = Math.min(100, Math.round((sent/total)*100));
+        barEl.style.width = pct + '%';
+        progTextEl.textContent = 'Sent ' + sent + ' of ' + total + ' …';
+      }
+
+      /* Load the list size, and pick up an interrupted send of the same
+         subject so a retry continues instead of mailing the top of the list
+         twice. */
+      function refreshAudienceList(){
+        api('GET', '/api/newsletter')
+          .then(function(data){
+            countEl.textContent = data.count + (data.count === 1 ? ' subscriber' : ' subscribers');
+            var last = (data.campaigns || [])[0];
+            if(last && !last.completedAt && last.subject === subject()){
+              resumeId = last.id;
+            } else {
+              resumeId = null;
+            }
+          })
+          .catch(function(e){
+            countEl.textContent = 'Subscriber count unavailable';
+            console.error('[BIC] newsletter list:', e.message);
+          });
+      }
+
+      function invalidateAudience(){
+        audience = null;
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Send newsletter';
+        showStatus('');
+        if(!progressEl.hidden && !sending) progressEl.hidden = true;
+      }
+
+      // Any edit means the checked audience no longer describes this message.
+      form.addEventListener('input', invalidateAudience);
+
+      previewBtn.addEventListener('click', function(){
+        if(!subject() || !body()){ showError('Add a subject and a message first.'); return; }
+        showError('');
+        previewBtn.disabled = true;
+        previewBtn.textContent = 'Checking…';
+        api('POST', '/api/newsletter/send', { subject: subject(), text: body(), preview: true })
+          .then(function(data){
+            audience = data;
+            var msg = 'This will send to ' + data.recipients +
+              (data.recipients === 1 ? ' subscriber.' : ' subscribers.');
+            if(!data.recipients){
+              sendBtn.disabled = true;
+              showStatus('');
+              showError('There is nobody on the list yet, so there is nothing to send.');
+              return;
+            }
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send to ' + data.recipients +
+              (data.recipients === 1 ? ' subscriber' : ' subscribers');
+            showError('');
+            showStatus(msg + (resumeId
+              ? ' An earlier send of this subject stopped part-way; this continues it.'
+              : ' Press the button to send — it cannot be called back.'));
+          })
+          .catch(function(e){ showError(e.message); })
+          .finally(function(){
+            previewBtn.disabled = false;
+            previewBtn.textContent = 'Check audience';
+          });
+      });
+
+      testBtn.addEventListener('click', function(){
+        var to = (document.getElementById('nlTestTo').value||'').trim();
+        if(!subject() || !body()){ showError('Add a subject and a message first.'); return; }
+        if(!to){ showError('Enter the address to send the test to.'); return; }
+        showError(''); showStatus('');
+        testBtn.disabled = true;
+        testBtn.textContent = 'Sending…';
+        api('POST', '/api/newsletter/send', { subject: subject(), text: body(), test_to: to })
+          .then(function(){ showStatus('Test message sent to ' + to + '. Check it before sending for real.'); })
+          .catch(function(e){ showError('Test failed: ' + e.message); })
+          .finally(function(){
+            testBtn.disabled = false;
+            testBtn.textContent = 'Send test';
+          });
+      });
+
+      /* One chunk per request. The server decides the chunk size; we only stop
+         when it reports nothing left. */
+      function sendChunk(campaignId){
+        var payload = { subject: subject(), text: body(), confirm: true };
+        if(campaignId) payload.campaign_id = campaignId;
+        return api('POST', '/api/newsletter/send', payload).then(function(res){
+          setProgress(res.sent, res.recipients);
+          if(res.remaining > 0 && res.campaign_id) return sendChunk(res.campaign_id);
+          return res;
+        });
+      }
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(sending) return;
+        if(!audience){ showError('Press “Check audience” first.'); return; }
+
+        sending = true;
+        showError(''); showStatus('');
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Sending…';
+        progressEl.hidden = false;
+        barEl.style.width = '0';
+
+        sendChunk(resumeId)
+          .then(function(res){
+            var failed = (res.failed || []).length;
+            setProgress(res.sent, res.recipients);
+            progTextEl.textContent = 'Sent ' + res.sent + ' of ' + res.recipients +
+              (failed ? ' · ' + failed + ' could not be delivered' : '');
+            showStatus(failed
+              ? 'Finished. ' + failed + ' address(es) could not be delivered — see the server log.'
+              : 'Newsletter sent to ' + res.sent +
+                (res.sent === 1 ? ' subscriber.' : ' subscribers.'));
+            sendBtn.textContent = 'Send newsletter';
+            /* Nothing left to send for this message: leave the button disabled
+               until the next edit + audience check. */
+            audience = null;
+            resumeId = null;
+            refreshAudienceList();
+          })
+          .catch(function(err){
+            showError(err.message + (sendBtn.disabled
+              ? ' Some messages may already have gone out — press “Check audience” again to continue where it stopped.' : ''));
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send newsletter';
+          })
+          .finally(function(){ sending = false; });
+      });
+
+      refreshAudienceList();
+      /* A subject typed on an empty form should reveal any interrupted send
+         for that same subject as soon as it matches. */
+      document.getElementById('nlSubject').addEventListener('blur', refreshAudienceList);
+    }
+
     // ── Logout → POST /api/logout ─────────────────────────────────────
     function logout(){
       api('POST', '/api/logout').finally(function(){
@@ -851,6 +1031,7 @@
 
       setupImageDropzone();
       setupAddForm();
+      setupNewsletter();
 
       // Footer year
       var yearEl = document.getElementById('year');

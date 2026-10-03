@@ -16,6 +16,15 @@
   }
 
   /* ── Shared site footer ────────────────────────────────── */
+
+  /* Facts shared with the pages (address, reply promise, contact email) live in
+     site-info.js so the footer cannot drift from the contact page. If that file
+     failed to load, fall back to the values it would have supplied rather than
+     render "undefined" on every page in the site. */
+  var INFO = (typeof window !== 'undefined' && window.BIC_INFO) || {};
+  var INFO_ADDRESS = INFO.address || { line1: '1-5 Osuntokun Avenue', line2: 'Off Tunde Lakanmi Street, Crescent', line3: 'Oyo' };
+  var INFO_EMAIL = INFO.email || 'bicbis95@gmail.com';
+
   function footerHtml(sub, adminHref, adminId, theme) {
     var cls = 'bic-site-footer' + (theme ? ' bic-site-footer--' + theme : '');
     return '' +
@@ -45,7 +54,9 @@
       '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 5.92c-.63.28-1.3.48-2 .56.72-.43 1.28-1.12 1.54-1.95-.67.4-1.42.69-2.22.85A3.5 3.5 0 0016.5 4c-1.93 0-3.5 1.6-3.5 3.57 0 .28.03.55.09.81-2.9-.15-5.48-1.6-7.2-3.8-.3.5-.47 1.09-.47 1.72 0 1.22.6 2.3 1.52 2.93-.56-.02-1.09-.18-1.55-.44v.05c0 1.66 1.19 3.04 2.77 3.35-.29.08-.59.12-.9.12-.22 0-.44-.02-.65-.06.45 1.36 1.76 2.36 3.31 2.39A7.03 7.03 0 014 19.54c1.96 1.26 4.3 2 6.82 2 8.18 0 12.66-7.3 12.66-13.64v-.62c.86-.63 1.6-1.4 2.18-2.3-.78.36-1.62.62-2.5.73z" fill="currentColor"/></svg></a>' +
       '    </div>' +
       '    <div class="bic-footer-contact">' +
-      '      <div class="bic-footer-email">We\u2019d love to hear from you \u2014 <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></div>' +
+      '      <address class="bic-footer-address">' + esc(INFO_ADDRESS.line1) + '<br>' +
+             esc(INFO_ADDRESS.line2) + '<br>' + esc(INFO_ADDRESS.line3) + '</address>' +
+      '      <div class="bic-footer-email">We\u2019d love to hear from you \u2014 <a href="mailto:' + esc(INFO_EMAIL) + '">' + esc(INFO_EMAIL) + '</a></div>' +
       '      <div class="bic-footer-tagline" aria-label="Success Through Labor">Success<br>Through<br>Labor</div>' +
       '    </div>' +
       '    <div class="bic-footer-bottom">' +
@@ -55,6 +66,10 @@
          The portal lives outside the site's own routes: see
          PORTAL-INTEGRATION-PLAN.md. */
       '      <span class="bic-footer-actions">' +
+      /* Every page now links the privacy notice. Without it the consent
+         checkbox on the home page asked visitors to agree to something they
+         had no way to read. */
+      '        <a class="bic-footer-privacy" href="/privacy.html">Privacy Notice</a>' +
       '        <a class="bic-footer-portal" href="/portal">Parent &amp; Student Portal</a>' +
       '        <a class="bic-adm-trigger" href="' + (adminHref || '/admin.html') + '"' + (adminId ? ' id="' + adminId + '"' : '') + '>Staff Login</a>' +
       '      </span>' +

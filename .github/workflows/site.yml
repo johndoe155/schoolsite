@@ -85,10 +85,43 @@ jobs:
 
           fail=0
           for p in / /programs.html /news.html /library.html \
-                   /academies.html /contact.html /admin.html \
+                   /academies.html /contact.html /admin.html /privacy.html \
+                   /newsletter-unsubscribed.html \
                    /api/health /api/posts /api/assets /api/gallery /api/config; do
             code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:4040$p")
             if [ "$code" != "200" ]; then echo "FAIL $p -> $code"; fail=1; else echo "ok   $p"; fi
+          done
+
+          # ── Copy that must not drift ──────────────────────────────────
+          # The address was typed out by hand in four pages and ended up as two
+          # different addresses. site-info.js is now the single source; these
+          # checks fail the build if a page starts carrying its own version
+          # again, and they pin the two facts the school corrected: the
+          # address, and the 2–3 business day reply promise.
+          grep -rq "Tunde Iakunni" public/ \
+            && { echo "FAIL: the misspelled academy address is back"; fail=1; }
+          grep -rq "one business day" public/ \
+            && { echo "FAIL: a form promises a reply in one business day"; fail=1; }
+          # The school is in Oyo, not Ibadan. Three pages kept the old city in
+          # a map caption, a quote attribution and a hero eyebrow long after the
+          # street address was fixed — a visitor read both cities on one visit.
+          grep -rq "Ibadan" public/ \
+            && { echo "FAIL: a page still places the school in Ibadan"; fail=1; }
+          grep -q "Osuntokun Avenue" public/assets/js/site-info.js \
+            || { echo "FAIL: site-info.js lost the corrected address"; fail=1; }
+          grep -Fq '2\\u20133 business days' public/assets/js/site-info.js \
+            || { echo "FAIL: site-info.js lost the reply promise"; fail=1; }
+          for page in / /index.html /contact.html /news.html /academies.html /privacy.html; do
+            html=$(curl -fsS "http://127.0.0.1:4040$page")
+            printf '%s' "$html" | grep -q "Osuntokun" \
+              || { echo "FAIL $page does not carry the corrected address"; fail=1; }
+          done
+          curl -fsS http://127.0.0.1:4040/index.html | grep -q '/privacy.html' \
+            || { echo "FAIL: the contact consent checkbox links to no privacy notice"; fail=1; }
+          # Every page's footer links it, so a page cannot silently drop it.
+          for page in / /contact.html /news.html /library.html /programs.html /academies.html /privacy.html /newsletter-unsubscribed.html; do
+            curl -fsS "http://127.0.0.1:4040$page" | grep -q "site-info.js" \
+              || { echo "FAIL $page does not load the shared facts"; fail=1; }
           done
 
           # The nav must still carry the portal entry point.

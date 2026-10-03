@@ -9,6 +9,10 @@ dist/
 
 # Runtime data (sessions, temp files)
 data/news/sessions/
+# Newsletter list and send log: real people's email addresses. These are
+# runtime files, like the sessions above — they must never be committed.
+data/news/subscribers.json
+data/news/newsletter-log.json
 # Portal file uploads, when the API happens to be run from the repo root
 data/files/
 *.tmp

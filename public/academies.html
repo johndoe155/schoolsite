@@ -460,7 +460,7 @@ button {  font: inherit; color: inherit; background: none; border: 0; cursor: po
         <div class="info-card accent-clay">
           <h4>Master the Creative Arts</h4>
           <p>BIMA delivers a short-term professional program tailored for those looking to dominate the entertainment, media, and business communication industries.</p>
-          <div class="price-tag"><span class="price-tag-amount">&#8358;20,000</span><span class="price-tag-note">Next Session: April 2 &ndash; 19</span></div>
+          <div class="price-tag"><span class="price-tag-amount">&#8358;20,000</span><span class="price-tag-note">Next Session: April 2 &ndash; 19, 2027</span></div>
         </div>
         <div class="info-card accent-clay">
           <h4>Sound &amp; Instrument</h4>
@@ -512,7 +512,7 @@ button {  font: inherit; color: inherit; background: none; border: 0; cursor: po
       <div class="info-grid">
         <div class="info-card">
           <h4>Academy Location</h4>
-          <p>1&ndash;5 Tunde Iakunni Crescent, Off Osuntokun, Bodija, Ibadan, Nigeria.</p>
+          <p>1-5 Osuntokun Avenue, Off Tunde Lakanmi Street, Crescent, Oyo, Nigeria.</p>
           <div class="meta">Sessions commence 10:00 AM Daily</div>
         </div>
         <div class="info-card">
@@ -544,6 +544,7 @@ button {  font: inherit; color: inherit; background: none; border: 0; cursor: po
 
 
 <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/site-info.js"></script>
   <script src="/assets/js/layout.js"></script>
 
 <script>
@@ -645,7 +646,9 @@ var bima = {
       kicker: "Intensive 2-Week Certification",
       title: "Master the Creative Arts",
       body: "BIMA delivers a short-term professional program tailored for those looking to dominate the entertainment, media, and business communication industries.",
-      priceTag: { amount: "\u20A620,000", note: "Next Session: April 2 \u2013 19" }
+      priceTag: { amount: "\u20A620,000", note: (window.BIC_INFO && window.BIC_INFO.nextSessionLabel
+        ? window.BIC_INFO.nextSessionLabel()
+        : "Next Session: April 2 \u2013 19, 2027") }
     },
     {
       kicker: "Discipline 01",
@@ -711,7 +714,7 @@ var enroll = {
     {
       icon: "location",
       heading: "Academy Location",
-      body: "1\u20135 Tunde Iakunni Crescent, Off Osuntokun, Bodija, Ibadan, Nigeria.",
+      body: "1-5 Osuntokun Avenue, Off Tunde Lakanmi Street, Crescent, Oyo, Nigeria.",
       meta: "Sessions commence 10:00 AM Daily"
     },
     {

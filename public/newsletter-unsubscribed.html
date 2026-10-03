@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>You have been unsubscribed — Bodija International College</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="You have been removed from the Bodija International College newsletter list.">
+  <link rel="icon" type="image/png" href="/assets/img/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/footer.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
+
+  <style>
+    /* Same local-and-namespaced approach as 404.html and privacy.html: one
+       short page, no stylesheet of its own for other pages to download. */
+    .bic-unsub { padding: clamp(3rem, 9vw, 7rem) 1.25rem; text-align: center; }
+    .bic-unsub__inner { max-width: 34rem; margin-inline: auto; }
+    .bic-unsub__mark {
+      font-family: var(--bic-font-display, "Abril Fatface", serif);
+      font-size: clamp(2.5rem, 9vw, 4rem); line-height: 1; margin: 0 0 .5rem;
+      color: var(--bic-colour-navy, #05014A);
+    }
+    .bic-unsub h1 {
+      font-family: var(--bic-font-display, "Abril Fatface", serif);
+      font-size: clamp(1.4rem, 4vw, 2rem); margin: .5rem 0 .75rem;
+    }
+    .bic-unsub p {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      color: var(--bic-colour-muted, #5b5b66);
+      line-height: 1.6; margin: 0 auto 1.75rem; max-width: 30rem;
+    }
+    .bic-unsub__links { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; }
+    .bic-unsub__links a {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      font-weight: 600; text-decoration: none; padding: .7rem 1.35rem;
+      border-radius: 999px; border: 1px solid var(--bic-colour-navy, #05014A);
+      color: var(--bic-colour-navy, #05014A);
+    }
+    .bic-unsub__links a.primary { background: var(--bic-colour-navy, #05014A); color: #fff; }
+    .bic-unsub__links a:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  </style>
+</head>
+<body>
+
+  <header class="bic-nav" data-nav-theme="paper" data-nav-active=""
+          data-nav-cta-label="Home" data-nav-cta-href="/index.html">
+  </header>
+
+  <main class="bic-unsub" id="main-content">
+    <div class="bic-unsub__inner">
+      <p class="bic-unsub__mark" aria-hidden="true">✓</p>
+      <h1>You have been unsubscribed</h1>
+      <p>
+        Your email address has been removed from the school newsletter list and
+        you will not receive further newsletters. This happens immediately —
+        there is nothing else you need to do.
+      </p>
+      <p>
+        Messages about your own child, sent through the parent portal, are not
+        affected: those are part of the school&rsquo;s service, not the
+        newsletter.
+      </p>
+      <div class="bic-unsub__links">
+        <a class="primary" href="/index.html">Back to the homepage</a>
+        <a href="/contact.html">Contact the school</a>
+      </div>
+    </div>
+  </main>
+
+  <div data-bic-footer data-bic-footer-theme="warm"></div>
+
+  <script src="/assets/js/site-info.js"></script>
+  <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/layout.js"></script>
+</body>
+</html>
