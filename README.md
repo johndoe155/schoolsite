@@ -62,7 +62,80 @@ For the full picture — why the portal is proxied rather than merged, how the
 two session systems coexist, and what was verified — see
 [`PORTAL-INTEGRATION-PLAN.md`](PORTAL-INTEGRATION-PLAN.md).
 
-## Project layout
+## Deploying to production
+
+Everything runs behind one hostname. Caddy terminates TLS and forwards to the
+site, which serves the marketing pages and proxies `/portal/*` onward:
+
+```
+caddy:443 → site:4040 ─┬─ /             static public/
+                       ├─ /api/*        site's own JSON API
+                       ├─ /portal/api/* → api:8080   (NestJS)
+                       └─ /portal/*     → web:3000   (Next.js)
+```
+
+`web` and `api` are **not** published to the host — they are reachable from
+outside only through the site's proxy. One TLS cert, one origin, first-party
+cookies for both halves.
+
+```bash
+cp portal/.env.example portal/.env    # then fill in every value
+cd portal && docker compose up -d --build
+```
+
+### Required, or the stack will not start
+
+`docker-compose.yml` uses `${VAR:?}`, so Compose refuses to resolve the file
+until these are set: `POSTGRES_OWNER_PASSWORD`, `APP_SECRET` (≥32 chars),
+`SESSION_SECRET`, `NEWS_ADMIN_PASSWORD`, `STAFF_PASSCODE`,
+`BACKUP_ENCRYPTION_KEY`, `BOOTSTRAP_ADMIN_EMAIL`, `BOOTSTRAP_ADMIN_PASSWORD`.
+
+The site additionally **exits on boot** in production if `NEWS_ADMIN_PASSWORD`
+or `STAFF_PASSCODE` is still the published default, or if `SESSION_SECRET` /
+`ADMIN_TOKEN` is missing or too short:
+
+```
+❌ Refusing to start with NODE_ENV=production:
+   • NEWS_ADMIN_PASSWORD is still the published default
+```
+
+`PUBLIC_WEB_ORIGIN` **must end with the portal's basePath** —
+`https://school.example/portal`. Every invite, password-reset, guardian-verify
+and MFA link is built from it, as is Paystack's `callback_url`; a suffix-less
+value 404s on all of them. For a root-mounted portal, set
+`PORTAL_BASE_PATH=''` and drop the suffix from both.
+
+### Do not skip Caddy
+
+The site's session cookie is `Secure` whenever `NODE_ENV=production`. Express
+only sets it when it believes the connection is TLS, which it learns from
+`X-Forwarded-Proto`. Behind Caddy that works; **point a browser straight at
+`:4040` over plain HTTP and every admin login returns `200` while silently
+dropping the cookie** — the admin sees success and is logged out immediately.
+Verified: without the header, `cookie set: 0`; with it, `cookie set: 1` and the
+`Secure` flag present.
+
+### Forwarding hops
+
+| service | `TRUST_PROXY` | chain |
+|---|---|---|
+| site | `1` | caddy → site |
+| api  | `2` | caddy → site → api |
+
+### Persistent volumes
+
+`site_data` (posts, news config, library catalog, gallery JSON, sessions),
+`site_gallery`, `site_uploads`, `site_library`. The site stores its content in
+JSON files and its uploads on disk — without these, every gallery image, news
+post and library PDF is discarded on the next redeploy.
+
+### What this cannot do
+
+PGlite is a development convenience. The Compose stack uses real Postgres, and
+`apps/api/src/db/client.ts` treats PGlite as **fatal** in production. Never
+point `DATABASE_URL` away from Postgres in a deployed stack.
+
+
 
 ```
 ├── server.js               One Express server for the entire site,

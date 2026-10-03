@@ -198,6 +198,57 @@ file still holds the original bytes
 ### 12. No role-switch UI — OPEN
 Not addressed. Requires portal UI work.
 
+### 4. No working production path for site and portal together — FIXED (build not run)
+
+I originally marked this **OPEN** and said only that the boot gate "covers no
+dev defaults in production". That was me substituting the part I had already
+done for the finding. It was not addressed.
+
+The gap was larger than a missing container. `docker-compose.yml` had
+`postgres`, `api`, `worker`, `web`, `backup` and `caddy` — and **zero references
+to the site**: no `4040`, no `server.js`. The Caddyfile sent the entire domain
+to `web:3000`, but `web` is built with `basePath=/portal`, so it cannot answer
+for `/` at all. The compose stack could never have served the marketing site,
+and the site is what proxies `/portal`. **The two halves have never been
+deployable together from this repo.**
+
+Added:
+
+- **`Dockerfile`** (repo root) — multi-stage, `npm ci --omit=dev`, non-root
+  `bic` user, healthcheck on `/api/health`, writable `/app/data`.
+- **`.dockerignore`** — the compose build context is the repo root, so without
+  this the daemon is sent the entire portal monorepo including `node_modules`,
+  `.next` and `dist`.
+- **`site` service** in `docker-compose.yml`, on the `internal` network only,
+  with `PORTAL_WEB_URL=http://web:3000` and `PORTAL_API_URL=http://api:8080`,
+  `TRUST_PROXY=1`, and the four secrets the boot gate demands. Four new volumes
+  so uploads and JSON content survive a redeploy.
+- **Caddyfile re-pointed** `web:3000` → `site:4040`, with `depends_on: [site]`.
+- **CI** — the `docker` job built only `context: portal`. It now also builds
+  the site image, asserts the boot gate refuses defaults inside the container,
+  boots it and checks `/` returns 200, asserts it does not run as root, and
+  runs `docker compose config` to prove the graph still resolves and that Caddy
+  depends on `site`.
+
+**Verified here** (Docker is not installed in this sandbox, so `docker build`
+itself was not run — flagged, not assumed):
+
+- `npm ci --omit=dev` on the site tree: **exit 0, 129 packages, all 10 declared
+  prod deps present**, and `server.js` boots on prod deps alone.
+- The full compose env contract, run against a live stack in
+  `NODE_ENV=production` with `TRUST_PROXY=1`: **15/15 routes 200**, `/portal` →
+  307, `/portal/api/v1/health` → 200, proxy resolving hostnames rather than IPs.
+- All **8** `${VAR:?}` required vars are supplied by the new CI job, so
+  `docker compose config` will resolve rather than error.
+
+**Found while testing it:** the site's session cookie is `Secure` in
+production, so Express only sets it when `X-Forwarded-Proto: https` is present.
+Pointing a browser directly at `:4040` over plain HTTP makes every admin login
+return `200` while silently dropping the cookie — success shown, session lost.
+Measured: `cookie set: 0` without the header, `cookie set: 1` with the `Secure`
+flag. Caddy is therefore load-bearing, not decoration; this is now in the
+README.
+
 ---
 
 ## Medium / Low
@@ -216,7 +267,7 @@ Not addressed. Requires portal UI work.
 | CI never tested the proxy | **FIXED** — `site.yml` ran with `PORTAL_ENABLED=false`, so the entire integration was untested, which is how the proxy shipped broken twice. New `proxy` job boots all three processes and asserts through :4040 only |
 | Custom 404 page | **OPEN** |
 | Timezone handling | **OPEN** — not investigated |
-| Docker image for the main site | **OPEN** — the boot gate covers "no dev defaults in production", but there is no site container |
+| Docker image for the main site | **FIXED** — see #4 below |
 
 ---
 

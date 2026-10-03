@@ -1,0 +1,25 @@
+# Build context for the site image (root Dockerfile). The compose file builds it
+# from the repository root, so without this the daemon is sent the entire portal
+# monorepo — node_modules, .next, dist — none of which the site image uses.
+node_modules
+**/node_modules
+portal
+.git
+.github
+.env
+.env.*
+*.log
+*.tmp
+.cache_build
+.vercel
+.next
+dist
+coverage
+
+# Runtime state is baked into the image empty and mounted as a volume. Shipping
+# whatever a developer happens to have in data/ would leak local test posts and
+# uploads into production.
+data/news/sessions
+data/library/catalog.json
+data/news/posts.json
+data/gallery-data.json

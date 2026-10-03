@@ -110,6 +110,57 @@ services:
       api: { condition: service_healthy }
 
   # ───────────────────────────────────────────────────────────────────────────
+  # The BIC marketing site — Express on :4040, and the ONLY thing Caddy talks to.
+  #
+  # It serves public/ and the site's own /api/*, and proxies /portal/* to web
+  # and /portal/api/* to api. That is the whole point of the single-origin
+  # topology: one TLS cert, one host, first-party cookies for both halves.
+  #
+  # web and api are deliberately NOT published to the host. Reaching them from
+  # outside is only possible through this proxy, so the site is where the CSP,
+  # rate limits and admin auth for the marketing side actually live.
+  # ───────────────────────────────────────────────────────────────────────────
+  site:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4040
+      # caddy → site: a single forwarding hop. The API sits two hops back
+      # (caddy → site → api) and already has TRUST_PROXY=2.
+      TRUST_PROXY: ${SITE_TRUST_PROXY:-1}
+      # In-network targets. These are service names, not ports — the site's
+      # proxy resolves them over the `internal` network.
+      PORTAL_WEB_URL: http://web:3000
+      PORTAL_API_URL: http://api:8080
+      # The server refuses to boot in production on the published defaults, so
+      # these are required rather than optional.
+      SESSION_SECRET: ${SESSION_SECRET:?set in .env — >=32 chars, or the server exits on boot}
+      NEWS_ADMIN_PASSWORD: ${NEWS_ADMIN_PASSWORD:?set in .env}
+      STAFF_PASSCODE: ${STAFF_PASSCODE:?set in .env}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      # Optional — /api/contact returns 503 until these are set.
+      SMTP_HOST: ${SITE_SMTP_HOST:-}
+      SMTP_PORT: ${SITE_SMTP_PORT:-587}
+      SMTP_USER: ${SITE_SMTP_USER:-}
+      SMTP_PASS: ${SITE_SMTP_PASS:-}
+      TO_EMAIL: ${SITE_TO_EMAIL:-}
+    volumes:
+      # Posts, news config, library catalog, gallery JSON and the session store.
+      - site_data:/app/data
+      # Uploads. Named volumes seed from the image on first use, so the gallery
+      # images already in the repo survive; redeploying no longer discards them.
+      - site_gallery:/app/public/assets/img/gallery
+      - site_uploads:/app/public/assets/uploads
+      - site_library:/app/public/assets/library
+    networks: [internal]
+    depends_on:
+      web: { condition: service_started }
+      api: { condition: service_healthy }
+
+  # ───────────────────────────────────────────────────────────────────────────
   # Nightly encrypted backup + weekly restore drill. The runbook promises both;
   # this service is what actually performs them. Without it scripts/backup.sh
   # is just a file in the repo that nobody runs.
@@ -166,7 +217,7 @@ services:
       - caddy_config:/config
     networks: [internal]
     depends_on:
-      - web
+      - site
 
 volumes:
   pgdata:
@@ -175,6 +226,10 @@ volumes:
   portal_backups:   # encrypted dumps staged before/alongside the offsite copy
   portal_state:     # backup + restore-drill heartbeats, read by /health
   portal_imports:   # roster CSVs in flight between the API and the worker
+  site_data:        # the marketing site's JSON content + sessions
+  site_gallery:     # gallery image uploads
+  site_uploads:     # news article images
+  site_library:     # library PDFs
 
 networks:
   internal:

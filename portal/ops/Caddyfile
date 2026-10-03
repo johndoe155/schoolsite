@@ -1,24 +1,38 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# School Portal — TLS ingress (review-2).
+# TLS ingress for the whole domain: marketing site AND portal.
+#
+# Everything goes to the site on :4040, which serves the marketing pages and
+# proxies /portal/* onward to the Next.js app and the NestJS API. It used to
+# point at web:3000 — but web is built with basePath=/portal, so it cannot
+# answer for "/" at all, and the marketing site was not in the stack in the
+# first place. The domain could not serve both halves at once.
+#
+#   caddy:443 → site:4040 ─┬─ /            static marketing pages
+#                          ├─ /api/*       site's own JSON API
+#                          ├─ /portal/api/*→ api:8080
+#                          └─ /portal/*    → web:3000
+#
+# Forwarding hops for req.ip accounting:
+#   caddy → site            = 1  (site runs TRUST_PROXY=1)
+#   caddy → site → api      = 2  (api runs TRUST_PROXY=2)
 #
 # PORTAL_DOMAIN env (docker-compose) selects the site address:
-#   • real domain (portal.school.example) with DNS on this host ⇒ Caddy
-#     obtains + renews ACME (Let's Encrypt) certificates automatically.
+#   • real domain (school.example) with DNS on this host ⇒ Caddy obtains +
+#     renews ACME (Let's Encrypt) certificates automatically.
 #   • `localhost` ⇒ Caddy's internal CA issues a local cert; trust it once
 #     with `caddy trust` (or add /data/caddy/pki/authorities/local/root.crt
 #     to the client trust store).
 #
-# The app's own HSTS header is emitted by apps/web/middleware.ts whenever
+# The portal's own HSTS header is emitted by apps/web/middleware.ts whenever
 # PUBLIC_WEB_ORIGIN is https:// — keep the two consistent.
 # ─────────────────────────────────────────────────────────────────────────────
 
 {$PORTAL_DOMAIN:localhost} {
 	encode zstd gzip
 
-	# Everything goes to the Next.js BFF; it rewrites /api/* to the API.
-	reverse_proxy web:3000 {
-		# Preserve the real client for the API's req.ip accounting
-		# (caddy → web → api = two trusted hops; TRUST_PROXY=2 on the API).
+	reverse_proxy site:4040 {
+		# Preserve the real client so the site's rate limiters and the API's
+		# req.ip accounting see the visitor rather than the proxy.
 		header_up X-Forwarded-For {remote_host}
 		header_up X-Forwarded-Proto {scheme}
 		header_up X-Forwarded-Host {host}
