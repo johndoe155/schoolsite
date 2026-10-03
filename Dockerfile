@@ -34,6 +34,12 @@ RUN addgroup -S bic && adduser -S bic -G bic
 COPY --from=deps --chown=bic:bic /app/node_modules ./node_modules
 COPY --chown=bic:bic package.json package-lock.json server.js ./
 COPY --chown=bic:bic public ./public
+# The site's content lives in JSON files, and data/gallery-data.json is real
+# site content — the school's curated albums, not runtime state. Without this
+# the first deploy came up with an empty gallery and the homepage said "No
+# gallery items yet." .dockerignore keeps the mutable files (posts, catalog,
+# sessions) out of the build context, so this copies content only.
+COPY --chown=bic:bic data ./data
 
 # Writable state. The site keeps its content in JSON files and its uploads on
 # disk, all under these paths — without a volume behind them every gallery

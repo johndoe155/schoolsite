@@ -8,28 +8,10 @@
   <link rel="icon" type="image/png" href="/assets/img/logo.png">
 
   <!-- Same fonts as main site -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans:    ['Montserrat','system-ui','sans-serif'],
-            display: ['Abril Fatface','Georgia','serif'],
-            brand:   ['Montserrat','sans-serif'],
-            serif:   ['Libre Baskerville','Georgia','serif'],
-          },
-          colors: {
-            brand: {
-              indigo: '#05014a',
-              yellow: '#FACC15',
-              dark:   '#0f172a',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Built by `npm run build:tailwind` from build/tailwind/admin.config.js.
+       Was the Tailwind Play CDN, which compiles in the browser and is
+       explicitly not for production use. -->
+  <link rel="stylesheet" href="/assets/css/tw-admin.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

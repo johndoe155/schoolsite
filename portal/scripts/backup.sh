@@ -150,6 +150,52 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
   -pass env:BACKUP_ENCRYPTION_KEY -in "$STAGED" -out /dev/null 2>/dev/null \
   || die $E_VERIFY "the dump cannot be decrypted with BACKUP_ENCRYPTION_KEY — backup aborted"
 
+# ── 2b. The marketing site's own content ─────────────────────────────────────
+# News posts, the library, the gallery and the newsletter list do not live in
+# Postgres. They are JSON files and uploads in four Docker volumes that nothing
+# backed up at all — a sidecar that only dumps Postgres means a full restore
+# brings the portal back and wipes the school's website. Mounted read-only by
+# docker-compose; absent in a portal-only or test deployment, so this is
+# skipped rather than fatal.
+SITE_DIRS=()
+# read -ra, not `for d in "$VAR"`: a quoted expansion does not word-split, so
+# the default four-path list arrived as a single string and every directory
+# test failed — the archive was silently skipped even when the volumes were
+# mounted. That is the worst kind of bug here, because skipping looks like
+# success in the log.
+read -r -a _site_candidates <<< "${SITE_CONTENT_DIRS:-/site/data /site/gallery /site/uploads /site/library}"
+for d in "${_site_candidates[@]}"; do
+  [ -d "$d" ] && SITE_DIRS+=("$d")
+done
+
+SITE_STAGED=""
+if [ "${#SITE_DIRS[@]}" -gt 0 ] && [ "${BACKUP_SKIP_DUMP:-}" != "true" ]; then
+  SITE_NAME="portal-${STAMP}-$(openssl rand -hex 3).site.tar.enc"
+  SITE_STAGED="${BACKUP_DIR}/${SITE_NAME}"
+  [ -e "$SITE_STAGED" ] && die $E_DUMP "refusing to overwrite ${SITE_STAGED}"
+  log "archiving site content (${#SITE_DIRS[@]} dirs) → ${SITE_STAGED}"
+  set +e
+  tar -cf - -C / "${SITE_DIRS[@]#/}" \
+    | openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt \
+        -pass env:BACKUP_ENCRYPTION_KEY -out "$SITE_STAGED"
+  scodes=("${PIPESTATUS[@]}")
+  set -e
+  [ "${scodes[0]}" -eq 0 ] || die $E_DUMP "tar of site content failed (exit ${scodes[0]})"
+  [ "${scodes[1]}" -eq 0 ] || die $E_DUMP "openssl encryption of site content failed (exit ${scodes[1]})"
+  chmod 600 "$SITE_STAGED"
+  SITE_SIZE="$(wc -c < "$SITE_STAGED" | tr -d ' ')"
+  [ "$SITE_SIZE" -ge 512 ] \
+    || die $E_DUMP "site archive is only ${SITE_SIZE} bytes — refusing to call that a backup"
+  # Prove it opens, for the same reason the dump is proved above.
+  openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
+    -pass env:BACKUP_ENCRYPTION_KEY -in "$SITE_STAGED" -out /dev/null 2>/dev/null \
+    || die $E_VERIFY "the site archive cannot be decrypted — backup aborted"
+  log "site archive ${SITE_SIZE} bytes, decrypt verified"
+else
+  log "no site content volumes mounted — skipping site archive"
+fi
+
+
 # ── 3. Offsite ───────────────────────────────────────────────────────────────
 DEST="file://${STAGED}"
 if [ -n "${BACKUP_S3_BUCKET:-}" ]; then
@@ -167,11 +213,25 @@ if [ -n "${BACKUP_S3_BUCKET:-}" ]; then
     || die $E_UPLOAD "uploaded object is ${REMOTE_SIZE} bytes, expected ${SIZE}"
   DEST="$URL"
   log "upload verified (${REMOTE_SIZE} bytes)"
+
+  if [ -n "$SITE_STAGED" ]; then
+    SURL="s3://${BACKUP_S3_BUCKET}/${BACKUP_S3_PREFIX:-portal}/${SITE_NAME}"
+    log "uploading site archive → ${SURL}"
+    "$AWS" "${S3A[@]}" s3 cp "$SITE_STAGED" "$SURL" --only-show-errors \
+      || die $E_UPLOAD "site archive upload failed — local copy kept at ${SITE_STAGED}"
+    SREMOTE="$("$AWS" "${S3A[@]}" s3api head-object \
+        --bucket "$BACKUP_S3_BUCKET" --key "${BACKUP_S3_PREFIX:-portal}/${SITE_NAME}" \
+        --query ContentLength --output text 2>/dev/null || echo 0)"
+    [ "$SREMOTE" = "$SITE_SIZE" ] \
+      || die $E_UPLOAD "uploaded site archive is ${SREMOTE} bytes, expected ${SITE_SIZE}"
+    log "site archive upload verified (${SREMOTE} bytes)"
+  fi
 fi
 
 # ── 4. Retention ─────────────────────────────────────────────────────────────
 prune_local() {
-  find "$BACKUP_DIR" -maxdepth 1 -name 'portal-*.dump.enc' -type f \
+  find "$BACKUP_DIR" -maxdepth 1 \
+       \( -name 'portal-*.dump.enc' -o -name 'portal-*.site.tar.enc' \) -type f \
     -mtime "+${BACKUP_RETENTION_DAYS}" -print -delete 2>/dev/null | while read -r f; do
       log "pruned local $(basename "$f")"
     done

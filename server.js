@@ -93,6 +93,7 @@ const NEWS_DATA_DIR       = path.join(DATA_DIR, 'news');
 const POSTS_FILE          = path.join(NEWS_DATA_DIR, 'posts.json');
 const NEWS_CONFIG_FILE    = path.join(NEWS_DATA_DIR, 'config.json');
 const SESSIONS_DIR        = path.join(NEWS_DATA_DIR, 'sessions');
+const SUBSCRIBERS_FILE    = path.join(NEWS_DATA_DIR, 'subscribers.json');
 const NEWS_UPLOADS_DIR    = path.join(PUBLIC_DIR, 'assets', 'uploads');
 
 /* Library staff */
@@ -217,12 +218,20 @@ function renderArticleText(raw) {
     .join('\n');
 }
 
+/**
+ * Clean up free text from a form.
+ *
+ * This used to HTML-escape < and >, but its only caller sends the result as
+ * the `text` part of a plain-text email — so a parent who wrote
+ * "JSS1 <and> JSS2" had it arrive as "JSS1 &lt;and&gt; JSS2". Entities are
+ * for HTML sinks; this is not one. What actually matters here is header
+ * injection: newlines in a subject or address can add SMTP headers.
+ */
 function sanitize(str, maxLength) {
   if (typeof str !== 'string') return '';
   return str
-    .replace(/[\r\n\t]/g, ' ')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
+    .replace(/[\r\n\t]/g, ' ')      // no CRLF — that is header injection
+    .replace(/[\u0000-\u001f\u007f]/g, '')  // strip other control characters
     .slice(0, maxLength)
     .trim();
 }
@@ -413,6 +422,47 @@ const contactLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many messages sent. Please wait 15 minutes and try again.' },
+});
+
+/* ── Newsletter sign-up ───────────────────────────────────────────────────────
+   news.html used to flash "Subscribed ✓" and throw the address away, which is
+   worse than having no form: the school believes it is building a list and
+   parents believe they are on one. */
+const SUBSCRIBER_MAX = 20000;          // a hard ceiling — this is a public endpoint
+
+function readSubscribers() {
+  const list = readJSON(SUBSCRIBERS_FILE, []);
+  return Array.isArray(list) ? list : [];
+}
+
+app.post('/api/newsletter', contactLimiter, (req, res) => {
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ ok: false, error: 'Please enter a valid email address.' });
+  }
+  if (email.length > 254) {
+    return res.status(400).json({ ok: false, error: 'That email address is too long.' });
+  }
+
+  const list = readSubscribers();
+  if (list.some((r) => r.email === email)) {
+    /* Already subscribed is success, not an error — and saying so does not
+       confirm anything an attacker could not learn by just subscribing. */
+    return res.json({ ok: true, alreadySubscribed: true, message: 'You are already on the list. Thank you!' });
+  }
+  if (list.length >= SUBSCRIBER_MAX) {
+    console.error('[newsletter] subscriber list is at its ceiling; refusing new sign-ups.');
+    return res.status(507).json({ ok: false, error: 'The mailing list is full. Please contact the school office.' });
+  }
+
+  list.push({ email, subscribedAt: new Date().toISOString(), source: req.get('referer') || '' });
+  writeJSON(SUBSCRIBERS_FILE, list);
+  return res.json({ ok: true, message: 'Thank you — you are on the list.' });
+});
+
+/* Staff read the list. Same passcode gate as the news admin. */
+app.get('/api/newsletter', requireNewsAuth, (_req, res) => {
+  res.json({ count: readSubscribers().length, subscribers: readSubscribers() });
 });
 
 app.post('/api/contact', contactLimiter, async (req, res) => {
@@ -804,12 +854,17 @@ const SITE_CSP = [
      ignore 'unsafe-inline' for script anyway — keeping it would be a lie in
      the header while doing nothing.
      The three hosts are external files, which a nonce is not needed for. */
-  "script-src 'self' %NONCE% https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://esm.sh",
+  /* cdn.tailwindcss.com is gone: the three pages that used the Play CDN now
+     ship a built stylesheet (npm run build:tailwind). */
+  "script-src 'self' %NONCE% https://cdnjs.cloudflare.com https://esm.sh",
   /* style-src keeps 'unsafe-inline' and this is deliberate, not an oversight:
      the Tailwind Play CDN generates a <style> element at runtime, and several
      pages use style="..." attributes. Removing it breaks the CDN outright.
      Styles are not an execution vector the way inline script is. */
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com",
+  /* 'unsafe-inline' for style stays: the pages use style="..." attributes and
+     several scripts set inline styles. That is not an execution vector the way
+     inline script is. The Tailwind CDN no longer needs a style-src entry. */
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://images.unsplash.com",
   "connect-src 'self' https://esm.sh",

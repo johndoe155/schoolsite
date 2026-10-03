@@ -19,7 +19,12 @@ coverage
 # Runtime state is baked into the image empty and mounted as a volume. Shipping
 # whatever a developer happens to have in data/ would leak local test posts and
 # uploads into production.
+#
+# data/gallery-data.json and data/news/config.json are deliberately NOT
+# excluded: they are curated site content and configuration, not runtime state.
+# Excluding the gallery was a mistake — the Dockerfile copies data/, so a fresh
+# deploy would seed its volume from an image with no gallery and the homepage
+# would report "No gallery items yet" over 131 images that do exist.
 data/news/sessions
 data/library/catalog.json
 data/news/posts.json
-data/gallery-data.json

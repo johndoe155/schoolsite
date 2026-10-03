@@ -1,0 +1,6 @@
+/* Input for the static Tailwind build. The pages used to load the Play CDN,
+   which compiles in the browser — Tailwind explicitly says not to ship that.
+   `npm run build:tailwind` regenerates public/assets/css/tw-*.css. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

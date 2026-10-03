@@ -191,6 +191,12 @@ services:
     volumes:
       - portal_backups:/var/lib/portal/backups
       - portal_state:/var/lib/portal/state
+      # The marketing site's content is not in Postgres. Read-only, so a bug in
+      # the backup job cannot damage the live site.
+      - site_data:/site/data:ro
+      - site_gallery:/site/gallery:ro
+      - site_uploads:/site/uploads:ro
+      - site_library:/site/library:ro
     networks: [internal]
     depends_on:
       postgres: { condition: service_healthy }

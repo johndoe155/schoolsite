@@ -2,7 +2,7 @@
   "name": "bic-schoolsite",
   "version": "1.0.0",
   "private": true,
-  "description": "Bodija International College — unified school website (home, programs, contact, news, digital library, academies, gallery admin)",
+  "description": "Bodija International College \u2014 unified school website (home, programs, contact, news, digital library, academies, gallery admin)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,9 +13,10 @@
     "portal": "node scripts/portal.js",
     "portal:test": "npm run test --prefix portal/apps/api",
     "portal:smoke": "npm run smoke --prefix portal/apps/web",
-    "portal:reset": "node -e \"require('fs').rmSync('portal/data',{recursive:true,force:true});console.log('[portal] dev PGlite database reset — it will be re-seeded on next start')\"",
+    "portal:reset": "node -e \"require('fs').rmSync('portal/data',{recursive:true,force:true});console.log('[portal] dev PGlite database reset \u2014 it will be re-seeded on next start')\"",
     "tokens:sync": "node scripts/sync-tokens.js",
-    "tokens:check": "node scripts/sync-tokens.js --check"
+    "tokens:check": "node scripts/sync-tokens.js --check",
+    "build:tailwind": "node build/tailwind/build.mjs"
   },
   "engines": {
     "node": ">=20.19.0"
@@ -33,6 +34,7 @@
     "session-file-store": "^1.5.0"
   },
   "devDependencies": {
-    "jsdom": "^30.1.1"
+    "jsdom": "^30.1.1",
+    "tailwindcss": "^3.4.17"
   }
 }

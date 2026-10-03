@@ -70,10 +70,38 @@
     newsletter.addEventListener('submit', function(e){
       e.preventDefault();
       const email = document.getElementById('newsletterEmail').value.trim();
-      if(!email || !email.includes('@')){ alert('Please enter a valid email address'); return; }
       const btn = newsletter.querySelector('button');
-      btn.disabled = true; btn.textContent = 'Subscribed ✓';
-      setTimeout(()=>{ btn.disabled=false; btn.textContent='Subscribe'; document.getElementById('newsletterEmail').value=''; }, 2500);
+      const status = document.getElementById('newsletterStatus');
+      function say(t, ok){ if (status) { status.textContent = t; status.style.color = ok ? '' : '#a11'; } }
+      if(!email || !email.includes('@')){ alert('Please enter a valid email address'); return; }
+
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = 'Subscribing…';
+
+      /* This used to print "Subscribed ✓" and discard the address. It now posts to
+         /api/newsletter and only claims success when the server confirms it. */
+      fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+        .then(r => r.json().catch(() => ({})).then(d => ({ ok: r.ok, d })))
+        .then(({ ok, d }) => {
+          if (ok) {
+            btn.textContent = 'Subscribed ✓';
+            say(d.message || 'Thank you — you are on the list.', true);
+            document.getElementById('newsletterEmail').value = '';
+            setTimeout(() => { btn.disabled = false; btn.textContent = original; }, 2500);
+          } else {
+            say(d.error || 'Something went wrong. Please try again.', false);
+            btn.disabled = false; btn.textContent = original;
+          }
+        })
+        .catch(() => {
+          say('Could not reach the server. Please try again later.', false);
+          btn.disabled = false; btn.textContent = original;
+        });
     });
 
     // hash routing

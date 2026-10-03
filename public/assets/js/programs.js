@@ -106,11 +106,51 @@
     var form = document.getElementById('contact-form');
     var msg  = document.getElementById('contact-msg');
     if (form && msg) {
+      function say(text, ok) {
+        msg.textContent = text;
+        msg.style.display = 'block';
+        msg.style.color = ok ? '' : '#a11';
+      }
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        msg.textContent = 'Thank you — we\'ll be in touch within one business day.';
-        msg.style.display = 'block';
-        form.reset();
+        var fd       = new FormData(form);
+        var name     = (fd.get('name')  || '').toString().trim();
+        var email    = (fd.get('email') || '').toString().trim();
+        var interest = (fd.get('interest') || '').toString().trim();
+
+        if (!name || !email) { say('Please fill in your name and email address.', false); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say('That email address does not look right.', false); return; }
+
+        var submit = form.querySelector('.form-submit');
+        if (submit) { submit.disabled = true; submit.textContent = 'Sending…'; }
+
+        fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            subject: 'Admissions enquiry' + (interest ? ' — ' + interest : ''),
+            message: 'Program of interest: ' + (interest || 'not specified') +
+                     '\nSubmitted from: ' + window.location.pathname
+          })
+        })
+          .then(function (res) {
+            return res.json().catch(function () { return {}; })
+              .then(function (data) { return { ok: res.ok, data: data }; });
+          })
+          .then(function (r) {
+            if (r.ok) {
+              say(r.data.message || 'Thank you — admissions will be in touch within one business day.', true);
+              form.reset();
+            } else {
+              say(r.data.error || 'Something went wrong. Please try again.', false);
+            }
+          })
+          .catch(function () { say('Could not reach the server. Please try again later.', false); })
+          .finally(function () {
+            if (submit) { submit.disabled = false; submit.textContent = 'Request information'; }
+          });
       });
     }
 
