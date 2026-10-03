@@ -20,9 +20,9 @@ import { issueEnrollToken } from "./auth/enroll-token";
 export const devEnrollTokens: Record<string, string> = {};
 
 const PERMS: Record<string, string[]> = {
-  super_admin: ["directory:read","directory:write","roles:read","roles:write","academics:read","academics:write","attendance:read","attendance:write","gradebook:read","gradebook:write","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","family:read","self:read","settings:write"],
-  school_admin: ["directory:read","directory:write","roles:read","academics:read","academics:write","attendance:read","gradebook:read","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","settings:write"],
-  registrar: ["directory:read","directory:write","academics:read","academics:write","attendance:read","gradebook:read"],
+  super_admin: ["directory:read","directory:write","roles:read","roles:write","academics:read","academics:write","attendance:read","attendance:write","gradebook:read","gradebook:write","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","family:read","self:read","settings:write","schedule:write","schedule:read"],
+  school_admin: ["directory:read","directory:write","roles:read","academics:read","academics:write","attendance:read","gradebook:read","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","settings:write","schedule:write","schedule:read"],
+  registrar: ["directory:read","directory:write","academics:read","academics:write","attendance:read","gradebook:read","schedule:write","schedule:read"],
   counselor: ["directory:read","attendance:read","gradebook:read"],
   teacher: ["academics:read","attendance:read","attendance:write","gradebook:read","gradebook:write","messaging:write","schedule:read","self:read"],
   teacher_assistant: ["academics:read","attendance:read","attendance:write","gradebook:read","self:read"],

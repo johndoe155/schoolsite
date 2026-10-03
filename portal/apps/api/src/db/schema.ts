@@ -1,6 +1,6 @@
 import {
   pgTable, uuid, text, timestamp, boolean, numeric, smallint, date, jsonb,
-  primaryKey, unique, bigint, integer,
+  primaryKey, unique, bigint, integer, time,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -190,6 +190,35 @@ export const enrollments = pgTable("enrollments", {
   studentUserId: uuid("student_user_id").notNull(),
   sectionId: uuid("section_id").notNull(),
   status: text("status").notNull().default("enrolled"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* ── 0018 — the school timetable ──────────────────────────────────────────────
+   timetable_periods is the week skeleton for a term (one bell schedule, so
+   periods belong to the term, not the section). timetable_slots is what fills
+   a period: a section, optionally a course, a teacher and a room. A period
+   with no slot row is a free period — a real state, not a placeholder. */
+export const timetablePeriods = pgTable("timetable_periods", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  termId: uuid("term_id").notNull(),
+  /** 0 = Sunday … 6 = Saturday, matching JS Date.getDay(). */
+  weekday: smallint("weekday").notNull(),
+  periodIndex: smallint("period_index").notNull(),
+  label: text("label"),
+  startsAt: time("starts_at").notNull(),
+  endsAt: time("ends_at").notNull(),
+  /** Break/lunch/assembly: renders in the week, but nothing can be taught in it. */
+  isBreak: boolean("is_break").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const timetableSlots = pgTable("timetable_slots", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  periodId: uuid("period_id").notNull(),
+  sectionId: uuid("section_id").notNull(),
+  courseId: uuid("course_id"),
+  teacherUserId: uuid("teacher_user_id"),
+  room: text("room"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
