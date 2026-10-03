@@ -39,6 +39,7 @@ const TABS: Record<string, Tab[]> = {
     { href: "/admin/users", label: "Users", perm: "directory:read" },
     { href: "/admin/students", label: "Students", perm: "directory:read" },
     { href: "/admin/sections", label: "Sections", perm: "academics:read" },
+    { href: "/admin/timetable", label: "Timetable", perm: "schedule:read" },
     { href: "/admin/academics", label: "Academics", perm: "academics:read" },
     { href: "/admin/fees", label: "Fees", perm: "fees:read" },
     { href: "/admin/transport", label: "Transport", perm: "transport:read" },
@@ -51,6 +52,7 @@ const TABS: Record<string, Tab[]> = {
   ],
   teacher: [
     { href: "/teacher", label: "Sections" },
+    { href: "/teacher/timetable", label: "Timetable" },
     { href: "/teacher/messages", label: "Messages" },
   ],
   student: [{ href: "/student", label: "Dashboard" }, { href: "/student/grades", label: "Grades" }],

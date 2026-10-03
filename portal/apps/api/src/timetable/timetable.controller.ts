@@ -196,7 +196,9 @@ function groupByDay<T>(periods: any[], valueOf: (p: any) => T) {
   for (const p of [...periods].sort((a, b) =>
       (a.weekday - b.weekday) || (a.periodIndex - b.periodIndex))) {
     week[DAY_NAMES[p.weekday]].push({
-      index: p.periodIndex, label: p.label, startsAt: p.startsAt, endsAt: p.endsAt,
+      // The period id is in the payload because the admin editor has to post it
+      // back to assign a slot. Leaving it out forced callers to re-query.
+      id: p.id, index: p.periodIndex, label: p.label, startsAt: p.startsAt, endsAt: p.endsAt,
       isBreak: p.isBreak, ...((valueOf(p) as object) ?? {}),
     });
   }

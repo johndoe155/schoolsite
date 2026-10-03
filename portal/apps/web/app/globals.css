@@ -273,3 +273,33 @@ body.portal-root :focus-visible {
 @media (prefers-reduced-motion: reduce) {
   body.portal-root * { transition-duration: 0.01ms !important; }
 }
+
+/* ============================================================
+   Timetable — three states must read differently at a glance:
+   taught, break, free. A free period that looks like a break
+   makes an unfinished week look finished.
+   ============================================================ */
+body.portal-root .tt-week { display: grid; gap: 18px; }
+body.portal-root .tt-day > h2 { margin: 0 0 8px; font-size: 1.05rem; }
+body.portal-root .tt-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+body.portal-root .tt-slot {
+  display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px;
+  padding: 10px 12px; border-radius: var(--radius, 10px);
+  background: var(--card); border: 1px solid var(--border, #e3dfd3);
+}
+body.portal-root .tt-break { background: var(--card-2, #f2eee2); border-style: dashed; }
+body.portal-root .tt-free  { border-style: dashed; opacity: .82; }
+body.portal-root .tt-time { display: grid; gap: 2px; font-variant-numeric: tabular-nums; }
+body.portal-root .tt-label { font-weight: 600; }
+body.portal-root .tt-body { display: grid; gap: 2px; }
+body.portal-root .tt-editor { grid-column: 1 / -1; }
+body.portal-root .tt-editor details > summary { cursor: pointer; font-size: .9rem; }
+body.portal-root .tt-hits { list-style: none; margin: 6px 0; padding: 0; display: grid; gap: 4px; }
+body.portal-root .tt-bell-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 14px; margin: 12px 0; }
+body.portal-root .tt-bell-day > h3 { margin: 0 0 6px; font-size: .95rem; }
+body.portal-root .tt-bell-row { display: grid; grid-template-columns: 1.4rem 1fr 1fr 1fr auto; gap: 4px; align-items: center; margin-bottom: 4px; }
+body.portal-root .tt-bell-n { font-size: .8rem; color: var(--muted, #6b6656); }
+body.portal-root .tt-bell-break { font-size: .78rem; white-space: nowrap; }
+body.portal-root .tt-bell-row input[type="time"],
+body.portal-root .tt-bell-row input[type="text"],
+body.portal-root .tt-bell-row input:not([type]) { width: 100%; font-size: .82rem; padding: 3px 4px; }
