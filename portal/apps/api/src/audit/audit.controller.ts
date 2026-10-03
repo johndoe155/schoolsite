@@ -1,3 +1,4 @@
+import { localDate } from "../config";
 import {
   Controller, Get, Inject, Query, Req, Res, UnprocessableEntityException,
 } from "@nestjs/common";
@@ -295,7 +296,7 @@ export class AuditController {
       ip: req.ip, userAgent: req.get("user-agent") ?? undefined,
     }));
 
-    const stamp = new Date().toISOString().slice(0, 10);
+    const stamp = localDate();   // the school's day, for a filename a human reads
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", `attachment; filename="audit-log-${stamp}.csv"`);
     res.send(csv);

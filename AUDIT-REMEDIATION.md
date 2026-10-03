@@ -154,7 +154,7 @@ nine cases measured:
 | no cookie, no token | 401 |
 | after logout | `{"authenticated":false}` → 401 |
 
-### 13. Account lockout is a denial of service — OPEN, and worse than described
+### 13. Account lockout is a denial of service — FIXED, and it was worse than described
 Measured, not assumed. `lockout: { maxFailures: 5, durationMs: 15 * 60_000 }`:
 
 ```
@@ -172,12 +172,26 @@ Two distinct problems:
    and can never reach `account_locked`. So `423` vs `401` reliably distinguishes
    real staff accounts from fake ones.
 
-**Not fixed, deliberately.** Removing the oracle means returning `401` while
-locked, which contradicts five assertions the portal's own suite makes
-(`phase53.test.mjs:523,524,530,531`, `phase6-hardening.test.mjs:174,181,182`) and
-costs the real user the "locked, try again in N minutes" message. That is a
-security-vs-UX decision belonging to the portal's owners, not a drive-by edit.
-The DoS half wants an admin unlock endpoint, which is new surface.
+**Both halves fixed.**
+
+*The oracle.* Both `account_locked` branches (login and `ssoLink`) now throw the
+same `401 invalid_credentials` as a wrong password. The account is still locked
+and the lockout still runs — only the response stopped saying so. `retryAfterMs`
+is gone, since that alone would have revealed the account exists.
+
+*The DoS.* Added `POST /api/v1/users/:id/unlock` (`directory:write`, audited as
+`auth.unlock`), so a locked-out member of staff is recoverable immediately
+instead of waiting out 15 minutes while an attacker keeps re-locking them.
+
+This did mean changing five assertions the portal's own suite made
+(`phase53.test.mjs`, `phase6-hardening.test.mjs`). They still assert that the
+account *is* locked — the correct password is still refused after five
+failures — they just no longer assert on a status code that leaked existence.
+
+New `test/lockout.test.mjs`, 6 tests. The important one drives a real address
+and a made-up one through identical traffic and asserts the responses are
+byte-identical in status, `code`, and the absence of `retryAfterMs` — an
+attacker comparing them learns nothing.
 
 ### 14. Corrupt data files were silently overwritten — FIXED
 `readJSON` returned the fallback for both *missing* and *corrupt*. For the
@@ -195,8 +209,34 @@ file still holds the original bytes
 ✓ after repair, write allowed
 ```
 
-### 12. No role-switch UI — OPEN
-Not addressed. Requires portal UI work.
+### 12. No role-switch UI — FIXED
+`POST /auth/role/switch` had existed since the RBAC work and was never reachable
+from anywhere: no UI, and **no test in the whole suite**. A registrar who was
+also a teacher saw "Registrar" in the topbar with no way to become the teacher,
+so a dual-role account silently lost half its access.
+
+`components/shell.tsx` now renders a role picker when `session.roles.length > 1`,
+posts to the endpoint through `api()` (so it carries `x-csrf`), navigates to the
+new role's home via `ROLE_HOME` — staying on `/teacher` as a student would 403 —
+and calls `router.refresh()` so the new permissions reach the component.
+
+**A second, worse problem surfaced while testing it.** The endpoint returned
+**201 with no CSRF token at all.** `CsrfGuard` exempted the whole of
+`/api/v1/auth/*` on the reasoning that those endpoints are rate-limited. That is
+true for the pre-authentication ones, where no session cookie exists to
+double-submit — it is not true for `role/switch`, which runs inside a session.
+The exemption also meant any *future* `/auth` route would inherit no CSRF
+protection by accident.
+
+Narrowed: the exemption now applies only when no session cookie is present.
+Every `/auth/*` caller in the web app goes through `api()`, which always sends
+`x-csrf`, so nothing breaks.
+
+New `test/role-switch.test.mjs`, 5 tests: a dual-role staff member switches and
+the **permissions** actually change (not just the label); a role you do not hold
+is `403 role_not_held` and leaves the active role untouched; an empty role is
+`400`; the switch is audited with the role in `after_json`; and CSRF is
+required.
 
 ### 4. No working production path for site and portal together — FIXED (build not run)
 
@@ -265,9 +305,78 @@ README.
 | Idle pg client error kills the API | **FIXED** — pool `error` listener; a failover or server restart no longer takes the process down |
 | No graceful shutdown in production | **FIXED** — `enableShutdownHooks()` sat inside the `WORKER_INPROC` branch, so production had none; now unconditional with SIGTERM/SIGINT |
 | CI never tested the proxy | **FIXED** — `site.yml` ran with `PORTAL_ENABLED=false`, so the entire integration was untested, which is how the proxy shipped broken twice. New `proxy` job boots all three processes and asserts through :4040 only |
-| Custom 404 page | **OPEN** |
-| Timezone handling | **OPEN** — not investigated |
+| Custom 404 page | **FIXED** — see below. The portal already had a branded `app/not-found.tsx`; only the site was missing one |
+| Timezone handling | **FIXED** — see below. There was no timezone configuration anywhere in the API |
 | Docker image for the main site | **FIXED** — see #4 below |
+
+### Custom 404 page — FIXED
+The portal already had a branded `app/not-found.tsx`; only the site was missing
+one. An unknown path returned Express's default — an unstyled
+`Cannot GET /path` in a `<pre>`, 143 bytes, no nav and no way forward, which is
+exactly when a visitor needs one.
+
+Added `public/404.html` (nav + footer + links to every main section and the
+portal) and a catch-all that serves it with a 404 status. `/api/*` still answers
+JSON. Verified: `/nope` → 404, 3618 bytes, correct title; `/api/nope` →
+`{"error":"Not found."}`. The page deliberately has **no** inline script, so it
+needed no nonce.
+
+### Timezone handling — FIXED
+There was **no timezone configuration anywhere** in the API. Every "what day is
+it" calculation was `new Date().toISOString().slice(0, 10)` — the UTC day. For
+Lagos (UTC+1) that is *yesterday* for the first hour of every local day.
+
+What that actually broke:
+
+| site | effect |
+|---|---|
+| `notify.service.ts` attendance/grade notifications | named the wrong school day |
+| `notify.service.ts` `runDigest` | digest boundary at 01:00 local; the digest is idempotent per `(recipient, date)`, so an event in that hour was **missed**, not merely misfiled |
+| `fees.controller.ts` invoice due dates | a 14-day invoice came due on day 13 for an hour a day |
+| `server.js` news post dates | published at 00:30 WAT, stamped yesterday |
+| audit / MFA CSV export filenames | off by one day |
+
+Added `SCHOOL_TIMEZONE` (IANA name, default `UTC` so nothing changes for an
+operator who has not thought about it), a `localDate()` helper, and set it to
+`Africa/Lagos` in `.env.example`, all four compose services and the dev
+orchestrator. The digest's SQL had to change too: `created_at::date` casts in
+the Postgres *session* zone, so pairing it with a locally-computed day would
+have disagreed with itself — it is now
+`(created_at AT TIME ZONE $tz)::date`.
+
+`server.js` reads `SCHOOL_TIMEZONE` with `SITE_TIMEZONE` as a fallback — one
+variable for the whole stack, after the earlier lesson about two names for one
+setting.
+
+Verified: `2026-10-03T23:30:00Z` → UTC day `2026-10-03`, Lagos day `2026-10-04`.
+An invalid IANA name warns and falls back to UTC rather than throwing.
+
+### `'unsafe-inline'` for script — FIXED
+14 inline script blocks across 7 pages. Each request now gets a fresh nonce
+(`crypto.randomBytes(16)`), the CSP header carries it, and the HTML is rewritten
+on the way out — raw HTML is cached against mtime+size, only the injection is
+per request. `'unsafe-inline'` is **gone from `script-src`**; once a policy
+carries a nonce, browsers ignore it for script anyway, so leaving it in would
+have been a lie in the header doing nothing.
+
+`style-src` **keeps** `'unsafe-inline'`, and that is deliberate: the Tailwind
+Play CDN generates a `<style>` element at runtime and several pages use
+`style="..."` attributes. Removing it breaks the CDN outright. Inline style is
+not an execution vector the way inline script is.
+
+Verified per page, header nonce compared against the body nonce in the *same*
+response:
+
+| page | script tags | nonced |
+|---|---|---|
+| `/` | 8 | 8 |
+| `/library.html` | 8 | 8 |
+| `/academies.html` | 6 | 6 |
+| `/programs.html` | 4 | 4 |
+| `/admin.html` | 4 | 4 |
+
+Nonces differ between requests. Path traversal attempts (`/../server.js`,
+`/..%2fserver.js`, `/%2e%2e%2fserver.js`, `/assets/../../server.js`) all 404.
 
 ---
 

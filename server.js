@@ -51,6 +51,29 @@ const PORTAL_API_URL = process.env.PORTAL_API_URL
   || `http://127.0.0.1:${process.env.PORTAL_API_PORT || 8080}`;
 const DATA_DIR   = IS_VERCEL ? '/tmp/data' : path.join(__dirname, 'data');
 
+/* The school's own calendar day. Everything below used
+   `new Date().toISOString().slice(0, 10)`, which is the UTC day — so a news
+   item published at 00:30 in Lagos (UTC+1) was stamped with *yesterday's*
+   date, and it would appear out of order in the list for an hour every night.
+   Override with SITE_TIMEZONE for a different campus. */
+/* Accepts the same SCHOOL_TIMEZONE the portal API and worker read, so the
+   whole stack can be configured with one variable. Having two names for one
+   setting is how the site's proxy ended up pointing at the wrong port. */
+const SITE_TIMEZONE = process.env.SCHOOL_TIMEZONE || process.env.SITE_TIMEZONE || 'Africa/Lagos';
+function localDate(d = new Date()) {
+  try {
+    // en-CA renders YYYY-MM-DD, which is the shape the JSON files already use.
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: SITE_TIMEZONE, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(d);
+  } catch {
+    /* An invalid IANA name throws; falling back to UTC beats refusing to save
+       the post, and the warning says so rather than failing quietly. */
+    console.warn(`[dates] unknown SITE_TIMEZONE "${SITE_TIMEZONE}" — falling back to UTC.`);
+    return d.toISOString().slice(0, 10);
+  }
+}
+
 /* Gallery (staff admin) */
 const ADMIN_TOKEN    = process.env.ADMIN_TOKEN || '';
 const GALLERY_JSON   = path.join(DATA_DIR, 'gallery-data.json');
@@ -589,7 +612,7 @@ app.post('/api/posts', requireNewsAuth, newsUpload.single('image'), (req, res) =
     id:        Date.now(),
     title:     String(title).trim(),
     category:  String(category || 'Announcements').trim(),
-    date:      String(date || new Date().toISOString().slice(0, 10)),
+    date:      String(date || localDate()),
     excerpt:   String(excerpt).trim(),
     image:     req.file ? `/assets/uploads/${req.file.filename}` : DEFAULT_IMAGE,
     content:   renderArticleText(content),
@@ -776,7 +799,16 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
    loader from an attacker's host. */
 const SITE_CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://esm.sh",
+  /* No 'unsafe-inline': every inline block carries a per-request nonce (see
+     the HTML middleware below). Once a policy contains a nonce, browsers
+     ignore 'unsafe-inline' for script anyway — keeping it would be a lie in
+     the header while doing nothing.
+     The three hosts are external files, which a nonce is not needed for. */
+  "script-src 'self' %NONCE% https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://esm.sh",
+  /* style-src keeps 'unsafe-inline' and this is deliberate, not an oversight:
+     the Tailwind Play CDN generates a <style> element at runtime, and several
+     pages use style="..." attributes. Removing it breaks the CDN outright.
+     Styles are not an execution vector the way inline script is. */
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://images.unsplash.com",
@@ -788,8 +820,57 @@ const SITE_CSP = [
   "frame-ancestors 'self'",
 ].join('; ');
 
+/* ── Per-request CSP nonces ───────────────────────────────────────────────────
+   The pages are static files, and express.static streams them untouched, so the
+   nonce cannot be baked in at build time. Instead every request gets a fresh
+   nonce, it goes into the header, and the HTML is rewritten on the way out.
+   Raw HTML is cached against mtime+size; only the (cheap) injection is per
+   request. */
+const htmlCache = new Map();
+
+function readHtmlCached(file) {
+  const st = fs.statSync(file);
+  const hit = htmlCache.get(file);
+  if (hit && hit.mtimeMs === st.mtimeMs && hit.size === st.size) return hit.html;
+  const html = fs.readFileSync(file, 'utf8');
+  htmlCache.set(file, { mtimeMs: st.mtimeMs, size: st.size, html });
+  return html;
+}
+
+/** Add nonce= to every <script> that does not already have one. */
+function injectNonces(html, nonce) {
+  return html.replace(/<script(?![^>]*\bnonce=)([^>]*)>/gi, `<script nonce="${nonce}"$1>`);
+}
+
+app.use((req, res, next) => {
+  const nonce = crypto.randomBytes(16).toString('base64');
+  res.locals.cspNonce = nonce;
+  res.setHeader('Content-Security-Policy', SITE_CSP.replace('%NONCE%', `'nonce-${nonce}'`));
+
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  let rel;
+  try { rel = decodeURIComponent(req.path); } catch { return next(); }
+  if (rel.endsWith('/')) rel += 'index.html';
+  else if (!rel.toLowerCase().endsWith('.html')) return next();
+
+  const file = path.join(PUBLIC_DIR, path.normalize(rel).replace(/^(\.\.[/\\])+/, ''));
+  if (!file.startsWith(PUBLIC_DIR + path.sep)) return next();     // traversal guard
+  if (!fs.existsSync(file)) return next();                         // fall through to 404
+
+  try {
+    const html = injectNonces(readHtmlCached(file), nonce);
+    res.type('html');
+    res.setHeader('Cache-Control', 'no-cache');
+    return res.send(req.method === 'HEAD' ? '' : html);
+  } catch (err) {
+    console.error(`[html] ${rel}: ${err.message}`);
+    return next(err);
+  }
+});
+
 app.use((_req, res, next) => {
-  res.setHeader('Content-Security-Policy', SITE_CSP);
+  res.setHeader('Content-Security-Policy', res.getHeader('Content-Security-Policy')
+    || SITE_CSP.replace('%NONCE%', ''));
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -847,6 +928,19 @@ app.use((err, req, res, next) => {
 
 /* API 404s as JSON */
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found.' }));
+
+/* Everything else is a page that does not exist. Express's own answer was an
+   unstyled `Cannot GET /path` inside a <pre> — no nav, no branding, and no way
+   forward, which is precisely when a visitor needs one. */
+app.use((req, res) => {
+  res.status(404);
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return res.json({ error: 'Not found.' });
+  }
+  res.sendFile(path.join(PUBLIC_DIR, '404.html'), (err) => {
+    if (err) res.type('html').send('<!doctype html><title>404</title><h1>Not found</h1>');
+  });
+});
 
 /* ── Start ────────────────────────────────────────────────────────────────── */
 

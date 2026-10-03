@@ -38,6 +38,7 @@ const API_ENV = {
   ...process.env,
   PORT: API_PORT,
   SEED_DEMO: process.env.SEED_DEMO ?? 'true',
+  SCHOOL_TIMEZONE: process.env.SCHOOL_TIMEZONE || 'Africa/Lagos',
   COOKIE_SECURE: process.env.COOKIE_SECURE ?? 'false',
   SMTP_VERIFY_ON_BOOT: process.env.SMTP_VERIFY_ON_BOOT ?? 'false',
   TRUST_PROXY: process.env.TRUST_PROXY ?? '1',        // one hop: server.js → api

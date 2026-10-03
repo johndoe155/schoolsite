@@ -82,12 +82,15 @@ export class AuthService {
         mustChangePassword: user.mustChangePassword === true };
     });
 
+    /* Deliberately indistinguishable from a wrong password. Returning
+       423 account_locked here made the login endpoint an account-existence
+       oracle: a real address reached "locked" after five tries, while a
+       made-up one could only ever return invalid_credentials — so an attacker
+       could enumerate every staff email in the school. The account is still
+       locked and the lockout still runs; this only stops the response saying
+       so. Admins clear a lockout with POST /directory/users/:id/unlock. */
     if (outcome.kind === "locked") {
-      throw new HttpException(
-        { code: "account_locked", title: "Account temporarily locked",
-          status: 423, detail: "Too many failed sign-in attempts",
-          retryAfterMs: outcome.retryAfterMs },
-        HttpStatus.LOCKED);
+      throw new UnauthorizedException({ code: "invalid_credentials", title: "Invalid credentials" });
     }
     if (outcome.kind === "invalid") {
       throw new UnauthorizedException({ code: "invalid_credentials", title: "Invalid credentials" });
@@ -264,6 +267,27 @@ export class AuthService {
       const perms = await tx.select().from(rolePermissions).where(eq(rolePermissions.roleCode, role));
       await insertAudit(tx, { actorUserId: p.userId, action: "auth.role_switch", after: { role } });
       return { activeRole: role, permissions: perms.map((r) => r.permission) };
+    });
+  }
+
+  /**
+   * Admin unlock. The 5-failure lockout is a brute-force defence, but it is
+   * also a denial of service: five unauthenticated requests lock any known
+   * staff address for 15 minutes, and before this there was no way to clear it
+   * short of waiting — so an attacker could keep re-locking someone all day.
+   * Audited, because it is a security-relevant state change.
+   */
+  async adminUnlock(actor: Principal, userId: string) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
+      const [user] = await tx.select({ id: users.id, email: users.email })
+        .from(users).where(eq(users.id, userId)).limit(1);
+      if (!user) throw new NotFoundException({ code: "user_not_found" });
+      await tx.update(users)
+        .set({ failedLoginCount: 0, lockedUntil: null, updatedAt: new Date() })
+        .where(eq(users.id, userId));
+      await insertAudit(tx, { actorUserId: actor.userId, action: "auth.unlock",
+        entityType: "user", entityId: userId, after: { email: user.email } });
+      return { ok: true as const, unlocked: user.email };
     });
   }
 
@@ -716,12 +740,15 @@ export class AuthService {
         activeRole: defaultActiveRole(roles) };
     });
 
+    /* Deliberately indistinguishable from a wrong password. Returning
+       423 account_locked here made the login endpoint an account-existence
+       oracle: a real address reached "locked" after five tries, while a
+       made-up one could only ever return invalid_credentials — so an attacker
+       could enumerate every staff email in the school. The account is still
+       locked and the lockout still runs; this only stops the response saying
+       so. Admins clear a lockout with POST /directory/users/:id/unlock. */
     if (outcome.kind === "locked") {
-      throw new HttpException(
-        { code: "account_locked", title: "Account temporarily locked",
-          status: 423, detail: "Too many failed sign-in attempts",
-          retryAfterMs: outcome.retryAfterMs },
-        HttpStatus.LOCKED);
+      throw new UnauthorizedException({ code: "invalid_credentials", title: "Invalid credentials" });
     }
     if (outcome.kind === "invalid") {
       throw new UnauthorizedException({ code: "invalid_credentials", title: "Invalid credentials" });

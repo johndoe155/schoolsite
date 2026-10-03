@@ -79,6 +79,14 @@ export class DirectoryController {
     return this.auth.adminMfaReset(req.principal!, id);
   }
 
+  /** Clear a brute-force lockout so a locked-out member of staff does not have
+      to wait out the window — or stay locked while an attacker keeps poking. */
+  @Post("users/:id/unlock")
+  @Perm("directory:write")
+  unlock(@Param("id") id: string, @Req() req: Request) {
+    return this.auth.adminUnlock(req.principal!, id);
+  }
+
   @Get("users")
   @Perm("directory:read")
   async listUsers(@Req() req: Request, @Query("page") page = "1", @Query("per") per = "25",

@@ -171,16 +171,17 @@ test("self-service change-password: verifies current, revokes other sessions", a
   assert.equal((await login("s1@school.example", "Rotated!Pass123")).status, 201);
 });
 
-test("login lockout: 5 failures lock the account for 15 minutes (423)", async () => {
+test("login lockout: 5 failures lock the account for 15 minutes", async () => {
   const email = "p1@school.example";
   for (let i = 0; i < 5; i++) {
     const r = await login(email, "Wr0ng!Password");
     assert.equal(r.status, 401, `attempt ${i + 1} should 401`);
   }
-  const locked = await login(email, "Passw0rd!"); // correct password, still locked
-  assert.equal(locked.status, 423);
-  assert.equal(locked.body.code, "account_locked");
-  assert.ok(locked.body.retryAfterMs > 0);
+  // correct password, still locked — and reported no differently from a wrong
+  // one, so the response cannot be used to tell which addresses exist
+  const locked = await login(email, "Passw0rd!");
+  assert.equal(locked.status, 401);
+  assert.equal(locked.body.code, "invalid_credentials");
   // a successful reset clears the lockout (support path)
   const uid = await uidOf(email);
   await withActor(db, SERVICE, async (tx) => {

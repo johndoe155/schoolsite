@@ -194,6 +194,17 @@ const isProduction = process.env.NODE_ENV === "production";
 export const config = {
   isProduction,
   port: Number(process.env.PORT ?? 8080),
+  /**
+   * The calendar day the school actually runs on, as an IANA name.
+   *
+   * Every "what day is it" calculation in here was
+   * `new Date().toISOString().slice(0, 10)` — the UTC day. For a school in
+   * Lagos (UTC+1) that is *yesterday* for the first hour of every local day,
+   * so attendance notifications named the wrong school day and invoice due
+   * dates drifted by one. UTC stays the default so nothing changes for an
+   * operator who has not thought about it; deployments set it explicitly.
+   */
+  schoolTimezone: process.env.SCHOOL_TIMEZONE ?? "UTC",
   /** false in dev/tests (http); true in prod behind TLS */
   cookieSecure: process.env.COOKIE_SECURE !== "false",
   /** staff MFA step-up enforcement; off only for local demo */
@@ -248,6 +259,32 @@ export const config = {
   lockout: { maxFailures: 5, durationMs: 15 * 60_000 },
 };
 export type Config = typeof config;
+
+/* Validate once at boot rather than on every call: an unrecognised IANA name
+   throws out of Intl, and a digest that explodes at 02:00 is worse than one
+   that runs its day boundary in the wrong zone and says so. */
+export const schoolTimezoneValid = (() => {
+  try {
+    new Intl.DateTimeFormat("en-CA", { timeZone: config.schoolTimezone });
+    return true;
+  } catch {
+    console.warn(`[config] unknown SCHOOL_TIMEZONE "${config.schoolTimezone}" — using UTC.`);
+    return false;
+  }
+})();
+
+/**
+ * The school's calendar day as YYYY-MM-DD. Use this anywhere a *day* is
+ * meaningful to a human — attendance, digests, due dates, export filenames —
+ * never `toISOString().slice(0, 10)`, which is the UTC day.
+ */
+export function localDate(d: Date = new Date()): string {
+  const tz = schoolTimezoneValid ? config.schoolTimezone : "UTC";
+  // en-CA renders YYYY-MM-DD, the shape every date column already uses.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(d);
+}
 
 /** Exposed so the grace-window rejection rules can be tested directly. */
 export const resolveGraceForTest = resolveMfaGraceUntil;

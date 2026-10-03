@@ -27,7 +27,16 @@ export class CsrfGuard implements CanActivate {
     const req = ctx.switchToHttp().getRequest();
     if (!MUTATING.has(req.method as string)) return true;
     const path = req.path as string;
-    if (path.startsWith("/api/v1/auth") || path.startsWith("/api/v1/webhooks")) return true;
+    if (path.startsWith("/api/v1/webhooks")) return true;
+    /* /auth/* used to be exempt wholesale, on the reasoning that those
+       endpoints are rate-limited. That holds for the pre-authentication ones —
+       login, forgot, reset, SSO callback — where no session cookie exists yet
+       and there is nothing to double-submit. It does not hold for the
+       endpoints under /auth that run *inside* a session: role/switch in
+       particular is an ordinary authenticated mutation, and the blanket
+       exemption meant any future /auth route would inherit no CSRF protection
+       by accident. Gate on whether a session exists rather than on the path. */
+    if (path.startsWith("/api/v1/auth") && !req.cookies?.[config.sidCookie]) return true;
     if (path === "/api/v1/notifications/unsubscribe") return true;
     const header = req.headers["x-csrf"];
     const cookie = req.cookies?.[config.csrfCookie];

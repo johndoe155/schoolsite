@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Page not found — Bodija International College</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/png" href="/assets/img/logo.png">
+  <meta name="description" content="That page does not exist. Find your way back to the Bodija International College website.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/footer.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
+
+  <style>
+    /* Kept inline and namespaced: this page is served by the 404 handler, which
+       deliberately has no stylesheet of its own to fetch. */
+    .bic-404 { padding: clamp(3rem, 9vw, 7rem) 1.25rem; text-align: center; }
+    .bic-404__inner { max-width: 34rem; margin-inline: auto; }
+    .bic-404__code {
+      font-family: var(--bic-font-display, "Abril Fatface", serif);
+      font-size: clamp(4.5rem, 18vw, 9rem);
+      line-height: .9;
+      margin: 0;
+      color: var(--bic-colour-navy, #05014A);
+      letter-spacing: -.02em;
+    }
+    .bic-404 h1 {
+      font-family: var(--bic-font-display, "Abril Fatface", serif);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      margin: .5rem 0 .75rem;
+    }
+    .bic-404 p {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      color: var(--bic-colour-muted, #5b5b66);
+      max-width: 28rem;
+      margin: 0 auto 1.75rem;
+      line-height: 1.6;
+    }
+    .bic-404__links { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; }
+    .bic-404__links a {
+      font-family: var(--bic-font-body, "Montserrat", sans-serif);
+      font-weight: 600;
+      text-decoration: none;
+      padding: .7rem 1.35rem;
+      border-radius: 999px;
+      border: 1px solid var(--bic-colour-navy, #05014A);
+      color: var(--bic-colour-navy, #05014A);
+    }
+    .bic-404__links a.primary {
+      background: var(--bic-colour-navy, #05014A);
+      color: #fff;
+    }
+    .bic-404__links a:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+  </style>
+</head>
+<body>
+
+  <header class="bic-nav" data-nav-theme="paper" data-nav-active=""
+          data-nav-cta-label="Home" data-nav-cta-href="/index.html">
+  </header>
+
+  <main class="bic-404" id="main-content">
+    <div class="bic-404__inner">
+      <p class="bic-404__code" aria-hidden="true">404</p>
+      <h1>We can't find that page</h1>
+      <p>
+        The link may be out of date, or the page may have moved. Try one of
+        these instead — or head back to the homepage.
+      </p>
+      <div class="bic-404__links">
+        <a class="primary" href="/index.html">Homepage</a>
+        <a href="/programs.html">Programs</a>
+        <a href="/academies.html">Academies</a>
+        <a href="/news.html">News</a>
+        <a href="/contact.html">Contact us</a>
+        <a href="/portal/login">Staff &amp; student portal</a>
+      </div>
+    </div>
+  </main>
+
+  <div data-bic-footer data-bic-footer-theme="warm"></div>
+
+  <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/layout.js"></script>
+</body>
+</html>

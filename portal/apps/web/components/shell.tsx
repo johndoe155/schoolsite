@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import type { SessionView } from "@/lib/session";
 import { api } from "@/lib/client";
 import { API_BASE } from "@/lib/base-path";
+import { ROLE_HOME } from "@/lib/roles";
+
+/** "school_admin" → "School admin" — the raw codes read like config keys. */
+function roleLabel(role: string): string {
+  return role.split("_").map((w, i) => (i === 0 ? w[0].toUpperCase() + w.slice(1) : w)).join(" ");
+}
 
 interface Tab { href: string; label: string; perm?: string }
 
@@ -57,6 +63,32 @@ export default function Shell({ session, children }: { session: SessionView; chi
   const area = ROLE_AREA[session.activeRole] ?? "student";
   const perms = new Set(session.permissions ?? []);
   const tabs = (TABS[area] ?? []).filter((t) => !t.perm || perms.has(t.perm));
+  /* ── Role switching ───────────────────────────────────────────────────────
+     POST /auth/role/switch has existed on the API since the RBAC work and was
+     never reachable from the UI. The only consequence was visible in the
+     topbar: a registrar who is also a teacher saw "Registrar" with no way to
+     become the teacher, so a dual-role account silently lost half its access.
+     Rendered only when there is something to switch to. */
+  const otherRoles = session.roles.filter((r) => r !== session.activeRole);
+  const [switching, setSwitching] = useState(false);
+  const [switchError, setSwitchError] = useState("");
+  async function switchRole(role: string) {
+    if (switching || role === session.activeRole) return;
+    setSwitching(true); setSwitchError("");
+    try {
+      await api("/auth/role/switch", { method: "POST", body: JSON.stringify({ role }) });
+      // The new role's permissions only reach this component through a fresh
+      // server render, and staying on /teacher as a student would 403 — so go
+      // to the new role's home first, then refresh.
+      router.push(ROLE_HOME[role] ?? "/");
+      router.refresh();
+    } catch (e) {
+      setSwitchError(e instanceof Error ? e.message : "Could not switch role.");
+    } finally {
+      setSwitching(false);
+    }
+  }
+
   // phase 6: brand comes from school settings (public endpoint)
   const [brand, setBrand] = useState("School Portal");
   useEffect(() => {
@@ -74,7 +106,24 @@ export default function Shell({ session, children }: { session: SessionView; chi
             OUTSIDE basePath, so <Link> would wrongly prefix it to /portal/. */}
         <a className="site-link" href="/">← Website</a>
         <span className="brand">{brand}</span>
-        <span className="muted">{session.activeRole.replace("_", " ")}</span>
+        {otherRoles.length === 0 ? (
+          <span className="muted">{roleLabel(session.activeRole)}</span>
+        ) : (
+          <label className="role-switch" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span className="muted">Role</span>
+            <select
+              value={session.activeRole}
+              disabled={switching}
+              onChange={(e) => switchRole(e.target.value)}
+              aria-label="Switch role"
+              style={{ minHeight: 32, padding: "2px 8px" }}
+            >
+              {session.roles.map((r) => (
+                <option key={r} value={r}>{roleLabel(r)}</option>
+              ))}
+            </select>
+          </label>
+        )}
         <span className="spacer" />
         <span className="who">{session.displayName}</span>
         {/* Account self-service. Both pages existed only as URLs before — the
@@ -106,6 +155,9 @@ export default function Shell({ session, children }: { session: SessionView; chi
             </Link>
           ))}
         </nav>
+        {switchError && (
+          <div className="alert error" role="alert" style={{ marginTop: 12 }}>{switchError}</div>
+        )}
         {children}
       </div>
     </>

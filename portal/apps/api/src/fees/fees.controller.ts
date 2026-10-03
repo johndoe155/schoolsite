@@ -11,7 +11,7 @@ import { withActor, SERVICE } from "../db/actor";
 import { feeInvoices, feePayments, feeTemplates, guardians, schoolSettings, students, users } from "../db/schema";
 import { Perm, ParentWrite } from "../common/guards";
 import { insertAudit } from "../common/audit";
-import { config } from "../config";
+import { config, localDate } from "../config";
 import { InvoiceCreateBody, PaymentRecordBody, FeeTemplateBody, TemplateGenerateBody } from "@portal/contracts";
 import type { Request } from "express";
 
@@ -368,7 +368,9 @@ export class FeesController {
         .where(tpl.gradeLevel
           ? and(eq(students.status, "active"), eq(students.gradeLevel, tpl.gradeLevel))
           : eq(students.status, "active"));
-      const dueDate = new Date(Date.now() + tpl.dueDays * 86400_000).toISOString().slice(0, 10);
+      /* School-day arithmetic. The UTC version made a 14-day invoice come due
+         on day 13 for the first hour of every local day. */
+      const dueDate = localDate(new Date(Date.now() + tpl.dueDays * 86400_000));
       let created = 0, skipped = 0;
       for (const t of targets) {
         // dedupe: one invoice per (student, term, template name)

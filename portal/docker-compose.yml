@@ -39,6 +39,7 @@ services:
       APP_SECRET: ${APP_SECRET:?set in .env — >=32 chars}
       COOKIE_SECURE: "true"
       PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://school.example/portal}
+      SCHOOL_TIMEZONE: ${SCHOOL_TIMEZONE:-Africa/Lagos}
       # caddy → web → api: two forwarding hops (review-2).
       TRUST_PROXY: ${TRUST_PROXY:-2}
       WORKER_INPROC: "false"
@@ -83,6 +84,7 @@ services:
       # http://127.0.0.1:3000 — the recipient's own machine — while the portal
       # itself looked perfectly healthy.
       PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://school.example/portal}
+      SCHOOL_TIMEZONE: ${SCHOOL_TIMEZONE:-Africa/Lagos}
       SMTP_URL: ${SMTP_URL:-}
       MAIL_FROM: ${MAIL_FROM:-portal@school.example}
       MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
@@ -105,6 +107,7 @@ services:
       NODE_ENV: production
       API_INTERNAL: http://api:8080
       PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://school.example/portal}
+      SCHOOL_TIMEZONE: ${SCHOOL_TIMEZONE:-Africa/Lagos}
     networks: [internal]
     depends_on:
       api: { condition: service_healthy }
@@ -131,6 +134,8 @@ services:
       # caddy → site: a single forwarding hop. The API sits two hops back
       # (caddy → site → api) and already has TRUST_PROXY=2.
       TRUST_PROXY: ${SITE_TRUST_PROXY:-1}
+      # Same variable the API and worker read — one setting for the whole stack.
+      SCHOOL_TIMEZONE: ${SCHOOL_TIMEZONE:-Africa/Lagos}
       # In-network targets. These are service names, not ports — the site's
       # proxy resolves them over the `internal` network.
       PORTAL_WEB_URL: http://web:3000

@@ -520,15 +520,17 @@ test("review-5 #1: sso/link shares the DB-backed login lockout (no password orac
   // 6th attempt — even with the CORRECT password — hits the lockout
   const locked = await request(server).post("/api/v1/auth/sso/link")
     .send({ link_token: linkToken, email, password: "Passw0rd!Policy1" });
-  assert.equal(locked.status, 423, JSON.stringify(locked.body));
-  assert.equal(locked.body.code, "account_locked");
-  assert.ok(locked.body.retryAfterMs > 0, "retryAfterMs returned");
+  // Still locked — but reported exactly like a wrong password. Saying
+  // "account_locked" here turned login into an account-existence oracle:
+  // a made-up address could never reach that state.
+  assert.equal(locked.status, 401, JSON.stringify(locked.body));
+  assert.equal(locked.body.code, "invalid_credentials");
 
   // the lockout is SHARED: the normal login endpoint is locked too
   const login = await request(server).post("/api/v1/auth/login")
     .send({ email, password: "Passw0rd!Policy1" });
-  assert.equal(login.status, 423);
-  assert.equal(login.body.code, "account_locked");
+  assert.equal(login.status, 401);
+  assert.equal(login.body.code, "invalid_credentials");
 });
 
 test("review-5 #2: revoke is tier-checked — a registrar cannot revoke an admin's invite", async () => {

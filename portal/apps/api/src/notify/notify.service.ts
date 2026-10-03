@@ -8,7 +8,7 @@ import {
   courseSections, courses, messageThreads,
 } from "../db/schema";
 import { encryptText, decryptText } from "../crypto/enc";
-import { config } from "../config";
+import { config, localDate } from "../config";
 import { getPrefs, isOptional, unsubscribeUrl, wantsKind } from "./preferences";
 import {
   createMailer, isPermanentFailure, mailConfigured, resolveFrom, verifyMailer,
@@ -90,7 +90,9 @@ export async function guardianIdsOf(tx: Db, studentUserId: string): Promise<stri
 
 /** grades released → tell the student and every guardian (email) */
 export async function enqueueGradeReleased(tx: Db, sectionId: string, studentIds: string[]) {
-  const payload = { section_id: sectionId, date: new Date().toISOString().slice(0, 10) };
+  /* The school's day, not the UTC day: at 00:30 in Lagos those differ, and
+     naming yesterday's date in a "grades are out" email is a support call. */
+  const payload = { section_id: sectionId, date: localDate() };
   for (const sid of studentIds) {
     await enqueue(tx, { recipientUserId: sid, channel: "email", kind: "grade_released", payload });
     for (const gid of await guardianIdsOf(tx, sid)) {
@@ -374,7 +376,12 @@ export async function requeueNotification(tx: Db, id: string) {
  * Idempotent per (recipient, date) — safe to call every worker tick.
  */
 export async function runDigest(db: Db, now = new Date()) {
-  const day = now.toISOString().slice(0, 10);
+  /* Both sides of the comparison must use the school's day. `created_at::date`
+     casts in the Postgres session zone (UTC), so pairing it with a locally
+     computed `day` would put every event between 00:00 and 01:00 local time in
+     the wrong digest — and the digest is idempotent per (recipient, date), so
+     that event would be missed rather than merely misfiled. */
+  const day = localDate(now);
   return withActor(db, SERVICE, async (tx) => {
     const events = await tx.select({
       recipient: notifications.recipientUserId, kind: notifications.kind,
@@ -382,7 +389,7 @@ export async function runDigest(db: Db, now = new Date()) {
     }).from(notifications)
       .where(and(
         inArray(notifications.kind, ["absence_recorded", "grade_released"]),
-        sql`${notifications.createdAt}::date = ${day}::date`));
+        sql`(${notifications.createdAt} AT TIME ZONE ${config.schoolTimezone})::date = ${day}::date`));
     const byRecipient = new Map<string, { absences: number; gradesReleased: number }>();
     for (const e of events) {
       if (!e.recipient) continue; // bare-email rows (invites) never appear here, but guard for types

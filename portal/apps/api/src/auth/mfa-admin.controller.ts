@@ -1,3 +1,4 @@
+import { localDate } from "../config";
 import {
   Body, Controller, Get, Inject, Post, Query, Req, Res, UnprocessableEntityException,
 } from "@nestjs/common";
@@ -170,7 +171,7 @@ export class MfaAdminController {
     const csv = ["name,email,enrolment_token,expires_at", ...rows].join("\r\n") + "\r\n";
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition",
-      `attachment; filename="mfa-enrolment-${new Date().toISOString().slice(0, 10)}.csv"`);
+      `attachment; filename="mfa-enrolment-${localDate()}.csv"`);
     res.send(csv);
   }
 
