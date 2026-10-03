@@ -104,6 +104,32 @@ if (STAFF_PASSCODE === 'admin123')
 if (!process.env.SESSION_SECRET)
   console.warn('⚠️  SESSION_SECRET not set — news admin sessions will not survive restarts.');
 
+/* ── Production boot gate ───────────────────────────────────────────────────
+   These used to be warnings, which means a school could go live with the
+   published default credentials for the news and library admin panels. A
+   warning nobody reads is not a control. In production the documented
+   defaults are refused outright; in development they stay usable so the site
+   still runs with an empty .env. */
+const KNOWN_WEAK = new Map([
+  ['NEWS_ADMIN_PASSWORD', 'change-me-now'],
+  ['STAFF_PASSCODE',      'admin123'],
+]);
+if (NODE_ENV === 'production') {
+  const problems = [];
+  for (const [name, weak] of KNOWN_WEAK) {
+    if ((process.env[name] || weak) === weak) problems.push(`${name} is still the published default`);
+  }
+  if (!process.env.SESSION_SECRET) problems.push('SESSION_SECRET is not set (a random one would invalidate every session on restart)');
+  if (!ADMIN_TOKEN) problems.push('ADMIN_TOKEN is not set');
+  if (ADMIN_TOKEN && ADMIN_TOKEN.length < 24) problems.push('ADMIN_TOKEN is shorter than 24 characters');
+  if (problems.length) {
+    console.error('\n❌ Refusing to start with NODE_ENV=production:\n   • ' + problems.join('\n   • ') +
+      '\n\n   Copy .env.example to .env and set real values.\n');
+    process.exit(1);
+  }
+}
+
+
 /* ── JSON file helpers (atomic writes) ────────────────────────────────────── */
 
 function readJSON(file, fallback) {
@@ -118,6 +144,26 @@ function writeJSON(file, data) {
 
 /* ── Shared helpers ───────────────────────────────────────────────────────── */
 
+/**
+ * Article bodies are written as plain text — the admin textarea says
+ * "Separate paragraphs with a blank line". news.js inserts the stored value
+ * as HTML, so it used to be possible to store <script> or an <img onerror>
+ * here and have it run for every reader. Escape first, then build the
+ * paragraphs, so markup can only ever be the <p>/<br> we add ourselves.
+ */
+function renderArticleText(raw) {
+  const escaped = String(raw ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return escaped
+    .split(/\n{2,}/)
+    .map(p => p.trim())
+    .filter(Boolean)
+    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+    .join('\n');
+}
+
 function sanitize(str, maxLength) {
   if (typeof str !== 'string') return '';
   return str
@@ -131,6 +177,14 @@ function sanitize(str, maxLength) {
 /* ── App + global middleware ──────────────────────────────────────────────── */
 
 const app = express();
+
+/* Behind TLS / a reverse proxy, Express must be told how many hops to trust or
+   req.protocol stays "http" and express-session will not set the `secure`
+   cookie — the news and library admin logins would then silently fail to
+   stick. Rate limits also key on req.ip, so without this the whole school
+   shares one bucket behind the proxy. */
+if (process.env.TRUST_PROXY) app.set('trust proxy', Number(process.env.TRUST_PROXY) || process.env.TRUST_PROXY);
+else if (NODE_ENV === 'production') app.set('trust proxy', 1);
 
 /* ══════════════════════════════════════════════════════════════════════════
    PORTAL PROXY  (must precede express.static and the /api 404 catch-all)
@@ -156,11 +210,17 @@ if (PORTAL_ENABLED) {
   const portalProxyBase = {
     changeOrigin: true,
     xfwd: true,
-    logLevel: 'warn',
-    onError: (err, _req, res) => {
+    /* v3 dropped logLevel/onError — they only exist under dist/legacy and
+       createProxyMiddleware never applies that adapter, so the v2 spelling is
+       silently ignored and the proxy falls back to its own 504, which echoes
+       the internal target host back to the browser. v3 spells them
+       `logger` and `on.error`. */
+    logger: console,
+    on: {
+      error: (err, _req, res) => {
       const wantsJson = String(_req.originalUrl || '').includes('/api/');
       console.error(`[portal] proxy error → ${err.code || err.message}`);
-      if (res.headersSent) return res.end();
+      if (!res || res.headersSent) { try { res && res.end(); } catch { /* closed */ } return; }
       res.status(502);
       if (wantsJson) {
         res.json({ error: 'Portal service unavailable. Is the portal API running? (npm run portal:api)' });
@@ -173,6 +233,7 @@ if (PORTAL_ENABLED) {
           'locally, start it with <code>npm run portal</code>.</p>' +
           '<p><a href="/">← Back to the website</a></p></body>');
       }
+      },
     },
   };
 
@@ -207,7 +268,10 @@ if (PORTAL_ENABLED) {
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
 app.use('/api', cors({
   origin: (origin, callback) => {
-    if (!origin || ALLOWED_ORIGINS.length === 0 || ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    /* An empty allow-list means "same-origin only", not "everyone". Requests
+       from the site's own pages carry no Origin header and still pass; a
+       cross-origin caller must be listed explicitly. */
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
 }));
@@ -330,12 +394,24 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
    GALLERY — GET /api/gallery (public) · admin actions require X-Admin-Token
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* Gallery admin credentials are tried here, so the attempts are limited the
+   same way the library passcode is. */
+const galleryAuthLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: 'Too many attempts. Please wait 15 minutes.' },
+});
+
 function requireGalleryAuth(req, res, next) {
   if (!ADMIN_TOKEN) {
     return res.status(503).json({ ok: false, error: 'Gallery admin is not configured on this server.' });
   }
-  const token = req.headers['x-admin-token'] || req.body?.token || req.query?.token || '';
-  if (token !== ADMIN_TOKEN) {
+  /* Header or JSON body only — never the query string. A token in a URL ends
+     up in server logs, browser history and any Referer header. */
+  const token = req.headers['x-admin-token'] || req.body?.token || '';
+  if (!safeEqual(token, ADMIN_TOKEN)) {
     return res.status(401).json({ ok: false, error: 'Unauthorized' });
   }
   next();
@@ -353,7 +429,7 @@ app.get('/api/gallery', (req, res) => {
   return send();
 });
 
-app.post('/api/gallery', requireGalleryAuth, (req, res) => {
+app.post('/api/gallery', galleryAuthLimiter, requireGalleryAuth, (req, res) => {
   const action = req.query.action;
 
   if (action === 'save_gallery') {
@@ -444,7 +520,6 @@ app.post('/api/posts', requireNewsAuth, newsUpload.single('image'), (req, res) =
     if (req.file) fs.unlink(req.file.path, () => {});
     return res.status(400).json({ error: 'title, excerpt and content are required.' });
   }
-
   const DEFAULT_IMAGE =
     'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=60';
 
@@ -455,7 +530,7 @@ app.post('/api/posts', requireNewsAuth, newsUpload.single('image'), (req, res) =
     date:      String(date || new Date().toISOString().slice(0, 10)),
     excerpt:   String(excerpt).trim(),
     image:     req.file ? `/assets/uploads/${req.file.filename}` : DEFAULT_IMAGE,
-    content:   String(content),
+    content:   renderArticleText(content),
     createdAt: new Date().toISOString(),
   };
 
@@ -519,34 +594,71 @@ app.put('/api/config/featured', requireNewsAuth, (req, res) => {
 const loadCatalog = () => readJSON(LIBRARY_CATALOG, []);
 const saveCatalog = data => writeJSON(LIBRARY_CATALOG, data);
 
-const libraryLoginState = { attempts: 0, lockedUntil: 0 };
+/* Lockout is per-IP, not global. A single shared counter meant five wrong
+   guesses from anyone locked every member of staff out for a minute — a
+   free denial of service against the library panel. */
+const libraryAttempts = new Map();          // ip -> { count, lockedUntil }
 const LIBRARY_MAX_ATTEMPTS = 5;
 const LIBRARY_LOCKOUT_MS   = 60_000;
 
+/* Constant-time compare: a plain !== leaks the passcode length and lets an
+   attacker confirm a guess byte by byte from response timing. */
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a ?? ''));
+  const bb = Buffer.from(String(b ?? ''));
+  if (ab.length !== bb.length) { crypto.timingSafeEqual(ab, ab); return false; }
+  return crypto.timingSafeEqual(ab, bb);
+}
+
 app.post('/api/staff/login', (req, res) => {
   const now = Date.now();
-  if (now < libraryLoginState.lockedUntil) {
-    const secsLeft = Math.ceil((libraryLoginState.lockedUntil - now) / 1000);
+  const ip = req.ip || 'unknown';
+  const state = libraryAttempts.get(ip) || { count: 0, lockedUntil: 0 };
+
+  if (now < state.lockedUntil) {
+    const secsLeft = Math.ceil((state.lockedUntil - now) / 1000);
     return res.status(429).json({ ok: false, error: `Too many attempts. Try again in ${secsLeft}s.` });
   }
 
   const { passcode } = req.body || {};
-  if (passcode !== STAFF_PASSCODE) {
-    libraryLoginState.attempts += 1;
-    if (libraryLoginState.attempts >= LIBRARY_MAX_ATTEMPTS) {
-      libraryLoginState.lockedUntil = now + LIBRARY_LOCKOUT_MS;
-      libraryLoginState.attempts = 0;
+  if (!safeEqual(passcode, STAFF_PASSCODE)) {
+    state.count += 1;
+    if (state.count >= LIBRARY_MAX_ATTEMPTS) {
+      state.lockedUntil = now + LIBRARY_LOCKOUT_MS;
+      state.count = 0;
+      libraryAttempts.set(ip, state);
       return res.status(429).json({ ok: false, error: 'Too many failed attempts. Locked out for 60 seconds.' });
     }
+    libraryAttempts.set(ip, state);
     return res.status(401).json({ ok: false, error: 'Incorrect passcode.' });
   }
 
-  libraryLoginState.attempts = 0;
-  libraryLoginState.lockedUntil = 0;
-  return res.json({ ok: true, token: crypto.randomBytes(24).toString('hex') });
+  libraryAttempts.delete(ip);
+  /* Authenticate with the session the site already runs, not a random token.
+     The old code returned a token that no route ever verified, and library.js
+     only used it to decide whether to show the modal — so the upload endpoint
+     was wide open. A session cookie is httpOnly, survives a page reload, and
+     is actually checked below. */
+  req.session.libraryStaff = true;
+  req.session.libraryLoginAt = new Date().toISOString();
+  return res.json({ ok: true });
 });
 
-app.post('/api/library/upload', libraryUpload.single('file'), (req, res) => {
+app.post('/api/staff/logout', (req, res) => {
+  delete req.session?.libraryStaff;
+  res.json({ ok: true });
+});
+
+function requireLibraryAuth(req, res, next) {
+  if (req.session && req.session.libraryStaff) return next();
+  return res.status(401).json({ ok: false, error: 'Unauthorized — please sign in as staff.' });
+}
+
+app.get('/api/library/auth', (req, res) => {
+  res.json({ authenticated: !!(req.session && req.session.libraryStaff) });
+});
+
+app.post('/api/library/upload', requireLibraryAuth, libraryUpload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ ok: false, error: 'No file received.' });
 
   const { title, subject, type, year, author } = req.body;
@@ -581,6 +693,47 @@ app.get('/api/assets', (_req, res) => res.json(loadCatalog()));
 /* ── Health check ─────────────────────────────────────────────────────────── */
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SECURITY HEADERS FOR THE MARKETING SITE
+   ══════════════════════════════════════════════════════════════════════════
+   The site had no CSP at all, and it loads third-party scripts. Without one,
+   a stored-XSS payload anywhere on this origin could pull script from any
+   host — and this origin also hosts /portal, whose CSRF cookie is readable
+   by JavaScript by design (double-submit), so injected script here could act
+   as a signed-in parent or administrator.
+
+   /portal is unaffected: the proxy above is registered first and never calls
+   next() for those paths, and Next sets its own per-request nonce CSP.
+
+   'unsafe-inline' for script is still required — the pages carry inline
+   <script> blocks (the page-transition cover, the Tailwind config). Removing
+   it means nonces on every inline block; that is a separate piece of work.
+   What this policy does buy: script can now only come from 'self' and the
+   three CDNs the site actually uses, so an injected payload cannot fetch a
+   loader from an attacker's host. */
+const SITE_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://esm.sh",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https://images.unsplash.com",
+  "connect-src 'self' https://esm.sh",
+  "frame-src https://www.google.com",            // the contact/home map embeds
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+].join('; ');
+
+app.use((_req, res, next) => {
+  res.setHeader('Content-Security-Policy', SITE_CSP);
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 
 /* ══════════════════════════════════════════════════════════════════════════
    STATIC SITE

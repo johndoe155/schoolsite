@@ -104,7 +104,12 @@ function resolveAppSecret(isProduction: boolean): string {
  * production refuses to boot without a real one rather than silently sending
  * thousands of dead links.
  */
+/** Must match `basePath` in apps/web/next.config.mjs, which reads the same
+ *  variable. Declaring it twice is how the two drift apart. */
+const PORTAL_BASE_PATH = process.env.PORTAL_BASE_PATH ?? "/portal";
+
 function resolvePublicWebOrigin(isProduction: boolean): string {
+  const basePath = PORTAL_BASE_PATH;
   const v = process.env.PUBLIC_WEB_ORIGIN?.trim().replace(/\/+$/, "");
   if (isProduction) {
     if (!v) {
@@ -120,6 +125,25 @@ function resolvePublicWebOrigin(isProduction: boolean): string {
     if (!/^https:\/\//i.test(v)) {
       throw new Error(`PUBLIC_WEB_ORIGIN must be https in production (got ${v}).`);
     }
+    /* The web app is mounted under basePath /portal by the main site's proxy
+       (PORTAL-INTEGRATION-PLAN.md §1.3). Every emailed link is built as
+       `${PUBLIC_WEB_ORIGIN}/reset`, `/invite`, `/mfa`, … and Paystack's
+       callback_url as `${PUBLIC_WEB_ORIGIN}/fees/return`. Without the suffix
+       all of them 404, and nothing else catches it: the go-live readiness
+       check only asserts the value is set. The stock .env.example and
+       docker-compose defaults both ship WITHOUT the suffix, so this is the
+       default misconfiguration, not an edge case. */
+    if (!new RegExp(basePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$", "i").test(v)) {
+      throw new Error(
+        `PUBLIC_WEB_ORIGIN must end with the portal's basePath "${basePath}" (got "${v}"). ` +
+        `The web app is served under /portal by the main site, so without the suffix every ` +
+        `invite, password-reset, guardian-verification and MFA link — and the Paystack ` +
+        `callback_url — would 404. Use e.g. https://school.example/portal`);
+    }
+  } else if (v && !new RegExp(basePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$", "i").test(v)) {
+    console.warn(
+      `[config] PUBLIC_WEB_ORIGIN (${v}) does not end in "${basePath}" — emailed links will 404 ` +
+      `if the web app is served under its basePath. This is fatal in production.`);
   }
   return v || "http://127.0.0.1:3000";
 }

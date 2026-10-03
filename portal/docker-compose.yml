@@ -38,7 +38,7 @@ services:
       DATABASE_URL: postgres://portal_owner:${POSTGRES_OWNER_PASSWORD:?}@postgres:5432/portal
       APP_SECRET: ${APP_SECRET:?set in .env — >=32 chars}
       COOKIE_SECURE: "true"
-      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://portal.school.example}
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://school.example/portal}
       # caddy → web → api: two forwarding hops (review-2).
       TRUST_PROXY: ${TRUST_PROXY:-2}
       WORKER_INPROC: "false"
@@ -82,7 +82,7 @@ services:
       # the API does. Without it every link in every message pointed at
       # http://127.0.0.1:3000 — the recipient's own machine — while the portal
       # itself looked perfectly healthy.
-      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://portal.school.example}
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://school.example/portal}
       SMTP_URL: ${SMTP_URL:-}
       MAIL_FROM: ${MAIL_FROM:-portal@school.example}
       MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
@@ -104,7 +104,7 @@ services:
     environment:
       NODE_ENV: production
       API_INTERNAL: http://api:8080
-      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://portal.school.example}
+      PUBLIC_WEB_ORIGIN: ${PUBLIC_WEB_ORIGIN:-https://school.example/portal}
     networks: [internal]
     depends_on:
       api: { condition: service_healthy }

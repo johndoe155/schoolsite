@@ -12,6 +12,21 @@
      * APP LOGIC
      */
     const App = (() => {
+      /* title/author/subject/type come from an upload endpoint, so they are
+         attacker-controlled. Everything interpolated into HTML goes through
+         esc() (text) or attr() (attribute), and URLs are checked too. */
+      function esc(v) {
+        return String(v ?? '').replace(/[&<>"']/g, c => (
+          { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+        ));
+      }
+      const attr = esc;
+      function safeUrl(u) {
+        const s = String(u ?? '');
+        // block javascript:/data: and friends in href/src
+        return /^(https?:|\/|\.\/|assets\/)/i.test(s) ? s : '#';
+      }
+
       // Core Elements
       const grid = document.getElementById('results-grid');
       const countLabel = document.getElementById('results-count');
@@ -103,36 +118,36 @@
             >
               <div class="relative aspect-[4/3] overflow-hidden bg-lux-navy">
                 <img 
-                  src="${item.thumb}" 
-                  alt="Cover of ${item.title}" 
+                  src="${attr(safeUrl(item.thumb))}" 
+                  alt="Cover of ${esc(item.title)}" 
                   loading="lazy"
                   class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
                 >
                 <div class="absolute inset-0 bg-gradient-to-t from-lux-charcoal via-transparent to-transparent opacity-60"></div>
                 <span class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border border-white/10">
-                  ${item.type}
+                  ${esc(item.type)}
                 </span>
               </div>
               <div class="p-5 flex flex-col flex-grow">
                 <div class="mb-4 flex-grow">
-                  <h3 class="font-serif text-lg leading-snug text-lux-cream group-hover:text-lux-gold transition-colors line-clamp-2 mb-2" title="${item.title}">
-                    ${item.title}
+                  <h3 class="font-serif text-lg leading-snug text-lux-cream group-hover:text-lux-gold transition-colors line-clamp-2 mb-2" title="${attr(item.title)}">
+                    ${esc(item.title)}
                   </h3>
-                  <p class="text-sm text-white/50">${item.author} • ${item.year}</p>
-                  <p class="text-xs text-white/30 mt-1">${item.subject}</p>
+                  <p class="text-sm text-white/50">${esc(item.author)} • ${esc(item.year)}</p>
+                  <p class="text-xs text-white/30 mt-1">${esc(item.subject)}</p>
                 </div>
                 <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/5">
                   <button 
-                    onclick="App.openPreview('${item.title}', '${item.pdf}')"
+                    data-preview data-preview-pdf="${attr(safeUrl(item.pdf))}"
                     class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-lux-gold"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     Preview
                   </button>
                   <a 
-                    href="${item.pdf}"
+                    href="${attr(safeUrl(item.pdf))}"
                     download
-                    onclick="App.downloadItem('${item.title}')"
+                    data-download
                     class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-bold bg-lux-gold text-lux-navy hover:bg-lux-gold-light shadow-lg shadow-amber-900/20 transition-all hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     Download
@@ -155,7 +170,13 @@
         pdfError.classList.add('hidden');
         
         try {
-          const loadingTask = pdfjsLib.getDocument(url);
+          /* isEvalSupported:false is the documented mitigation for
+             CVE-2024-4367: pdf.js otherwise runs arbitrary JS embedded in a
+             PDF's glyph data while rendering. Library PDFs are user-uploaded,
+             so a crafted file would otherwise execute script in a reader's
+             browser on the school's own origin. The cost is slightly slower
+             rendering of some fonts. */
+          const loadingTask = pdfjsLib.getDocument({ url, isEvalSupported: false });
           pdfState.doc = await loadingTask.promise;
           
           pageCountDisplay.textContent = pdfState.doc.numPages;
@@ -499,6 +520,28 @@
           filterItems();
         },
         init: async () => {
+          // Restore the staff UI from the session cookie (survives a reload).
+          restoreStaffSession();
+
+          /* Delegated handlers. These replaced inline onclick="...('${item.title}')"
+             attributes, which broke on any title containing an apostrophe
+             ("O'Level", "Children's…") and were an injection point for the
+             upload-supplied title. */
+          grid.addEventListener('click', (e) => {
+            const prev = e.target.closest('[data-preview]');
+            if (prev) {
+              const card = prev.closest('article');
+              const title = card ? (card.querySelector('h3')?.getAttribute('title') || '') : '';
+              openPreview(title, prev.getAttribute('data-preview-pdf'));
+              return;
+            }
+            const dl = e.target.closest('[data-download]');
+            if (dl) {
+              const card = dl.closest('article');
+              showToast(`Starting download: ${card ? (card.querySelector('h3')?.getAttribute('title') || '') : ''}`);
+            }
+          });
+
           // Show skeleton while loading
           grid.innerHTML = Array(4).fill(createSkeleton()).join('');
           try {
@@ -610,7 +653,9 @@ const AdminSystem = (() => {
 
           if (!res.ok || !data.ok) throw new Error(data.error || 'Login failed.');
 
-          authToken = data.token;
+          // The server authenticates with the httpOnly session cookie, so there
+          // is no token to hold. This flag only drives which UI is shown.
+          authToken = true;
           setAuthUI(true);
           closeLogin();
           // Small delay so the modal close animation completes first
@@ -769,8 +814,20 @@ const AdminSystem = (() => {
       }
 
       function logout() {
+        fetch('/api/staff/logout', { method: 'POST' }).catch(() => {});
         authToken = null;
         setAuthUI(false);
+      }
+
+      /* The session outlives the page, so restore the staff UI after a reload
+         instead of making staff sign in again to reach a button that would
+         401 on save. */
+      async function restoreStaffSession() {
+        try {
+          const res = await fetch('/api/library/auth');
+          const data = await res.json();
+          if (data.authenticated) { authToken = true; setAuthUI(true); }
+        } catch (e) { /* offline / not signed in */ }
       }
 
       // ── Helpers ──────────────────────────────────────────────────────
