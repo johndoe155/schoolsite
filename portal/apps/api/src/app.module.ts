@@ -7,6 +7,9 @@ import { DirectoryController } from "./directory/directory.controller";
 import { AcademicsController } from "./academics/academics.controller";
 import { AttendanceController } from "./attendance/attendance.controller";
 import { TimetableController, TimetableService } from "./timetable/timetable.controller";
+import { FilesController } from "./files/files.controller";
+import { FilesService } from "./files/files.service";
+import { ClassworkController } from "./classwork/classwork.controller";
 import { GradebookController } from "./gradebook/gradebook.controller";
 import { StudentController } from "./student/student.controller";
 import { MessagingController } from "./messaging/messaging.controller";
@@ -31,12 +34,13 @@ export class AppModule {
       controllers: [
         AuthController, DirectoryController, AcademicsController,
         AttendanceController, GradebookController, StudentController, TimetableController,
+        FilesController, ClassworkController,
         MessagingController, NotifyController, ReportsController, SsoController,
         FeesController, ExamsController, TransportController, HealthController,
         SchoolController, ImportController, AuditController, MfaAdminController,
         RetentionController,
       ],
-      providers: [ TimetableService,AuthService, { provide: DB_TOKEN, useValue: db }],
+      providers: [ TimetableService, FilesService, AuthService, { provide: DB_TOKEN, useValue: db }],
     };
   }
 }

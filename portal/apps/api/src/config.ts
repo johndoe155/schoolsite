@@ -257,6 +257,37 @@ export const config = {
   },
   /** Login lockout after repeated failures (DB-backed, survives restarts). */
   lockout: { maxFailures: 5, durationMs: 15 * 60_000 },
+  /**
+   * Classwork files (materials, homework attachments, message attachments).
+   *
+   * Until this existed the portal had no way to store a file, so "share the
+   * revision sheet with JSS2A" could not be done in the product at all. Files
+   * land OUTSIDE the web root on a private volume and are only ever served
+   * through GET /api/v1/files/:id, which re-checks section scope on every
+   * request — a file is never reachable by guessing a URL.
+   */
+  files: {
+    dir: process.env.FILES_DIR ?? "./data/files",
+    maxUploadMb: Number(process.env.FILES_MAX_UPLOAD_MB ?? 25),
+    /**
+     * Executable/script types are refused outright. The allowlist is
+     * deliberately document-shaped: this is a school sharing worksheets and
+     * homework, not a file host. Anything not on the list is rejected with a
+     * message naming the accepted types.
+     */
+    allowedMime: [
+      "application/pdf",
+      "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic",
+      "text/plain", "text/csv",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/zip",
+    ],
+  },
 };
 export type Config = typeof config;
 

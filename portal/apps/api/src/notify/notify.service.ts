@@ -109,6 +109,33 @@ export async function enqueueAbsence(tx: Db, studentUserId: string, date: string
   }
 }
 
+/**
+ * Homework or a class resource posted → the pupil and their guardians.
+ *
+ * Both audiences are written because homework is the one thing a parent is
+ * expected to act on (checking it was done), and a pupil who never opens the
+ * portal otherwise has no idea work was set. Opt-out is honoured per recipient
+ * inside enqueue(); the payload carries the ids the worker resolves to names.
+ */
+export async function enqueueAssignmentPosted(tx: Db, input: {
+  studentUserId: string; sectionId: string; title: string;
+  kind?: "homework" | "material"; dueAt?: string | null;
+}) {
+  const base = {
+    student_user_id: input.studentUserId,
+    section_id: input.sectionId,
+    title: input.title,
+    kind: input.kind ?? "homework",
+    due_at: input.dueAt ?? null,
+  };
+  await enqueue(tx, { recipientUserId: input.studentUserId, channel: "email",
+    kind: "assignment_posted", payload: { ...base, audience: "student" } });
+  for (const gid of await guardianIdsOf(tx, input.studentUserId)) {
+    await enqueue(tx, { recipientUserId: gid, channel: "email",
+      kind: "assignment_posted", payload: { ...base, audience: "guardian" } });
+  }
+}
+
 /** teacher message posted → guardians get email */
 export async function enqueueMessagePosted(tx: Db, studentUserId: string, threadId: string, subject: string) {
   const payload = { thread_id: threadId, subject };

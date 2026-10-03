@@ -25,7 +25,10 @@ const PERMS: Record<string, string[]> = {
   registrar: ["directory:read","directory:write","academics:read","academics:write","attendance:read","gradebook:read","schedule:write","schedule:read"],
   counselor: ["directory:read","attendance:read","gradebook:read"],
   teacher: ["academics:read","attendance:read","attendance:write","gradebook:read","gradebook:write","messaging:write","schedule:read","self:read"],
-  teacher_assistant: ["academics:read","attendance:read","attendance:write","gradebook:read","self:read"],
+  /* schedule:read added in phase 8: an assistant covers lessons and was the
+     one role that could see a section but not its time slot, so "My
+     timetable" — built for exactly that question — 403'd for them. */
+  teacher_assistant: ["academics:read","attendance:read","attendance:write","gradebook:read","schedule:read","self:read"],
   student: ["self:read"],
   parent: ["family:read", "fees:pay"],
   auditor: ["audit:read","directory:read","gradebook:read","attendance:read"],

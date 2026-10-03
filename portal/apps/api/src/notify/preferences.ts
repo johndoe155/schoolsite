@@ -23,6 +23,7 @@ export const OPTIONAL_KINDS = [
   "absence_recorded",
   "grade_released",
   "message_received",
+  "assignment_posted",
   "daily_digest",
 ] as const;
 export type OptionalKind = (typeof OPTIONAL_KINDS)[number];
@@ -39,6 +40,10 @@ export const KIND_LABELS: Record<OptionalKind, { label: string; detail: string }
   message_received: {
     label: "Messages from staff",
     detail: "Sent when a teacher or the office starts or replies to a thread about your child.",
+  },
+  assignment_posted: {
+    label: "Homework and class materials",
+    detail: "Sent when a teacher sets homework or posts a resource for one of your classes.",
   },
   daily_digest: {
     label: "Daily summary",

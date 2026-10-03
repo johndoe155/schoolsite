@@ -253,6 +253,44 @@ export function renderEmail(kind: string, payload: Record<string, unknown>, ctx:
       };
     }
 
+    case "assignment_posted": {
+      // Homework is set for a CLASS. The useful facts for a pupil or a parent
+      // are: what, which subject, and by when — and the link has to land on a
+      // page that role may actually open (a guardian cannot see /student/*).
+      const title = String(payload.title ?? "New work");
+      const isMaterial = payload.kind === "material";
+      const dueAt = payload.due_at ? String(payload.due_at) : null;
+      const due = dueAt ? humanDate(dueAt, ctx.timezone) : null;
+      const subject = r.courseTitle ?? r.sectionName ?? null;
+      const isGuardian = payload.audience === "guardian";
+      const studentName = r.studentName ?? null;
+      const who = isGuardian && studentName ? ` for ${studentName}` : "";
+      const url = isGuardian
+        ? `${brand.webOrigin}/parent`
+        : `${brand.webOrigin}/student/classwork`;
+      return {
+        subject: subject ? `${school}: ${title} (${subject})` : `${school}: ${title}`,
+        ...renderLayout({
+          brand,
+          heading: isMaterial ? "New class resource" : "New homework",
+          greeting: recipientName,
+          reason: isGuardian && studentName
+            ? `You are receiving this as the registered guardian of ${studentName} at ${school}.`
+            : `You are receiving this because you are a pupil at ${school}.`,
+          manageUrl: unsub?.managePrefsUrl,
+          blocks: [
+            { p: isMaterial
+              ? `A teacher has posted a resource${who}${subject ? ` in ${subject}` : ""}: "${title}".`
+              : `A teacher has set homework${who}${subject ? ` in ${subject}` : ""}: "${title}".` },
+            ...(due ? [{ p: `Due ${due}.` }] : []),
+            { p: "Open the portal to read it in full, download any attached sheet, or hand work in." },
+            { button: { label: isMaterial ? "Open the portal" : "See the homework", url } },
+          ],
+        }),
+        headers: baseHeaders(brand, true, unsub),
+      };
+    }
+
     case "daily_digest": {
       const when = humanDate(payload.date, ctx.timezone);
       const absences = Number(payload.absences ?? 0);

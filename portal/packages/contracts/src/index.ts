@@ -135,7 +135,14 @@ export const ThreadCreateBody = z.object({
 });
 export type ThreadCreateBody = z.infer<typeof ThreadCreateBody>;
 
-export const MessageBody = z.object({ body_text: z.string().min(1).max(4000) });
+export const MessageBody = z.object({
+  /* A message may be a file with a short covering note, so text is optional
+     when an attachment is present — "see attached" is a sentence, not a body. */
+  body_text: z.string().max(4000).optional(),
+  attachment_file_id: z.string().uuid().nullish(),
+}).refine((v) => Boolean(v.body_text?.trim() || v.attachment_file_id), {
+  message: "Write a message or attach a file.",
+});
 export type MessageBody = z.infer<typeof MessageBody>;
 
 /* ── notification preferences ──
@@ -147,6 +154,7 @@ export const NotificationPrefsBody = z.object({
   absence_recorded: z.boolean().optional(),
   grade_released: z.boolean().optional(),
   message_received: z.boolean().optional(),
+  assignment_posted: z.boolean().optional(),
   daily_digest: z.boolean().optional(),
 });
 export type NotificationPrefsBody = z.infer<typeof NotificationPrefsBody>;

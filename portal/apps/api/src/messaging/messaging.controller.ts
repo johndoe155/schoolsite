@@ -6,7 +6,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import type { Db } from "../db/client";
 import { DB_TOKEN } from "../db/token";
 import { withActor } from "../db/actor";
-import { messageThreads, messages, users, sectionStaff, enrollments } from "../db/schema";
+import { messageThreads, messages, users, sectionStaff, enrollments, files } from "../db/schema";
 import { Perm } from "../common/guards";
 import { insertAudit } from "../common/audit";
 import { enqueueMessagePosted } from "../notify/notify.service";
@@ -65,7 +65,18 @@ export class MessagingController {
       if (!thread) throw new NotFoundException({ code: "not_found" }); // also covers RLS-invisible
       // sender_name is snapshotted on the row: guardians cannot read staff rows
       // in users, so a join here would hide every teacher message from parents.
-      const msgs = await tx.select().from(messages).where(eq(messages.threadId, id));
+      /* The attachment's display name travels with the message; the bytes are
+         fetched separately from /files/:id, which re-checks scope. A guardian
+         who can read this thread can therefore read its attachments and
+         nothing else. */
+      const msgs = await tx.select({
+        id: messages.id, threadId: messages.threadId, senderUserId: messages.senderUserId,
+        senderName: messages.senderName, bodyText: messages.bodyText,
+        createdAt: messages.createdAt, attachmentFileId: messages.attachmentFileId,
+        attachmentName: files.filename, attachmentBytes: files.bytes,
+      }).from(messages)
+        .leftJoin(files, eq(files.id, messages.attachmentFileId))
+        .where(eq(messages.threadId, id));
       const [student] = await tx.select({ displayName: users.displayName })
         .from(users).where(eq(users.id, thread.studentUserId)).limit(1);
       return { thread: { ...thread, studentName: student?.displayName ?? null }, messages: msgs };
@@ -90,7 +101,8 @@ export class MessagingController {
       }
       const [msg] = await tx.insert(messages).values({
         threadId: id, senderUserId: p.userId, senderName: p.displayName,
-        bodyText: parsed.data.body_text,
+        bodyText: (parsed.data.body_text ?? "").trim(),
+        attachmentFileId: parsed.data.attachment_file_id ?? null,
       }).returning();
       await enqueueMessagePosted(tx, thread.studentUserId, id, thread.subject);
       await insertAudit(tx, { actorUserId: p.userId, action: "message.posted",

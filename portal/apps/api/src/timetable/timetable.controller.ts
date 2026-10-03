@@ -1,14 +1,15 @@
 import {
-  Body, Controller, Get, Inject, Injectable, NotFoundException, Param, Post, Req,
-  UnprocessableEntityException,
+  Body, Controller, Delete, ForbiddenException, Get, Inject, Injectable,
+  NotFoundException, Param, Post, Req, UnprocessableEntityException,
 } from "@nestjs/common";
-import { and, eq, inArray, ne } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, isNull, ne } from "drizzle-orm";
 import type { Request } from "express";
 import type { Db } from "../db/client";
 import { DB_TOKEN } from "../db/token";
-import { withActor } from "../db/actor";
+import { withActor, SERVICE } from "../db/actor";
 import {
   courseSections, timetablePeriods, timetableSlots, users, courses,
+  enrollments, sectionStaff, guardians, userRoles,
 } from "../db/schema";
 import { Perm } from "../common/guards";
 import { insertAudit } from "../common/audit";
@@ -40,7 +41,7 @@ export class TimetableService {
 
   /** A section's week, with breaks kept and free periods left empty. */
   async forSection(sectionId: string) {
-    return withActor(this.db, SERVICE_CTX(sectionId), async (tx) => {
+    return withActor(this.db, SERVICE, async (tx) => {
       const [section] = await tx.select().from(courseSections)
         .where(eq(courseSections.id, sectionId)).limit(1);
       if (!section) throw new NotFoundException({ code: "not_found", detail: "no such section" });
@@ -94,6 +95,146 @@ export class TimetableService {
         }),
       };
     });
+  }
+
+  /**
+   * The whole week for one term: every section's slot laid over the bell
+   * schedule. This is what the admin grid renders — building a timetable one
+   * section at a time hides exactly the clashes (two classes in one room, a
+   * teacher in two places) that the grid makes obvious.
+   */
+  async termWeek(actor: Principal, termId: string) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
+      const periods = await tx.select().from(timetablePeriods)
+        .where(eq(timetablePeriods.termId, termId));
+      const periodIds = periods.map((p) => p.id);
+      const slots = periodIds.length ? await tx.select({
+        slot: timetableSlots, sectionName: courseSections.name,
+        courseTitle: courses.title, teacherName: users.displayName,
+      }).from(timetableSlots)
+        .leftJoin(courseSections, eq(timetableSlots.sectionId, courseSections.id))
+        .leftJoin(courses, eq(timetableSlots.courseId, courses.id))
+        .leftJoin(users, eq(timetableSlots.teacherUserId, users.id))
+        .where(inArray(timetableSlots.periodId, periodIds)) : [];
+      const sections = await tx.select({
+        id: courseSections.id, name: courseSections.name, code: courses.code, title: courses.title,
+      }).from(courseSections)
+        .innerJoin(courses, eq(courses.id, courseSections.courseId))
+        .where(eq(courseSections.termId, termId));
+      return {
+        termId,
+        periods: [...periods].sort((a, b) =>
+          (a.weekday - b.weekday) || (a.periodIndex - b.periodIndex)),
+        sections,
+        slots: slots.map((s) => ({
+          id: s.slot.id, periodId: s.slot.periodId, sectionId: s.slot.sectionId,
+          sectionName: s.sectionName, courseId: s.slot.courseId, courseTitle: s.courseTitle,
+          teacherUserId: s.slot.teacherUserId, teacherName: s.teacherName, room: s.slot.room,
+        })),
+      };
+    });
+  }
+
+  /** Does a teacher teach this pupil? Used to authorise the teacher's view. */
+  private async teachesStudent(tx: any, teacherId: string, studentId: string) {
+    const rows = await tx.select({ id: enrollments.id }).from(enrollments)
+      .innerJoin(sectionStaff, and(
+        eq(sectionStaff.sectionId, enrollments.sectionId),
+        eq(sectionStaff.userId, teacherId)))
+      .where(and(eq(enrollments.studentUserId, studentId),
+        eq(enrollments.status, "enrolled"))).limit(1);
+    return rows.length > 0;
+  }
+
+  /**
+   * One pupil's week. This is the view the portal could not produce at all:
+   * a student could not be told which room to walk into.
+   *
+   * Authorisation: the pupil themselves, an admin, a verified guardian of that
+   * pupil, or a teacher who teaches them. Guardianship is read from the
+   * guardians table (RLS-visible only to the linked account anyway) rather than
+   * being taken from the request.
+   *
+   * The teacher's NAME is resolved in a second, service-scoped read because
+   * `users` RLS deliberately hides other people's rows from a pupil — the name
+   * on your own timetable is not "other people's data", but the policy cannot
+   * know that, so the narrowing happens here instead of widening the policy.
+   */
+  async forStudent(actor: Principal, studentId: string) {
+    const data = await withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
+      const isSelf = actor.userId === studentId;
+      const isAdmin = ["super_admin", "school_admin", "registrar"].includes(actor.activeRole);
+      if (!isSelf && !isAdmin) {
+        const [link] = await tx.select({ id: guardians.id }).from(guardians)
+          .where(and(eq(guardians.studentUserId, studentId),
+            eq(guardians.userId, actor.userId),
+            isNotNull(guardians.verifiedAt), isNull(guardians.endedAt))).limit(1);
+        const teaches = link ? false : await this.teachesStudent(tx, actor.userId, studentId);
+        if (!link && !teaches) throw new ForbiddenException({ code: "not_your_record" });
+      }
+
+      const rows = await tx.select({
+        slot: timetableSlots, period: timetablePeriods,
+        sectionName: courseSections.name, courseTitle: courses.title,
+        courseCode: courses.code,
+      }).from(timetableSlots)
+        .innerJoin(timetablePeriods, eq(timetableSlots.periodId, timetablePeriods.id))
+        .innerJoin(enrollments, and(
+          eq(enrollments.sectionId, timetableSlots.sectionId),
+          eq(enrollments.studentUserId, studentId),
+          eq(enrollments.status, "enrolled")))
+        .leftJoin(courseSections, eq(courseSections.id, timetableSlots.sectionId))
+        .leftJoin(courses, eq(courses.id, timetableSlots.courseId));
+
+      /* The pupil's week is the WHOLE bell schedule for the terms they are in,
+         not only the periods they have lessons in. Showing just the lessons
+         loses the shape of the day — a break, a free period and "school ends
+         at 10:00 on a Friday" are things a pupil and a parent need to see. */
+      const sectionIds = [...new Set(rows.map((r) => r.slot.sectionId))];
+      const termRows = sectionIds.length
+        ? await tx.select({ termId: courseSections.termId }).from(courseSections)
+          .where(inArray(courseSections.id, sectionIds))
+        : [];
+      const termIds = [...new Set(termRows.map((t) => t.termId))];
+      const periods = termIds.length
+        ? await tx.select().from(timetablePeriods)
+          .where(inArray(timetablePeriods.termId, termIds))
+        : [];
+      return { rows, periods };
+    });
+
+    const teacherIds = [...new Set(data.rows.map((r) => r.slot.teacherUserId)
+      .filter((x): x is string => Boolean(x)))];
+    const names = teacherIds.length
+      ? await withActor(this.db, SERVICE, (tx) => tx.select({ id: users.id, name: users.displayName })
+        .from(users).where(inArray(users.id, teacherIds)))
+      : [];
+    const nameById = new Map(names.map((n) => [n.id, n.name]));
+    const byPeriod = new Map(data.rows.map((r) => [r.slot.periodId, r]));
+
+    return {
+      studentId,
+      week: groupByDay(data.periods, (p) => {
+        const r = byPeriod.get(p.id);
+        return r ? {
+          sectionId: r.slot.sectionId, section: r.sectionName,
+          course: r.courseTitle, courseCode: r.courseCode,
+          teacher: r.slot.teacherUserId ? nameById.get(r.slot.teacherUserId) ?? null : null,
+          room: r.slot.room,
+        } : null;
+      }),
+    };
+  }
+
+  /** Every section's period list for the current pupil — for the classwork tabs. */
+  async sectionsForStudent(actor: Principal, studentId: string) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) =>
+      tx.select({ id: courseSections.id, name: courseSections.name })
+        .from(courseSections)
+        .innerJoin(enrollments, and(
+          eq(enrollments.sectionId, courseSections.id),
+          eq(enrollments.studentUserId, studentId),
+          eq(enrollments.status, "enrolled"))));
   }
 
   /** Upsert the bell schedule for a term. Replaces that term's periods. */
@@ -182,11 +323,50 @@ export class TimetableService {
       return { ok: true as const, slot: row };
     });
   }
-}
 
-/** The DB actor context for a read scoped to one section. */
-function SERVICE_CTX(sectionId: string) {
-  return { userId: null, role: "service" as const, sectionId };
+  /** Un-schedule one period for one section (leaves a free period). */
+  async removeSlot(actor: Principal, slotId: string) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
+      const [row] = await tx.select().from(timetableSlots)
+        .where(eq(timetableSlots.id, slotId)).limit(1);
+      if (!row) throw new NotFoundException({ code: "not_found" });
+      await tx.delete(timetableSlots).where(eq(timetableSlots.id, slotId));
+      await insertAudit(tx, { actorUserId: actor.userId, action: "timetable.slot_removed",
+        entityType: "section", entityId: row.sectionId,
+        before: { periodId: row.periodId, room: row.room } });
+      return { ok: true as const };
+    });
+  }
+
+  /**
+   * Remove one period from the bell schedule.
+   *
+   * Its slots go with it (timetable_slots.period_id is ON DELETE CASCADE) —
+   * a period that no longer exists cannot have a lesson in it, and leaving the
+   * slot behind would make "which lesson is this?" unanswerable.
+   */
+  /** Everyone who can be timetabled in front of a class. */
+  async teachers(actor: Principal) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, (tx) =>
+      tx.selectDistinct({ id: users.id, name: users.displayName })
+        .from(users)
+        .innerJoin(userRoles, eq(userRoles.userId, users.id))
+        .where(inArray(userRoles.roleCode, ["teacher", "teacher_assistant"]))
+        .orderBy(users.displayName));
+  }
+
+  async removePeriod(actor: Principal, periodId: string) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
+      const [row] = await tx.select().from(timetablePeriods)
+        .where(eq(timetablePeriods.id, periodId)).limit(1);
+      if (!row) throw new NotFoundException({ code: "not_found" });
+      await tx.delete(timetablePeriods).where(eq(timetablePeriods.id, periodId));
+      await insertAudit(tx, { actorUserId: actor.userId, action: "timetable.period_removed",
+        entityType: "term", entityId: row.termId,
+        before: { weekday: row.weekday, periodIndex: row.periodIndex } });
+      return { ok: true as const };
+    });
+  }
 }
 
 /** Fold flat rows into { Monday: [{ index, start, end, value }] }. */
@@ -211,6 +391,17 @@ export class TimetableController {
   @Perm("schedule:read")
   section(@Param("id") id: string) { return this.svc.forSection(id); }
 
+  /**
+   * Who can be put in front of a class. Small and specific: a timetable builder
+   * needs names, and the directory endpoint returns everyone (pupils included)
+   * with no role filter, which is the wrong list for this job.
+   */
+  @Get("timetable/teachers")
+  @Perm("schedule:read")
+  teachers(@Req() req: Request) {
+    return this.svc.teachers(req.principal!);
+  }
+
   @Get("timetable/me")
   @Perm("schedule:read")
   mine(@Req() req: Request) { return this.svc.forTeacher(req.principal!.userId); }
@@ -225,5 +416,39 @@ export class TimetableController {
   @Perm("schedule:write")
   slot(@Body() body: unknown, @Req() req: Request) {
     return this.svc.setSlot(req.principal!, body);
+  }
+
+  /** Clear a period: the section is free then. Deleting is how you un-schedule. */
+  @Delete("timetable/slots/:id")
+  @Perm("schedule:write")
+  removeSlot(@Param("id") id: string, @Req() req: Request) {
+    return this.svc.removeSlot(req.principal!, id);
+  }
+
+  @Delete("timetable/periods/:id")
+  @Perm("schedule:write")
+  removePeriod(@Param("id") id: string, @Req() req: Request) {
+    return this.svc.removePeriod(req.principal!, id);
+  }
+
+  /** The admin builder: the whole term's week in one payload. */
+  @Get("timetable/terms/:id")
+  @Perm("schedule:read")
+  termWeek(@Param("id") id: string, @Req() req: Request) {
+    return this.svc.termWeek(req.principal!, id);
+  }
+
+  /**
+   * A pupil's week. The pupil reads their own, a verified guardian reads their
+   * child's, and a teacher may read a pupil they teach.
+   *
+   * No @Perm: the roles that need this hold different capabilities (a pupil has
+   * self:read, a guardian has family:read), so a single capability name cannot
+   * express it. The handler decides, from the guardians table and the section
+   * roster — not from anything the caller claims.
+   */
+  @Get("timetable/students/:studentId")
+  student(@Param("studentId") studentId: string, @Req() req: Request) {
+    return this.svc.forStudent(req.principal!, studentId);
   }
 }

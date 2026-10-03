@@ -357,6 +357,8 @@ export const messages = pgTable("messages", {
   /** denormalized snapshot — guardians cannot join staff rows in users (RLS) */
   senderName: text("sender_name").notNull(),
   bodyText: text("body_text").notNull(),
+  /** 0019: a message can carry one file (a notice, a timetable, a scanned letter). */
+  attachmentFileId: uuid("attachment_file_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -514,3 +516,53 @@ export const retentionRuns = pgTable("retention_runs", {
   ok: boolean("ok").notNull().default(false),
   error: text("error"),
 });
+
+/* ── 0019 — classwork: homework, materials and the files behind them ────────
+   Files are stored on a private volume outside the web root; this table is the
+   only index of them, and every read goes through GET /files/:id, which
+   re-checks scope. `stored_name` is random and unrelated to `filename` so a
+   school's own naming can never collide with another upload. */
+export const files = pgTable("files", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  ownerUserId: uuid("owner_user_id").notNull(),
+  filename: text("filename").notNull(),
+  storedName: text("stored_name").notNull(),
+  mimeType: text("mime_type").notNull(),
+  bytes: bigint("bytes", { mode: "number" }).notNull(),
+  sha256: text("sha256").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const sectionMaterials = pgTable("section_materials", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sectionId: uuid("section_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  /** External link (a reading, a video) — a material may be link-only. */
+  url: text("url"),
+  fileId: uuid("file_id"),
+  createdBy: uuid("created_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const assignments = pgTable("assignments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sectionId: uuid("section_id").notNull(),
+  title: text("title").notNull(),
+  instructions: text("instructions"),
+  dueAt: timestamp("due_at", { withTimezone: true }),
+  attachmentFileId: uuid("attachment_file_id"),
+  createdBy: uuid("created_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const assignmentSubmissions = pgTable("assignment_submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  assignmentId: uuid("assignment_id").notNull(),
+  studentUserId: uuid("student_user_id").notNull(),
+  bodyText: text("body_text"),
+  fileId: uuid("file_id"),
+  status: text("status").notNull().default("submitted"),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({ uq: unique().on(t.assignmentId, t.studentUserId) }));
