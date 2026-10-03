@@ -29,7 +29,52 @@ Also fixed in this pass (found while building the above, each one a real defect)
 - **A root `loading.tsx` turned every `redirect()` into a streamed 200** (Next 16 streams from the moment the loading boundary appears). Removed; the anon redirect is a 307 again.
 - Test hygiene: the classwork suite had a fixture that made an old assertion pass for the wrong reason (one row per enrolled pupil), and the smoke suite's preference check counted categories instead of naming them (phase 8 added a fifth).
 
-Test state after this pass: API **298/298**, web smoke **91/91** through `:4040` (the origin a browser actually uses), site route + proxy matrix green, portal audit 0.
+Test state after this pass: API **298/298**, web smoke **91/91** through `:4040` (the origin a browser actually uses), site route + proxy matrix green, portal audit 0. (Superseded by the Phase 9 update at the top of this file: **300/300** and **108/108**.)
+
+---
+
+## Update — 2026-10-03, later (Phase 9: the corrections you listed)
+
+The seven items you sent after the Phase 8 pass are done, plus four genuine bugs found while
+doing them. Everything below was exercised through `http://127.0.0.1:4040` (the origin a browser
+uses), not just unit-tested.
+
+| You said | What changed |
+| --- | --- |
+| No PDF/print for report cards or receipts | `/portal/print/report-card/[studentId]` and `/portal/print/fees/[studentId]`. Real documents: school header, pupil and admission number, per-subject tables, attendance, signature lines, one receipt per successful payment with balance and reference. "Print / Save as PDF" buttons on the pupil grades page, the parent child page and the pupil dashboard. A dedicated `@media print` block hides the app chrome and sets A4 margins. Access is not re-invented — the pages fetch through the same API, so a guardian pasting another family's id gets a 404. |
+| Teachers enter grades one pupil at a time | The gradebook now opens with a **class-sized grid**: name the work once, type down the column, one request for the lot (`grades/bulk`, which already accepted 500 items — the cost was entirely in the screen). Existing marks for the same label prefill so corrections are edits, not retyping; blanks are skipped rather than saved as zero; marks over the maximum are flagged before saving. The one-pupil form stays below for a single mark or a longer comment. |
+| Newsletter could be collected but not sent | Admin panel on `news.html` → **Newsletter**: audience count, "send a test first", two-step confirm (nothing sends until the count has been seen), chunked delivery with progress, per-address failures reported, campaign history. Unsubscribe is a real RFC 8058 one-click link signed by `NEWSLETTER_SECRET` (unsubscribing works without a session, and a tampered token changes nothing). Nothing can be sent twice by accident: a resumable campaign resumes where it stopped, and a campaign whose recipient list has been trimmed refuses to continue rather than re-mailing the first batch. |
+| Only teachers can start or reply to messages | Migration `0020` (guardians may reply) and `0021` (guardians may open a thread with a teacher who teaches that child). New capability `messaging:reply`; the parent read-only invariant still blocks everything else, with this one endpoint opting in explicitly — the same narrow exception pattern as paying a fee. The teacher gets an email when a family replies. Every "parents are read-only" line in the portal UI and terms was corrected, and the smoke suite now asserts a guardian's reply actually lands. |
+| Two different addresses | One source of truth, `public/assets/js/site-info.js`, loaded by every page and used by the footer. The correct address (`1-5 Osuntokun Avenue, Off Tunde Lakanmi Street, Crescent, Oyo`) now appears on the home, contact, news, academies, privacy and unsubscribe pages. CI fails the build if the old misspelling or a stray copy comes back. |
+| Reply promise is inconsistent (1 day vs 2–3) | The promise lives once, in `site-info.js`, as **2–3 business days**; the Programs success message, the contact success message and the home-page message all read it from there. CI fails on the string "one business day". |
+| "Next Session: April 2–19" is stale | The BIMA intake window is data in `site-info.js`, resolved to the next future occurrence with the year spelled out — it rolls forward on its own instead of advertising a session that has already finished. |
+| Consent checkbox links to no privacy notice | New site-wide **Privacy Notice** at `/privacy.html` (what the website collects, why, how long, your rights under the NDPA, and a link to the portal's longer policy). Linked from the consent checkbox, the contact form's privacy note and every page's footer. |
+
+Genuine bugs found and fixed while doing the above:
+
+- **The family side of a message thread had no notification path.** Adding parent replies
+  exposed it: the only "someone replied" email was addressed to guardians *about* a teacher's
+  message. A family reply now notifies the teacher, and the notification-preference screen no
+  longer offers "Absence alerts — sent when a teacher marks your child absent" to teachers, who
+  can never receive it. Categories are filtered by audience (family / staff).
+- **`GET /timetable/students/:id` — no; `GET /family/children/:id/teachers` had to be careful:**
+  `section_staff` is staff-only under RLS, so checking "does this teacher teach this child?" as
+  the *parent* would have refused every legitimate request. The check now runs under a service
+  actor after the guardian link is proved as the caller, and the write still happens as the
+  parent so the row-level policies see the real user.
+- **The printable report card had no admission number to print,** because students hold only
+  `self:read` and there was no endpoint returning their own profile. Added `GET /student/profile`
+  scoped to the caller (no id parameter to tamper with).
+- **`campaigns` was `const`** in the newsletter send handler while the log cap reassigns it —
+  a real `TypeError` in the >50-campaign path, caught by driving the branch rather than trusting it.
+
+Test state after this pass: API **300/300**, web smoke **108/108** through `:4040`, site route
+matrix + header sweep green (including the new pages), `npm run audit:site` exit 0 with the same
+6 unfixable advisories listed loudly, `tokens:check` in sync.
+
+**One thing the school must set before the newsletter is usable:** `SMTP_HOST`/`SMTP_USER`/
+`SMTP_PASS`/`TO_EMAIL` plus `NEWSLETTER_SECRET` and `PUBLIC_ORIGIN` (all in `.env.example`). Without
+SMTP the send screen says so plainly and sends nothing.
 
 ---
 
@@ -38,8 +83,8 @@ Test state after this pass: API **298/298**, web smoke **91/91** through `:4040`
 | Check | Result |
 | --- | --- |
 | Portal build (contracts → api → web) | ✅ `npm run build` clean |
-| Portal API suite | ✅ **298/298 pass** (`npm test`, ~4.6 min, PGlite) — roadmap doc still says "229" |
-| Web smoke through the site's proxy | ✅ **91/91 pass** (`SMOKE_WEB=http://127.0.0.1:4040/portal npm run smoke`) — phase-8 checks included |
+| Portal API suite | ✅ **300/300 pass** (`npm test`, ~4.6 min, PGlite) — roadmap doc still says "229" |
+| Web smoke through the site's proxy | ✅ **108/108 pass** (`SMOKE_WEB=http://127.0.0.1:4040/portal npm run smoke`) — phase-8 checks included |
 | Full stack on one origin | ✅ site :4040 → `/portal` (Next) + `/portal/api/*` (Nest) — `/portal` 307 → `/portal/login` 200, `/portal/api/v1/health` 200 |
 | Marketing pages | ✅ all 7 pages 200, custom 404 200/404 correct, zero broken local asset references |
 | Site security headers | ✅ Fixed (§ Update): CSP nonce on HTML, nosniff / XFO / Referrer-Policy / Permissions-Policy on every response including `/api/*`, HSTS when TLS was used, and at Caddy |
