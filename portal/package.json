@@ -7,6 +7,7 @@
   "scripts": {
     "build": "npm run build -w @portal/contracts && npm run build -w @portal/api && npm run build -w @portal/web",
     "test": "npm run test -w @portal/api",
-    "start": "npm run start -w @portal/api"
+    "start": "npm run start -w @portal/api",
+    "icons:pwa": "node scripts/make-pwa-icons.mjs"
   }
 }

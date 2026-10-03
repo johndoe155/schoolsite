@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireRole, apiGet } from "@/lib/session";
 import Shell from "@/components/shell";
 import PayButton from "./pay-button";
+import { fileUrl } from "@/lib/files";
 
 interface Child { studentUserId: string; admissionNo: string; gradeLevel: number; displayName: string; relationship: string }
 interface GradeRow { id: string; label: string; points: string; maxPoints: string; sourceType: string; feedbackText: string | null; releasedAt: string }
@@ -15,13 +16,23 @@ interface ReportCard { id: string; snapshot: { term: string; generatedAt: string
 interface Invoice { id: string; label: string; amountKobo: number; status: string; dueDate: string | null }
 interface ExamRow { id: string; title: string; examDate: string; maxScore: string }
 interface Transport { assignment: { id: string }; route: { name: string; driverName: string | null }; stop: { name: string; pickupTime: string | null } | null }
+interface TimetableEntry {
+  index: number; label: string | null; startsAt: string; endsAt: string; isBreak: boolean;
+  section?: string | null; course?: string | null; teacher?: string | null; room?: string | null;
+}
+interface HomeworkRow {
+  id: string; title: string; instructions: string | null; dueAt: string | null;
+  sectionName: string | null; courseTitle: string | null;
+  attachmentFileId: string | null; filename: string | null;
+  submissionId: string | null; submissionText: string | null; submittedAt: string | null;
+}
 
 const naira = (kobo: number) => `₦${(kobo / 100).toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
 
 export default async function ChildPage({ params }: { params: Promise<{ childId: string }> }) {
   const session = await requireRole("parent");
   const { childId } = await params;
-  const [kids, g, a, rc, fees, ex, tr] = await Promise.all([
+  const [kids, g, a, rc, fees, ex, tr, tt, hw] = await Promise.all([
     apiGet<{ data: Child[] }>("/parent/children"),
     apiGet<{ data: GradeRow[] }>(`/parent/children/${childId}/grades`),
     apiGet<{ data: AttRow[] }>(`/parent/children/${childId}/attendance`),
@@ -29,6 +40,11 @@ export default async function ChildPage({ params }: { params: Promise<{ childId:
     apiGet<{ data: { invoices: Invoice[] } }>(`/parent/children/${childId}/fees`),
     apiGet<{ data: ExamRow[] }>(`/parent/children/${childId}/exams`),
     apiGet<{ data: Transport | null }>(`/parent/children/${childId}/transport`),
+    /* Phase 8: what the child is meant to be doing, and what they owe. Both
+       come from the guardian-scoped endpoints, which check the link — a
+       parent cannot read another family's child by pasting an id. */
+    apiGet<{ week: Record<string, TimetableEntry[]> }>(`/timetable/students/${childId}`),
+    apiGet<{ data: HomeworkRow[] }>(`/student/assignments?student=${childId}`),
   ]);
   const invoices = fees?.data.invoices ?? [];
   const childExams = [...(ex?.data ?? [])].sort((x, y) => x.examDate.localeCompare(y.examDate));
@@ -44,6 +60,12 @@ export default async function ChildPage({ params }: { params: Promise<{ childId:
       </Shell>
     );
   }
+  const week = tt?.week ?? {};
+  const todayName = new Date().toLocaleDateString("en-GB", { weekday: "long" });
+  const todayPeriods = week[todayName] ?? [];
+  const homework = [...(hw?.data ?? [])].sort((x, y) =>
+    String(x.dueAt ?? "9999").localeCompare(String(y.dueAt ?? "9999")));
+  const outstanding = homework.filter((h) => !h.submissionId);
   const grades = [...(g?.data ?? [])].sort((x, y) => (y.releasedAt ?? "").localeCompare(x.releasedAt ?? ""));
   const att = [...(a?.data ?? [])].sort((x, y) => y.date.localeCompare(x.date));
   return (
@@ -102,6 +124,63 @@ export default async function ChildPage({ params }: { params: Promise<{ childId:
           </>
         )}
       </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Today — {todayName}</h2>
+        {todayPeriods.length === 0 ? (
+          <div className="muted">Nothing on the timetable for today.</div>
+        ) : (
+          todayPeriods.map((e, i) => (
+            <div key={`${e.index}-${i}`} className="row"
+              style={{ padding: "6px 0", borderBottom: "1px solid var(--line)", alignItems: "baseline" }}>
+              <span className="muted" style={{ minWidth: 96 }}>
+                {e.startsAt?.slice(0, 5)}–{e.endsAt?.slice(0, 5)}
+              </span>
+              {e.isBreak
+                ? <span className="muted">{e.label ?? "Break"}</span>
+                : e.section
+                  ? <span><strong>{e.course ?? e.section}</strong>
+                      <span className="muted">{e.teacher ? ` · ${e.teacher}` : ""}{e.room ? ` · ${e.room}` : ""}</span>
+                    </span>
+                  : <span className="muted">free</span>}
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>
+          Homework
+          {outstanding.length > 0 && <span className="chip on-late" style={{ marginLeft: 8 }}>{outstanding.length} outstanding</span>}
+        </h2>
+        {homework.length === 0 ? <div className="muted">No homework set yet.</div> : (
+          <table>
+            <thead><tr><th>Set for</th><th>Due</th><th>Status</th><th /></tr></thead>
+            <tbody>
+              {homework.map((h) => (
+                <tr key={h.id}>
+                  <td>
+                    <strong>{h.title}</strong>
+                    <div className="muted">{h.courseTitle ?? h.sectionName ?? ""}</div>
+                  </td>
+                  <td className="muted">
+                    {h.dueAt ? new Date(h.dueAt).toLocaleDateString(undefined, { day: "numeric", month: "short" }) : "—"}
+                  </td>
+                  <td>
+                    {h.submissionId
+                      ? <span className="chip on-present">handed in</span>
+                      : <span className="chip on-absent">not yet</span>}
+                  </td>
+                  <td>
+                    {h.attachmentFileId && <a href={fileUrl(h.attachmentFileId)}>sheet</a>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <p className="muted">A pupil hands work in from their own sign-in; guardians can see what is set and what is outstanding.</p>
+      </div>
+
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Fees</h2>
         {invoices.length === 0 ? <div className="muted">No invoices.</div> : (

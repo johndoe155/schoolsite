@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="School portal">
+  <rect width="64" height="64" rx="14" fill="#05014A"/>
+  <path d="M32 12 8 24l24 12 20-10v14h4V24L32 12z" fill="#FFC93C"/>
+  <path d="M18 34v10c0 4 6.3 8 14 8s14-4 14-8V34l-14 7-14-7z" fill="#ffffff"/>
+</svg>

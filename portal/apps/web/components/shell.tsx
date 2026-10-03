@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { SessionView } from "@/lib/session";
 import { api } from "@/lib/client";
+import { clearDeviceData, listQueuedRegisters } from "@/lib/offline";
 import { API_BASE } from "@/lib/base-path";
 import { ROLE_HOME } from "@/lib/roles";
 
@@ -40,6 +41,7 @@ const TABS: Record<string, Tab[]> = {
     { href: "/admin/students", label: "Students", perm: "directory:read" },
     { href: "/admin/sections", label: "Sections", perm: "academics:read" },
     { href: "/admin/academics", label: "Academics", perm: "academics:read" },
+    { href: "/admin/timetable", label: "Timetable", perm: "schedule:read" },
     { href: "/admin/fees", label: "Fees", perm: "fees:read" },
     { href: "/admin/transport", label: "Transport", perm: "transport:read" },
     { href: "/admin/import", label: "Import", perm: "directory:write" },
@@ -51,9 +53,15 @@ const TABS: Record<string, Tab[]> = {
   ],
   teacher: [
     { href: "/teacher", label: "Sections" },
+    { href: "/teacher/timetable", label: "My timetable" },
     { href: "/teacher/messages", label: "Messages" },
   ],
-  student: [{ href: "/student", label: "Dashboard" }, { href: "/student/grades", label: "Grades" }],
+  student: [
+    { href: "/student", label: "Dashboard" },
+    { href: "/student/timetable", label: "Timetable" },
+    { href: "/student/classwork", label: "Homework" },
+    { href: "/student/grades", label: "Grades" },
+  ],
   parent: [{ href: "/parent", label: "Children" }, { href: "/parent/messages", label: "Messages" }],
 };
 
@@ -97,7 +105,16 @@ export default function Shell({ session, children }: { session: SessionView; chi
       .then((s) => { if (s?.name) setBrand(s.name); }).catch(() => {});
   }, []);
   async function logout() {
-    try { await api("/auth/logout", { method: "POST" }); } finally { router.push("/login"); router.refresh(); }
+    try { await api("/auth/logout", { method: "POST" }); }
+    finally {
+      /* A staffroom device changes hands. Anything this account left on it —
+         queued registers, class lists — goes with the sign-out, unless it has
+         not been sent yet, in which case the device keeps it and says so on
+         the offline screen. */
+      const queued = await listQueuedRegisters().catch(() => []);
+      if (queued.length === 0) await clearDeviceData().catch(() => {});
+      router.push("/login"); router.refresh();
+    }
   }
   return (
     <>

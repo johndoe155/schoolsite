@@ -239,9 +239,15 @@ ok("GET /account/notifications renders (was a 404)",
   prefsPage.status === 200 && String(prefsPage.body).includes("Email preferences"),
   `status ${prefsPage.status}`);
 const prefsGet = await call(jp, "/api/v1/account/notifications", {});
+// Named, not counted: phase 8 added `assignment_posted`, and a bare
+// `length === 4` failed for the right reason (the API had one more category)
+// while telling you nothing about which one was missing.
+const PREF_KINDS = ["absence_recorded", "grade_released", "message_received", "assignment_posted", "daily_digest"];
 ok("preferences list every opt-outable category",
-  prefsGet.status === 200 && prefsGet.body.data?.length === 4 && prefsGet.body.data.every((p) => p.enabled),
-  JSON.stringify(prefsGet.body).slice(0, 160));
+  prefsGet.status === 200
+    && PREF_KINDS.every((k) => prefsGet.body.data?.some((p) => p.kind === k))
+    && prefsGet.body.data.every((p) => p.enabled),
+  JSON.stringify(prefsGet.body).slice(0, 200));
 const prefsPut = await call(jp, "/api/v1/account/notifications", { method: "PUT", body: JSON.stringify({ daily_digest: false }) });
 ok("a parent may switch their own emails off (the one parent write)",
   prefsPut.status === 200 && prefsPut.body.data?.find((p) => p.kind === "daily_digest")?.enabled === false,
@@ -258,6 +264,177 @@ const payReturn = await call(jp, "/fees/return?reference=psk_nope", {});
 ok("GET /fees/return renders for a signed-in payer",
   payReturn.status === 200 && String(payReturn.body).includes("Payment"),
   `status ${payReturn.status}`);
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Phase 8 — the three gaps: timetable people can see, homework + files, and
+   the offline shell. Everything here goes through the same origin the browser
+   uses, because every one of these was reported as "the API exists but there
+   is nothing to click".
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** Multipart upload with the viewer's cookies + CSRF, like the browser does. */
+async function upload(j, filename, type, body) {
+  const fd = new FormData();
+  fd.set("file", new Blob([body], { type }), filename);
+  const headers = { cookie: j.header() };
+  const csrf = j.get("csrf");
+  if (csrf) headers["x-csrf"] = csrf;
+  const res = await fetch(`${WEB}/api/v1/files`, { method: "POST", headers, body: fd });
+  const text = await res.text();
+  let parsed; try { parsed = JSON.parse(text); } catch { parsed = text; }
+  return { status: res.status, body: parsed, headers: Object.fromEntries(res.headers) };
+}
+
+// 1. the admin builds the week: bell schedule, then a lesson in it
+const DOW = new Date().getDay();
+const bells = await call(ja, `/api/v1/timetable/terms/${TERM_ID}/periods`, { method: "POST", body: JSON.stringify([
+  { weekday: DOW, period_index: 1, starts_at: "08:00", ends_at: "08:45", label: "Period 1" },
+  { weekday: DOW, period_index: 2, starts_at: "08:45", ends_at: "09:00", is_break: true, label: "Break" },
+]) });
+ok("admin saves the bell schedule", bells.status === 201 && bells.body.count === 2, JSON.stringify(bells.body).slice(0, 140));
+
+const grid = await call(ja, `/api/v1/timetable/terms/${TERM_ID}`, {});
+const slotPeriod = grid.body.periods?.find((x) => x.periodIndex === 1);
+ok("term grid returns periods + sections + slots", grid.status === 200
+  && !!slotPeriod && Array.isArray(grid.body.sections) && Array.isArray(grid.body.slots),
+  JSON.stringify(grid.body).slice(0, 140));
+
+const teacherList = await call(ja, "/api/v1/timetable/teachers", {});
+const t1Id = teacherList.body?.find?.((t) => t.name === "Tayo Teacher")?.id;
+ok("GET /timetable/teachers lists staff who can be timetabled", teacherList.status === 200 && !!t1Id, JSON.stringify(teacherList.body).slice(0, 140));
+
+const placed = await call(ja, "/api/v1/timetable/slots", { method: "POST", body: JSON.stringify({
+  period_id: slotPeriod.id, section_id: sectionId, teacher_user_id: t1Id, room: "Room 7" }) });
+ok("admin places a lesson in the grid", placed.status === 201, JSON.stringify(placed.body).slice(0, 140));
+
+const adminTt = await call(ja, "/admin/timetable", {});
+ok("admin timetable page renders the lesson in the grid",
+  adminTt.status === 200 && String(adminTt.body).includes("Room 7") && String(adminTt.body).includes("Bell schedule"),
+  `status ${adminTt.status}`);
+
+// the same lesson, seen by the people it concerns
+const teacherTt = await call(jt, "/teacher/timetable", {});
+ok("teacher timetable page renders (was API-only)", teacherTt.status === 200
+  && String(teacherTt.body).includes("My timetable") && String(teacherTt.body).includes("Room 7"),
+  `status ${teacherTt.status}`);
+
+const studentTt = await call(js, "/student/timetable", {});
+ok("pupil timetable page renders their week", studentTt.status === 200
+  && String(studentTt.body).includes("My timetable") && String(studentTt.body).includes("Room 7"),
+  `status ${studentTt.status}`);
+
+const parentChild = await call(jp, `/parent/${threadStudent}`, {});
+ok("parent child page shows today's lessons", parentChild.status === 200
+  && String(parentChild.body).includes("Room 7") && String(parentChild.body).includes("Today — "),
+  `status ${parentChild.status}`);
+
+// and a pupil may not read somebody else's week
+const otherWeek = await call(js, "/api/v1/timetable/students/00000000-0000-0000-0000-000000000001", {});
+ok("pupil cannot read another pupil's week", otherWeek.status === 403, `${otherWeek.status}`);
+
+// 2. homework + a shared file
+const pdf = Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n");
+const up = await upload(jt, "worksheet.pdf", "application/pdf", pdf);
+ok("teacher uploads a worksheet", up.status === 201 && up.body.filename === "worksheet.pdf" && up.body.bytes === pdf.length,
+  JSON.stringify(up.body).slice(0, 160));
+
+const badUp = await upload(jt, "payload.exe", "application/x-msdownload", Buffer.from("MZ"));
+ok("a disallowed file type is refused", badUp.status === 400 || badUp.status === 415, `${badUp.status}`);
+
+const hwTitle = `Smoke homework ${Date.now()}`;
+const made = await call(jt, "/api/v1/assignments", { method: "POST", body: JSON.stringify({
+  section_id: sectionId, title: hwTitle, instructions: "Questions 1–5.",
+  due_at: new Date(Date.now() + 2 * 86400000).toISOString(), attachment_file_id: up.body.id }) });
+ok("teacher sets homework with an attachment", made.status === 201 && made.body.attachmentFileId === up.body.id,
+  JSON.stringify(made.body).slice(0, 160));
+
+const stuWork = await call(js, "/api/v1/student/assignments", {});
+ok("pupil sees the homework", stuWork.status === 200 && stuWork.body.data.some((a) => a.id === made.body.id),
+  JSON.stringify(stuWork.body).slice(0, 140));
+
+const dl = await call(js, `/api/v1/files/${up.body.id}`, {});
+ok("pupil downloads the attachment", dl.status === 200, `${dl.status}`);
+
+const dlAnon = await call(jar(), `/api/v1/files/${up.body.id}`, {});
+ok("a stranger cannot download the attachment", dlAnon.status === 401 || dlAnon.status === 403, `${dlAnon.status}`);
+
+const dlParent = await call(jp, `/api/v1/files/${up.body.id}`, {});
+ok("guardian can download their child's worksheet", dlParent.status === 200, `${dlParent.status}`);
+
+const handed = await call(js, `/api/v1/assignments/${made.body.id}/submissions`, { method: "POST",
+  body: JSON.stringify({ body_text: "Finished all five." }) });
+ok("pupil hands the work in", handed.status === 201 && handed.body.status === "submitted", JSON.stringify(handed.body).slice(0, 140));
+
+const marks = await call(jt, `/api/v1/assignments/${made.body.id}/submissions`, {});
+ok("teacher sees the hand-in against the roster", marks.status === 200
+  && marks.body.data.some((r) => r.submission?.bodyText === "Finished all five."),
+  JSON.stringify(marks.body).slice(0, 160));
+
+const material = await call(jt, "/api/v1/materials", { method: "POST", body: JSON.stringify({
+  section_id: sectionId, title: "Revision sheet", url: "https://example.org/fractions.pdf" }) });
+ok("teacher posts a class material", material.status === 201, JSON.stringify(material.body).slice(0, 140));
+
+const teacherCw = await call(jt, `/teacher/classwork/${sectionId}`, {});
+ok("teacher classwork page renders the homework", teacherCw.status === 200
+  && String(teacherCw.body).includes("Set homework") && String(teacherCw.body).includes(hwTitle),
+  `status ${teacherCw.status}`);
+
+const studentCw = await call(js, "/student/classwork", {});
+ok("pupil classwork page renders their homework + materials", studentCw.status === 200
+  && String(studentCw.body).includes(hwTitle) && String(studentCw.body).includes("Revision sheet"),
+  `status ${studentCw.status}`);
+
+const parentCw = await call(jp, `/parent/${threadStudent}`, {});
+ok("parent child page shows homework status", parentCw.status === 200
+  && String(parentCw.body).includes(hwTitle) && String(parentCw.body).includes("handed in"),
+  `status ${parentCw.status}`);
+
+// a teacher may not touch a class that is not theirs
+const notMine = await call(jt, "/api/v1/materials", { method: "POST", body: JSON.stringify({
+  section_id: "00000000-0000-0000-0000-000000000009", title: "Nope", url: "https://example.org/x" }) });
+ok("teacher cannot post to a section they do not teach", notMine.status === 403 || notMine.status === 404, `${notMine.status}`);
+
+// a message can now carry a file
+const msgFile = await call(jt, `/api/v1/threads/${thread.body.id}/messages`, { method: "POST",
+  body: JSON.stringify({ body_text: "See the attached slip.", attachment_file_id: up.body.id }) });
+ok("message with an attachment accepted", msgFile.status === 201 && msgFile.body.attachmentFileId === up.body.id,
+  JSON.stringify(msgFile.body).slice(0, 140));
+const threadWithFile = await call(jp, `/parent/messages/${thread.body.id}`, {});
+ok("guardian sees the attachment in the thread", threadWithFile.status === 200
+  && String(threadWithFile.body).includes("worksheet.pdf"),
+  `status ${threadWithFile.status}`);
+
+// 3. the offline shell
+const sw = await call(jar(), "/sw.js", {});
+ok("service worker is served", sw.status === 200 && String(sw.body).includes("offline.html"),
+  `status ${sw.status}`);
+const manifest = await call(jar(), "/manifest.webmanifest", {});
+// JSON.stringify, not String(): `call()` already parsed the body, and
+// String({}) is "[object Object]" — an assertion that can never fail.
+const manifestText = JSON.stringify(manifest.body);
+ok("web manifest is served with the PNG icons Android requires",
+  manifest.status === 200
+    && manifestText.includes("School Portal")
+    && manifestText.includes("standalone")
+    && manifestText.includes("icon-192.png")
+    && manifestText.includes("icon-512.png")
+    && manifestText.includes("maskable"),
+  `status ${manifest.status} ${manifestText.slice(0, 120)}`);
+const offlinePage = await call(jar(), "/offline.html", {});
+ok("offline fallback page is served", offlinePage.status === 200
+  && String(offlinePage.body).includes("offline"), `status ${offlinePage.status}`);
+
+// The point of precaching this one: with no signal, every other page needs the
+// server. This one is static HTML + IndexedDB, so a teacher can still mark a
+// register in a classroom with no bars.
+const offReg = await call(jar(), "/offline-register", {});
+ok("offline register page is served and precached by the worker",
+  offReg.status === 200 && String(offReg.body).includes("Offline register")
+    && String(sw.body).includes("/portal/offline-register"),
+  `status ${offReg.status}`);
+const icon192 = await call(jar(), "/icon-192.png", {});
+ok("PWA icons are served", icon192.status === 200, `status ${icon192.status}`);
 
 // security headers from helmet
 const hdr = await call(jar(), "/api/v1/health", {});
