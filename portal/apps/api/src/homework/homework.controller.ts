@@ -2,7 +2,7 @@ import {
   Body, Controller, Get, Inject, Injectable, NotFoundException, Param, Post,
   Req, UnprocessableEntityException,
 } from "@nestjs/common";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Request } from "express";
 import type { Db } from "../db/client";
 import { DB_TOKEN } from "../db/token";
@@ -98,18 +98,31 @@ export class HomeworkService {
   /** Work set for one section, with how many have handed it in. */
   async forSection(actor: Principal, sectionId: string) {
     return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
-      const rows = await tx.select({
-        a: homeworkAssignments,
-        submitted: sql<number>`(select count(*)::int from ${homeworkSubmissions} s where s.assignment_id = ${homeworkAssignments.id})`,
-      }).from(homeworkAssignments)
+      const assignments = await tx.select().from(homeworkAssignments)
         .where(eq(homeworkAssignments.sectionId, sectionId))
         .orderBy(homeworkAssignments.dueAt);
+
+      /* Counts come from a separate grouped query rather than a correlated
+         subquery. The subquery form compiled and ran but always returned 0 —
+         the outer table reference did not correlate — and a list that quietly
+         claims nobody has handed anything in is worse than a crash. */
+      const ids = assignments.map((a) => a.id);
+      const counts = ids.length
+        ? await tx.select({
+            assignmentId: homeworkSubmissions.assignmentId,
+            n: sql<number>`count(*)::int`,
+          }).from(homeworkSubmissions)
+            .where(inArray(homeworkSubmissions.assignmentId, ids))
+            .groupBy(homeworkSubmissions.assignmentId)
+        : [];
+      const byAssignment = new Map(counts.map((c) => [c.assignmentId, c.n]));
+
       return {
         sectionId,
-        assignments: rows.map(({ a, submitted }) => ({
+        assignments: assignments.map((a) => ({
           id: a.id, title: a.title, instructions: a.instructions, dueAt: a.dueAt,
           assignedOn: a.assignedOn, maxScore: a.maxScore, status: a.status,
-          submissionCount: submitted,
+          submissionCount: byAssignment.get(a.id) ?? 0,
         })),
       };
     });
@@ -213,6 +226,31 @@ export class HomeworkService {
     });
   }
 
+  /** Everything handed in for one assignment, ready to mark. */
+  async submissions(actor: Principal, assignmentId: string) {
+    return withActor(this.db, { userId: actor.userId, role: actor.activeRole }, async (tx) => {
+      const [a] = await tx.select().from(homeworkAssignments)
+        .where(eq(homeworkAssignments.id, assignmentId)).limit(1);
+      if (!a) throw new NotFoundException({ code: "not_found", detail: "no such assignment" });
+
+      const rows = await tx.select({
+        s: homeworkSubmissions, name: users.displayName, email: users.email,
+      }).from(homeworkSubmissions)
+        .innerJoin(users, eq(homeworkSubmissions.studentUserId, users.id))
+        .where(eq(homeworkSubmissions.assignmentId, assignmentId))
+        .orderBy(users.displayName);
+
+      return {
+        assignmentId, title: a.title, maxScore: a.maxScore, status: a.status,
+        submissions: rows.map(({ s, name, email }) => ({
+          studentUserId: s.studentUserId, name, email, body: s.body,
+          submittedAt: s.submittedAt, late: s.late,
+          score: s.score, feedback: s.feedback, markedAt: s.markedAt,
+        })),
+      };
+    });
+  }
+
   /**
    * Who has not handed a given assignment in. This is the report teachers kept
    * on paper: without a submissions row per student at set-time, "missing" is
@@ -277,6 +315,12 @@ export class HomeworkController {
   @Perm("homework:write")
   mark(@Param("id") id: string, @Body() body: unknown, @Req() req: Request) {
     return this.svc.mark(req.principal!, id, body);
+  }
+
+  @Get("homework/assignments/:id/submissions")
+  @Perm("homework:write")
+  submissions(@Param("id") id: string, @Req() req: Request) {
+    return this.svc.submissions(req.principal!, id);
   }
 
   @Get("homework/assignments/:id/outstanding")

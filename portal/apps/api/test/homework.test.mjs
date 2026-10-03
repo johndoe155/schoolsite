@@ -192,6 +192,25 @@ test("the outstanding report names the students who have not handed in", async (
   assert.equal(after.body.missing.length, res.body.missing.length - 1);
 });
 
+test("the section list counts submissions correctly", async () => {
+  // This failed while the count came from a correlated subquery, which compiled
+  // and ran but always returned 0. A list claiming nobody has handed anything in
+  // is worse than a crash, so the count gets its own assertion.
+  const a = await setHomework({ title: "Counted" });
+  const { sectionId } = await fixture();
+  const before = await request(server).get(`/api/v1/homework/sections/${sectionId}`).set(auth("teacher"));
+  assert.equal(before.status, 200, JSON.stringify(before.body));
+  const zero = before.body.assignments.find((x) => x.id === a.id);
+  assert.equal(zero.submissionCount, 0, "nobody has submitted yet");
+
+  await request(server).post(`/api/v1/homework/assignments/${a.id}/submit`)
+    .set(auth("s1")).send({ body: "Counted attempt." });
+
+  const after = await request(server).get(`/api/v1/homework/sections/${sectionId}`).set(auth("teacher"));
+  const one = after.body.assignments.find((x) => x.id === a.id);
+  assert.equal(one.submissionCount, 1, "the count must reflect the submission");
+});
+
 test("a teacher can mark a submission, and the student sees the mark", async () => {
   const a = await setHomework({ title: "To be marked", max_score: 10 });
   const studentId = await uid("s1@school.example");
@@ -207,6 +226,32 @@ test("a teacher can mark a submission, and the student sees the mark", async () 
     .assignments.find((x) => x.id === a.id);
   assert.equal(mine.score, 8);
   assert.equal(mine.feedback, "Good working.");
+});
+
+test("the submissions list returns what was handed in, ready to mark", async () => {
+  const a = await setHomework({ title: "To be listed", max_score: 10 });
+  const studentId = await uid("s1@school.example");
+  await request(server).post(`/api/v1/homework/assignments/${a.id}/submit`)
+    .set(auth("s1")).send({ body: "Listed attempt." });
+
+  const res = await request(server).get(`/api/v1/homework/assignments/${a.id}/submissions`)
+    .set(auth("teacher"));
+  assert.equal(res.status, 200, JSON.stringify(res.body));
+  assert.equal(res.body.title, "To be listed");
+  assert.equal(res.body.maxScore, 10);
+  const mine = res.body.submissions.find((x) => x.studentUserId === studentId);
+  assert.ok(mine, "the submission must appear");
+  assert.equal(mine.body, "Listed attempt.");
+  assert.equal(mine.score, null, "unmarked before the teacher marks it");
+  assert.ok(mine.name && mine.email, "the teacher needs to know whose work this is");
+});
+
+test("a student cannot read the submissions list for their own assignment", async () => {
+  const a = await setHomework({ title: "Not for students to browse" });
+  const res = await request(server).get(`/api/v1/homework/assignments/${a.id}/submissions`)
+    .set(auth("s1"));
+  assert.ok([401, 403].includes(res.status),
+    `one student must not read another's work, got ${res.status}`);
 });
 
 test("a score above the assignment's maximum is refused", async () => {

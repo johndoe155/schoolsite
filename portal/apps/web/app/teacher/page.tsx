@@ -22,6 +22,7 @@ export default async function TeacherHome() {
             <div className="row" style={{ marginTop: 10 }}>
               <Link className="btn" href={`/teacher/attendance/${s.id}?date=${date}`}>Attendance</Link>
               <Link className="btn ghost" href={`/teacher/gradebook/${s.id}`}>Gradebook</Link>
+                <Link className="btn ghost" href={`/teacher/homework/${s.id}`}>Homework</Link>
             </div>
           </div>
         ))}

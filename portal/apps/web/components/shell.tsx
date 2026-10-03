@@ -55,7 +55,7 @@ const TABS: Record<string, Tab[]> = {
     { href: "/teacher/timetable", label: "Timetable" },
     { href: "/teacher/messages", label: "Messages" },
   ],
-  student: [{ href: "/student", label: "Dashboard" }, { href: "/student/grades", label: "Grades" }],
+  student: [{ href: "/student", label: "Dashboard" }, { href: "/student/grades", label: "Grades" }, { href: "/student/homework", label: "Homework" }],
   parent: [{ href: "/parent", label: "Children" }, { href: "/parent/messages", label: "Messages" }],
 };
 
