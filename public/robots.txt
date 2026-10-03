@@ -1,0 +1,13 @@
+# Bodija International College
+User-agent: *
+Allow: /
+
+# Staff-only panels — no reason for these to be indexed or crawled.
+Disallow: /admin.html
+Disallow: /api/
+Disallow: /portal/admin
+Disallow: /portal/audit
+Disallow: /portal/mfa
+Disallow: /portal/change
+Disallow: /portal/invite
+Disallow: /portal/reset

@@ -35,13 +35,23 @@ export class AuthController {
     const out = await this.auth.login(email, parsed.data.password,
       { ip: req.ip, ua: req.headers["user-agent"] });
     rateLimitReset(`login:${email.toLowerCase()}`);
+    /* SameSite=Lax, not Strict. Paystack sends the payer back with a
+       cross-site top-level GET, and Strict makes the browser withhold the
+       cookie on exactly that navigation — so /fees/return saw no session,
+       bounced the parent to /login, and the one page whose job is to stop
+       people paying twice was unreachable after paying.
+
+       Lax is not a CSRF regression here: it still withholds cookies on
+       cross-site POST/PUT/PATCH/DELETE, which is every mutating verb, and the
+       real CSRF defence is CsrfGuard's x-csrf double-submit check rather than
+       the cookie attribute. */
     res.cookie(config.sidCookie, out.token, {
-      httpOnly: true, sameSite: "strict", secure: config.cookieSecure,
+      httpOnly: true, sameSite: "lax", secure: config.cookieSecure,
       path: "/", maxAge: 12 * 60 * 60 * 1000,
     });
     if (!req.cookies?.[config.csrfCookie]) {
       res.cookie(config.csrfCookie, randomBytes(16).toString("base64url"), {
-        httpOnly: false, sameSite: "strict", secure: config.cookieSecure, path: "/",
+        httpOnly: false, sameSite: "lax", secure: config.cookieSecure, path: "/",
       });
     }
     return { userId: out.userId, roles: out.roles, activeRole: out.activeRole,

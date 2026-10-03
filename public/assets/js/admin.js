@@ -5,7 +5,6 @@
   // ── Config ────────────────────────────────────────────────────────────────
   const API_BASE = '/api/gallery';
   let PASS = '';                 
-  const SESSION_KEY = 'bic_admin_auth';
 
   // ── State ─────────────────────────────────────────────────────────────────
   let galleryData  = [];   // [{id, title, subtitle, images:[]}]
@@ -67,9 +66,15 @@
   // ════════════════════════════════════════════════════════════
   // AUTH
   // ════════════════════════════════════════════════════════════
-  function isAuthed() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
-
-  if (isAuthed()) { showApp(); }
+  /* Whether we are signed in is decided by the server's session, not by a
+     browser flag. The old flag outlived the token it stood for, so a refresh
+     showed the panel with no credentials behind it. */
+  (async () => {
+    try {
+      const r = await fetch(`${API_BASE}/auth`, { credentials: 'same-origin' });
+      if (r.ok && (await r.json()).authenticated) showApp();
+    } catch { /* offline — stay on the login screen */ }
+  })();
 
   loginForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -78,12 +83,17 @@
 
   // Test the token against the server before granting access
   try {
-    const res = await fetch(`${API_BASE}?action=get_gallery`, {
-      headers: { 'X-Admin-Token': val }
+    /* Trade the token for a session cookie. The token itself still stays in
+       memory only — never in storage — but it is no longer the only proof of
+       identity, so a refresh does not break the panel. */
+    const res = await fetch(`${API_BASE}/login`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Token': val },
+      body: JSON.stringify({ token: val })
     });
     if (res.ok) {
       PASS = val;   // store only in memory, never in sessionStorage
-      sessionStorage.setItem(SESSION_KEY, '1');
       authError.classList.add('hidden');
       showApp();
     } else {
@@ -102,8 +112,9 @@
     passwordInput.type = t;
   });
 
-  logoutBtn.addEventListener('click', () => {
-    sessionStorage.removeItem(SESSION_KEY);
+  logoutBtn.addEventListener('click', async () => {
+    PASS = null;
+    try { await fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'same-origin' }); } catch {}
     location.reload();
   });
 

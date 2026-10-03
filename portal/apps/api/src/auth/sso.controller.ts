@@ -85,12 +85,12 @@ export class SsoController {
         { allowEmailLink: p.requireEmailVerified !== false });
       clearFlowCookie(res);
       res.cookie(config.sidCookie, out.token, {
-        httpOnly: true, sameSite: "strict", secure: config.cookieSecure,
+        httpOnly: true, sameSite: "lax", secure: config.cookieSecure,
         path: "/", maxAge: 12 * 60 * 60 * 1000,
       });
       if (!req.cookies?.[config.csrfCookie]) {
         res.cookie(config.csrfCookie, randomBytes(16).toString("base64url"), {
-          httpOnly: false, sameSite: "strict", secure: config.cookieSecure, path: "/",
+          httpOnly: false, sameSite: "lax", secure: config.cookieSecure, path: "/",
         });
       }
       // staff still face the MFA gate after SSO (web redirects on session.mfaRequired)
@@ -136,12 +136,12 @@ export class SsoController {
       { ip: req.ip, ua: req.headers["user-agent"] });
     rateLimitReset(`login:${email.toLowerCase()}`);
     res.cookie(config.sidCookie, out.token, {
-      httpOnly: true, sameSite: "strict", secure: config.cookieSecure,
+      httpOnly: true, sameSite: "lax", secure: config.cookieSecure,
       path: "/", maxAge: 12 * 60 * 60 * 1000,
     });
     if (!req.cookies?.[config.csrfCookie]) {
       res.cookie(config.csrfCookie, randomBytes(16).toString("base64url"), {
-        httpOnly: false, sameSite: "strict", secure: config.cookieSecure, path: "/",
+        httpOnly: false, sameSite: "lax", secure: config.cookieSecure, path: "/",
       });
     }
     const needsMfa = out.roles.some((r) => STAFF_ROLES.has(r));

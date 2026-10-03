@@ -21,6 +21,7 @@ const FileStore  = require('session-file-store')(session);
 const rateLimit  = require('express-rate-limit');
 const multer     = require('multer');
 const cors       = require('cors');
+const compression = require('compression');
 const nodemailer = require('nodemailer');
 const crypto     = require('crypto');
 const fs         = require('fs');
@@ -130,13 +131,42 @@ if (NODE_ENV === 'production') {
 }
 
 
-/* ── JSON file helpers (atomic writes) ────────────────────────────────────── */
+/* ── JSON file helpers (atomic writes) ──────────────────────────────────────
+   A corrupt or half-written file used to read back as the fallback, which for
+   the gallery and the library is `[]`. The very next admin action would then
+   write that empty array over the real data — silent, total, unrecoverable
+   loss of the school's catalogue. Missing and corrupt are now different
+   things: missing seeds a new file, corrupt refuses to be overwritten. */
+
+const corruptFiles = new Set();
 
 function readJSON(file, fallback) {
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
-  catch { return fallback; }
+  let raw;
+  try {
+    raw = fs.readFileSync(file, 'utf8');
+  } catch (err) {
+    if (err.code === 'ENOENT') return fallback;      // genuinely absent: fine
+    console.error(`[data] cannot read ${file}: ${err.code}`);
+    corruptFiles.add(file);
+    return fallback;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    corruptFiles.delete(file);
+    return parsed;
+  } catch (err) {
+    console.error(`[data] ${file} is corrupt (${err.message}) — writes to it are blocked until it is repaired.`);
+    corruptFiles.add(file);
+    return fallback;
+  }
 }
+
 function writeJSON(file, data) {
+  if (corruptFiles.has(file)) {
+    const err = new Error(`Refusing to overwrite ${path.basename(file)}: the existing file is corrupt. Repair or remove it first.`);
+    err.status = 500;
+    throw err;
+  }
   const tmp = file + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
   fs.renameSync(tmp, file);
@@ -316,7 +346,11 @@ const newsUpload = multer({
   storage: multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, NEWS_UPLOADS_DIR),
     filename: (_req, file, cb) => {
-      const ext  = path.extname(file.originalname).toLowerCase() || '.jpg';
+      /* Extension from the MIME type, never from originalname. Taking it from
+         the filename let an admin (or anything that can reach this route) store
+         a .html or .svg file under /assets/uploads, which the browser would
+         then execute same-origin when opened directly. */
+      const ext  = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/gif': '.gif' }[file.mimetype] || '.jpg';
       const name = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`;
       cb(null, name);
     },
@@ -408,6 +442,12 @@ function requireGalleryAuth(req, res, next) {
   if (!ADMIN_TOKEN) {
     return res.status(503).json({ ok: false, error: 'Gallery admin is not configured on this server.' });
   }
+  /* A session set by /api/gallery/login is enough. admin.js used to keep the
+     token in a plain variable while the "am I logged in" flag lived in
+     sessionStorage — so a page refresh restored the flag, lost the token, and
+     every subsequent request went out as X-Admin-Token: undefined. The admin
+     saw a live-looking panel in which nothing worked. */
+  if (req.session && req.session.galleryAdmin) return next();
   /* Header or JSON body only — never the query string. A token in a URL ends
      up in server logs, browser history and any Referer header. */
   const token = req.headers['x-admin-token'] || req.body?.token || '';
@@ -416,6 +456,28 @@ function requireGalleryAuth(req, res, next) {
   }
   next();
 }
+
+/* Exchange the token for a session, so the panel survives a refresh. */
+app.post('/api/gallery/login', galleryAuthLimiter, (req, res) => {
+  if (!ADMIN_TOKEN) {
+    return res.status(503).json({ ok: false, error: 'Gallery admin is not configured on this server.' });
+  }
+  const token = req.headers['x-admin-token'] || req.body?.token || '';
+  if (!safeEqual(token, ADMIN_TOKEN)) {
+    return res.status(401).json({ ok: false, error: 'Unauthorized' });
+  }
+  req.session.galleryAdmin = true;
+  return res.json({ ok: true });
+});
+
+app.post('/api/gallery/logout', (req, res) => {
+  delete req.session?.galleryAdmin;
+  res.json({ ok: true });
+});
+
+app.get('/api/gallery/auth', (req, res) => {
+  res.json({ authenticated: !!(req.session && req.session.galleryAdmin) });
+});
 
 app.get('/api/gallery', (req, res) => {
   /* Authenticated admin read uses ?action=get_gallery; the public page
@@ -739,7 +801,29 @@ app.use((_req, res, next) => {
    STATIC SITE
    ══════════════════════════════════════════════════════════════════════════ */
 
-app.use(express.static(PUBLIC_DIR));
+/* Compression: the HTML pages and JSON payloads are large and were being sent
+   uncompressed. */
+app.use(compression());
+
+app.use(express.static(PUBLIC_DIR, {
+  etag: true,
+  lastModified: true,
+  /* Fingerprinted/immutable content could be cached longer, but nothing here
+     is content-hashed, so a day with revalidation is the honest maximum.
+     Must be a NUMBER of ms: serve-static 2.x hands this straight to send,
+     which does not parse ms-style strings like '1d' (it silently yields 0). */
+  maxAge: 24 * 60 * 60 * 1000,
+  setHeaders: (res, filePath) => {
+    if (/\.(html)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'no-cache');          // pages must revalidate
+    } else if (/\/(gallery|uploads|library)\//i.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');  // user uploads are never rewritten
+    }
+    /* Uploaded files are served same-origin; never let one be sniffed into a
+       document or framed. */
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+  },
+}));
 
 /* ── Error handling ───────────────────────────────────────────────────────── */
 
@@ -753,7 +837,10 @@ app.use((err, req, res, next) => {
   }
   if (err) {
     console.error('[Server error]', err.message || err);
-    return res.status(400).json({ ok: false, error: err.message || 'Bad request.' });
+    /* Respect an explicit status — the corrupt-data guard reports 500, which is
+       a server-side problem, not a bad request from the admin. */
+    const status = Number(err.status) || 400;
+    return res.status(status).json({ ok: false, error: err.message || 'Bad request.' });
   }
   next();
 });

@@ -45,13 +45,25 @@ export async function createApp(db: Db) {
   await app.init();
   // dev/single-node: outbox worker runs in-process (unref'd interval).
   // production: WORKER_INPROC=false + `npm run worker` beside real Postgres.
+  const timers: Array<() => void> = [];
   if (process.env.WORKER_INPROC !== "false") {
-    const stop = startWorker(db);
+    timers.push(startWorker(db));
     // The retention purge rides along in single-node deployments; with a
     // separate worker process it lives there instead.
-    const stopRetention = startRetentionLoop(db);
-    app.enableShutdownHooks?.();
-    process.once("beforeExit", () => { stop(); stopRetention(); });
+    timers.push(startRetentionLoop(db));
   }
+  /* Shutdown hooks used to be registered only in the in-process-worker branch,
+     which meant production (WORKER_INPROC=false) had none: SIGTERM killed the
+     process mid-request and mid-transaction. Register them unconditionally. */
+  app.enableShutdownHooks?.();
+  const shutdown = (signal: string) => {
+    console.log(`[api] ${signal} — shutting down`);
+    for (const stop of timers) { try { stop(); } catch { /* already stopped */ } }
+    // Nest's own hook closes the HTTP server; give it a moment, then exit.
+    setTimeout(() => process.exit(0), 500).unref();
+  };
+  process.once("SIGTERM", () => shutdown("SIGTERM"));
+  process.once("SIGINT", () => shutdown("SIGINT"));
+  process.once("beforeExit", () => { for (const stop of timers) { try { stop(); } catch { /* noop */ } } });
   return app;
 }

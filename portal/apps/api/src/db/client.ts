@@ -105,6 +105,14 @@ export function createDbFromEnv(): { db: Db; runner: SqlRunner; kind: "postgres"
         : undefined,
       statement_timeout: 15_000,
     });
+    /* Without a listener, an error on an IDLE client (the server dropping the
+       connection after a restart or a failover) is an unhandled 'error' event
+       on the pool, which takes the whole API process down. Every request-time
+       failure already surfaces through the query promise, so this only has to
+       absorb the background ones and let the next query reconnect. */
+    pool.on("error", (err) => {
+      console.error(`[db] idle client error: ${err.message}`);
+    });
     return { db: drizzlePg(pool, { schema }) as unknown as Db, runner: pgRunner(pool), kind: "postgres" };
   }
   const { db, runner } = createDb(process.env.PGLITE_DATA_DIR);

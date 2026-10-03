@@ -51,7 +51,7 @@ jobs:
           PORT: 4040
           PORTAL_ENABLED: "false"
           SESSION_SECRET: ci-only-secret-not-for-production
-          ADMIN_TOKEN: ci-only-token
+          ADMIN_TOKEN: ci-only-token-0123456789abcdef
           NEWS_ADMIN_PASSWORD: ci-only-password
           STAFF_PASSCODE: ci-only-passcode
         run: |
@@ -77,5 +77,92 @@ jobs:
             || { echo "FAIL: nav.js lost its Portal link"; fail=1; }
           curl -fsS http://127.0.0.1:4040/assets/js/layout.js | grep -q 'bic-footer-portal' \
             || { echo "FAIL: footer lost its portal link"; fail=1; }
+
+          exit $fail
+
+  # ── The proxy, which the job above deliberately switches off ──────────────
+  # Everything the integration added lives behind /portal: the Express→Next and
+  # Express→NestJS proxies, the basePath, and the body-parser ordering. Testing
+  # the site with PORTAL_ENABLED=false leaves all of it uncovered, which is how
+  # the proxy shipped broken twice already (mount-path stripping, then the body
+  # parsers swallowing POSTs).
+  proxy:
+    name: Site + portal through one origin
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            portal/package-lock.json
+
+      - name: Install (site + portal)
+        run: |
+          npm ci
+          npm run portal:install
+
+      - name: Build the portal
+        run: npm run portal:build
+
+      - name: Boot all three processes and smoke through :4040 only
+        env:
+          PORT: 4040
+          SESSION_SECRET: ci-only-secret-not-for-production
+          ADMIN_TOKEN: ci-only-token-0123456789abcdef
+          NEWS_ADMIN_PASSWORD: ci-only-password
+          STAFF_PASSCODE: ci-only-passcode
+        run: |
+          npm run portal > /tmp/portal.log 2>&1 &
+          PORTAL_PID=$!
+          node server.js > /tmp/site.log 2>&1 &
+          SITE_PID=$!
+          trap 'kill $PORTAL_PID $SITE_PID 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 90); do
+            curl -fsS http://127.0.0.1:4040/portal/api/v1/health >/dev/null 2>&1 && break
+            sleep 1
+          done
+
+          fail=0
+          expect() { # path, expected status
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:4040$1")
+            if [ "$code" != "$2" ]; then echo "FAIL $1 -> $code (want $2)"; fail=1; else echo "ok   $1 $code"; fi
+          }
+          expect / 200
+          expect /portal/login 200
+          expect /portal/legal/privacy 200
+          expect /portal 307
+          expect /portal/api/v1/health 200
+          expect /portal/api/v1/school 200
+          expect /portal/api/v1/students 401     # auth gate still in front of routing
+          expect /api/health 200                  # site API unaffected
+
+          # The redirect must carry the basePath, or every emailed link 404s.
+          loc=$(curl -s -o /dev/null -w '%{redirect_url}' http://127.0.0.1:4040/portal)
+          case "$loc" in */portal/login) echo "ok   /portal redirects to $loc";;
+                         *) echo "FAIL /portal redirected to $loc"; fail=1;; esac
+
+          # A POST must reach the API with its body intact — this is exactly
+          # what the body-parser ordering bug broke. The password has to clear
+          # the DTO's 8-char minimum, or we would be asserting on a validation
+          # 400 rather than on the credentials path.
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+            -H 'content-type: application/json' \
+            -d '{"email":"nobody@school.example","password":"WrongPass123"}' \
+            http://127.0.0.1:4040/portal/api/v1/auth/login)
+          if [ "$code" != "401" ]; then echo "FAIL proxied POST login -> $code (want 401)"; fail=1;
+          else echo "ok   proxied POST carries its body"; fi
+
+          # The site's CSP must be on site pages and must not clobber the
+          # portal's own nonce CSP.
+          curl -fsS -D - -o /dev/null http://127.0.0.1:4040/ | grep -qi 'content-security-policy' \
+            || { echo "FAIL: site has no CSP"; fail=1; }
+          curl -fsS -D - -o /dev/null http://127.0.0.1:4040/portal/login | grep -qi 'nonce-' \
+            || { echo "FAIL: portal lost its nonce CSP"; fail=1; }
 
           exit $fail
