@@ -20,15 +20,15 @@ import { issueEnrollToken } from "./auth/enroll-token";
 export const devEnrollTokens: Record<string, string> = {};
 
 const PERMS: Record<string, string[]> = {
-  super_admin: ["directory:read","directory:write","roles:read","roles:write","academics:read","academics:write","attendance:read","attendance:write","gradebook:read","gradebook:write","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","family:read","self:read","settings:write","schedule:write","schedule:read"],
-  school_admin: ["directory:read","directory:write","roles:read","academics:read","academics:write","attendance:read","gradebook:read","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","settings:write","schedule:write","schedule:read"],
-  registrar: ["directory:read","directory:write","academics:read","academics:write","attendance:read","gradebook:read","schedule:write","schedule:read"],
-  counselor: ["directory:read","attendance:read","gradebook:read"],
-  teacher: ["academics:read","attendance:read","attendance:write","gradebook:read","gradebook:write","messaging:write","schedule:read","self:read"],
-  teacher_assistant: ["academics:read","attendance:read","attendance:write","gradebook:read","self:read"],
-  student: ["self:read"],
-  parent: ["family:read", "fees:pay"],
-  auditor: ["audit:read","directory:read","gradebook:read","attendance:read"],
+  super_admin: ["directory:read","directory:write","roles:read","roles:write","academics:read","academics:write","attendance:read","attendance:write","gradebook:read","gradebook:write","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","family:read","self:read","settings:write","schedule:write","schedule:read", "homework:read","homework:write"],
+  school_admin: ["directory:read","directory:write","roles:read","academics:read","academics:write","attendance:read","gradebook:read","fees:read","fees:write","transport:read","transport:write","comms:write","audit:read","exports:write","settings:write","schedule:write","schedule:read", "homework:read","homework:write"],
+  registrar: ["directory:read","directory:write","academics:read","academics:write","attendance:read","gradebook:read","schedule:write","schedule:read", "homework:read"],
+  counselor: ["directory:read","attendance:read","gradebook:read", "homework:read"],
+  teacher: ["academics:read","attendance:read","attendance:write","gradebook:read","gradebook:write","messaging:write","schedule:read","self:read", "homework:read","homework:write"],
+  teacher_assistant: ["academics:read","attendance:read","attendance:write","gradebook:read","self:read", "homework:read","homework:write"],
+  student: ["self:read", "homework:read","homework:submit"],
+  parent: ["family:read", "fees:pay", "homework:read"],
+  auditor: ["audit:read","directory:read","gradebook:read","attendance:read", "homework:read"],
 };
 
 /** Role + permission matrix — always seeded, idempotent. No accounts. */
@@ -37,7 +37,7 @@ export async function seedBase(db: Db): Promise<void> {
     const [{ n }] = await tx.select({ n: sql<number>`count(*)::int` }).from(roles);
     if (n > 0) return; // already seeded
     for (const [code, perms] of Object.entries(PERMS)) {
-      await tx.insert(roles).values({ code, name: code.replace(/_/g, " ") });
+      await tx.insert(roles).values({ code, name: code.replace(/_/g, ", ") });
       for (const p of perms) await tx.insert(rolePermissions).values({ roleCode: code, permission: p });
     }
   });

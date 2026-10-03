@@ -222,6 +222,40 @@ export const timetableSlots = pgTable("timetable_slots", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/* ── 0019 — homework ─────────────────────────────────────────────────────────
+   A submission row is created when work is handed in, not when it is set, so
+   "has not submitted" is the absence of a row rather than a null in one. That
+   is what makes the overdue report a simple query. */
+export const homeworkAssignments = pgTable("homework_assignments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sectionId: uuid("section_id").notNull(),
+  courseId: uuid("course_id"),
+  title: text("title").notNull(),
+  instructions: text("instructions"),
+  assignedBy: uuid("assigned_by").notNull(),
+  assignedOn: date("assigned_on").notNull(),
+  dueAt: timestamp("due_at", { withTimezone: true }).notNull(),
+  maxScore: smallint("max_score"),
+  /** withdrawn: set in error or cancelled, kept so the record stays intact. */
+  status: text("status").notNull().default("active"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const homeworkSubmissions = pgTable("homework_submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  assignmentId: uuid("assignment_id").notNull(),
+  studentUserId: uuid("student_user_id").notNull(),
+  body: text("body"),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+  /** Recorded at write time: the due date can move, a mark awarded against a
+      deadline that no longer exists is not defensible to a parent. */
+  late: boolean("late").notNull().default(false),
+  score: smallint("score"),
+  feedback: text("feedback"),
+  markedBy: uuid("marked_by"),
+  markedAt: timestamp("marked_at", { withTimezone: true }),
+});
+
 export const attendanceSessions = pgTable("attendance_sessions", {
   id: uuid("id").primaryKey().defaultRandom(),
   sectionId: uuid("section_id").notNull(),
