@@ -9,11 +9,13 @@ body {
   -webkit-font-smoothing: antialiased;
     
 }
+/* One ring for the whole site (components.css). This page used to restate it
+   with a hardcoded hex and a border-radius that rounded the element itself on
+   focus — which is a shape change, not a focus state. */
 :focus-visible {
-  outline: 2px solid #c59b53;
-  outline-offset: 4px;
-  border-radius: 4px;
-    
+  outline: var(--ring-w) solid var(--ring-color);
+  outline-offset: var(--ring-offset);
+  box-shadow: var(--ring-glow);
 }
 ::-webkit-scrollbar {  width: 8px; height: 8px;
 }
@@ -57,6 +59,24 @@ body {
   min-height: 400px;
     
 }
+/* Thumbnail pickers in the admin panel had no resting state at all — they
+   only defined `.active`, so at rest they were whatever the browser drew.
+   They are 44px square plates now, with the shared edge. */
+.thumbnail-btn {
+  position: relative;
+  width: var(--ctl-h-sm);
+  height: var(--ctl-h-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux),
+              transform var(--dur-hover) var(--ease-out-lux);
+}
+.thumbnail-btn:hover { border-color: rgba(197,155,83,.55); box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 4px 14px rgba(0,0,0,.35); }
 .thumbnail-btn.active {
   border-color: #c59b53;
   opacity: 1;
@@ -119,22 +139,25 @@ input[type="file"].sr-only-upload {
 }
 .admin-input {
   width: 100%;
+  min-height: var(--ctl-h-sm);              /* 44px — the touch floor */
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 0.5rem;
-  padding: 0.625rem 1rem;
+  border-radius: var(--radius-sm);
+  padding: 0 16px;
   color: #f7f5f2;
-  font-size: 0.875rem;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  font-size: var(--fs-small);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: border-color var(--dur-hover) var(--ease-out-lux),
+              background-color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux);
   outline: none;
-    
 }
 .admin-input:focus {
   border-color: rgba(197, 155, 83, 0.7);
   background: rgba(255,255,255,0.08);
-    
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 0 0 4px rgba(197,155,83,.18);
 }
-.admin-input::placeholder {  color: rgba(255,255,255,0.3);
+.admin-input::placeholder {  color: var(--color-placeholder-dark);
 }
 select.admin-input {  appearance: none; cursor: pointer;
 }

@@ -212,11 +212,18 @@ ul {  list-style: none;
   }
 }
 /* Shared .btn-ghost, re-themed for this page's dark hero and CTA band:
-   same class as components.css, page-scoped colours only (Amendment 2). */
-.btn-ghost {
-  background: transparent; color: rgba(220,210,190,.85);
-  border: 1px solid rgba(220,210,190,.25);
-    
+   same class as components.css, page-scoped colours only (Amendment 2). */ .btn-ghost {
+  /* Re-themed for this page's dark hero rather than re-implemented: the
+     plate, the motion and the ring still come from components.css. */
+  --ctl-bg: transparent;
+  --ctl-bg-hover: rgba(220,210,190,.10);
+  --ctl-fg: rgba(220,210,190,.88);
+  --ctl-fg-hover: #F4EFE2;
+  --ctl-bd: rgba(220,210,190,.25);
+  --ctl-bd-hover: rgba(220,210,190,.60);
+  --ctl-edge: inset 0 1px 0 rgba(255,255,255,.10), inset 0 0 0 1px rgba(255,255,255,.05);
+  --ctl-shadow: var(--shadow-0);
+  --ctl-shadow-hover: 0 2px 6px rgba(0,0,0,.20), 0 12px 28px rgba(0,0,0,.22);
 }
 .btn-ghost:hover {  border-color: rgba(220,210,190,.55); color: #fff; background: rgba(255,255,255,.04);
 }
@@ -310,14 +317,19 @@ ul {  list-style: none;
 .prog-card__chips {
   display: flex; flex-wrap: wrap; gap: 7px;
     
-}
-.chip {
-  font-family: var(--font-ui); font-size: 10px; letter-spacing: .14em;
-  padding: 5px 12px; border-radius: 999px;
-  border: 1px solid rgba(176,125,63,.3); color: rgba(220,210,190,.7);
+} .chip {
+  /* A chip is a control: it gets the hit floor through the shared overlay
+     class, and the same easing curve as every other control. */
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-ui); font-size: var(--fs-micro); letter-spacing: .14em;
+  padding: 7px 14px; border-radius: 999px;
+  border: 1px solid rgba(176,125,63,.3); color: rgba(220,210,190,.78);
   background: rgba(176,125,63,.06);
-  transition: border-color var(--dur-fast), color var(--dur-fast);
-    
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: border-color var(--dur-hover) var(--ease-out-lux),
+              color var(--dur-hover) var(--ease-out-lux),
+              background-color var(--dur-hover) var(--ease-out-lux);
 }
 .prog-card:hover .chip {  border-color: rgba(176,125,63,.55); color: rgba(220,210,190,.9);
 }
@@ -569,33 +581,68 @@ details.faq .faq-answer {
   display: block; font-family: var(--font-ui); font-size: 10px;
   letter-spacing: .16em; color: var(--color-ink-60); margin-bottom: 7px;
     
-}
-.form-field input,
+} .form-field input,
     .form-field select {
-  width: 100%; padding: 11px 14px; border-radius: var(--radius-xs);
-  border: 1px solid var(--color-ink-12); background: var(--color-paper);
-  font-size: 14px; font-weight: 400; color: var(--color-ink);
-  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+  width: 100%;
+  min-height: var(--ctl-h-md);
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--color-ink-12); background: var(--color-surface);
+  font-size: var(--fs-body); font-weight: 400; color: var(--color-ink);
+  box-shadow: var(--edge-inset);
+  transition: border-color var(--dur-hover) var(--ease-out-lux),
+              background-color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux);
   appearance: none;
-    
 }
 .form-field input:focus,
     .form-field select:focus {
   outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft);
     
 }
-.form-field input::placeholder {  color: var(--color-ink-30);
+.form-field input::placeholder {  color: var(--color-placeholder);
 }
+/* The enquiry submit on this page is a plate, not a rectangle: it takes the
+   control geometry (44px touch height, 4pt padding) and the elevation stack
+   from the interactive layer, keeping its own ink-on-parchment palette. */
 .form-submit {
-  width: 100%; padding: 13px;
-  background: var(--color-ink); color: var(--color-paper);
-  border: none; border-radius: var(--radius-xs);
-  font-size: 14px; font-weight: 500; letter-spacing: .04em;
-  cursor: pointer; transition: background var(--dur-fast), transform var(--dur-fast);
-    
+  --ctl-h: var(--ctl-h-lg);
+  --ctl-bg: var(--color-ink);
+  --ctl-bg-hover: #2C2619;
+  --ctl-fg: var(--color-paper);
+  --ctl-bd: rgba(255,255,255,.10);
+  --ctl-edge: inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.05);
+  --ctl-shadow: 0 1px 2px rgba(24,20,15,.10), 0 8px 20px rgba(24,20,15,.14), 0 20px 44px rgba(24,20,15,.12);
+  --ctl-shadow-hover: 0 2px 4px rgba(24,20,15,.12), 0 14px 30px rgba(24,20,15,.20), 0 32px 64px rgba(24,20,15,.18);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--ctl-h);
+  padding: 0 var(--ctl-px-md);
+  border: 1px solid var(--ctl-bd);
+  border-radius: var(--radius-sm);
+  background: var(--ctl-bg);
+  color: var(--ctl-fg);
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  letter-spacing: .04em;
+  cursor: pointer;
+  box-shadow: var(--ctl-edge), var(--ctl-shadow);
+  transition: background-color var(--dur-hover) var(--ease-out-lux),
+              border-color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux);
 }
-.form-submit:hover {  background: #2C2619; transform: translateY(-1px);
+.form-submit:hover { background: var(--ctl-bg-hover); box-shadow: var(--ctl-edge), var(--ctl-shadow-hover); }
+.form-submit:active {
+  box-shadow: var(--ctl-edge), inset 0 2px 6px rgba(0,0,0,.35);
+  transition-duration: var(--dur-press);
 }
+html:not(.luxe-gsap) .form-submit:hover { transform: translateY(-1px) scale(1.005); }
+html:not(.luxe-gsap) .form-submit:active { transform: translateY(1px) scale(.985); }
 .form-submit:active {  transform: translateY(0);
 }
 #contact-msg {  margin-top: 12px; font-size: 13px; color: var(--color-accent);
@@ -685,18 +732,24 @@ address a {  color: inherit; transition: color var(--dur-fast);
 address a:hover {  color: var(--color-accent);
 }
 .social-row {  display: flex; gap: 10px;
-}
-.social-link {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.1);
+} .social-link {
+  /* 44px, not 38: the touch floor is not negotiable for an icon-only
+     control, and it is the one size that makes a row of socials read as
+     deliberate rather than as an afterthought. */
+  position: relative;
+  width: var(--ctl-h-sm); height: var(--ctl-h-sm); border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
   display: flex; align-items: center; justify-content: center;
   color: var(--color-ebony-muted);
-  transition: all var(--dur-fast);
-    
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+  transition: border-color var(--dur-hover) var(--ease-out-lux),
+              color var(--dur-hover) var(--ease-out-lux),
+              background-color var(--dur-hover) var(--ease-out-lux),
+              transform var(--dur-hover) var(--ease-out-lux);
 }
 .social-link:hover {  border-color: var(--color-accent); color: var(--color-accent); transform: translateY(-2px);
 }
-.social-link:focus-visible {  outline: 2px solid var(--color-accent); outline-offset: 3px;
+.social-link:focus-visible {  outline: var(--ring-w) solid var(--ring-color); outline-offset: var(--ring-offset);
 }
 .bg-surface {  background: var(--color-surface);
 }

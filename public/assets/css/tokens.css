@@ -16,6 +16,12 @@
   --color-ink-70:     rgba(24,20,15,.70);
   --color-ink-60:     rgba(24,20,15,.60);
   --color-ink-40:     rgba(24,20,15,.40);
+  /* Placeholders are text. At 40% ink they measure 3.1:1 on the paper
+     background, which fails WCAG AA — and they are the first thing a person
+     reads in an empty form. 70% measures 6.4:1 and still reads as a hint
+     rather than as a value, because the filled-in text is 100% ink. */
+  --color-placeholder: rgba(24,20,15,.70);
+  --color-placeholder-dark: rgba(255,255,255,.58);
   --color-ink-30:     rgba(24,20,15,.30);
   --color-ink-12:     rgba(24,20,15,.12);
   --color-ink-08:     rgba(24,20,15,.08);
@@ -104,21 +110,89 @@
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
+  /* The smallest target a thumb may be asked to hit. Plates that keep a
+     smaller *visual* size borrow it for an invisible overlay instead. */
+  --tap-min: 44px;
   --radius-lg: 20px;
   --radius-pill: 999px;
 
-  /* ── Elevation — 4 levels ────────────────────────────── */
+  /* ── Elevation — 4 levels, each a three-layer stack ─────
+     One shadow per layer of distance: a 1–4px contact shadow that
+     describes the edge, a mid ambient spread, and a wide low-alpha
+     bloom. All three stay under 10% alpha, so a raised element reads
+     as *diffused light* rather than as a drawn outline. The old values
+     were two layers at up to 16% alpha, which is what made elevation
+     look like a grey smear on the parchment background. */
   --shadow-0: none;
-  --shadow-1: 0 1px 2px rgba(24,20,15,.06), 0 1px 3px rgba(24,20,15,.08);
-  --shadow-2: 0 4px 12px rgba(24,20,15,.08), 0 2px 4px rgba(24,20,15,.05);
-  --shadow-3: 0 12px 32px rgba(24,20,15,.12), 0 4px 8px rgba(24,20,15,.06);
-  --shadow-4: 0 24px 48px rgba(24,20,15,.16), 0 8px 16px rgba(24,20,15,.08);
+  --shadow-1: 0 1px 2px rgba(24,20,15,.04), 0 2px 6px rgba(24,20,15,.04), 0 8px 20px rgba(24,20,15,.03);
+  --shadow-2: 0 1px 2px rgba(24,20,15,.05), 0 4px 12px rgba(24,20,15,.05), 0 14px 32px rgba(24,20,15,.05);
+  --shadow-3: 0 2px 4px rgba(24,20,15,.05), 0 10px 24px rgba(24,20,15,.07), 0 28px 64px rgba(24,20,15,.07);
+  --shadow-4: 0 4px 8px rgba(24,20,15,.06), 0 18px 44px rgba(24,20,15,.09), 0 48px 96px rgba(24,20,15,.09);
+  /* Raised one step, for hover. Above --shadow-4 on purpose: a lifted
+     control must out-rank the panel it sits on. */
+  --shadow-lift: 0 2px 4px rgba(24,20,15,.06), 0 12px 28px rgba(24,20,15,.10), 0 32px 64px rgba(24,20,15,.10);
+  /* Pressed: the cast shadow collapses (the surface is closer now) and a
+     soft inner shadow does the compressing. */
+  --shadow-press: 0 1px 2px rgba(24,20,15,.05), inset 0 2px 5px rgba(24,20,15,.13);
 
-  /* ── Motion ──────────────────────────────────────────── */
+  /* ── Tactile edges — 1px translucent inner lines ────────
+     The premium tell: a hairline of light along the top edge and a
+     hairline of shade around the whole shape, both just visible. */
+  --edge-light:    inset 0 1px 0 rgba(255,255,255,.60), inset 0 0 0 1px rgba(24,20,15,.05);
+  --edge-dark:     inset 0 1px 0 rgba(255,255,255,.10), inset 0 0 0 1px rgba(255,255,255,.06);
+  --edge-cream:    inset 0 1px 0 rgba(255,255,255,.28), inset 0 0 0 1px rgba(255,255,255,.10);
+  --edge-brand:    inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.08);
+  --edge-gold:     inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.12);
+  --edge-inset:    inset 0 1px 2px rgba(24,20,15,.05), inset 0 0 0 1px rgba(24,20,15,.04);
+
+  /* ── Focus ring — offset ring + soft glow ───────────────
+     --ring-gap is the colour of the surface the control sits on; it is
+     what makes the ring read as *offset* rather than as a border. Dark
+     sections re-point it (see `[data-surface="dark"]` in components.css). */
+  --ring-w: 2px;
+  --ring-offset: 3px;
+  --ring-color: var(--color-accent-bright);
+  --ring-glow: 0 0 12px 2px rgba(176,125,63,.38);
+
+  /* ── Control geometry — strict 4pt grid ─────────────────
+     Heights are multiples of 4; the touch minimum (44) is the smallest
+     stop. Padding is expressed as a plate height, not as free padding,
+     so a label is centred by the flex box instead of by line-height
+     arithmetic — that is what keeps every control optically aligned
+     with its neighbours regardless of font metrics.
+     Ratio of inline:block padding ≈ 1.7, the closest the grid allows to
+     the golden section (φ = 1.618): a 4px rhythm is worth more than a
+     0.08 rounding error, so the grid wins. */
+  --ctl-h-sm: 44px;   /* touch minimum */
+  --ctl-h-md: 48px;   /* default */
+  --ctl-h-lg: 56px;   /* hero / form submits */
+  --ctl-px-sm: 20px;
+  --ctl-px-md: 26px;
+  --ctl-px-lg: 34px;
+  --ctl-gap: var(--space-2);
+  --ctl-tracking: .14em;      /* uppercase UI labels */
+  --ctl-tracking-tight: .02em;/* sentence-case labels */
+
+  /* ── Motion physics ────────────────────────────────────
+     Hover is 320ms (the brief's ≥300ms floor); press is fast so the
+     compression feels physical; release is slower than press so the
+     control appears to spring back rather than snap. */
   --dur-fast: 200ms;
   --dur-mid:  360ms;
   --dur-slow: 600ms;
+  --dur-hover: 320ms;
+  --dur-press: 130ms;
+  --dur-release: 460ms;
   --ease-out: cubic-bezier(.22,.9,.37,1);
+  --ease-out-lux: cubic-bezier(.16,1,.3,1);     /* long silky deceleration */
+  --ease-spring: cubic-bezier(.34,1.46,.64,1);  /* overshoot on release */
+  --sc-press: .97;
+  --sc-hover: 1.02;
+  --lift: -1px;
+  /* φ is used where nothing needs to snap to the grid: the radius of the
+     magnetic field is 1.618 × the control's own longest side, and the pull
+     is 1/φ of that distance at the rim (0 at the centre → max at the rim). */
+  --phi: 1.618;
 
   /* ── Mobile menu system (consumed by layout.js + page css) */
   --z-hamburger:      10002;

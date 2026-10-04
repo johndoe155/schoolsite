@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
+import { Button } from "@/components/button";
 
 export default function ChangePasswordForm({ home }: { home: string }) {
   const [current, setCurrent] = useState("");
@@ -48,8 +49,8 @@ export default function ChangePasswordForm({ home }: { home: string }) {
       <input id="next" type="password" autoComplete="new-password" minLength={12} maxLength={200}
         value={next} onChange={(e) => setNext(e.target.value)} required />
       <div className="row" style={{ marginTop: 12 }}>
-        <button className="btn" disabled={busy}>{busy ? "Updating…" : "Change password"}</button>
-        <a className="btn ghost" href={home}>Cancel</a>
+        <Button type="submit" magnet busy={busy}>{busy ? "Updating…" : "Change password"}</Button>
+        <Button variant="ghost" href={home}>Cancel</Button>
       </div>
     </form>
   );

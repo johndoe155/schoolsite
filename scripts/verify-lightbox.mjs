@@ -296,8 +296,12 @@ const cardFor = (doc, title) =>
     /gap-x-8 gap-y-16/.test(html) && /gallery-caption__rule/.test(homeJs) && /margin: 26px auto 16px/.test(homeCss));
   tOk('6. the lightbox is a modern, minimal frame',
     /\.lb__img \{[\s\S]{0,400}border-radius: 4px/.test(componentsCss) && /lb__loader/.test(componentsCss));
+  // The surface now comes through the interactive layer's custom properties,
+  // so the assertion reads the declaration the owner actually sees.
   tOk('9. the submit button owns a resting surface',
-    /class="[^"]*btn-send/.test(html) && /\.btn-send \{[\s\S]{0,300}background: var\(--color-brand\)/.test(homeCss));
+    /class="[^"]*btn-send/.test(html) &&
+    /\.btn-send \{[\s\S]{0,600}--ctl-bg: var\(--color-brand\)/.test(homeCss) &&
+    /--ctl-shadow: [^;]*rgba\(5,1,74/.test(homeCss));
 }
 
 /* ── report ──────────────────────────────────────────────────────────────── */

@@ -19,7 +19,8 @@
     "build:tailwind": "node build/tailwind/build.mjs",
     "audit:site": "node scripts/audit-gate.mjs",
     "verify:polish": "node scripts/verify-polish.mjs",
-    "verify:lightbox": "node scripts/verify-lightbox.mjs"
+    "verify:lightbox": "node scripts/verify-lightbox.mjs",
+    "verify:interactions": "node scripts/verify-interactions.mjs"
   },
   "engines": {
     "node": ">=20.19.0"

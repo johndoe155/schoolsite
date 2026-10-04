@@ -803,3 +803,100 @@ is set, X-Frame-Options is dropped as well, because a legacy browser obeys the
 stricter of the two and SAMEORIGIN cannot express a list. Measured both ways:
 with the variable, `frame-ancestors *` and no X-Frame-Options; without it, the
 original pair.
+
+## The interactive layer — buttons, fields and clickable surfaces
+
+A full overhaul of every control in the project, on both the static site and
+the portal. The audit that started it found three separate button systems (the
+shared classes, a second set scoped to `#home`, and a third inside
+`academies.html`), buttons made of a colour and a radius with no resting edge,
+and a `transition: all 0.3s` rule — inside
+`@media (min-width: 1024px) { *:not(#heroOverlay) { … } }` — whose ID gave it
+priority over **every** per-element transition in the project, including the
+focus ring's.
+
+- **One control layer.** `.btn` is the plate (geometry, type, motion,
+  elevation, ring); `.btn--primary`, `.btn--secondary`, `.btn--ghost`,
+  `.btn--outline`, `.btn--danger` and `.btn--quiet` re-point a documented set
+  of custom properties (`--ctl-bg`, `--ctl-edge`, `--ctl-shadow`, …). The old
+  `.btn-primary/.btn-secondary/.btn-ghost` names are now aliases of the
+  variants rather than a second implementation, so every existing call site
+  improves without being touched.
+- **Geometry on a 4pt grid**, 44/48/56px plate heights, no vertical padding —
+  the label is centred by the flex box, which is what keeps the optical centre
+  and the geometric centre the same at every size. φ is used where nothing has
+  to snap: the magnetic field's radius.
+- **Depth.** Four elevation levels, each a three-layer stack (contact,
+  ambient, bloom) under 12% alpha, plus 1px translucent edges composited in
+  front of the shadow so the highlight reads as material rather than as light.
+- **Motion.** 320ms ease-out hover, 130ms press, 460ms release; press is
+  faster than release on purpose. Every page loads vendored GSAP 3.13 and
+  `luxe.js`, which adds the pointer-following magnetic pull (φ-scaled field,
+  zero at the centre, `quickTo` retargeting) and elastic press physics. The
+  magnet is opt-in and curated — 1–5 controls per page — and stands down for
+  reduced motion, coarse pointers, overlays and `[data-luxe="off"]`. Without
+  GSAP nothing throws; the CSS fallback is scoped `html:not(.luxe-gsap)` so it
+  never fights the library.
+- **Focus.** One zero-specificity `:focus-visible` rule for every interactive
+  element: an offset ring drawn with `outline` (never `box-shadow`, which
+  would clobber elevation) whose offset grows from 1px to 3px while a soft
+  glow fades in. Kept in forced-colours mode, and reduced to nothing but the
+  ring under `prefers-reduced-motion`.
+- **Hit areas.** Everything is genuinely ≥44px, except the controls whose
+  visual size has to stay small — chips, pagination, admin row actions,
+  thumbnail pickers — which get an invisible centred 44×44 overlay instead.
+  `.social-link` and `.lux-social-link` grew from 38/42 to 44.
+- **Contrast.** The gold plate's white label was 3.6:1, an AA failure at 14px,
+  in both the site and the portal; it is ink now (5.1:1) with a *brighter*
+  hover (6.9:1). Placeholders were 3.1:1 — they are text, and the first thing
+  anyone reads in an empty form — so they have a real token now (6.4:1 light,
+  6.6:1 on the admin dark).
+- **The portal.** `globals.css` carries the same layer for the ~150 `.btn`
+  call sites across 56 files, and `components/button.tsx` is the canonical
+  component for new code: the same `btn` class plus framer-motion springs
+  (`whileHover` 1.02, `whileTap` .97), a damped magnet spring driven by motion
+  values so the pointer never re-renders React, `useReducedMotion()`, and
+  `aria-busy`. Login and change-password were migrated as the reference.
+  framer-motion costs 123 KB of client chunk on the routes that use `<Button>`,
+  code-split to those routes only.
+
+Verified: `verify:interactions` 88/88 (new), `verify:polish` 7 pages / 0
+failures, `verify:lightbox` 55/55, `tokens:check` in sync, portal
+`check:controls` 26/26 (new), `check:contrast` all pairs AA, `tsc` clean,
+`next build` 33 pages. The two older harnesses now resolve custom properties
+per element, normalise colour syntax and evaluate leftover `calc()`, because
+the control layer takes its surfaces through custom properties.
+
+### The interactive layer, closed out
+
+The pointer physics were rewritten after an end-to-end pass over the *served*
+bytes (jsdom + the vendored GSAP) showed a real bug that every source-level
+check had missed: after `pointerleave` the magnet never returned home — the
+plate sat 13px off its own position — and the press did nothing.
+
+* `luxe.js` now keeps **one tween per axis** for the whole session
+  (`gsap.quickTo`, retargeted) and one tune per intent; the scale follower that
+  used to be invalidated mid-flight is gone. The press is **travel** — the plate
+  sinks 1px and springs back — and the compression moves to the label
+  (`.btn:active > span`), because GSAP owns `transform` on a magnetised plate
+  and an inline transform out-ranks a stylesheet one.
+* The pull is now a **bounded distance**: zero at the centre, up to `TRAVEL`
+  (6px) at the rim. Scaling by the raw cursor offset had been moving a 120px
+  plate 35px across the page from far away.
+* `verify:interactions` grew from 88 to **113 assertions**, including a
+  behavioural section that measures the physics in jsdom (`gsap.updateRoot`)
+  rather than trusting the source text — it is the check that would have caught
+  the stranding.
+* The remaining page sheets were swept onto the system: staff login, log out,
+  row actions, the drop zone and the newsletter controls in `news.css`; the
+  header links, CTA and toggle in `nav.css`; the footer's Staff Login trigger
+  and social circles; the gallery/programme/timeline/mission cards in
+  `home.css`. Dead legacy CSS went with them (the `.input-animated` teal focus).
+* One ring, one hit floor: 8 page-local focus rings now use
+  `--ring-w/--ring-color/--ring-glow`, and a new `--tap-min` token is the single
+  44px number the compact plates borrow for their overlays.
+* 11 heavy single-layer shadows (20–60% alpha) became token stacks, and the last
+  legacy glows — a teal success halo, the yellow timeline halos — were softened
+  to match the palette.
+* Stylesheets and `luxe.js` now carry `?v=3` (they are served `max-age=86400`),
+  applied uniformly across all ten pages.

@@ -155,15 +155,19 @@
 .social-circle {
   width: 44px; height: 44px;
   display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 9999px; border: 2px solid var(--footer-circle-border);
-  transition: all 0.18s ease; background: transparent; color: var(--footer-text);
+  border-radius: 9999px; border: 1px solid var(--footer-circle-border);
+  transition: transform var(--dur-hover) var(--ease-out-lux),
+              border-color var(--dur-hover) var(--ease-out-lux),
+              color var(--dur-hover) var(--ease-out-lux),
+              background-color var(--dur-hover) var(--ease-out-lux);
+  background: transparent; color: var(--footer-text);
 }
 .social-circle:hover {
-  transform: translateY(-3px);
+  transform: translateY(calc(var(--lift) * 2));
   border-color: var(--footer-circle-hover);
   color: var(--footer-heading);
 }
-.social-circle:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.social-circle:focus-visible { outline: var(--ring-w) solid var(--ring-color); outline-offset: var(--ring-offset); }
 
 /* ── Contact row + stacked tagline ───────────────────────── */
 .bic-footer-contact {
@@ -206,14 +210,22 @@
 @media (min-width: 640px) { .bic-footer-bottom { flex-direction: row; } }
 .bic-footer-copy { font-size: var(--fs-small); color: var(--footer-faint); }
 .bic-adm-trigger {
-  display: inline-block;
+  position: relative;
   color: inherit;
   opacity: 0.4;
   font-size: var(--fs-micro);
   cursor: pointer;
   text-decoration: none;
-  transition: opacity 0.15s;
+  transition: opacity var(--dur-hover) var(--ease-out-lux);
 }
+/* Staff Login is deliberately quiet, but quiet is not the same as hard to
+   hit: the overlay makes it a 44px target while the type stays micro. */
+.bic-adm-trigger::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; height: 100%; min-width: var(--tap-min); min-height: var(--tap-min);
+}
+.bic-adm-trigger:hover { opacity: 0.8; }
 .bic-adm-trigger:hover { opacity: 0.8; }
 
 /* ── Portal link (PORTAL-INTEGRATION-PLAN.md §3.2d) ──────────

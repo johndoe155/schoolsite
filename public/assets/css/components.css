@@ -55,62 +55,442 @@ p { line-height: var(--lh-body); }
 
 .section-pad { padding-block: var(--section-pad); }
 
-/* ── Buttons — 3 variants only ───────────────────────────── */
-.btn-primary,
-.btn-secondary,
-.btn-ghost {
+/* ══════════════════════════════════════════════════════════════════════════
+   INTERACTIVE LAYER
+   One geometry, one motion language, one focus behaviour for every control
+   in the project. Page stylesheets re-point the custom properties below;
+   they never re-declare the padding, the transitions or the ring.
+
+   The customisation API — a variant sets these, everything else follows:
+     --ctl-h            plate height (44 / 48 / 56, all on the 4pt grid)
+     --ctl-px           inline padding
+     --ctl-bg           resting surface
+     --ctl-bg-hover     hover surface
+     --ctl-fg           label colour
+     --ctl-bd           ｜border colour
+     --ctl-edge         translucent inner edges (see tokens.css --edge-*)
+     --ctl-shadow       resting elevation
+     --ctl-shadow-hover hover elevation
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  --ctl-h: var(--ctl-h-md);
+  --ctl-px: var(--ctl-px-md);
+  --ctl-bg: var(--color-brand);
+  --ctl-bg-hover: var(--color-brand-strong);
+  --ctl-fg: var(--color-cream);
+  --ctl-fg-hover: var(--color-cream);
+  --ctl-bd: rgba(255,255,255,.08);
+  --ctl-bd-hover: rgba(255,255,255,.16);
+  --ctl-edge: var(--edge-brand);
+  --ctl-shadow: var(--shadow-1);
+  --ctl-shadow-hover: var(--shadow-lift);
+  --ctl-tracking: var(--ctl-tracking);
+
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  padding: calc(var(--space-3) - 2px) var(--space-5);
+  gap: var(--ctl-gap);
+  min-height: var(--ctl-h);
+  /* No vertical padding: the flex box centres the label, so the optical
+     centre is the geometric centre at every font size and family. Horizontal
+     padding is the only free dimension, which is what keeps the plate ratio
+     identical across primary/secondary/ghost. */
+  padding: 0 var(--ctl-px);
+  border: 1px solid var(--ctl-bd);
   border-radius: var(--radius-pill);
-  border: 1px solid transparent;
+  background: var(--ctl-bg);
+  color: var(--ctl-fg);
   font-family: var(--font-ui);
   font-size: var(--fs-small);
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-caps);
+  line-height: 1;
+  letter-spacing: var(--ctl-tracking);
   text-transform: uppercase;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out),
-              border-color var(--dur-fast) var(--ease-out),
-              color var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out),
-              box-shadow var(--dur-fast) var(--ease-out);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Two shadows stacked: the tactile 1px edges, then the elevation. The
+     edges stay put when the elevation changes, which is what makes the
+     highlight look like part of the material rather than part of the light. */
+  box-shadow: var(--ctl-edge), var(--ctl-shadow);
+  transition: background-color var(--dur-hover) var(--ease-out-lux),
+              border-color var(--dur-hover) var(--ease-out-lux),
+              color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux),
+              transform var(--dur-hover) var(--ease-out-lux);
 }
-.btn-primary {
-  background: var(--color-brand);
-  color: var(--color-cream);
+
+.btn:hover,
+.btn:focus-visible {
+  background: var(--ctl-bg-hover);
+  color: var(--ctl-fg-hover);
+  border-color: var(--ctl-bd-hover);
+  box-shadow: var(--ctl-edge), var(--ctl-shadow-hover);
+  text-decoration: none;
 }
-.btn-primary:hover {
-  background: var(--color-brand-strong);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-2);
+
+/* Pressed. The cast shadow collapses and the plate travels into the page —
+   1px of travel plus a scale of .97 reads as compression without the
+   surface ever leaving the layout. GSAP, when it is loaded, owns the
+   transform instead (see `html.luxe-gsap` below), so this stays a
+   no-JS/no-library fallback as well as the touch behaviour. */
+.btn:active {
+  --ctl-shadow: var(--shadow-press);
+  transition-duration: var(--dur-press);
+  transition-timing-function: var(--ease-out);
 }
-.btn-secondary {
-  background: var(--color-accent);
-  color: var(--color-white);
+html:not(.luxe-gsap) .btn:hover { transform: translateY(var(--lift)) scale(var(--sc-hover)); }
+html:not(.luxe-gsap) .btn:active { transform: translateY(1px) scale(var(--sc-press)); }
+
+/* The label compression, which every control gets — including the magnetised
+   ones, whose `transform` belongs to GSAP and so cannot be scaled by the
+   `:active` rule above. Scaling the label is also the honest place for it:
+   the plate travels and its shadow collapses, the type takes the compression.
+   `back.out`-shaped easing, one step behind the plate, so the two read as one
+   gesture rather than two. */
+.btn > span {
+  transition: transform var(--dur-release) var(--ease-spring);
 }
-.btn-secondary:hover {
-  background: var(--color-accent-strong);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-2);
+.btn:active > span { transform: scale(var(--sc-press)); transition-duration: var(--dur-press); }
+
+/* Disabled and busy: no elevation, no travel, no pointer. */
+.btn:disabled,
+.btn[aria-disabled="true"],
+.btn.is-disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: var(--ctl-edge);
 }
+.btn:disabled:hover,
+.btn[aria-disabled="true"]:hover,
+.btn.is-disabled:hover { box-shadow: var(--ctl-edge); }
+html:not(.luxe-gsap) .btn:disabled:hover,
+html:not(.luxe-gsap) .btn[aria-disabled="true"]:hover { transform: none; }
+
+.btn[aria-busy="true"],
+.btn.is-busy {
+  cursor: progress;
+  pointer-events: none;
+}
+.btn[aria-busy="true"]::after,
+.btn.is-busy::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: btn-spin 700ms linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* ── Variants ────────────────────────────────────────────────────────────── */
+.btn--primary {
+  --ctl-bg: var(--color-brand);
+  --ctl-bg-hover: var(--color-brand-strong);
+  --ctl-fg: var(--color-cream);
+}
+/* Antique gold. The label is ink, not white: white on #B07D3F is 3.6:1,
+   which fails WCAG AA for a 14px label. Ink on gold is 5.1:1, and it is the
+   better-looking answer anyway — white type on gold reads as a warning badge,
+   dark type reads as an embossed plate.
+   Hover goes *brighter* (6.9:1 with ink) rather than darker: light catching
+   metal, and it keeps the contrast above the floor at every state. */
+.btn--secondary {
+  --ctl-bg: var(--color-accent);
+  --ctl-bg-hover: var(--color-accent-bright);
+  --ctl-fg: var(--color-ink);
+  --ctl-fg-hover: var(--color-ink);
+  --ctl-bd: rgba(255,255,255,.22);
+  --ctl-edge: var(--edge-gold);
+  --ctl-shadow: var(--shadow-2);
+}
+.btn--ghost {
+  --ctl-bg: transparent;
+  --ctl-bg-hover: var(--color-brand-tint);
+  --ctl-fg: var(--color-ink);
+  --ctl-fg-hover: var(--color-brand);
+  --ctl-bd: var(--color-ink-12);
+  --ctl-bd-hover: var(--color-accent-border);
+  --ctl-edge: var(--edge-light);
+  --ctl-shadow: var(--shadow-0);
+  --ctl-shadow-hover: var(--shadow-1);
+}
+/* The outline variant: a hairline plate with no fill until hover. It is the
+   quietest control that still has a visible boundary at rest. */
+.btn--outline {
+  --ctl-bg: transparent;
+  --ctl-bg-hover: var(--color-surface);
+  --ctl-fg: var(--color-ink);
+  --ctl-bd: var(--color-border);
+  --ctl-bd-hover: var(--color-accent);
+  --ctl-edge: var(--edge-light);
+  --ctl-shadow: var(--shadow-0);
+  --ctl-shadow-hover: var(--shadow-2);
+}
+.btn--danger {
+  --ctl-bg: var(--color-danger);
+  --ctl-bg-hover: #8A2828;
+  --ctl-fg: var(--color-white);
+  --ctl-bd: rgba(255,255,255,.14);
+  --ctl-edge: var(--edge-dark);
+  --ctl-shadow: var(--shadow-1);
+}
+/* Text-only action. No plate, no shadow, but the same hit box and ring. */
+.btn--quiet {
+  --ctl-bg: transparent;
+  --ctl-bg-hover: var(--color-ink-04);
+  --ctl-fg: var(--color-ink-70);
+  --ctl-fg-hover: var(--color-ink);
+  --ctl-bd: transparent;
+  --ctl-bd-hover: transparent;
+  --ctl-edge: none;
+  --ctl-shadow: var(--shadow-0);
+  --ctl-shadow-hover: var(--shadow-0);
+  --ctl-tracking: var(--ctl-tracking-tight);
+  text-transform: none;
+}
+
+/* ── Sizes ───────────────────────────────────────────────────────────────── */
+.btn--lg { --ctl-h: var(--ctl-h-lg); --ctl-px: var(--ctl-px-lg); font-size: var(--fs-body); }
+.btn--sm {
+  --ctl-h: var(--ctl-h-sm);
+  --ctl-px: var(--ctl-px-sm);
+  font-size: var(--fs-caption);
+}
+/* Visually smaller than the touch floor, so the *hit* area is restored with
+   an invisible overlay rather than by inflating the plate and breaking the
+   layout it sits in. */
+.btn--compact {
+  --ctl-h: 36px;
+  font-size: var(--fs-micro);
+}
+.btn--compact::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  transform: translate(-50%, -50%);
+}
+.btn--icon {
+  --ctl-px: 0;
+  width: var(--ctl-h);
+  min-width: var(--ctl-h);
+}
+.btn--block { display: flex; width: 100%; }
+
+/* ── Legacy aliases ───────────────────────────────────────────────────────
+   .btn-primary / .btn-secondary / .btn-ghost are used across the pages and
+   are kept working, but they are now spellings of the variants above rather
+   than separate implementations. */
+.btn-primary { --ctl-bg: var(--color-brand); --ctl-bg-hover: var(--color-brand-strong); --ctl-fg: var(--color-cream); }
+.btn-secondary { --ctl-bg: var(--color-accent); --ctl-bg-hover: var(--color-accent-bright); --ctl-fg: var(--color-ink); --ctl-fg-hover: var(--color-ink); --ctl-bd: rgba(255,255,255,.22); --ctl-edge: var(--edge-gold); --ctl-shadow: var(--shadow-2); }
+.btn-ghost { --ctl-bg: transparent; --ctl-bg-hover: var(--color-brand-tint); --ctl-fg: var(--color-ink); --ctl-fg-hover: var(--color-brand); --ctl-bd: var(--color-ink-12); --ctl-bd-hover: var(--color-accent-border); --ctl-edge: var(--edge-light); --ctl-shadow: var(--shadow-0); --ctl-shadow-hover: var(--shadow-1); }
+
+/* The legacy class names have never carried the base declarations, so any
+   markup that uses them *without* `.btn` still needs the plate. */
+.btn-primary,
+.btn-secondary,
 .btn-ghost {
-  background: transparent;
-  border-color: var(--color-ink-12);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ctl-gap);
+  min-height: var(--ctl-h, var(--ctl-h-md));
+  padding: 0 var(--ctl-px, var(--ctl-px-md));
+  border: 1px solid var(--ctl-bd, transparent);
+  border-radius: var(--radius-pill);
+  background: var(--ctl-bg, var(--color-brand));
+  color: var(--ctl-fg, var(--color-cream));
+  font-family: var(--font-ui);
+  font-size: var(--fs-small);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  letter-spacing: var(--ctl-tracking, var(--ctl-tracking));
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--ctl-edge, var(--edge-brand)), var(--ctl-shadow, var(--shadow-1));
+  transition: background-color var(--dur-hover) var(--ease-out-lux),
+              border-color var(--dur-hover) var(--ease-out-lux),
+              color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux),
+              transform var(--dur-hover) var(--ease-out-lux);
+}
+.btn-primary:hover, .btn-primary:focus-visible,
+.btn-secondary:hover, .btn-secondary:focus-visible,
+.btn-ghost:hover, .btn-ghost:focus-visible {
+  background: var(--ctl-bg-hover, var(--color-brand-strong));
+  color: var(--ctl-fg-hover, var(--color-cream));
+  border-color: var(--ctl-bd-hover, transparent);
+  box-shadow: var(--ctl-edge, var(--edge-brand)), var(--ctl-shadow-hover, var(--shadow-lift));
+}
+html:not(.luxe-gsap) .btn-primary:hover,
+html:not(.luxe-gsap) .btn-secondary:hover,
+html:not(.luxe-gsap) .btn-ghost:hover { transform: translateY(var(--lift)) scale(var(--sc-hover)); }
+html:not(.luxe-gsap) .btn-primary:active,
+html:not(.luxe-gsap) .btn-secondary:active,
+html:not(.luxe-gsap) .btn-ghost:active { transform: translateY(1px) scale(var(--sc-press)); }
+
+/* ── Focus: one ring, everywhere ─────────────────────────────────────────
+   Replaces the browser default on every clickable thing that does not
+   define its own. `:where()` keeps the specificity at zero so any page
+   rule that *does* define a ring still wins.
+   The ring is drawn with `outline` (never `box-shadow`) so it cannot
+   clobber a control's elevation, and the glow is a `filter` for the same
+   reason. Both fade in, and the offset grows from 1px to 3px, so focus
+   arrives rather than appears. */
+:where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
+  outline: var(--ring-w) solid var(--ring-color);
+  outline-offset: var(--ring-offset);
+  transition: outline-offset 220ms var(--ease-out-lux),
+              outline-color 220ms var(--ease-out-lux),
+              filter 260ms var(--ease-out-lux);
+}
+/* The soft glow is for surfaces — plates, chips, icon buttons and fields.
+   A bare text link gets the offset ring on its own: a halo around running
+   text reads as a blur, not as focus. */
+.btn:focus-visible,
+.chip:focus-visible,
+.pg-btn:focus-visible,
+.thumbnail-btn:focus-visible,
+:where(input, select, textarea, [role="button"]):focus-visible {
+  filter: drop-shadow(var(--ring-glow));
+}
+:where(input, select, textarea):focus-visible { outline-offset: 1px; }
+
+/* Dark sections: gold one step brighter, so the ring keeps its contrast
+   against ebony. */
+[data-surface="dark"],
+.bic-footer,
+.adm-topbar,
+.lux-info-panel { --ring-color: var(--color-accent-bright); }
+
+/* ── Text boxes ──────────────────────────────────────────────────────────
+   Zero specificity again: this is the baseline for any field a page has not
+   styled, and it is what guarantees the touch height and the resting edge
+   before any interaction. */
+:where(input, textarea, select):where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="submit"]):not([type="button"]):not([type="reset"])) {
+  min-height: var(--ctl-h-md);
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
   color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-ui);
+  box-shadow: var(--edge-inset);
+  transition: border-color var(--dur-hover) var(--ease-out-lux),
+              background-color var(--dur-hover) var(--ease-out-lux),
+              box-shadow var(--dur-hover) var(--ease-out-lux);
 }
-.btn-ghost:hover {
+:where(input, textarea, select):where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"])):hover:not(:focus) {
+  border-color: var(--color-ink-30);
+}
+:where(input, textarea, select):focus {
   border-color: var(--color-accent);
-  color: var(--color-accent-strong);
+  background: var(--color-white);
+  box-shadow: var(--edge-inset), 0 0 0 4px rgba(176,125,63,.16);
+  outline: none;
 }
-.btn-primary:focus-visible,
-.btn-secondary:focus-visible,
-.btn-ghost:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
+:where(input, textarea, select)::placeholder { color: var(--color-placeholder); }
+[data-surface="dark"] :where(input, textarea, select)::placeholder,
+.bic-footer :where(input, textarea, select)::placeholder { color: var(--color-placeholder-dark); }
+:where(input, textarea, select):disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  background: var(--color-surface-2);
+}
+
+/* ── The 44px hit floor ──────────────────────────────────────────────────
+   A dense table row cannot hold three 48px plates, and a filter chip that is
+   44px tall stops looking like a chip. Where the *visual* size is allowed to
+   stay small, the *hit* area is restored with an invisible centred overlay:
+   it never changes the layout, it only widens what the pointer can land on.
+   Controls that are already at least 44×44 (`.btn`, `.lb__btn`, the social
+   links) need nothing. */
+.chip,
+.pg-btn,
+.adm-btn,
+.thumbnail-btn,
+.btn--compact,
+.hero-scroll { position: relative; }
+
+.chip::after,
+.pg-btn::after,
+.adm-btn::after,
+.thumbnail-btn::after,
+.btn--compact::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  transform: translate(-50%, -50%);
+  border-radius: inherit;
+  pointer-events: auto;
+}
+
+/* ── Text links ──────────────────────────────────────────────────────────
+   Opt-in `.link-lux`: the underline is a gradient that wipes in from the
+   left on hover, and the link's colour steps toward gold. It is a class and
+   not an element rule because the pages already style their own links and a
+   global override would be a breaking change. */
+.link-lux {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size var(--dur-hover) var(--ease-out-lux),
+              color var(--dur-hover) var(--ease-out-lux);
+}
+.link-lux:hover,
+.link-lux:focus-visible { background-size: 100% 1px; }
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn-primary, .btn-secondary, .btn-ghost,
+  :where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
+    transition-duration: 1ms !important;
+  }
+  html:not(.luxe-gsap) .btn:hover,
+  html:not(.luxe-gsap) .btn:active,
+  html:not(.luxe-gsap) .btn-primary:hover,
+  html:not(.luxe-gsap) .btn-secondary:hover,
+  html:not(.luxe-gsap) .btn-ghost:hover { transform: none; }
+  .btn[aria-busy="true"]::after { animation-duration: 1ms !important; }
+  .link-lux { transition: none; }
+}
+
+/* ── Forced colours (Windows High Contrast) ──────────────────────────────
+   Custom shadows and the ring disappear under forced colours; the ring in
+   particular must survive, because it is the only focus affordance left. */
+@media (forced-colors: active) {
+  .btn { border: 1px solid ButtonBorder; box-shadow: none; }
+  :where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+    filter: none;
+  }
 }
 
 /* ── Cards & containers ──────────────────────────────────── */
@@ -233,7 +613,7 @@ html.lb-open .bic-menu {
   border-radius: 4px;
   outline: 1px solid rgba(255, 255, 255, 0.09);
   outline-offset: -1px;
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-4), 0 40px 120px rgba(0, 0, 0, .38);
   opacity: 0;
   transform: scale(0.992);
   transition: opacity 420ms var(--ease-out), transform 640ms var(--ease-out);

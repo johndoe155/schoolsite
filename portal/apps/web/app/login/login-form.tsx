@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
+import { Button } from "@/components/button";
 import { ROLE_HOME } from "@/lib/roles";
 import { API_BASE } from "@/lib/base-path";
 
@@ -38,15 +39,17 @@ export default function LoginForm() {
       <label htmlFor="password">Password</label>
       <input id="password" type="password" autoComplete="current-password" value={password}
         onChange={(e) => setPassword(e.target.value)} required />
-      <button className="btn" style={{ marginTop: 12, width: "100%" }} disabled={busy}>
+      {/* The primary action of this surface: it gets the magnetic pull as
+          well as the pressed/spring physics. */}
+      <Button type="submit" magnet block busy={busy} style={{ marginTop: 12 }}>
         {busy ? "Signing in…" : "Sign in"}
-      </button>
+      </Button>
       <p style={{ marginTop: 10, textAlign: "right" }}>
         <a className="muted" href="/forgot">Forgot password?</a>
       </p>
       <div className="row" style={{ marginTop: 14 }}>
-        <a className="btn ghost" style={{ flex: 1 }} href={`${API_BASE}/auth/sso/google/start`}>Continue with Google</a>
-        <a className="btn ghost" style={{ flex: 1 }} href={`${API_BASE}/auth/sso/entra/start`}>Continue with Microsoft</a>
+        <Button variant="ghost" href={`${API_BASE}/auth/sso/google/start`} style={{ flex: 1 }}>Continue with Google</Button>
+        <Button variant="ghost" href={`${API_BASE}/auth/sso/entra/start`} style={{ flex: 1 }}>Continue with Microsoft</Button>
       </div>
       <p className="muted" style={{ marginTop: 10 }}>
         SSO signs you in via your school’s Google Workspace / Microsoft Entra directory.

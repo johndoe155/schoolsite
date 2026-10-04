@@ -291,26 +291,108 @@ body.portal-root .muted { color: var(--muted); font-size: var(--fs-small); }
 
 /* ── Controls ─────────────────────────────────────────────── */
 
+/* ══════════════════════════════════════════════════════════════════════════
+   The interactive layer — one geometry, one motion language, one focus ring
+   for every control in the portal.
+
+   The site's public pages took this treatment first (see
+   public/assets/css/components.css); this is the same system rebased onto the
+   portal's `portal-root` scope, so a control feels identical whether it is in
+   the marketing site or behind the login.
+
+   `.btn` remains the class every screen already uses, so all ~150 call sites
+   inherit the upgrade without being touched. New or migrated code can use the
+   <Button> component (components/button.tsx), which renders this same class
+   and adds spring physics through framer-motion.
+   ────────────────────────────────────────────────────────────────────────── */
 body.portal-root .btn {
+  --ctl-bg: var(--brand);
+  --ctl-bg-hover: var(--brand-strong);
+  --ctl-fg: var(--brand-ink);
+  --ctl-bd: rgba(255, 255, 255, .10);
+  --ctl-bd-hover: rgba(255, 255, 255, .18);
+  --ctl-shadow: 0 1px 2px rgba(5, 1, 74, .08), 0 8px 20px rgba(5, 1, 74, .12), 0 22px 48px rgba(5, 1, 74, .11);
+  --ctl-shadow-hover: 0 2px 4px rgba(5, 1, 74, .09), 0 14px 30px rgba(5, 1, 74, .12), 0 34px 70px rgba(5, 1, 74, .11);
+
+  position: relative;
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2);
-  min-height: 44px;
-  padding: 10px var(--space-3);
+  min-height: 44px;                      /* the touch floor, everywhere */
+  padding: 0 var(--space-3);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--brand);
-  background: var(--brand);
-  color: var(--brand-ink);
+  border: 1px solid var(--ctl-bd);
+  background: var(--ctl-bg);
+  color: var(--ctl-fg);
   font: var(--weight-semibold) var(--fs-small)/1 var(--font-ui);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
   text-decoration: none;
+  /* The tactile 1px edges, then the elevation — the same two-part shadow the
+     site uses, so a pressed plate reads the same in both places. */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 0 0 1px rgba(255, 255, 255, .05), var(--ctl-shadow);
+  transition: background-color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
 }
-body.portal-root .btn:hover { background: var(--brand-strong); border-color: var(--brand-strong); text-decoration: none; }
-body.portal-root .btn.ghost { background: transparent; color: var(--brand); border-color: var(--line); }
+body.portal-root .btn:hover {
+  background: var(--ctl-bg-hover);
+  border-color: var(--ctl-bd-hover);
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), inset 0 0 0 1px rgba(255, 255, 255, .06), var(--ctl-shadow-hover);
+  transform: translateY(-1px) scale(1.02);
+}
+/* Pressed: the plate compresses into the page and the cast shadow collapses.
+   The scale is the brief's .97 — enough to feel sprung, not enough to read as
+   a shrink. Motion is owned by framer-motion in <Button>; this rule is what
+   every plain `.btn` gets. */
+body.portal-root .btn:active {
+  transform: translateY(1px) scale(.97);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .22), inset 0 0 0 1px rgba(255, 255, 255, .06);
+  transition-duration: 130ms;
+  transition-timing-function: cubic-bezier(.22, .9, .37, 1);
+}
+body.portal-root .btn.ghost {
+  --ctl-bg: transparent;
+  --ctl-bg-hover: var(--color-brand-tint);
+  --ctl-fg: var(--brand);
+  --ctl-bd: var(--line);
+  --ctl-bd-hover: var(--accent);
+  --ctl-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  --ctl-shadow-hover: 0 1px 2px rgba(24, 20, 15, .04), 0 6px 16px rgba(24, 20, 15, .05);
+  background: transparent;
+  color: var(--brand);
+  border-color: var(--line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 0 0 1px rgba(24, 20, 15, .04);
+}
 body.portal-root .btn.ghost:hover { border-color: var(--accent); background: var(--color-brand-tint); }
-body.portal-root .btn.danger { background: var(--bad); border-color: var(--bad); color: var(--color-white); }
-body.portal-root .btn:disabled { opacity: .5; cursor: not-allowed; }
+body.portal-root .btn.danger {
+  --ctl-bg: var(--bad);
+  --ctl-bg-hover: #8A2828;
+  --ctl-fg: var(--color-white);
+  --ctl-bd: rgba(255, 255, 255, .14);
+  background: var(--bad);
+  border-color: var(--bad);
+  color: var(--color-white);
+}
+body.portal-root .btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+body.portal-root .btn:disabled:hover { transform: none; }
+/* Focus: the offset ring and the soft glow, matching the public pages. */
+body.portal-root .btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  filter: drop-shadow(0 0 12px 2px rgba(176, 125, 63, .38));
+}
+body.portal-root :where(a, button, [tabindex], input, select, textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  transition: outline-offset 220ms var(--ease), outline-color 220ms var(--ease);
+}
+body.portal-root :where(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: inset 0 1px 2px rgba(24, 20, 15, .05), 0 0 0 4px rgba(176, 125, 63, .16);
+  outline: none;
+}
 
 body.portal-root input, body.portal-root select, body.portal-root textarea {
   min-height: 44px;
@@ -321,6 +403,10 @@ body.portal-root input, body.portal-root select, body.portal-root textarea {
   color: var(--ink);
   background: var(--field-bg);
   width: 100%;
+  /* A resting inset: the field reads as recessed into the card rather than
+     drawn on top of it. */
+  box-shadow: inset 0 1px 2px rgba(24, 20, 15, .05), inset 0 0 0 1px rgba(24, 20, 15, .03);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 body.portal-root textarea { padding: var(--space-2) var(--space-3); }
 /* Error state travels with the attribute, so a field is red because it is
@@ -576,11 +662,56 @@ body.portal-root .toolbar {
 body.portal-root .toolbar .spacer { flex: 1; }
 
 /* ── Buttons: three weights, complete states ──────────────────────────────── */
-body.portal-root .btn.small { min-height: 36px; padding: 4px 12px; font-size: var(--fs-caption); }
-body.portal-root .btn.quiet {
-  background: transparent; border-color: transparent; color: var(--brand);
+/* ── Variants and sizes ───────────────────────────────────────────────────
+   `.small` and `.quiet` predate the component and stay as they are; the rest
+   exist so <Button variant="…" size="…"> has something to resolve to. */
+body.portal-root .btn.small,
+body.portal-root .btn.sm { min-height: 36px; padding: 0 12px; font-size: var(--fs-caption); }
+/* Visually smaller than the touch floor, so the hit area is restored with an
+   invisible overlay instead of by inflating the plate. */
+body.portal-root .btn.small::after,
+body.portal-root .btn.sm::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 100%; height: 100%; min-width: 44px; min-height: 44px;
+  transform: translate(-50%, -50%);
 }
-body.portal-root .btn.quiet:hover { background: var(--hover); text-decoration: none; }
+body.portal-root .btn.lg { min-height: 56px; padding: 0 var(--space-4); font-size: var(--fs-body); }
+body.portal-root .btn.block { display: flex; width: 100%; }
+body.portal-root .btn.quiet {
+  --ctl-bg: transparent;
+  --ctl-bg-hover: var(--hover);
+  --ctl-fg: var(--brand);
+  background: transparent; border-color: transparent; color: var(--brand);
+  box-shadow: none;
+}
+body.portal-root .btn.quiet:hover {
+  --ctl-shadow-hover: none;
+  background: var(--hover); text-decoration: none;
+  box-shadow: none;
+}
+body.portal-root .btn.outline {
+  --ctl-bg: transparent;
+  --ctl-bg-hover: var(--card);
+  --ctl-fg: var(--brand);
+  --ctl-bd: var(--line);
+  --ctl-bd-hover: var(--accent);
+  --ctl-shadow: none;
+  --ctl-shadow-hover: 0 1px 2px rgba(24, 20, 15, .04), 0 6px 16px rgba(24, 20, 15, .05);
+  background: transparent; color: var(--brand); border-color: var(--line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), inset 0 0 0 1px rgba(24, 20, 15, .04);
+}
+body.portal-root .btn.secondary {
+  --ctl-bg: var(--accent);
+  --ctl-bg-hover: var(--color-accent-bright);
+  --ctl-fg: var(--color-ink);
+  --ctl-bd: rgba(255, 255, 255, .22);
+  --ctl-shadow: 0 1px 2px rgba(24, 20, 15, .06), 0 8px 20px rgba(176, 125, 63, .12), 0 22px 48px rgba(176, 125, 63, .11);
+  --ctl-shadow-hover: 0 2px 4px rgba(24, 20, 15, .08), 0 14px 30px rgba(176, 125, 63, .12), 0 34px 70px rgba(176, 125, 63, .11);
+  /* Ink on gold, for the same reason as the public site: white type on
+     #B07D3F measures 3.6:1, which fails AA at this size. */
+  background: var(--accent); color: var(--color-ink); border-color: rgba(255, 255, 255, .22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), inset 0 0 0 1px rgba(255, 255, 255, .12), var(--ctl-shadow);
+}
 body.portal-root .btn:active { transform: translateY(1px); }
 body.portal-root .btn[aria-busy="true"] { cursor: progress; opacity: .8; }
 body.portal-root .btn[aria-busy="true"]::after {
@@ -589,6 +720,26 @@ body.portal-root .btn[aria-busy="true"]::after {
   animation: portal-spin 700ms linear infinite;
 }
 @keyframes portal-spin { to { transform: rotate(360deg); } }
+
+/* Motion is an enhancement: with `prefers-reduced-motion` the controls keep
+   every state change and lose only the travel. */
+@media (prefers-reduced-motion: reduce) {
+  body.portal-root .btn,
+  body.portal-root .btn:hover,
+  body.portal-root .btn:active { transform: none; transition-duration: 1ms; }
+  body.portal-root :where(a, button, [tabindex], input, select, textarea):focus-visible {
+    transition-duration: 1ms;
+  }
+}
+
+/* Forced colours: the custom shadows and the glow disappear, so the ring has
+   to survive on its own — it is the only focus affordance left. */
+@media (forced-colors: active) {
+  body.portal-root .btn { border: 1px solid ButtonBorder; box-shadow: none; }
+  body.portal-root :where(a, button, [tabindex], input, select, textarea):focus-visible {
+    outline: 2px solid Highlight; outline-offset: 2px; filter: none;
+  }
+}
 
 /* ── Badges (non-interactive status, unlike .chip) ────────────────────────── */
 body.portal-root .badge {

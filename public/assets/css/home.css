@@ -54,17 +54,6 @@
   transform: translateY(0);
   
 }
-.input-animated {
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-  
-}
-.input-animated:focus {
-  outline: none;
-  transform: scale(1.015) translateY(-2px);
-  box-shadow: 0 10px 20px -5px rgba(20, 184, 166, 0.15), 0 0 0 4px rgba(20, 184, 166, 0.2);
-  border-color: #14b8a6;
-  
-}
 .heart-btn svg {
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.2s ease, stroke 0.2s ease;
   
@@ -90,7 +79,7 @@
 .success-state {
   background-color: #10b981 !important;
   transform: scale(1.05) !important;
-  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+  box-shadow: var(--shadow-2), 0 10px 25px -5px rgba(16, 185, 129, 0.28);
   
 }
 @keyframes checkmark-pop {
@@ -231,9 +220,10 @@ body {
   }
 }
 .field--error {
-  outline: 2px solid rgba(217, 70, 70, 0.12);
-  box-shadow: 0 0 0 3px rgba(217,70,70,0.04);
-  transition: box-shadow 160ms ease, outline-color 160ms ease;
+  outline: var(--ring-w) solid rgba(217,70,70,.55);
+  box-shadow: var(--edge-inset), 0 0 0 3px rgba(217,70,70,.12);
+  transition: box-shadow var(--dur-hover) var(--ease-out-lux),
+              outline-color var(--dur-hover) var(--ease-out-lux);
 }
 .field-error {
   font-family: var(--font-ui);
@@ -258,13 +248,24 @@ body {
    including the enquiry form's submit, into a washed-out glass ghost).
    Scoped to the hero: everything else keeps the components.css treatment. */
 #home .btn-primary {
+  --ctl-bg: var(--color-brand-yellow);
+  --ctl-bg-hover: var(--color-brand-yellow);
+  --ctl-fg: var(--color-brand);
+  --ctl-bd: rgba(5, 1, 74, .10);
+  /* Warm edge instead of the generic white one: on a yellow plate a white
+     hairline reads as a seam, a lighter yellow reads as light catching the
+     bevel. */
+  --ctl-edge: inset 0 1px 0 rgba(255,255,255,.55), inset 0 0 0 1px rgba(255,255,255,.18);
+  --ctl-shadow: 0 1px 2px rgba(5,1,74,.06), 0 6px 16px rgba(250, 204, 21, .16), 0 18px 40px rgba(250, 204, 21, .18);
+  --ctl-shadow-hover: 0 2px 4px rgba(5,1,74,.07), 0 12px 28px rgba(250, 204, 21, .24), 0 30px 64px rgba(250, 204, 21, .26);
+
   position: relative;
   overflow: hidden;
-  background: var(--color-brand-yellow);
-  color: var(--color-brand);
-  border-color: transparent;
   font-weight: 700;
-  box-shadow: 0 18px 40px rgba(250, 204, 21, 0.22);
+  line-height: 1;
+  /* Optical: a bold uppercase label on a round plate sits a touch high, so
+     the plate gives back 1px at the top. */
+  padding-top: 1px;
 }
 #home .btn-primary::before {
   content: "";
@@ -278,42 +279,59 @@ body {
 }
 #home .btn-primary:hover {
   background: var(--color-brand-yellow);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 24px 52px rgba(250, 204, 21, 0.32);
+  box-shadow: var(--ctl-edge), var(--ctl-shadow-hover);
 }
 #home .btn-primary:hover::before { left: 220%; }
+/* Transform is owned by GSAP when it is loaded (see luxe.js); the fallback
+   below is for the no-library case, which is also the no-JS case. */
+html:not(.luxe-gsap) #home .btn-primary:hover { transform: translateY(-2px) scale(1.02); }
 /* Pressed: the surface, the sweep and the backdrop all stay exactly as they
    were — a scale() would shrink the shine out of view and, on the glass CTA
    below, make the browser drop the backdrop sample mid-press (the effect
    visibly "disappears when clicked"). Travel of 1px plus an inset ring reads
    as a press without any of that. */
 #home .btn-primary:active {
-  transform: translateY(1px);
   background: var(--color-brand-yellow);
-  box-shadow: 0 8px 20px rgba(250, 204, 21, 0.28), inset 0 0 0 2px rgba(5, 1, 74, 0.22);
+  box-shadow: var(--ctl-edge),
+              inset 0 2px 6px rgba(5,1,74,.20),
+              0 1px 2px rgba(5,1,74,.05);
 }
 #home .btn-primary:active::before { left: 220%; }
+html:not(.luxe-gsap) #home .btn-primary:active { transform: translateY(1px) scale(var(--sc-press)); }
 #home .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
+  --ctl-bg: rgba(255, 255, 255, 0.05);
+  --ctl-bg-hover: rgba(255, 255, 255, 0.11);
+  --ctl-fg: #FFFFFF;
+  --ctl-fg-hover: #FFFFFF;
+  --ctl-bd: rgba(255, 255, 255, 0.20);
+  --ctl-bd-hover: rgba(255, 255, 255, 0.50);
+  /* Glass on dark: the edge is the light catching the rim, the elevation is
+     black rather than warm — a warm shadow under glass reads as dirt. */
+  --ctl-edge: inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.07);
+  --ctl-shadow: 0 1px 2px rgba(0,0,0,.10), 0 8px 24px rgba(0,0,0,.16);
+  --ctl-shadow-hover: 0 2px 4px rgba(0,0,0,.12), 0 14px 34px rgba(0,0,0,.22), 0 30px 60px rgba(0,0,0,.20);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 #home .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(255, 255, 255, 0.06);
+  box-shadow: var(--ctl-edge), var(--ctl-shadow-hover);
+  backdrop-filter: blur(16px) saturate(1.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.35);
 }
+/* Pressed keeps the glass: the backdrop sample is re-asserted, because a
+   transformed element can lose it mid-press and the effect would appear to
+   vanish exactly when the user is looking at it. */
 #home .btn-secondary:active {
-  transform: translateY(1px);
-  background: rgba(255, 255, 255, 0.14);
+  box-shadow: var(--ctl-edge),
+              inset 0 2px 6px rgba(0,0,0,.28),
+              inset 0 0 0 1px rgba(255,255,255,.16);
+  background: rgba(255, 255, 255, 0.13);
   border-color: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(16px) saturate(1.35);
   -webkit-backdrop-filter: blur(16px) saturate(1.35);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18), inset 0 0 0 2px rgba(255, 255, 255, 0.14);
 }
+html:not(.luxe-gsap) #home .btn-secondary:hover { transform: translateY(-2px); }
+html:not(.luxe-gsap) #home .btn-secondary:active { transform: translateY(1px); }
 .btn--sending {  pointer-events: none; opacity: 0.94; transform: translateY(0);
 }
 .sr-only {
@@ -402,15 +420,15 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   width: 14px; height: 14px;
   border-radius: 50%;
   background: var(--color-brand-yellow);
-  box-shadow: 0 0 0 4px rgba(250,204,21,0.2), 0 0 0 8px rgba(250,204,21,0.06);
+  box-shadow: 0 0 0 4px rgba(246,198,0,.14), 0 0 0 9px rgba(246,198,0,.05);
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow var(--dur-hover) var(--ease-out-lux);
 }
 .timeline-item:hover .timeline-dot {
-  box-shadow: 0 0 0 6px rgba(250,204,21,0.35), 0 0 24px rgba(250,204,21,0.2);
+  box-shadow: 0 0 0 6px rgba(246,198,0,.20), 0 0 24px rgba(246,198,0,.12);
 }
 .timeline-item {  position: relative;
 }
@@ -457,7 +475,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   aspect-ratio: 3 / 4;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(5, 1, 74, 0.2);
+  box-shadow: var(--shadow-3);
   border: 1px solid rgba(5, 1, 74, 0.1);
   /* A column, so the portrait and the chairman's signature are one plate: the
      frame clips both, and `position: relative` is what the decorative
@@ -575,17 +593,17 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
 }
 .mv-card-mission {
   background: var(--color-brand);
-  box-shadow: 0 20px 60px rgba(5,1,74,0.3);
+  box-shadow: var(--shadow-3), 0 20px 60px rgba(5,1,74,.12);
 }
 .mv-card-mission:hover {
-  box-shadow: 0 32px 80px rgba(5,1,74,0.4);
+  box-shadow: var(--shadow-4), 0 32px 80px rgba(5,1,74,.14);
 }
 .mv-card-vision {
   background: linear-gradient(135deg, #1a1060 0%, #0d0750 100%);
-  box-shadow: 0 20px 60px rgba(5,1,74,0.25);
+  box-shadow: var(--shadow-3);
 }
 .mv-card-vision:hover {
-  box-shadow: 0 32px 80px rgba(5,1,74,0.35);
+  box-shadow: var(--shadow-4), 0 32px 80px rgba(5,1,74,.12);
 }
 .mv-corner-ornament {
   position: absolute;
@@ -662,29 +680,29 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
     
   }
   #programGrid > div {
-    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    
+    transition: transform var(--dur-hover) var(--ease-out-lux),
+                box-shadow var(--dur-hover) var(--ease-out-lux);
   }
   #programGrid > div:hover {
     transform: translateY(-8px);
-    box-shadow: 0 24px 48px rgba(5, 1, 74, 0.15);
-    
+    box-shadow: var(--shadow-3);
   }
   #publicGalleryGrid .gallery-item {
-    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    
+    transition: transform var(--dur-hover) var(--ease-out-lux),
+                box-shadow var(--dur-hover) var(--ease-out-lux);
   }
   #publicGalleryGrid .gallery-item:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    
+    box-shadow: var(--shadow-3);
   }
   .lg\:grid-cols-2 {
     gap: 40px;
     
   }
   .timeline-content {
-    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    
+    transition: transform var(--dur-hover) var(--ease-out-lux),
+                background-color var(--dur-hover) var(--ease-out-lux),
+                border-color var(--dur-hover) var(--ease-out-lux),
+                box-shadow var(--dur-hover) var(--ease-out-lux);
   }
   .timeline-content:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -709,105 +727,62 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
     
   }
 }
+/* Desktop had its own second set of CTA states — a bigger lift, a slightly
+   smaller scale, and `transition: all`, which animates properties nobody
+   asked it to. The shared layer already sets one transition and one easing
+   for every control; the only thing a large viewport needs is a little more
+   travel, so that is all this block now says. */
 @media (min-width: 1024px) {
-  #home .btn-primary {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    
-  }
-  #home .btn-primary:hover {
-    transform: translateY(-3px) scale(1.015);
-    box-shadow: 0 16px 32px rgba(250, 204, 21, 0.25);
-    
-  }
-  #home .btn-primary:active {
-    transform: translateY(1px);
-    box-shadow: 0 8px 20px rgba(250, 204, 21, 0.28), inset 0 0 0 2px rgba(5, 1, 74, 0.22);
-    
-  }
-  #home .btn-secondary {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    
-  }
-  #home .btn-secondary:hover {
-    transform: translateY(-3px) scale(1.015);
-    box-shadow: 0 12px 24px rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.15);
-    
-  }
-  #home .btn-secondary:active {
-    transform: translateY(1px);
-    backdrop-filter: blur(16px) saturate(1.35);
-    -webkit-backdrop-filter: blur(16px) saturate(1.35);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18), inset 0 0 0 2px rgba(255, 255, 255, 0.14);
-    
-  }
+  #home .btn-primary { --lift: -2px; }
+  #home .btn-secondary { --lift: -2px; }
+  html:not(.luxe-gsap) #home .btn-primary:hover,
+  html:not(.luxe-gsap) #home .btn-secondary:hover { transform: translateY(-2px) scale(1.02); }
 }
 @media (min-width: 1024px) {
   .mv-card {
-    transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-    
+    transition: transform var(--dur-hover) var(--ease-out-lux),
+                box-shadow var(--dur-hover) var(--ease-out-lux);
   }
   .mv-card:hover {
     transform: translateY(-8px);
     
   }
   .mv-card-mission:hover {
-    box-shadow: 0 40px 80px rgba(5, 1, 74, 0.5);
+    box-shadow: var(--shadow-4), 0 40px 80px rgba(5,1,74,.18);
     
   }
   .mv-card-vision:hover {
-    box-shadow: 0 40px 80px rgba(5, 1, 74, 0.4);
-    
+    box-shadow: var(--shadow-4);
   }
   .mv-icon {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    
+    transition: transform var(--dur-hover) var(--ease-out-lux);
   }
   .mv-card:hover .mv-icon {
     transform: scale(1.1) rotate(5deg);
     
   }
 }
+/* Desktop-only field and submit states. The fields used to *translate on
+   focus*, which is disorienting at the exact moment the user is trying to
+   type, and it duplicated the shared focus treatment; focus is now the ring
+   and the glow from components.css, and the fields keep a flat plate. */
 @media (min-width: 1024px) {
-  input[type="text"],
-    input[type="email"],
-    textarea {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    
-  }
-  input[type="text"]:focus,
-    input[type="email"]:focus,
-    textarea:focus {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(5, 1, 74, 0.12);
-    
-  }
-  button[type="submit"] {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    
-  }
-  button[type="submit"]:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(5, 1, 74, 0.2);
-    
-  }
-  button[type="submit"]:active {
-    transform: translateY(-1px);
-    
-  }
+  .btn-send { --lift: -2px; }
+  html:not(.luxe-gsap) .btn-send:hover { transform: translateY(-2px); }
+  html:not(.luxe-gsap) .btn-send:active { transform: translateY(1px) scale(var(--sc-press)); }
 }
 @media (min-width: 1024px) {
   .gallery-item {
-    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    
+    transition: transform var(--dur-hover) var(--ease-out-lux),
+                box-shadow var(--dur-hover) var(--ease-out-lux);
   }
   .gallery-item:hover img {
     transform: scale(1.08);
     
   }
   .gallery-item:hover .absolute {
-    transition: all 0.3s ease;
-    
+    transition: opacity var(--dur-hover) var(--ease-out-lux),
+                transform var(--dur-hover) var(--ease-out-lux);
   }
 }
 @media (min-width: 1024px) {
@@ -837,16 +812,19 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
     
   }
 }
+/* The Tailwind-CDN era blanket transition. `*:not(#heroOverlay)` carries an
+   ID in its specificity, so on desktop it out-ranked every per-element
+   transition in the project — including the interactive layer's, which meant
+   the custom focus ring could not animate and every property on the page
+   (including `fill`, `stroke` and `opacity`) transitioned whether or not
+   anything asked it to.
+   The controls are excluded here because they now own their timing; the
+   blanket stays for everything else so no unrelated motion is lost. */
 @media (min-width: 1024px) {
-  *:not(#heroOverlay) {
+  *:not(#heroOverlay):not(a):not(button):not(input):not(select):not(textarea):not([tabindex]):not([role="button"]) {
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
     transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
     transition-duration: 0.3s;
-    
-  }
-  *:focus:not(#heroOverlay) {
-    transition-duration: 0.15s;
-    
   }
 }
 #heroSlideshow {
@@ -912,7 +890,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   transition: color 240ms ease;
 }
 .hero-scroll:hover { color: rgba(255, 255, 255, 0.9); }
-.hero-scroll:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 6px; border-radius: 999px; }
+.hero-scroll:focus-visible { outline: var(--ring-w) solid var(--ring-color); outline-offset: calc(var(--ring-offset) + 3px); border-radius: 999px; }
 .hero-scroll__rail {
   position: relative;
   display: block;
@@ -992,24 +970,35 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
    with hover, pressed, focus and busy states defined next to it.
    ══════════════════════════════════════════════════════════════ */
 .btn-send {
-  background: var(--color-brand);
-  color: var(--color-cream);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 12px 28px rgba(5, 1, 74, 0.22);
-  transition: background-color var(--dur-fast) var(--ease-out),
-              border-color var(--dur-fast) var(--ease-out),
-              box-shadow var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out);
+  /* The indigo plate, with the layered elevation and the tactile edge from
+     the shared layer rather than one flat 12px shadow. */
+  --ctl-bg: var(--color-brand);
+  --ctl-bg-hover: var(--color-brand-strong);
+  --ctl-fg: var(--color-cream);
+  --ctl-bd: rgba(255, 255, 255, 0.22);
+  --ctl-bd-hover: var(--color-accent);
+  --ctl-edge: var(--edge-brand);
+  --ctl-shadow: 0 1px 2px rgba(5,1,74,.10), 0 8px 20px rgba(5,1,74,.18), 0 22px 48px rgba(5,1,74,.16);
+  --ctl-shadow-hover: 0 2px 4px rgba(5,1,74,.12), 0 14px 30px rgba(5,1,74,.24), 0 34px 70px rgba(5,1,74,.20);
+  --ctl-h: var(--ctl-h-lg);
+  --ctl-px: var(--ctl-px-lg);
+  font-size: var(--fs-small);
 }
 .btn-send:hover {
-  background: var(--color-brand-strong);
-  border-color: var(--color-accent);
-  box-shadow: 0 16px 34px rgba(5, 1, 74, 0.28);
+  background: var(--ctl-bg-hover);
+  border-color: var(--ctl-bd-hover);
+  box-shadow: var(--ctl-edge), var(--ctl-shadow-hover);
 }
 .btn-send:active {
-  transform: translateY(1px);
-  background: var(--color-brand-strong);
-  box-shadow: 0 6px 16px rgba(5, 1, 74, 0.26), inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+  background: var(--ctl-bg-hover);
+  box-shadow: var(--ctl-edge),
+              inset 0 2px 6px rgba(0, 0, 0, .30);
+  transition-duration: var(--dur-press);
 }
-.btn-send:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
-.btn-send[disabled], .btn-send.btn--sending { opacity: 0.9; cursor: progress; transform: none; }
+html:not(.luxe-gsap) .btn-send:active { transform: translateY(1px) scale(var(--sc-press)); }
+.btn-send[disabled], .btn-send.btn--sending {
+  opacity: .9;
+  cursor: progress;
+  transform: none;
+  box-shadow: var(--ctl-edge);
+}
