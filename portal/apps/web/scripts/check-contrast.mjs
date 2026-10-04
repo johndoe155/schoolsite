@@ -36,7 +36,19 @@ function varsIn(text) {
   return out;
 }
 
-const rootVars = varsIn(tokensCss);
+/**
+ * The light palette is split: tokens.css holds the raw values, and the light
+ * block in globals.css maps them onto the portal's semantic aliases (`--ink`,
+ * `--focus-ring`, …). Merge the two so a pair can name either layer.
+ */
+function lightVars() {
+  const merged = varsIn(tokensCss);
+  for (const m of globalsCss.matchAll(/body\.portal-root,\s*html\[data-theme="light"\]\s*\{([^}]*)\}/g)) {
+    for (const [k, v] of varsIn(m[1])) merged.set(k, v);
+  }
+  return merged;
+}
+const rootVars = lightVars();
 
 /**
  * The dark palette: the `html[data-theme="dark"]` block that declares one.
@@ -122,6 +134,8 @@ const pairs = [
   ["light", "--color-brand-strong", "--color-surface", 4.5, "link hover"],
   ["light", "--color-cream", "--color-brand", 4.5, "primary button label on brand fill"],
   ["light", "--color-cream", "--color-brand-strong", 4.5, "primary button label on hover"],
+  ["light", "--focus-ring", "--color-surface", 3.0, "focus ring on cards (WCAG 1.4.11)"],
+  ["light", "--focus-ring", "--color-paper", 3.0, "focus ring on the page background"],
 
   ["dark", "--ink", "--card", 4.5, "body text on cards and surfaces"],
   ["dark", "--ink", "--bg", 4.5, "body text on the page background"],
@@ -132,14 +146,16 @@ const pairs = [
   ["dark", "--accent", "--card", 3.0, "gold rule/border accents (non-text)"],
   ["dark", "--brand", "--card", 4.5, "links, headings, .btn ghost text"],
   ["dark", "--brand-ink", "--brand", 4.5, "primary button label on brand fill"],
+  ["dark", "--focus-ring", "--card", 3.0, "focus ring on cards (WCAG 1.4.11)"],
+  ["dark", "--focus-ring", "--bg", 3.0, "focus ring on the page background"],
 ];
 
 let failures = 0;
 const rows = [];
 for (const [theme, fgName, bgName, min, where] of pairs) {
   const vars = theme === "dark" ? dark : rootVars;
-  const fg = resolve(theme === "dark" ? dark : rootVars, `var(${fgName})`);
-  const bg = resolve(theme === "dark" ? dark : rootVars, `var(${bgName})`);
+  const fg = resolve(vars, `var(${fgName})`);
+  const bg = resolve(vars, `var(${bgName})`);
   const ratio = contrast(fg, bg);
   const ok = ratio >= min;
   if (!ok) failures += 1;

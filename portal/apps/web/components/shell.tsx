@@ -1,21 +1,16 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { SessionView } from "@/lib/session";
 import { api } from "@/lib/client";
 import { clearDeviceData, listQueuedRegisters } from "@/lib/offline";
-import { API_BASE } from "@/lib/base-path";
-import { ROLE_HOME } from "@/lib/roles";
+import { ROLE_HOME, roleLabel } from "@/lib/roles";
+import { useSchoolName } from "@/lib/school-context";
 import { TITLES, normalizePath } from "@/lib/nav";
 import CommandPalette, { type PaletteItem } from "./command-palette";
-import RouteAnnouncer from "./route-announcer";
-import { ThemeToggleButton, toggleTheme } from "./theme-controls";
-
-/** "school_admin" → "School admin" — the raw codes read like config keys. */
-function roleLabel(role: string): string {
-  return role.split("_").map((w, i) => (i === 0 ? w[0].toUpperCase() + w.slice(1) : w)).join(" ");
-}
+import AccountMenu from "./account-menu";
+import { toggleTheme } from "./theme-controls";
 
 interface Tab { href: string; label: string; perm?: string }
 
@@ -77,12 +72,24 @@ const TABS: Record<string, Tab[]> = {
  * here stays reachable on a phone through "More" → the command palette, which
  * lists every permitted destination with its full name.
  */
-const MOBILE_PRIMARY: Record<string, string[]> = {
-  admin: ["/admin", "/admin/students", "/admin/fees", "/admin/timetable", "/admin/academics", "/admin/reports"],
+const MOBILE_ORDER: Record<string, string[]> = {
+  admin: ["/admin", "/admin/students", "/admin/timetable", "/admin/fees", "/admin/users", "/admin/academics", "/admin/reports"],
   teacher: ["/teacher", "/teacher/timetable", "/teacher/messages"],
   student: ["/student", "/student/timetable", "/student/classwork", "/student/grades"],
   parent: ["/parent", "/parent/messages"],
 };
+
+/**
+ * The four phone targets, chosen from the tabs this role can actually use — an
+ * auditor has no `fees:read`, so a fixed list would have quietly produced three
+ * tabs plus More. Preference order first, then whatever else survived, so the
+ * bar is always full and never shows a link the role cannot open.
+ */
+function mobilePrimaryFor(area: string, hrefs: string[]): Set<string> {
+  const preferred = (MOBILE_ORDER[area] ?? []).filter((h) => hrefs.includes(h));
+  const rest = hrefs.filter((h) => !preferred.includes(h));
+  return new Set([...preferred, ...rest].slice(0, 4));
+}
 
 export default function Shell({ session, children }: { session: SessionView; children: React.ReactNode }) {
   const pathname = usePathname();
@@ -90,12 +97,11 @@ export default function Shell({ session, children }: { session: SessionView; chi
   const area = ROLE_AREA[session.activeRole] ?? "student";
   const perms = new Set(session.permissions ?? []);
   const tabs = (TABS[area] ?? []).filter((t) => !t.perm || perms.has(t.perm));
-  const mobilePrimary = new Set((MOBILE_PRIMARY[area] ?? []).slice(0, 4));
+  const mobilePrimary = mobilePrimaryFor(area, tabs.map((t) => t.href));
   const otherRoles = session.roles.filter((r) => r !== session.activeRole);
   const [switching, setSwitching] = useState(false);
   const [switchError, setSwitchError] = useState("");
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const menuRef = useRef<HTMLDetailsElement>(null);
   const here = normalizePath(pathname ?? "/");
 
   async function switchRole(role: string) {
@@ -115,15 +121,10 @@ export default function Shell({ session, children }: { session: SessionView; chi
     }
   }
 
-  // phase 6: brand comes from school settings (public endpoint)
-  const [brand, setBrand] = useState("School Portal");
-  useEffect(() => {
-    // INTEGRATION: API_BASE carries the /portal basePath (see lib/base-path.ts).
-    fetch(`${API_BASE}/school`).then((r) => r.ok ? r.json() : null)
-      .then((s) => { if (s?.name) setBrand(s.name); }).catch(() => {});
-    // The server-rendered title already carries the school name; this keeps the
-    // client-side announcer in step when the fetch lands after hydration.
-  }, []);
+  /* The brand comes from the root layout (school settings, public endpoint)
+     rather than a client fetch: it is in the first byte of HTML, so the topbar
+     never flashes the generic name, and the browser makes one request fewer. */
+  const brand = useSchoolName();
 
   async function logout() {
     try { await api("/auth/logout", { method: "POST" }); }
@@ -136,22 +137,6 @@ export default function Shell({ session, children }: { session: SessionView; chi
       if (queued.length === 0) await clearDeviceData().catch(() => {});
       router.push("/login"); router.refresh();
     }
-  }
-
-  /* Native <details> gives an accessible disclosure for free; these two
-     listeners add the two behaviours it lacks — click-away and Escape. */
-  useEffect(() => {
-    function onPointerDown(e: PointerEvent) {
-      const el = menuRef.current;
-      if (el?.open && !el.contains(e.target as Node)) el.open = false;
-    }
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, []);
-
-  function closeMenu(e: React.MouseEvent | React.KeyboardEvent) {
-    const el = (e.currentTarget as HTMLElement).closest("details");
-    if (el) el.open = false;
   }
 
   /* ── Command palette inventory ────────────────────────────────────────────
@@ -180,8 +165,6 @@ export default function Shell({ session, children }: { session: SessionView; chi
     { id: "action-website", label: "Open the school website", group: "Actions", keywords: "public marketing home", run: () => { window.location.href = "/"; } },
     { id: "action-signout", label: "Sign out", group: "Actions", keywords: "log out exit", run: () => { void logout(); } },
   ];
-
-  const firstName = (session.displayName ?? "").split(" ")[0] || "Account";
 
   return (
     <>
@@ -219,41 +202,12 @@ export default function Shell({ session, children }: { session: SessionView; chi
             </select>
           </label>
         )}
-        {/* Account menu. Native <details> so it works with a keyboard and
-            without JavaScript; the panel holds what used to be three separate
-            buttons in the topbar. */}
-        <details
-          className="menu"
-          ref={menuRef}
-          onKeyDown={(e) => { if (e.key === "Escape") { closeMenu(e); (e.currentTarget.querySelector("summary") as HTMLElement | null)?.focus(); } }}
-        >
-          <summary aria-label={`Account menu for ${session.displayName}`}>
-            <span aria-hidden="true">◍</span>
-            <span className="menu__label">{firstName}</span>
-            <span aria-hidden="true">▾</span>
-          </summary>
-          <div className="menu__panel">
-            <div className="menu__head">
-              <span className="menu__name">{session.displayName}</span>
-              <span className="menu__mail">{session.email}</span>
-              <span className="menu__mail">{roleLabel(session.activeRole)}</span>
-            </div>
-            {/* Account self-service. Both pages existed only as URLs before —
-                the email-preferences page in particular was linked from the
-                List-Unsubscribe header of every bulk message we send. */}
-            <Link className="menu__item" href="/account/notifications" onClick={closeMenu}>
-              <span aria-hidden="true">✉</span> Email preferences
-            </Link>
-            <Link className="menu__item" href="/account/password" onClick={closeMenu}>
-              <span aria-hidden="true">⚿</span> Password
-            </Link>
-            <ThemeToggleButton />
-            <div className="menu__sep" />
-            <button className="menu__item" type="button" onClick={(e) => { closeMenu(e); void logout(); }}>
-              <span aria-hidden="true">↪</span> Sign out
-            </button>
-          </div>
-        </details>
+        <AccountMenu
+          displayName={session.displayName}
+          email={session.email}
+          role={session.activeRole}
+          onSignOut={() => void logout()}
+        />
       </header>
       <div className="container">
         {session.mfaGraceUntil && (
@@ -294,7 +248,6 @@ export default function Shell({ session, children }: { session: SessionView; chi
         {children}
       </div>
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} items={items} />
-      <RouteAnnouncer schoolName={brand} />
     </>
   );
 }

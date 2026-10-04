@@ -237,14 +237,16 @@ notification centre with read state, and per-widget drag/drop ordering.
 
 ## Implementation in this pass
 
-Everything above is implemented in the same commit as this document:
+Everything above is implemented in the same pass as this document:
 design-system v2 in `app/globals.css`, `components/command-palette.tsx`,
 `components/account-menu.tsx`, `components/theme-controls.tsx` (cookie write),
-`components/route-announcer.tsx`, `components/empty-state.tsx`,
-`components/skeleton.tsx`, a rewritten `components/shell.tsx`, dashboard
-"Next" strips, login polish, `scripts/check-contrast.mjs`, and the WCAG fixes
-(`aria-current`, error-class bug, table reflow, per-page titles). Verification
-and the exact contrast ratios are recorded at the end of the file.
+`components/route-announcer.tsx` (root layout, so public pages are announced
+too), `components/empty-state.tsx`, `components/skeleton.tsx`,
+`components/next-up.tsx`, a rewritten `components/shell.tsx`, dashboard "Next"
+strips, login polish, `scripts/check-contrast.mjs`, and the WCAG fixes
+(`aria-current`, error-class bug, table reflow, per-page titles, focus ring per
+theme). Verification and the exact contrast ratios are recorded at the end of
+the file.
 
 ---
 
@@ -258,7 +260,7 @@ Recorded on the commit that implements the overhaul, from the repository itself.
 | --- | --- |
 | `npx tsc --noEmit -p tsconfig.json` | clean |
 | `npm run build` (`next build`) | ✓ exit 0 — 48 routes (incl. `/_not-found`) compiled, all dynamic (the root layout reads the theme cookie) |
-| `node scripts/check-contrast.mjs` | ✓ 19/19 pairs meet WCAG 2.1 AA (table below) |
+| `node scripts/check-contrast.mjs` | ✓ 23/23 pairs meet WCAG 2.1 AA (table below) |
 
 **Contrast, read from the shipped CSS** (`app/tokens.css` for light, the palette
 block in `app/globals.css` for dark; transparent values are composited before
@@ -285,6 +287,9 @@ The gate found one real gap while being written: the dark palette had no
 defines `--accent: #D3A860` (the value in the Phase 2 table), which measures
 7.95:1 — brighter gold that also clears AA.
 
+Four of the 23 pairs are the focus ring (WCAG 1.4.11, non-text, 3:1 minimum),
+which the review pass below found to be broken.
+
 **Server-rendered behaviour** (checked against `next start` on a local port —
 no browser was available in this environment):
 
@@ -296,8 +301,11 @@ no browser was available in this environment):
   “Reset password · School Portal”, “Choose a new password · School Portal”,
   “Terms of use · School Portal” (root-layout template + per-page `metadata.title`).
 - `/portal/student` without a session → 307 to `/portal/login`.
-- `metadata.title` covers 45 of the portal's 47 pages; the two exceptions are
-  deliberate and named in deviations 4 and 5 above.
+- `metadata.title` covers 46 of the portal's 47 pages; the one exception
+  (`app/page.tsx`) is a pure redirect that never renders UI, per deviation 4.
+- `/portal/offline-register` → `<title>Offline register · School Portal</title>`,
+  and the screen itself still server-renders its content (the service worker
+  precaches this URL unchanged).
 
 `npm run smoke -w @portal/web` was **not** runnable here: it imports
 `apps/api/dist/…`, and the API has not been built in this checkout (it also
@@ -307,26 +315,49 @@ change and all three pass.
 
 ## Deviations from the plan text (explicit, so nothing reads as silently dropped)
 
-1. **`components/account-menu.tsx` does not exist as its own file.** The
-   account menu is implemented inside the rewritten `components/shell.tsx`
-   using a native `<details>` disclosure — it is the same feature (collapse the
-   topbar’s Emails/Password/Sign out into one menu), placed where the session
-   data already lives. The native element means it opens with a keyboard and
-   without JavaScript; click-away and Escape were added on top.
+1. **`components/account-menu.tsx` is a native `<details>` disclosure**, not a
+   hand-rolled popover: it opens with a keyboard and without JavaScript, and
+   click-away plus Escape-and-return-focus are layered on top.
 2. **The “Next” strip shows the data each dashboard actually has**, rather than
    inventing metrics: teacher → “Take register: <first section>” plus the
    timetable; student → next exam, unpaid invoice, attendance rate; parent →
    links pending verification; admin → people count, section count, a jump to
    reports. No new endpoints were added, so no page got slower.
 3. **Per-area mobile tabs are chosen, not just truncated.** Phone bottom bars
-   show four destinations per signed-in area (admin: Overview, Students, Fees,
-   Timetable; others are their full list, which is already ≤4) plus **More** →
-   command palette. Everything else stays in the desktop pill bar and in the
-   palette on phones.
-4. **One page has no `metadata` export, on purpose.** `app/offline-register`
-   is a client component, and Next cannot take a `metadata` export from one.
-   Its title comes from the same `lib/nav.ts` table through `<RouteAnnouncer>`,
-   so it still reads "Offline register · <school>" after navigation.
+   show four destinations, picked from the tabs the role actually has in a
+   product-preference order (admin: Overview, Students, Timetable, then Fees or
+   whatever else survived the permission filter) plus **More** → command
+   palette. Everything else stays in the desktop pill bar and in the palette on
+   phones.
+4. **`app/offline-register` is a server wrapper around a client component.**
+   The screen reads IndexedDB, so the component must be a client component, and
+   a file cannot both be that and export `metadata` — so `page.tsx` is a
+   two-line server wrapper that owns the title. The precached URL the service
+   worker fetches is unchanged. The only page without a title is `app/page.tsx`,
+   which is a pure redirect and never renders UI.
 5. **Deferred features are unchanged** from the note above: server-side search
    endpoints, a notification centre with read state, and widget re-ordering
    need API work beyond this pass and are not half-built here.
+
+## Review pass — deviations re-examined
+
+Every deviation above was re-checked against one question: *was it made for
+simplicity, with no benefit or a negative trade-off?* Four were, and are fixed
+in the follow-up commit.
+
+| Was | Why it was worse | Now |
+| --- | --- | --- |
+| `--focus-ring` declared on `body.portal-root`, with dark values on `html` | A declaration on `<body>` always beats the value inherited from `<html>`, so **both dark rules were dead code**: the focus ring stayed gold (`--color-accent`) on dark surfaces — barely visible exactly where the theme was meant to help. Found by extending the contrast gate to the ring. | The ring is declared inside each palette block (light, cookie-dark, prefers-dark); all three are measured: 3.45:1 light, 8.88:1 dark on cards, 9.62:1 dark on the page. |
+| Account menu inside `shell.tsx` | The file already owned tabs, role switching, the palette inventory and sign-out; the menu brought its own ref, listeners and focus handling. Two responsibilities, no reuse, and a documented component that did not exist. | `components/account-menu.tsx` owns the disclosure, the outside-click listener and Escape-and-return-focus; `shell.tsx` renders `<AccountMenu>` one line. |
+| Route announcer mounted inside the signed-in shell | Every public navigation — sign in → reset → invite → MFA — was silent, and those are the pages where a lost screen-reader user has no tab bar to recover from. | It lives in the root layout, so all 47 routes announce and set `document.title`. |
+| School name fetched client-side in the shell | The topbar rendered the generic "School Portal" first and flashed the real name when the fetch landed — on every page load — for a value the layout already had. | `lib/school.ts` is request-memoised with React `cache()` and passed through a `SchoolNameProvider`; the name is in the first byte of HTML and the browser makes one request fewer. |
+
+Two things that *looked* like shortcuts were kept deliberately, with reasons:
+
+- **The `.tab-more` “More” button on phones** is not a hiding place for links a
+  role cannot use: the four targets are chosen from the tabs that survived the
+  permission filter, and everything else stays one tap away in the palette.
+- **`min-width: 560px` on reflowed tables** stays. Tables that fit are
+  unaffected (the floor only forces a scroll when the columns would otherwise
+  be squashed into two characters per cell), and reducing it would re-introduce
+  the compressed-column problem the audit opened with.

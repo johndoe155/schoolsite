@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import "./globals.css";
 import PwaRegister from "@/components/pwa-register";
+import RouteAnnouncer from "@/components/route-announcer";
+import { SchoolNameProvider } from "@/lib/school-context";
 import { getSchool } from "@/lib/school";
 
 /**
@@ -43,6 +45,11 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  /* `getSchool` is request-memoised, so this costs nothing beyond the call that
+     `generateMetadata` already made. The name is handed to client chrome
+     through a provider, which is what keeps it out of the HTML as "School
+     Portal" and then a flash of the real name. */
+  const school = await getSchool();
   /* Dark mode is a server render, not a script: there is no middleware to mint
      a nonce for an inline bootstrap, and the CSP would refuse one anyway. The
      cookie written by <ThemeToggleButton> therefore decides the attribute on
@@ -55,7 +62,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="portal-root">
         <a className="skip" href="#main">Skip to content</a>
         <PwaRegister />
-        <main id="main">{children}</main>
+        <SchoolNameProvider name={school.name}>
+          <main id="main">{children}</main>
+        </SchoolNameProvider>
+        {/* In the layout rather than in the signed-in shell, so every
+            client-side navigation is announced — the sign-in, invite and
+            password pages are navigations too. */}
+        <RouteAnnouncer schoolName={school.name} />
       </body>
     </html>
   );

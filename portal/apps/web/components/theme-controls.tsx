@@ -73,16 +73,19 @@ export function ThemeToggleButton({ className = "menu__item" }: { className?: st
     };
   }, []);
 
-  const next = theme === "dark" ? "light" : "dark";
   return (
     <button
       type="button"
       className={className}
-      aria-pressed={theme === "dark"}
+      /* A pressed toggle needs a *state* name, not an action name: "Dark mode,
+         toggle button, pressed" is unambiguous, while "Switch to dark theme,
+         pressed" contradicts itself. The attribute is absent until mounted,
+         because the server cannot know the OS preference. */
+      aria-pressed={theme === null ? undefined : theme === "dark"}
       onClick={() => setTheme(toggleTheme())}
     >
       <span aria-hidden="true">{theme === "dark" ? "☾" : "☀"}</span>
-      {theme === null ? "Theme" : next === "dark" ? "Switch to dark theme" : "Switch to light theme"}
+      Dark mode
     </button>
   );
 }

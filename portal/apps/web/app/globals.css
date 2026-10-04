@@ -81,6 +81,9 @@ html[data-theme="light"] {
   --warn: var(--color-warning);
   --bad: var(--color-danger);
   --info: var(--color-brand-strong);
+  /* Focus is a state, not a decoration: the ring has to be visible against
+     every surface in the theme in force. */
+  --focus-ring: var(--color-focus);
 }
 
 html[data-theme="dark"] { color-scheme: dark; }
@@ -103,6 +106,7 @@ html[data-theme="dark"] {
     --warn: #E6B25C;
     --bad: #F59A9A;
     --info: #A9B4FF;
+    --focus-ring: #A9B4FF;
 }
 
 /* Same palette for a first visit that has not chosen yet. */
@@ -124,6 +128,7 @@ html[data-theme="dark"] {
     --warn: #E6B25C;
     --bad: #F59A9A;
     --info: #A9B4FF;
+    --focus-ring: #A9B4FF;
   }
 }
 
@@ -506,10 +511,6 @@ body.portal-root .receipt__head {
    site can never leak into each other. Values come from the token scale;
    nothing here invents a colour, a radius or a duration.
    ══════════════════════════════════════════════════════════════════════════ */
-
-body.portal-root { --focus-ring: var(--color-focus); }
-html[data-theme="dark"] { --focus-ring: #A9B4FF; }
-@media (prefers-color-scheme: dark) { html:not([data-theme]) { --focus-ring: #A9B4FF; } }
 
 body.portal-root :focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 

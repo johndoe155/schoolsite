@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 const API = process.env.API_INTERNAL ?? "http://127.0.0.1:8080";
 
 export interface SchoolView {
@@ -14,8 +16,15 @@ export interface SchoolView {
   mail_sender?: string | null;
 }
 
-/** phase 6: the school's identity for server-rendered chrome (login, legal, nav). */
-export async function getSchool(): Promise<SchoolView> {
+/**
+ * phase 6: the school's identity for server-rendered chrome (login, legal, nav).
+ *
+ * Wrapped in React's `cache()` because the root layout asks for it twice per
+ * request — once for `generateMetadata`, once to render. `fetch` is called with
+ * `cache: "no-store"`, so without this the API would be hit twice for every
+ * page in the portal.
+ */
+export const getSchool = cache(async (): Promise<SchoolView> => {
   try {
     const res = await fetch(`${API}/api/v1/school`, { cache: "no-store" });
     if (!res.ok) throw new Error(String(res.status));
@@ -23,4 +32,4 @@ export async function getSchool(): Promise<SchoolView> {
   } catch {
     return { name: "School Portal" };
   }
-}
+});
