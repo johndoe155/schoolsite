@@ -282,7 +282,17 @@ body {
   box-shadow: 0 24px 52px rgba(250, 204, 21, 0.32);
 }
 #home .btn-primary:hover::before { left: 220%; }
-#home .btn-primary:active { transform: scale(0.96); }
+/* Pressed: the surface, the sweep and the backdrop all stay exactly as they
+   were — a scale() would shrink the shine out of view and, on the glass CTA
+   below, make the browser drop the backdrop sample mid-press (the effect
+   visibly "disappears when clicked"). Travel of 1px plus an inset ring reads
+   as a press without any of that. */
+#home .btn-primary:active {
+  transform: translateY(1px);
+  background: var(--color-brand-yellow);
+  box-shadow: 0 8px 20px rgba(250, 204, 21, 0.28), inset 0 0 0 2px rgba(5, 1, 74, 0.22);
+}
+#home .btn-primary:active::before { left: 220%; }
 #home .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
@@ -296,7 +306,14 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 16px 32px rgba(255, 255, 255, 0.06);
 }
-#home .btn-secondary:active { transform: scale(0.96); }
+#home .btn-secondary:active {
+  transform: translateY(1px);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px) saturate(1.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.35);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18), inset 0 0 0 2px rgba(255, 255, 255, 0.14);
+}
 .btn--sending {  pointer-events: none; opacity: 0.94; transform: translateY(0);
 }
 .sr-only {
@@ -442,11 +459,60 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(5, 1, 74, 0.2);
   border: 1px solid rgba(5, 1, 74, 0.1);
+  /* A column, so the portrait and the chairman's signature are one plate: the
+     frame clips both, and `position: relative` is what the decorative
+     watermark's `inset: 0` was always meant to anchor to. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.admin-photo-inner {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
 }
 .admin-photo-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* ── Signature plate ─────────────────────────────────────────
+   Under the portrait, inside the same rounded frame. Great Vibes is the
+   signature face (added to this page's single Google Fonts import); the
+   cursive stack is the fallback if that request is blocked, so the name is
+   never rendered in body text. */
+.admin-sign {
+  flex: 0 0 auto;
+  padding: 14px 16px 16px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(253, 250, 245, 0.99), rgba(243, 239, 229, 0.99));
+  border-top: 1px solid rgba(176, 125, 63, 0.35);
+}
+.admin-sign__name {
+  display: block;
+  font-family: 'Great Vibes', 'Segoe Script', 'Bradley Hand', 'Apple Chancery', 'Snell Roundhand', cursive;
+  font-size: clamp(1.7rem, 5vw, 2.15rem);
+  line-height: 1.1;
+  color: var(--color-brand-indigo, #05014A);
+  font-weight: 400;
+}
+.admin-sign__rule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin: 8px auto 8px;
+  background: linear-gradient(90deg, rgba(176, 125, 63, 0), var(--color-accent, #B07D3F), rgba(176, 125, 63, 0));
+}
+.admin-sign__role {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(24, 20, 15, 0.55);
 }
 .admin-photo-placeholder {
   width: 100%;
@@ -654,7 +720,8 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
     
   }
   #home .btn-primary:active {
-    transform: translateY(-1px) scale(0.98);
+    transform: translateY(1px);
+    box-shadow: 0 8px 20px rgba(250, 204, 21, 0.28), inset 0 0 0 2px rgba(5, 1, 74, 0.22);
     
   }
   #home .btn-secondary {
@@ -668,7 +735,10 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
     
   }
   #home .btn-secondary:active {
-    transform: translateY(-1px) scale(0.98);
+    transform: translateY(1px);
+    backdrop-filter: blur(16px) saturate(1.35);
+    -webkit-backdrop-filter: blur(16px) saturate(1.35);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18), inset 0 0 0 2px rgba(255, 255, 255, 0.14);
     
   }
 }
@@ -820,3 +890,126 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
 .about-quote { font-style: italic; line-height: 1.55; }
 .about-quote cite { font-size: 1rem; }
 .consent-check { accent-color: var(--color-brand); }
+
+
+/* ══════════════════════════════════════════════════════════════
+   Scroll indicator (hero)
+   A hairline rail with a gold bead travelling down it, over a muted chevron.
+   It is a link to #about, so it works with a keyboard and without JS.
+   ══════════════════════════════════════════════════════════════ */
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  z-index: 2;
+  transition: color 240ms ease;
+}
+.hero-scroll:hover { color: rgba(255, 255, 255, 0.9); }
+.hero-scroll:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 6px; border-radius: 999px; }
+.hero-scroll__rail {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.35));
+  overflow: hidden;
+}
+.hero-scroll__bead {
+  position: absolute;
+  left: -1px;
+  top: -14px;
+  width: 3px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-brand-yellow, #FACC15);
+  animation: hero-scroll-bead 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes hero-scroll-bead {
+  0%   { transform: translateY(0);     opacity: 0; }
+  18%  { opacity: 1; }
+  72%  { opacity: 1; }
+  100% { transform: translateY(60px);  opacity: 0; }
+}
+.hero-scroll__chevron {
+  width: 18px;
+  height: 18px;
+  animation: hero-scroll-chevron 2.4s ease-in-out infinite;
+}
+@keyframes hero-scroll-chevron {
+  0%, 55%, 100% { transform: translateY(0);    opacity: 0.65; }
+  75%           { transform: translateY(3px);  opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll__bead, .hero-scroll__chevron { animation: none; }
+  .hero-scroll__bead { top: 0; opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Gallery captions
+   The categories are image cards; each one is titled underneath. The rule and
+   the generous margins are what let the grid breathe — the cards are injected
+   by home.js, so these are classes rather than utilities that would have to
+   exist in the Tailwind build.
+   ══════════════════════════════════════════════════════════════ */
+.gallery-caption {
+  padding: 0 8px 4px;
+  text-align: center;
+}
+.gallery-caption__rule {
+  display: block;
+  width: 34px;
+  height: 1px;
+  margin: 26px auto 16px;
+  background: linear-gradient(90deg, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.85), rgba(250, 204, 21, 0));
+}
+.gallery-caption__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  line-height: 1.25;
+  color: #FFFFFF;
+}
+.gallery-caption__sub {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(165, 180, 252, 0.8);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Enquiry submit (.btn-send)
+   The most important control on the page had no resting surface of its own:
+   it inherited whatever `.btn-primary` happened to be, so any change to a
+   button elsewhere on the site (or the hero scope in this file) could strip it
+   back to bare text. It now owns a solid, bordered, shadowed resting state,
+   with hover, pressed, focus and busy states defined next to it.
+   ══════════════════════════════════════════════════════════════ */
+.btn-send {
+  background: var(--color-brand);
+  color: var(--color-cream);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 28px rgba(5, 1, 74, 0.22);
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+.btn-send:hover {
+  background: var(--color-brand-strong);
+  border-color: var(--color-accent);
+  box-shadow: 0 16px 34px rgba(5, 1, 74, 0.28);
+}
+.btn-send:active {
+  transform: translateY(1px);
+  background: var(--color-brand-strong);
+  box-shadow: 0 6px 16px rgba(5, 1, 74, 0.26), inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+}
+.btn-send:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.btn-send[disabled], .btn-send.btn--sending { opacity: 0.9; cursor: progress; transform: none; }

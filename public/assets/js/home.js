@@ -56,8 +56,8 @@ window.__CMS__ = {
             data-archive='${archive.replace(/'/g,"&#39;")}'
             data-title="${esc(item.title)}"
             data-sub="${esc(item.subtitle)}"
-            aria-label="View ${esc(item.title)} Gallery">
-            <img src="${esc(cover)}" alt="${esc(item.title)}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            aria-label="View the ${esc(item.title)} gallery — ${count} photo${count !== 1 ? 's' : ''}">
+            <img src="${esc(cover)}" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
               <div class="text-left translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 <h3 class="text-xl font-bold font-serif text-white">${esc(item.title)}</h3>
@@ -65,10 +65,11 @@ window.__CMS__ = {
               </div>
             </div>
           </button>
-          <div class="px-2">
-            <h3 class="text-xl md:text-2xl text-center text-white mt-6">${esc(item.title)}</h3>
-            <p class="text-center text-indigo-300/80 mt-2">${esc(item.subtitle)}</p>
-          </div>`;
+          <figcaption class="gallery-caption">
+            <span class="gallery-caption__rule" aria-hidden="true"></span>
+            <h3 class="gallery-caption__title">${esc(item.title)}</h3>
+            <p class="gallery-caption__sub">${esc(item.subtitle)}</p>
+          </figcaption>`;
         grid.appendChild(div);
       });
 
@@ -87,205 +88,310 @@ window.__CMS__ = {
 })();
 
 (function () {
-// Gallery Lightbox Script
-    (function() {
+/* ══════════════════════════════════════════════════════════════════════════
+   Gallery viewer
+
+   One implementation, one state machine. The portal previously shipped two
+   competing lightboxes (one here, one in main.js); they both bound the same
+   buttons, and the removed one computed its index as
+   `(currentIndex + 1) % currentArchive.length`, which is NaN the moment the
+   archive is empty — the "NaN / 0" the count indicator used to show. It also
+   latched a module-level `isLoading` flag: one slow or failed image left the
+   spinner running forever and swallowed every later Next/Prev click.
+
+   The rules this version follows, so neither bug can come back:
+
+   1. An index is only ever produced by `normalizeIndex()`, which clamps a
+      finite integer into 0..n-1 with n ≥ 1. No arithmetic on possibly-empty
+      arrays, ever.
+   2. Nothing is latched globally. A monotonically increasing token identifies
+      the current request; stale callbacks compare tokens and drop out.
+   3. Every image load settles — success, error, or a timeout guard — and each
+      of those clears the loading state. A hung request can no longer hold the
+      UI.
+   4. Failures degrade to a placeholder frame instead of an empty stage, and
+      navigation stays available throughout.
+   5. An empty or malformed archive never opens the viewer at all.
+   ══════════════════════════════════════════════════════════════════════════ */
+    (function () {
       'use strict';
 
-      const lightbox = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lbImg');
-      const lbTitle = document.getElementById('lbTitle');
-      const lbCounter = document.getElementById('lbCounter');
-      const lbClose = document.getElementById('lbClose');
-      const lbPrev = document.getElementById('lbPrev');
-      const lbNext = document.getElementById('lbNext');
-      const lbLoader = document.getElementById('lbLoader');
+      const root = document.getElementById('lightbox');
+      if (!root || !root.classList.contains('lb')) return;   // some other page's dialog
 
-      let currentArchive = [];
-      let currentIndex = 0;
-      let isLoading = false;
-      let touchStartX = 0;
-      let touchEndX = 0;
+      const els = {
+        frameA: document.getElementById('lbImg'),
+        frameB: document.getElementById('lbImgNext'),
+        title: document.getElementById('lbTitle'),
+        subtitle: document.getElementById('lbSubtitle'),
+        counter: document.getElementById('lbCounter'),
+        status: document.getElementById('lbStatus'),
+        close: document.getElementById('lbClose'),
+        prev: document.getElementById('lbPrev'),
+        next: document.getElementById('lbNext'),
+      };
+      if (!els.frameA || !els.frameB || !els.close) return;
 
-      function toggleBodyScroll(disable) {
-        if (disable) {
-          document.documentElement.style.overflow = 'hidden';
-          document.body.style.overflow = 'hidden';
-        } else {
-          document.documentElement.style.overflow = '';
-          document.body.style.overflow = '';
-        }
+      /* Every load settles: onload, onerror, or this guard. Read from the
+         dialog so a slow connection (or the test harness) can lengthen it
+         without editing the script. */
+      const LOAD_GUARD_MS = Number(root.getAttribute('data-load-guard')) || 12000;
+      const PLACEHOLDER =
+        'data:image/svg+xml;charset=utf-8,' +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">' +
+          '<rect width="1200" height="800" fill="#161519"/>' +
+          '<text x="600" y="392" fill="#7d7a85" font-family="system-ui, sans-serif" ' +
+          'font-size="26" text-anchor="middle">Image unavailable</text>' +
+          '<text x="600" y="428" fill="#565360" font-family="system-ui, sans-serif" ' +
+          'font-size="18" text-anchor="middle">It may have been removed from the gallery</text>' +
+          '</svg>'
+        );
+
+      const state = {
+        archive: [],
+        index: 0,
+        token: 0,
+        open: false,
+        frontIsA: true,
+        invoker: null,
+        guard: 0,
+        // Strong references to in-flight preloads: a garbage-collected Image
+        // can have its request dropped, and its handlers never fire.
+        preloads: [],
+      };
+
+      /* ── small, total helpers ───────────────────────────────────────────── */
+
+      function normalizeIndex(value, length) {
+        const n = Math.max(1, Math.floor(length) || 1);
+        const i = Math.floor(Number(value));
+        if (!Number.isFinite(i)) return 0;
+        return ((i % n) + n) % n;
       }
 
-      function showLoader() {
-        if (lbLoader) {
-          lbLoader.classList.remove('opacity-0');
-          lbLoader.classList.add('opacity-100');
-        }
-        isLoading = true;
+      function cleanArchive(archive) {
+        if (!Array.isArray(archive)) return [];
+        return archive
+          .filter((src) => typeof src === 'string' && src.trim() !== '')
+          .map((src) => src.trim());
       }
 
-      function hideLoader() {
-        if (lbLoader) {
-          lbLoader.classList.add('opacity-0');
-          lbLoader.classList.remove('opacity-100');
-        }
-        isLoading = false;
+      /** The two stacked frames: the front one is what the visitor sees. */
+      function front() { return state.frontIsA ? els.frameA : els.frameB; }
+      function back() { return state.frontIsA ? els.frameB : els.frameA; }
+
+      function setLoading(on) { root.classList.toggle('is-loading', !!on); }
+
+      function lockScroll(on) {
+        document.documentElement.style.overflow = on ? 'hidden' : '';
+        document.body.style.overflow = on ? 'hidden' : '';
       }
 
-      function updateImage(index) {
-        if (!currentArchive || currentArchive.length === 0) return;
-
-        currentIndex = (index + currentArchive.length) % currentArchive.length;
-        const src = currentArchive[currentIndex];
-
-        if (!src) return;
-
-        showLoader();
-
-        const img = new Image();
-        img.onload = () => {
-          lbImg.src = src;
-          lbImg.alt = 'Gallery image ' + (currentIndex + 1);
-          hideLoader();
-        };
-        img.onerror = () => {
-          lbImg.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23333%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3EImage failed to load%3C/text%3E%3C/svg%3E';
-          hideLoader();
-        };
-        img.src = src;
-
-        if (lbCounter) {
-          lbCounter.textContent = (currentIndex + 1) + ' / ' + currentArchive.length;
-        }
+      function closeNavMenu() {
+        const nav = document.querySelector('.bic-nav');
+        if (nav) nav.classList.remove('bic-nav--open');
+        const menu = document.querySelector('.bic-menu');
+        if (menu) menu.classList.remove('bic-menu--open', 'bic-menu--live');
       }
 
-      function openLightbox(archive, index = 0) {
-        if (!lightbox || !archive || archive.length === 0) return;
-
-        currentArchive = archive;
-        currentIndex = index;
-
-        lightbox.classList.remove('hidden');
-        lightbox.setAttribute('aria-hidden', 'false');
-        toggleBodyScroll(true);
-
-        void lightbox.offsetWidth;
-        lightbox.classList.remove('opacity-0');
-        lightbox.classList.add('opacity-100');
-
-        updateImage(index);
-        lbClose.focus();
+      /** Every write to the counter goes through here: integers only. */
+      function writeCount(index, length) {
+        const n = Math.max(0, Math.floor(length) || 0);
+        if (!els.counter) return;
+        if (n === 0) { els.counter.textContent = '\u2014'; return; }
+        els.counter.textContent = (normalizeIndex(index, n) + 1) + ' / ' + n;
       }
 
-      function closeLightbox() {
-        if (!lightbox) return;
-
-        lightbox.classList.add('opacity-0');
-        lightbox.classList.remove('opacity-100');
-
-        setTimeout(() => {
-          lightbox.classList.add('hidden');
-          lightbox.setAttribute('aria-hidden', 'true');
-          toggleBodyScroll(false);
-        }, 300);
+      function announce(index, length, label) {
+        if (!els.status) return;
+        const n = Math.max(0, Math.floor(length) || 0);
+        els.status.textContent = !n ? '' :
+          label + ': image ' + (normalizeIndex(index, n) + 1) + ' of ' + n;
       }
 
-      function nextImage() {
-        if (isLoading) return;
-        updateImage(currentIndex + 1);
-      }
+      /* ── rendering ──────────────────────────────────────────────────────── */
 
-      function prevImage() {
-        if (isLoading) return;
-        updateImage(currentIndex - 1);
-      }
-
-      function handleTouchStart(e) {
-        touchStartX = e.changedTouches[0].screenX;
-      }
-
-      function handleTouchEnd(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      }
-
-      function handleSwipe() {
-        const diff = touchStartX - touchEndX;
-        const threshold = 50;
-
-        if (Math.abs(diff) > threshold) {
-          if (diff > 0) {
-            nextImage();
-          } else {
-            prevImage();
-          }
-        }
-      }
-
-      if (lbClose) lbClose.addEventListener('click', closeLightbox);
-      if (lbPrev) lbPrev.addEventListener('click', prevImage);
-      if (lbNext) lbNext.addEventListener('click', nextImage);
-
-      if (lightbox) {
-        lightbox.addEventListener('click', (e) => {
-          if (e.target === lightbox) {
-            closeLightbox();
-          }
+      /* Warm the neighbours so the next click is instant. Kept in `preloads`. */
+      function precache(index, length) {
+        [index + 1, index - 1].forEach((i) => {
+          const src = state.archive[normalizeIndex(i, length)];
+          if (!src) return;
+          const img = new Image();
+          img.decoding = 'async';
+          img.src = src;
+          state.preloads.push(img);
+          if (state.preloads.length > 6) state.preloads.splice(0, state.preloads.length - 6);
         });
       }
 
-      document.addEventListener('keydown', (e) => {
-        if (lightbox.classList.contains('hidden')) return;
+      function render(nextIndex) {
+        const length = state.archive.length;
+        if (length === 0) { writeCount(0, 0); return; }
 
+        state.index = normalizeIndex(nextIndex, length);
+        const src = state.archive[state.index];
+        const label = (els.title && els.title.textContent) || 'Gallery';
+        const alt = label + ' \u2014 image ' + (state.index + 1) + ' of ' + length;
+
+        writeCount(state.index, length);
+        announce(state.index, length, label);
+        root.setAttribute('data-count', String(length));
+
+        const token = ++state.token;
+        const target = back();
+        const previous = front();
+        setLoading(true);
+
+        let settled = false;
+        const finish = (ok) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(state.guard);
+          if (token !== state.token) return;     // a newer navigation owns the stage
+          target.src = ok ? src : PLACEHOLDER;
+          target.alt = ok ? alt : alt + ' (unavailable)';
+          // Promote on the next frame so the browser paints the decoded image
+          // and the crossfade has two states to move between.
+          requestAnimationFrame(() => {
+            target.classList.add('is-front');
+            target.setAttribute('aria-hidden', 'false');
+            previous.classList.remove('is-front');
+            previous.setAttribute('aria-hidden', 'true');
+            state.frontIsA = !state.frontIsA;
+            setLoading(false);
+          });
+          precache(state.index, length);
+        };
+
+        const probe = new Image();
+        probe.decoding = 'async';
+        state.preloads.push(probe);
+        probe.onload = () => finish(true);
+        probe.onerror = () => finish(false);
+        state.guard = setTimeout(() => finish(false), LOAD_GUARD_MS);
+        probe.src = src;
+      }
+
+      /* ── open / close ───────────────────────────────────────────────────── */
+
+      function open(archive, index, meta) {
+        const list = cleanArchive(archive);
+        if (list.length === 0) return false;      // nothing to show: stay closed
+        const info = meta || {};
+        state.archive = list;
+        state.index = normalizeIndex(index, list.length);
+        state.invoker = info.invoker || document.activeElement;
+        if (els.title) els.title.textContent = info.title || '';
+        if (els.subtitle) els.subtitle.textContent = info.subtitle || '';
+        writeCount(state.index, list.length);
+        closeNavMenu();
+        document.documentElement.classList.add('lb-open');
+        root.setAttribute('data-count', String(list.length));
+        root.classList.add('is-open');
+        root.setAttribute('aria-hidden', 'false');
+        lockScroll(true);
+        state.open = true;
+        render(state.index);
+        if (els.close.focus) els.close.focus();
+        return true;
+      }
+
+      function close() {
+        if (!state.open) return;
+        state.open = false;
+        state.token += 1;                          // cancel anything in flight
+        clearTimeout(state.guard);
+        setLoading(false);
+        root.classList.remove('is-open');
+        root.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('lb-open');
+        lockScroll(false);
+        writeCount(0, 0);
+        if (els.status) els.status.textContent = '';
+        const backTo = state.invoker;
+        state.invoker = null;
+        if (backTo && typeof backTo.focus === 'function') backTo.focus();
+      }
+
+      function step(delta) {
+        if (!state.open || state.archive.length < 2) return;
+        render(state.index + delta);
+      }
+
+      /* ── events ─────────────────────────────────────────────────────────── */
+
+      if (els.close) els.close.addEventListener('click', close);
+      if (els.prev) els.prev.addEventListener('click', () => step(-1));
+      if (els.next) els.next.addEventListener('click', () => step(1));
+      root.addEventListener('click', (e) => {
+        if (e.target && e.target.dataset && e.target.dataset.lbClose !== undefined) close();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!state.open) return;
         switch (e.key) {
-          case 'Escape':
-            e.preventDefault();
-            closeLightbox();
+          case 'Escape': e.preventDefault(); close(); break;
+          case 'ArrowLeft': e.preventDefault(); step(-1); break;
+          case 'ArrowRight': e.preventDefault(); step(1); break;
+          case 'Home': e.preventDefault(); render(0); break;
+          case 'End': e.preventDefault(); render(state.archive.length - 1); break;
+          case 'Tab': {
+            /* Keep focus inside the dialog: it is the only thing on screen.
+               getClientRects() also filters out the nav arrows when a category
+               has a single image and CSS has hidden them — a display:none
+               button cannot take focus, so including it would let Tab escape
+               to the page behind the dialog. */
+            const focusables = [].slice
+              .call(root.querySelectorAll('button:not([disabled])'))
+              .filter((el) => el.getClientRects().length > 0);
+            if (focusables.length === 0) return;
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
             break;
-          case 'ArrowLeft':
-            e.preventDefault();
-            prevImage();
-            break;
-          case 'ArrowRight':
-            e.preventDefault();
-            nextImage();
-            break;
+          }
+          default: break;
         }
       });
 
-      if (lightbox) {
-        lightbox.addEventListener('touchstart', handleTouchStart, false);
-        lightbox.addEventListener('touchend', handleTouchEnd, false);
-      }
+      let touchStart = null;
+      root.addEventListener('touchstart', (e) => {
+        touchStart = e.touches && e.touches.length === 1 ? e.touches[0].clientX : null;
+      }, { passive: true });
+      root.addEventListener('touchend', (e) => {
+        if (touchStart === null) return;
+        const end = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : touchStart;
+        const dx = touchStart - end;
+        touchStart = null;
+        if (Math.abs(dx) < 45) return;
+        step(dx > 0 ? 1 : -1);
+      }, { passive: true });
 
-      window.initGallery = function() {
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        galleryItems.forEach(item => {
-          const clone = item.cloneNode(true);
-          item.parentNode.replaceChild(clone, item);
-        });
+      /** Gallery cards call in here. Exposed for the lightbox test harness. */
+      window.openGallery = function (archive, index, meta) { return open(archive, index, meta); };
+      window.closeGallery = close;
+      window.galleryState = state;
 
-        document.querySelectorAll('.gallery-item').forEach(item => {
+      window.initGallery = function () {
+        document.querySelectorAll('.gallery-item').forEach((item) => {
+          if (item.dataset.lbBound === '1') return;
+          item.dataset.lbBound = '1';
           item.addEventListener('click', (e) => {
             e.preventDefault();
-            const archiveStr = item.getAttribute('data-archive');
-            const title = item.getAttribute('data-title');
-            const subtitle = item.getAttribute('data-sub');
-
+            let archive = null;
             try {
-              const archive = JSON.parse(archiveStr);
-              if (lbTitle) lbTitle.textContent = title;
-              openLightbox(archive, 0);
+              archive = JSON.parse(item.getAttribute('data-archive') || '[]');
             } catch (err) {
-              console.error('Failed to parse gallery archive:', err);
+              console.warn('Gallery: could not read this category', err);
+              return;
             }
-          });
-
-          item.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              item.click();
-            }
+            open(archive, 0, {
+              title: item.getAttribute('data-title') || '',
+              subtitle: item.getAttribute('data-sub') || '',
+              invoker: item,
+            });
           });
         });
       };

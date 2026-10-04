@@ -60,7 +60,7 @@
   </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/footer.css">
@@ -131,7 +131,12 @@
       <!-- Content -->
       <div class="relative z-10 w-full max-w-7xl mx-auto px-6 pb-24 sm:pb-32 text-white">
         <div class="max-w-4xl">
-          <div id="heroEyebrow" class="inline-block opacity-0 px-5 py-1.5 mb-9 text-xs font-medium tracking-[0.2em] uppercase bg-brand-yellow/5 text-brand-yellow border border-brand-yellow/30 rounded-full backdrop-blur-md transition-all duration-300 hover:bg-brand-yellow/10">
+          <!-- Frosted, whitish and deliberately low-opacity: the pill is a pane of
+               glass over the hero footage rather than a coloured chip. Opacity is
+               expressed through translucent fills, never `opacity`, because a
+               non-1 opacity on the element (or an ancestor) makes browsers drop
+               backdrop-filter — the glass would vanish instead of soften. -->
+          <div id="heroEyebrow" class="inline-block opacity-0 px-5 py-1.5 mb-9 text-xs font-medium tracking-[0.2em] uppercase text-white/90 bg-white/10 border border-white/25 rounded-full backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] transition-all duration-300 hover:bg-white/15">
   Welcome
 </div>
 
@@ -146,7 +151,9 @@
           <div class="flex flex-wrap gap-4 opacity-0 translate-y-8" id="heroButtons">
             <a id="ctaPrimary" href="/programs.html" class="btn-primary group">
               <span class="relative z-10">Explore Programs</span>
-              <div class="absolute inset-0 bg-white/20 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+              <!-- group-active keeps the sheen while the button is held down; without it the
+                 sweep retracts on press, which reads as the effect disappearing. -->
+              <div class="absolute inset-0 bg-white/25 scale-x-0 group-hover:scale-x-100 group-active:scale-x-100 transition-transform origin-left"></div>
             </a>
             <a id="ctaSecondary" href="#contact" class="btn-secondary group">
               <span>Contact Admissions</span>
@@ -155,10 +162,16 @@
         </div>
       </div>
 
-      <!-- Scroll indicator -->
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-      </div>
+      <!-- Scroll indicator: a hairline rail with a gold bead travelling down it,
+           over a muted chevron. It is a real link to the next section, CSS-driven
+           (.hero-scroll in home.css) and still when the visitor asks for less
+           motion. -->
+      <a class="hero-scroll" href="#about" aria-label="Scroll down to About BIC">
+        <span class="hero-scroll__rail" aria-hidden="true"><span class="hero-scroll__bead"></span></span>
+        <svg class="hero-scroll__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M6 9l6 6 6-6"></path>
+        </svg>
+      </a>
     </section>
 
     <!-- PINNED STORY SECTION -->
@@ -242,9 +255,9 @@
     <div class="grid gap-12 lg:gap-20 items-center">
 
       <div class="bic-reveal from-left flex justify-center lg:justify-center" style="--delay:0ms">
-  <div class="admin-photo-frame w-full max-w-[320px]">
+  <figure class="admin-photo-frame w-full max-w-[320px]">
     <div class="admin-photo-inner">
-      <img src="/assets/media/princi.jpg" alt="Principal, Bodija International College"
+      <img src="/assets/media/princi.jpg" alt="The Founding Chairman, Bodija International College"
            class="w-full h-full object-cover object-center" />
 
       <div class="about-watermark" aria-hidden="true">
@@ -258,7 +271,16 @@
       </div>
 
     </div>
-  </div>
+
+    <!-- The chairman's name sits directly under the portrait and inside the
+         same rounded frame, so the pair reads as one signed plate; the frame
+         clips the signature exactly as it clips the photograph. -->
+    <figcaption class="admin-sign">
+      <span class="admin-sign__name">Justice Kayode Eso</span>
+      <span class="admin-sign__rule" aria-hidden="true"></span>
+      <span class="admin-sign__role">Founding Chairman &middot; Bodija International College</span>
+    </figcaption>
+  </figure>
 </div>
 
       <div class="bic-reveal from-right" style="--delay:150ms">
@@ -312,12 +334,12 @@
 </section>
 
     <!-- GALLERY SECTION -->
-    <section id="gallery" class="bg-slate-900 text-white py-12 relative overflow-hidden">
+    <section id="gallery" class="bg-slate-900 text-white py-20 md:py-28 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-64 h-64 bg-brand-yellow/5 rounded-full blur-3xl"></div>
       <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-indigo/20 rounded-full blur-3xl"></div>
 
       <div class="max-w-7xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-14 md:mb-16">
           <div>
             <h2 class="bic-reveal font-display font-bold text-5xl md:text-6xl mb-4">Life at BIC</h2>
             <p class="text-slate-400 max-w-md">Explore our campus, events, and student activities through our lens.</p>
@@ -327,7 +349,7 @@
           </div>
         </div>
 
-<div id="publicGalleryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div id="publicGalleryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
   <div class="col-span-full flex items-center justify-center py-16 text-slate-500 text-sm" id="galleryLoader">
     Loading gallery…
   </div>
@@ -425,7 +447,7 @@
                   <a href="/privacy.html" class="text-brand-indigo underline">Privacy Notice</a>.</label>
               </div>
 
-              <button type="submit" id="submitBtn" class="bic-reveal w-full btn-primary justify-center">
+              <button type="submit" id="submitBtn" class="bic-reveal w-full btn-primary btn-send justify-center">
                 <span id="btnText">Send Message</span>
                 <svg id="btnSpinner" class="hidden animate-spin ml-2 h-5 w-5 text-brand-indigo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
               </button>
@@ -443,34 +465,50 @@
     <div data-bic-footer></div>
 
   <!-- Lightbox -->
-  <div id="lightbox" class="fixed inset-0 z-[60] bg-black/95 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image Gallery">
+  <!-- Gallery viewer. One implementation, one state machine (see the gallery
+       block in home.js). Layers, from the bottom: scrim → image stage → controls.
+       The dialog sits above the nav (nav 900 / 1200 while open, transit cover
+       9000) and opening it hides the nav outright, so the close control can never
+       be overlapped. -->
+  <div id="lightbox" class="lb" role="dialog" aria-modal="true" aria-label="Gallery viewer" aria-hidden="true">
+    <div class="lb__scrim" data-lb-close aria-hidden="true"></div>
 
-    <button id="lbClose" class="absolute top-6 right-6 text-white/70 hover:text-white z-[70] p-2 focus:outline-none focus:ring-2 focus:ring-white rounded-full">
-      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-      <span class="sr-only">Close Gallery</span>
-    </button>
+    <div class="lb__chrome">
+      <header class="lb__head">
+        <div class="lb__meta">
+          <h3 id="lbTitle" class="lb__title"></h3>
+          <p id="lbSubtitle" class="lb__sub"></p>
+        </div>
+        <p id="lbCounter" class="lb__counter" aria-hidden="true">&mdash;</p>
+        <button id="lbClose" class="lb__btn lb__btn--close" type="button" aria-label="Close gallery">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </header>
 
-    <button id="lbPrev" class="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/10 p-3 rounded-full z-[70] transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-      <span class="sr-only">Previous Image</span>
-    </button>
+      <div class="lb__stage">
+        <button id="lbPrev" class="lb__btn lb__btn--nav lb__btn--prev" type="button" aria-label="Previous image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M15 5l-7 7 7 7"/></svg>
+        </button>
 
-    <button id="lbNext" class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/10 p-3 rounded-full z-[70] transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      <span class="sr-only">Next Image</span>
-    </button>
+        <!-- Two stacked frames: the incoming image is decoded on the back layer
+             and only then promoted, so navigating never flashes white and a
+             slow or failed load can never hold the spinner open. -->
+        <div class="lb__frames">
+          <img id="lbImg" class="lb__img is-front" alt="" decoding="async">
+          <img id="lbImgNext" class="lb__img" alt="" aria-hidden="true" decoding="async">
+        </div>
 
-    <div class="relative w-full h-full p-4 sm:p-12 flex flex-col items-center justify-center">
-      <img id="lbImg" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl transition-transform duration-300" loading="lazy">
+        <button id="lbNext" class="lb__btn lb__btn--nav lb__btn--next" type="button" aria-label="Next image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M9 5l7 7-7 7"/></svg>
+        </button>
 
-      <div id="lbCaption" class="mt-4 text-center">
-        <h3 id="lbTitle" class="text-white text-xl font-display font-bold"></h3>
-        <p id="lbCounter" class="text-slate-400 text-sm mt-1 font-mono tracking-widest">1 / 5</p>
+        <div id="lbLoader" class="lb__loader" aria-hidden="true"><span></span></div>
       </div>
 
-      <div id="lbLoader" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
-        <div class="w-10 h-10 border-4 border-white/20 border-t-brand-yellow rounded-full animate-spin"></div>
-      </div>
+      <footer class="lb__foot">
+        <span class="lb__hint" aria-hidden="true">&larr; &rarr; navigate &middot; Esc close</span>
+        <p id="lbStatus" class="sr-only" role="status" aria-live="polite"></p>
+      </footer>
     </div>
   </div>
 
@@ -479,10 +517,10 @@
 
   
 
-<script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/main.js?v=2" defer></script>
   <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/site-info.js"></script>
   <script src="/assets/js/layout.js"></script>
-  <script src="/assets/js/home.js" defer></script>
+  <script src="/assets/js/home.js?v=2" defer></script>
 </body>
 </html>

@@ -133,11 +133,196 @@ p { line-height: var(--lh-body); }
 }
 
 /* ── Dialog layers clear the fixed unified nav ──────────────
-   Both visitor dialogs share this page idiom: the homepage gallery
-   lightbox ships `z-[60]` and the library reader `z-50`, but the unified
-   nav is `z-index: 900` (nav.css) — so the bar painted over the top strip
-   of each dialog, which is exactly where its close control sits, and
-   swallowed the click. Raise the dialog layer above the nav, staying under
-   the menu overlays (mask 1000 / panel 1100), the page-transition cover
-   (9000) and the loading overlay (9999). */
-#lightbox { z-index: 950; }
+   Three pages have a dialog with id="lightbox": the homepage gallery viewer
+   (which also carries `.lb`, styled below), the library reader (`z-50`) and
+   the admin image preview (`z-[900]`). The unified nav is `z-index: 900`
+   (nav.css), so without this the bar paints over the top strip of each dialog
+   — exactly where its close control sits — and swallows the click. The
+   homepage viewer is excluded here because it is raised higher, below. */
+#lightbox:not(.lb) { z-index: 950; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Gallery viewer (#lightbox)
+
+   Design: the photograph is the interface. A near-black scrim, a hairline
+   outline around the image instead of a heavy card, small glass controls, and
+   one gold accent.
+
+   Layering — the whole point of the rewrite: the dialog is a single layer at
+   9500, above the nav (900, 1200 while its menu is open) and above the
+   page-transition cover (9000). Opening it also hides the nav outright
+   (`html.lb-open` below), so the close button cannot be covered by anything,
+   in any scroll position, in any nav state.
+   ══════════════════════════════════════════════════════════════════════════ */
+#lightbox.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: grid;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 280ms var(--ease-out), visibility 0s linear 280ms;
+}
+#lightbox.lb.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 280ms var(--ease-out), visibility 0s;
+}
+html.lb-open { overflow: hidden; }
+
+/* While the viewer is open the site chrome steps aside entirely: no bar, no
+   floating toggle, no open menu. */
+html.lb-open .bic-nav,
+html.lb-open .bic-nav__toggle,
+html.lb-open .bic-menu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.lb__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 10, 0.93);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+.lb__chrome {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: max(18px, env(safe-area-inset-top, 0px)) clamp(16px, 3vw, 34px) max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+/* Header: category, subtitle, counter, close. */
+.lb__head { display: flex; align-items: flex-start; gap: 16px; }
+.lb__meta { min-width: 0; }
+.lb__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+}
+.lb__sub { margin: 3px 0 0; font-size: 0.82rem; line-height: 1.4; color: rgba(255, 255, 255, 0.55); }
+.lb__counter {
+  margin: 4px 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+}
+
+/* Stage + frames. Two stacked images crossfade; the incoming one is decoded on
+   the back layer first, so navigation never flashes empty. */
+.lb__stage { position: relative; display: grid; place-items: center; min-height: 0; padding: clamp(14px, 3vh, 34px) 0; }
+.lb__frames { position: relative; display: grid; place-items: center; width: 100%; height: 100%; min-height: 0; }
+.lb__img {
+  grid-area: 1 / 1;
+  max-width: 100%;
+  max-height: min(100%, 74vh);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  outline: 1px solid rgba(255, 255, 255, 0.09);
+  outline-offset: -1px;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: scale(0.992);
+  transition: opacity 420ms var(--ease-out), transform 640ms var(--ease-out);
+}
+.lb__img.is-front { opacity: 1; transform: none; }
+
+/* Controls: one glass button style, gold on hover, focus ring from the tokens. */
+.lb__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background-color 220ms var(--ease-out),
+              border-color 220ms var(--ease-out),
+              color 220ms var(--ease-out),
+              transform 220ms var(--ease-out);
+}
+.lb__btn svg { width: 22px; height: 22px; }
+.lb__btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--color-accent);
+  color: #FFFFFF;
+}
+.lb__btn:active { transform: scale(0.96); }
+.lb__btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.lb__btn--close { flex: 0 0 auto; }
+.lb__btn--nav { position: absolute; top: 50%; transform: translateY(-50%); }
+.lb__btn--prev { left: clamp(6px, 1.5vw, 20px); }
+.lb__btn--next { right: clamp(6px, 1.5vw, 20px); }
+/* One image: nothing to navigate to, so the arrows go. */
+#lightbox.lb[data-count="1"] .lb__btn--nav { display: none; }
+
+/* Loading: a slim gold bar under the frame, never a spinner that can be left
+   running — the script clears it on load, on error and on a timeout. */
+.lb__loader {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  transform: translateX(-50%);
+  width: min(220px, 38vw);
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 180ms linear;
+}
+#lightbox.lb.is-loading .lb__loader { opacity: 1; }
+.lb__loader span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  background: var(--color-brand-yellow, #FACC15);
+  border-radius: 999px;
+  animation: lb-slide 1.15s ease-in-out infinite;
+}
+@keyframes lb-slide {
+  0%   { transform: translateX(-110%); }
+  100% { transform: translateX(240%); }
+}
+
+.lb__foot { display: flex; justify-content: center; padding-top: 12px; }
+.lb__hint {
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+@media (max-width: 640px) {
+  .lb__btn { width: 40px; height: 40px; }
+  .lb__btn svg { width: 20px; height: 20px; }
+  .lb__btn--nav { top: auto; bottom: -6px; transform: none; }
+  .lb__btn--prev { left: calc(50% - 56px); }
+  .lb__btn--next { right: calc(50% - 56px); }
+  .lb__img { max-height: min(100%, 64vh); }
+  .lb__hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #lightbox.lb, .lb__img, .lb__loader, .lb__btn { transition: none !important; }
+  .lb__loader span { animation: none; width: 100%; }
+}

@@ -18,7 +18,8 @@
     "tokens:check": "node scripts/sync-tokens.js --check",
     "build:tailwind": "node build/tailwind/build.mjs",
     "audit:site": "node scripts/audit-gate.mjs",
-    "verify:polish": "node scripts/verify-polish.mjs"
+    "verify:polish": "node scripts/verify-polish.mjs",
+    "verify:lightbox": "node scripts/verify-lightbox.mjs"
   },
   "engines": {
     "node": ">=20.19.0"

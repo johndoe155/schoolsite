@@ -190,3 +190,40 @@ reader at desktop and mobile widths.
 The shared footer's fourth social icon (Dribbble) has **no `href`** — it renders
 as a social button that goes nowhere. Supply the school's Dribbble (or
 portfolio) URL, or say the word and the icon will be dropped.
+
+---
+
+## Second pass — the nine owner-reported items
+
+Reported against the landing page, the administration section and the
+admissions form. Each row is the item as written, what the code actually did,
+and where the fix now lives.
+
+| # | Reported | What was really happening | Fix | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Welcome pill looks off; wants a whitish, stronger-blur, lower-opacity glass | The pill was a *yellow chip* (`bg-brand-yellow/5`, `text-brand-yellow`, `backdrop-blur-md`) — colour, not glass | `bg-white/10` + `backdrop-blur-xl` + `backdrop-saturate-150` + `border-white/25` + inset highlight; opacities expressed as translucent fills, never `opacity` (that would kill `backdrop-filter`) | `verify:lightbox` items 1/1b; markup in `index.html` |
+| 2 | "Explore Programs" loses its glass when clicked | `:active` scaled the button (`scale(0.96)`, and `scale(0.98)` at ≥1024px), which retracts the sheen overlay and makes browsers drop the backdrop sample mid-press | `:active` keeps the surface, keeps/enforces the blur on the glass CTA, and shows the press with a 1px travel + inset ring; the sheen stays out via `group-active:scale-x-100` | item 2/2b; `home.css` `:active` rules |
+| 3 | Scroll indicator dated/generic | It was a single SVG with `animate-bounce` | Hairline rail + travelling gold bead + muted chevron, as an `<a href="#about">`, `prefers-reduced-motion` aware | item 3/3b; `.hero-scroll` in `home.css` |
+| 4 | Add the chairman's name as a signature under the founder's image, inside the same rounded frame | The frame held only the portrait and a watermark; no name anywhere in the section | `<figure class="admin-photo-frame">` (photo + watermark in `.admin-photo-inner`) with `<figcaption class="admin-sign">` holding "Justice Kayode Eso" in Great Vibes over a role line; the frame clips both, and is `position: relative` so the watermark anchors where it was designed to | items 4/4b; `home.css` `.admin-sign*` |
+| 5 | More margin between gallery categories and their titles | Cards and captions sat 24px apart in a `gap-8` grid, inside a `py-12` section | `py-20 md:py-28` section, `mb-14 md:mb-16` header, `gap-x-8 gap-y-16` grid, and a gold hairline caption with 26px/16px margins (`.gallery-caption*`) | item 5; `home.js` template + `home.css` |
+| 6 | Redesign the lightbox: transitions, sleeker UI, minimal framing | `bg-black/95`, a rounded `shadow-2xl` image, a spinner, Tailwind-utility chrome | Near-black blurred scrim; image on a 4px-radius frame with a hairline outline and a deep shadow; two-frame crossfade; glass circular controls that turn gold on hover; slim gold progress bar; captured category title/subtitle and a keyboard hint | items 6, plus 18 behavioural assertions driving open/next/prev/wrap/Home/End/Escape |
+| 7 | **Bug:** clicking Next gives an infinite loader; the count shows `NaN/0` | Two lightboxes existed. `main.js`'s copy did `(currentIndex + 1) % currentArchive.length` → `NaN / 0` on an empty archive, and the surviving copy latched `isLoading`, so one hung request killed navigation. Reproduced: spinner visible after 3s, three clicks swallowed | One implementation, token-based: `normalizeIndex()` clamps into `0..n-1` with `n ≥ 1`; empty archives never open the viewer; every load settles via `onload`/`onerror`/timeout guard; navigation is never gated; `main.js`/`home.js` are cache-busted (`?v=2`) so the old file cannot linger | assertions 5–15: hung request, failed request, empty/null/non-string archives, single-image archive, wrap in both directions, counter format for all 7 categories |
+| 8 | **Bug:** the header overlaps the lightbox close button | `#lightbox` was at `z-index: 950` for *three* different pages' dialogs, while the nav runs at 900 (1200 with the menu open) | Viewer scoped as `#lightbox.lb` at `9500`; `#lightbox:not(.lb)` keeps the library/admin raise; opening adds `html.lb-open`, which hides the nav, its toggle and any open menu | assertions: viewer z-index > nav z-index, > transit cover; nav hidden while open; scoping rule present |
+| 9 | "Send Message" needs a distinct resting surface | It inherited `.btn-primary` from another sheet, so its appearance depended on rules written for the hero | `.btn-send` owns its resting surface (brand fill, hairline border, shadow) plus hover, pressed, focus and busy states | assertion 9; `.btn-send` in `home.css` |
+
+### Verification
+
+- `npm run verify:lightbox` — **54/54 assertions** (new harness, `scripts/verify-lightbox.mjs`). It drives the shipped `home.js` in jsdom against the real 7-category gallery data, including a request that never resolves, and checks the nine items above by name.
+- `npm run verify:polish` — **7 pages / 0 failures**, unchanged by this pass.
+- `node --check` clean on every touched script; `build:tailwind` regenerated `tw-index.css` with the new utilities; `server.js` returns 200 on all eight pages; `/api/gallery` serves 7 categories / 131 images, all present on disk.
+
+### Known limitation
+
+There is still no browser in this environment, so the *look* of the new hero
+glass, signature and lightbox has been verified structurally (classes,
+computed values, transitions, layering, behaviour) rather than visually. The
+one judgement call worth a second pair of eyes: the chairman's portrait is
+`princi.jpg`, whose original alt text said "Principal" — the section it sits in
+is the administration message signed by the Founding Chairman, so the alt text
+and the signature now both read as the Founding Chairman. If that photograph is
+in fact the principal, the name should move to the person it depicts.

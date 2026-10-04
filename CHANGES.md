@@ -717,3 +717,69 @@ clean on every touched script, HTTP 200 on all ten pages, and the served CSS
 carries the new rules. `build:tailwind` is deterministic (a rebuild on the
 untouched tree produced no diff). No browser exists in this environment, so the
 visual pass over hero, form, cards and reader remains outstanding.
+
+## Second pass — owner-reported items (hero, administration, gallery, admissions)
+
+Nine items were reported against the landing page, the administration section
+and the admissions form. Three were defects, not taste:
+
+- **The infinite loader (gallery viewer).** The old viewer latched a
+  module-level `isLoading` flag and early-returned from `nextImage()` /
+  `prevImage()` while it was set. One slow, failed or *abandoned* image left the
+  spinner running forever and made every later Next/Prev click do nothing.
+  Reproduced in jsdom (a request that never resolves): spinner still visible
+  after 3 s, three further clicks swallowed. The viewer is now a token-based
+  state machine — every load settles on `onload`, `onerror` or a timeout guard
+  (12 s, overridable per dialog with `data-load-guard`), stale callbacks are
+  dropped by token, and navigation is never gated.
+- **`NaN / 0` in the count indicator.** That string came from the *duplicate*
+  lightbox that used to live in `main.js`:
+  `(currentIndex + 1) % currentArchive.length` is NaN for an empty archive. The
+  duplicate was removed by the polish pass, but the browser was still running
+  the cached copy — `main.js` and `home.js` now carry `?v=2`, and the new
+  `verify:lightbox` harness fails if that expression (or any second counter)
+  comes back. The new counter is written only from `normalizeIndex()`, which
+  clamps a finite integer into `0..n-1` with `n ≥ 1`; an empty archive never
+  opens the viewer at all. Brute-forcing nine degenerate archives (empty, null,
+  object, string, number, nested, nulls, single, non-JSON) produces no NaN.
+- **The close button was overlapped by the header.** Three pages share
+  `id="lightbox"` and the unified nav is `z-index: 900` (1200 with its menu
+  open). The viewer is now scoped as `#lightbox.lb` at `z-index: 9500` (the
+  library reader and admin preview keep their own `#lightbox:not(.lb)` raise),
+  and opening it adds `html.lb-open`, which hides the nav and its menu outright
+  — so nothing can cover the control in any scroll position or nav state.
+
+Design items, all in the same pass:
+
+- **Hero "Welcome" pill** — whitish frosted glass (`bg-white/10`,
+  `backdrop-blur-xl` + saturation, hairline white border, inset highlight). The
+  softening comes from translucent fills rather than `opacity` because a
+  non-1 opacity on the element (or an ancestor) makes browsers drop
+  `backdrop-filter`, which would remove the glass instead of dimming it.
+- **Hero CTAs keep their effect when pressed.** `:active` no longer scales the
+  button: the yellow pill keeps its surface, its sweep and an inset ring, and
+  the glass CTA keeps — actually strengthens — its backdrop blur. The sheen
+  overlay also stays out while the primary button is held
+  (`group-active:scale-x-100`).
+- **Scroll indicator** — the bouncing arrow is replaced by a hairline rail with
+  a gold bead travelling down it over a muted chevron, as a real link to
+  `#about`, still under `prefers-reduced-motion`.
+- **Founder's signature** — "Justice Kayode Eso" in Great Vibes (added to the
+  page's single Google Fonts import, which the CSP already allows) on a plate
+  inside the portrait's rounded frame; the frame is a `<figure>` with the
+  signature as its `<figcaption>`, and it is now `position: relative`, which is
+  where the decorative watermark's `inset: 0` was always meant to resolve.
+- **Gallery spacing** — section padding `py-12 → py-20/28`, header margin, grid
+  `gap-8 → gap-x-8 gap-y-16`, and each category's caption gets a gold hairline
+  with 26px of air above and 16px below (`.gallery-caption*`, CSS classes rather
+  than utilities because the cards are injected by JS).
+- **Admissions "Send Message"** — the button no longer borrows whatever
+  `.btn-primary` happens to be: `.btn-send` owns a solid brand surface, a
+  hairline border, a shadow, and hover/pressed/focus/busy states.
+
+Verified: `npm run verify:polish` 7 pages / 0 failures, `npm run
+verify:lightbox` 54/54 assertions (including the hung-request reproduction and
+the NaN guards), `node --check` clean on every script, `build:tailwind`
+regenerated `tw-index.css` with the new utilities before the pages changed
+classes, and the server returns 200 on all eight pages with the gallery API
+serving 7 categories / 131 images (all present on disk).
