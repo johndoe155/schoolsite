@@ -7,15 +7,6 @@ module.exports = {
           "system-ui",
           "sans-serif"
         ],
-        "display": [
-          "Abril Fatface",
-          "Georgia",
-          "serif"
-        ],
-        "brand": [
-          "Montserrat",
-          "sans-serif"
-        ],
         "serif": [
           "Libre Baskerville",
           "Georgia",
@@ -32,6 +23,7 @@ module.exports = {
     }
   },
   "content": [
-    "./public/admin.html"
+    "./public/admin.html",
+    "./public/assets/js/admin.js"
   ]
 };

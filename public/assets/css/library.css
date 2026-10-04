@@ -44,7 +44,8 @@ body {
 .resource-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.4);
-  background-color: var(--lux-surface-hover);
+  /* mirrors lux.surface-hover in build/tailwind/library.config.js */
+  background-color: rgba(255, 255, 255, 0.08);
     
 }
 .pdf-page-container {
@@ -160,4 +161,21 @@ select.admin-input {  appearance: none; cursor: pointer;
 #auth-nav-staff {  display: none; align-items: center; gap: 1.5rem;
 }
 #auth-nav-staff.visible {  display: flex;
+}
+
+/* ── Library main container: utility padding snapped to the token scale ──
+   Was px-4/py-8 + sm:px-6/lg:px-8/lg:py-12 utilities with an inline
+   padding-top hardcoding the 68px nav height. The token scale lands on the
+   same pixels: space-3 16px / space-4 24px / space-5 32px / space-6 48px. */
+.lib-main {
+  padding: var(--space-5) var(--space-3);
+  padding-top: calc(var(--nav-height) + var(--space-5));
+}
+@media (min-width: 640px) { .lib-main { padding-inline: var(--space-4); } }
+@media (min-width: 1024px) {
+  .lib-main {
+    padding-block: var(--space-6);
+    padding-top: calc(var(--nav-height) + var(--space-5));
+    padding-inline: var(--space-5);
+  }
 }

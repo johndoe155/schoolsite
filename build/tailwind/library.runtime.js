@@ -22,7 +22,12 @@ module.exports = {
           "cream": "#f7f5f2",
           "surface": "rgba(255, 255, 255, 0.03)",
           "surface-hover": "rgba(255, 255, 255, 0.08)",
-          "border": "rgba(255, 255, 255, 0.08)"
+          "border": "rgba(255, 255, 255, 0.08)",
+          "reader-panel": "#1a1d21",
+          "reader-bar": "#0f1115",
+          "reader-chip": "#25282e",
+          "reader-side": "#131519",
+          "reader-canvas": "#2d323b"
         }
       },
       "animation": {
@@ -54,6 +59,7 @@ module.exports = {
     }
   },
   "content": [
-    "./public/library.html"
+    "./public/library.html",
+    "./public/assets/js/library.js"
   ]
 };

@@ -281,7 +281,7 @@
       <div class="container-inner">
         <div class="meta">
           <span class="tag">${escapeHtml(post.category)}</span>
-          <time datetime="${escapeHtml(post.date || '')}" style="font-size:13px;color:var(--ink-45);font-weight:300;">${escapeHtml(dateStr)}</time>
+          <time datetime="${escapeHtml(post.date || '')}" style="font-size:13px;color:var(--color-ink-40);font-weight:300;">${escapeHtml(dateStr)}</time>
         </div>
         <h1 id="article-page-title">${escapeHtml(post.title)}</h1>
 

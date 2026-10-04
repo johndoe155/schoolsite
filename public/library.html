@@ -93,7 +93,7 @@
   
 
   <!-- Main Content -->
-  <main id="main-content" class="flex-grow px-4 sm:px-6 lg:px-8 py-8 lg:py-12" style="padding-top: calc(68px + 2rem);">
+  <main id="main-content" class="flex-grow lib-main">
     <div class="max-w-7xl mx-auto space-y-12">
 
       <!-- Hero Section -->
@@ -207,10 +207,10 @@
     
     <!-- Modal Container -->
     <div class="absolute inset-0 flex items-center justify-center p-0 md:p-6 lg:p-8">
-      <div class="bg-[#1a1d21] w-full h-full md:rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 origin-center border border-white/10" id="lightbox-content">
+      <div class="bg-lux-reader-panel w-full h-full md:rounded-2xl shadow-2xl overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 origin-center border border-white/10" id="lightbox-content">
         
         <!-- Top Toolbar -->
-        <div class="h-16 shrink-0 bg-[#0f1115] border-b border-white/5 flex items-center justify-between px-4 lg:px-6 relative z-10">
+        <div class="h-16 shrink-0 bg-lux-reader-bar border-b border-white/5 flex items-center justify-between px-4 lg:px-6 relative z-10">
           
           <!-- Left: Title -->
           <div class="flex items-center gap-4 flex-1 min-w-0">
@@ -224,7 +224,7 @@
           </div>
 
           <!-- Center: Pagination (Desktop) -->
-          <div class="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-[#25282e] rounded-lg p-1 border border-white/5">
+          <div class="hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 bg-lux-reader-chip rounded-lg p-1 border border-white/5">
              <button id="prev-page" class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 text-white/70 transition-colors disabled:opacity-30">
                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
              </button>
@@ -256,14 +256,14 @@
         <div class="flex-1 flex overflow-hidden relative">
           
           <!-- Sidebar (Thumbnails) -->
-          <div id="pdf-sidebar" class="w-0 md:w-64 bg-[#131519] border-r border-white/5 flex-shrink-0 transition-all duration-300 overflow-y-auto hidden md:block">
+          <div id="pdf-sidebar" class="w-0 md:w-64 bg-lux-reader-side border-r border-white/5 flex-shrink-0 transition-all duration-300 overflow-y-auto hidden md:block">
              <div class="p-4 space-y-4" id="thumbnail-container">
                 <!-- Thumbnails injected here -->
              </div>
           </div>
 
           <!-- Main Scroll Container -->
-          <div id="pdf-scroll-container" class="flex-1 overflow-y-auto overflow-x-hidden bg-[#2d323b] relative p-4 md:p-8 pdf-scroll flex justify-center">
+          <div id="pdf-scroll-container" class="flex-1 overflow-y-auto overflow-x-hidden bg-lux-reader-canvas relative p-4 md:p-8 pdf-scroll flex justify-center">
              
              <!-- PDF Canvas Wrapper -->
              <div id="pdf-wrapper" class="w-full max-w-3xl transition-transform duration-200 origin-top">
@@ -291,7 +291,7 @@
           </div>
 
           <!-- Bottom Floating Controls (Zoom) -->
-          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1d21]/90 backdrop-blur border border-white/10 rounded-full px-4 py-2 flex items-center gap-4 shadow-xl z-20">
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-lux-reader-panel/90 backdrop-blur border border-white/10 rounded-full px-4 py-2 flex items-center gap-4 shadow-xl z-20">
              <button id="zoom-out" class="text-white/70 hover:text-white transition-colors p-1" title="Zoom Out">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
              </button>

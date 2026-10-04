@@ -285,7 +285,7 @@ html.bic-transit-go.bic-is-transitioning::after {
 }
 .bic-nav--open .bic-nav__toggle:hover {
   color: var(--menu-accent); border-color: var(--menu-accent);
-  background: var(--menu-accent-soft);
+  background: var(--nav-accent-soft);
 }
 
 /* ============================================================

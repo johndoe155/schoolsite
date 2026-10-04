@@ -1,36 +1,10 @@
-:root {
-      
-  --lux-parchment:    var(--color-paper);
-  --lux-cream:        var(--color-surface);
-  --lux-white:        var(--color-white);
-  --lux-ink:          var(--color-ink);
-  --lux-ink-70:       var(--color-ink-70);
-  --lux-ink-40:       var(--color-ink-40);
-  --lux-ink-12:       var(--color-ink-12);
-  --lux-gold:         var(--color-accent);
-  --lux-gold-pale:    var(--color-accent-soft);
-  --lux-gold-border:  var(--color-accent-border);
-  --lux-muted:        var(--color-ink-60);
-  --lux-success:      var(--color-success);
-  --lux-danger:       var(--color-danger);
-  --lux-font-display: var(--font-display);
-  --lux-font-body:    var(--font-body);
-  --lux-ease:         var(--ease-out);
-  --lux-ease-out:     var(--ease-out);
-  --lux-dur-fast:     var(--dur-fast);
-  --lux-dur-mid:      var(--dur-mid);
-  --lux-dur-slow:     var(--dur-slow);
-  --lux-max:          var(--container-max);
-  --lux-gutter:       var(--gutter);
-    
-}
 *, *::before, *::after {  box-sizing: border-box;
 }
 body {
   margin: 0;
-  font-family: var(--lux-font-body);
-  color: var(--lux-ink);
-  background-color: var(--lux-parchment);
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background-color: var(--color-paper);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
@@ -40,8 +14,8 @@ body {
   opacity: 0;
   transform: translateY(28px);
   transition:
-  opacity var(--lux-dur-slow) var(--lux-ease-out),
-  transform var(--lux-dur-slow) var(--lux-ease-out);
+  opacity var(--dur-slow) var(--ease-out),
+  transform var(--dur-slow) var(--ease-out);
   will-change: opacity, transform;
     
 }
@@ -63,10 +37,10 @@ body {
   }
 }
 .lux-wrap {
-  max-width: var(--lux-max);
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding-left: var(--lux-gutter);
-  padding-right: var(--lux-gutter);
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
     
 }
 .lux-hero {
@@ -88,7 +62,7 @@ body {
     
 }
 .lux-hero-watermark span {
-  font-family: var(--lux-font-display);
+  font-family: var(--font-display);
   font-size: clamp(120px, 22vw, 280px);
   font-weight: 300;
   font-style: italic;
@@ -104,7 +78,7 @@ body {
   align-items: center;
   gap: 14px;
   margin-bottom: 28px;
-  animation: fadeSlideUp 0.8s var(--lux-ease-out) both;
+  animation: fadeSlideUp 0.8s var(--ease-out) both;
     
 }
 .lux-hero-rule::before {
@@ -112,44 +86,44 @@ body {
   display: block;
   width: 40px;
   height: 1px;
-  background: var(--lux-gold);
+  background: var(--color-accent);
   flex-shrink: 0;
     
 }
 .lux-hero-eyebrow {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--lux-gold);
+  color: var(--color-accent);
     
 }
 .lux-hero-title {
-  font-family: var(--lux-font-display);
+  font-family: var(--font-display);
   font-size: clamp(3rem, 8vw, 6.5rem);
   font-weight: 300;
   line-height: 0.92;
   letter-spacing: -0.028em;
-  color: var(--lux-ink);
+  color: var(--color-ink);
   margin: 0 0 28px 0;
-  animation: fadeSlideUp 0.9s 0.08s var(--lux-ease-out) both;
+  animation: fadeSlideUp 0.9s 0.08s var(--ease-out) both;
     
 }
 .lux-hero-title em {
   font-style: italic;
-  color: var(--lux-gold);
+  color: var(--color-accent);
     
 }
 .lux-hero-sub {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: clamp(0.9rem, 1.5vw, 1.05rem);
   font-weight: 300;
-  color: var(--lux-muted);
+  color: var(--color-ink-60);
   max-width: 46ch;
   line-height: 1.72;
   margin: 0;
-  animation: fadeSlideUp 0.9s 0.16s var(--lux-ease-out) both;
+  animation: fadeSlideUp 0.9s 0.16s var(--ease-out) both;
     
 }
 .lux-hero-bottom-rule {
@@ -157,7 +131,7 @@ body {
   align-items: center;
   gap: 0;
   margin-top: clamp(40px, 6vw, 64px);
-  animation: fadeSlideUp 0.9s 0.22s var(--lux-ease-out) both;
+  animation: fadeSlideUp 0.9s 0.22s var(--ease-out) both;
     
 }
 .lux-hero-bottom-rule::before,
@@ -165,14 +139,14 @@ body {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--lux-ink-12);
+  background: var(--color-ink-12);
     
 }
 .lux-hero-bottom-rule-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--lux-gold);
+  background: var(--color-accent);
   margin: 0 16px;
   flex-shrink: 0;
     
@@ -203,7 +177,7 @@ body {
   }
 }
 .lux-form-surface {
-  background: var(--lux-white);
+  background: var(--color-white);
   padding: clamp(36px, 5vw, 64px);
   position: relative;
   box-shadow:
@@ -217,34 +191,34 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--lux-gold) 0%, rgba(176,125,63,0.4) 60%, transparent 100%);
+  background: linear-gradient(90deg, var(--color-accent) 0%, rgba(176,125,63,0.4) 60%, transparent 100%);
     
 }
 .lux-form-eyebrow {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--lux-gold);
+  color: var(--color-accent);
   margin: 0 0 18px 0;
     
 }
 .lux-form-heading {
-  font-family: var(--lux-font-display);
+  font-family: var(--font-display);
   font-size: clamp(1.6rem, 3.2vw, 2.4rem);
   font-weight: 300;
   letter-spacing: -0.022em;
-  color: var(--lux-ink);
+  color: var(--color-ink);
   line-height: 1.08;
   margin: 0 0 10px 0;
     
 }
 .lux-form-desc {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 300;
-  color: var(--lux-muted);
+  color: var(--color-ink-60);
   margin: 0 0 40px 0;
   line-height: 1.68;
   max-width: 54ch;
@@ -270,14 +244,14 @@ body {
 }
 .lux-label {
   display: block;
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--lux-gold);
+  color: var(--color-accent);
   margin-bottom: 12px;
-  transition: color var(--lux-dur-fast) ease;
+  transition: color var(--dur-fast) ease;
     
 }
 .lux-input,
@@ -285,15 +259,15 @@ body {
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--lux-ink-12);
+  border-bottom: 1px solid var(--color-ink-12);
   padding: 10px 0 14px;
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.975rem;
   font-weight: 300;
-  color: var(--lux-ink);
+  color: var(--color-ink);
   outline: none;
   border-radius: 0;
-  transition: border-color var(--lux-dur-fast) ease;
+  transition: border-color var(--dur-fast) ease;
   -webkit-appearance: none;
     
 }
@@ -309,8 +283,8 @@ body {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--lux-gold);
-  transition: width 0.45s var(--lux-ease-out);
+  background: var(--color-accent);
+  transition: width 0.45s var(--ease-out);
   pointer-events: none;
     
 }
@@ -319,7 +293,7 @@ body {
     
 }
 .lux-field-group:focus-within .lux-label {
-  color: var(--lux-gold);
+  color: var(--color-accent);
     
 }
 .lux-textarea {
@@ -347,7 +321,7 @@ body {
   filter: invert(0.45) sepia(1) saturate(4) hue-rotate(15deg) brightness(0.95);
   opacity: 0.65;
   cursor: pointer;
-  transition: opacity var(--lux-dur-fast) ease;
+  transition: opacity var(--dur-fast) ease;
   padding: 0;
   margin-left: 8px;
     
@@ -374,9 +348,9 @@ body {
   align-items: center;
   gap: 14px;
   padding: 16px 38px;
-  background: var(--lux-ink);
-  color: var(--lux-cream);
-  font-family: var(--lux-font-body);
+  background: var(--color-ink);
+  color: var(--color-surface);
+  font-family: var(--font-body);
   font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -385,7 +359,7 @@ body {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color var(--lux-dur-mid) var(--lux-ease);
+  transition: color var(--dur-mid) var(--ease-out);
   -webkit-tap-highlight-color: transparent;
     
 }
@@ -393,10 +367,10 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--lux-gold);
+  background: var(--color-accent);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.5s var(--lux-ease-out);
+  transition: transform 0.5s var(--ease-out);
     
 }
 .lux-btn-send:hover::before,
@@ -407,14 +381,14 @@ body {
 .lux-btn-send:hover {  color: #1A1000;
 }
 .lux-btn-send:focus-visible {
-  outline: 2px solid var(--lux-gold);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
     
 }
 .lux-btn-send > * {  position: relative; z-index: 1;
 }
 .lux-btn-send .lux-btn-arrow {
-  transition: transform 0.35s var(--lux-ease);
+  transition: transform 0.35s var(--ease-out);
     
 }
 .lux-btn-send:hover .lux-btn-arrow {
@@ -430,28 +404,28 @@ body {
   background: none;
   border: none;
   padding: 16px 4px;
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.8125rem;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--lux-muted);
+  color: var(--color-ink-60);
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: rgba(122, 111, 99, 0.35);
-  transition: color var(--lux-dur-fast) ease, text-decoration-color var(--lux-dur-fast) ease;
+  transition: color var(--dur-fast) ease, text-decoration-color var(--dur-fast) ease;
     
 }
-.lux-btn-reset:hover {  color: var(--lux-ink); text-decoration-color: var(--lux-ink);
+.lux-btn-reset:hover {  color: var(--color-ink); text-decoration-color: var(--color-ink);
 }
-.lux-btn-reset:focus-visible {  outline: 2px solid var(--lux-gold); outline-offset: 3px;
+.lux-btn-reset:focus-visible {  outline: 2px solid var(--color-accent); outline-offset: 3px;
 }
 .lux-privacy-note {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 28px;
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.76rem;
   font-weight: 300;
   color: rgba(24, 20, 16, 0.32);
@@ -462,23 +436,23 @@ body {
 }
 .lux-status {
   margin-top: 24px;
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 400;
   padding: 14px 20px;
   border-left: 2px solid;
-  animation: fadeSlideUp 0.4s var(--lux-ease-out) both;
+  animation: fadeSlideUp 0.4s var(--ease-out) both;
     
 }
 .lux-status.success {
-  border-color: var(--lux-success);
-  color: var(--lux-success);
+  border-color: var(--color-success);
+  color: var(--color-success);
   background: rgba(46, 125, 79, 0.05);
     
 }
 .lux-status.error {
-  border-color: var(--lux-danger);
-  color: var(--lux-danger);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
   background: rgba(158, 48, 48, 0.05);
     
 }
@@ -489,7 +463,7 @@ body {
     
 }
 .lux-info-panel {
-  background: var(--lux-ink);
+  background: var(--color-ink);
   padding: clamp(32px, 4vw, 48px);
   position: relative;
   overflow: hidden;
@@ -520,12 +494,12 @@ body {
     
 }
 .lux-info-eyebrow {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--lux-gold);
+  color: var(--color-accent);
   margin: 0 0 28px 0;
     
 }
@@ -546,18 +520,18 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  border: 1px solid var(--lux-gold-border);
+  border: 1px solid var(--color-accent-border);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--lux-gold);
-  transition: background var(--lux-dur-fast) ease, border-color var(--lux-dur-fast) ease;
+  color: var(--color-accent);
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease;
     
 }
 .lux-info-item:hover .lux-info-icon {
-  background: var(--lux-gold-pale);
-  border-color: var(--lux-gold);
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
     
 }
 .lux-info-body {
@@ -566,7 +540,7 @@ body {
 }
 .lux-info-body strong {
   display: block;
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.9375rem;
   font-weight: 400;
   color: rgba(250, 247, 242, 0.92);
@@ -575,7 +549,7 @@ body {
     
 }
 .lux-info-body small {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.42);
@@ -586,12 +560,12 @@ body {
   color: inherit;
   text-decoration: none;
   border-bottom: 1px solid rgba(250, 247, 242, 0.18);
-  transition: border-color var(--lux-dur-fast) ease;
+  transition: border-color var(--dur-fast) ease;
     
 }
-.lux-info-body a:hover {  border-color: var(--lux-gold); color: var(--lux-gold);
+.lux-info-body a:hover {  border-color: var(--color-accent); color: var(--color-accent);
 }
-.lux-info-body a:focus-visible {  outline: 2px solid var(--lux-gold); outline-offset: 2px;
+.lux-info-body a:focus-visible {  outline: 2px solid var(--color-accent); outline-offset: 2px;
 }
 .lux-info-divider {
   height: 1px;
@@ -614,24 +588,24 @@ body {
   color: rgba(250, 247, 242, 0.5);
   text-decoration: none;
   transition:
-  border-color var(--lux-dur-fast) ease,
-  color var(--lux-dur-fast) ease,
-  transform var(--lux-dur-fast) ease;
+  border-color var(--dur-fast) ease,
+  color var(--dur-fast) ease,
+  transform var(--dur-fast) ease;
     
 }
 .lux-social-link:hover {
-  border-color: var(--lux-gold);
-  color: var(--lux-gold);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
   transform: translateY(-2px);
     
 }
 .lux-social-link:focus-visible {
-  outline: 2px solid var(--lux-gold);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
     
 }
 .lux-map-surface {
-  background: var(--lux-white);
+  background: var(--color-white);
   overflow: hidden;
   box-shadow:
   0 1px 2px rgba(24, 20, 16, 0.04),
@@ -644,29 +618,29 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--lux-gold) 0%, rgba(176,125,63,0.3) 60%, transparent 100%);
+  background: linear-gradient(90deg, var(--color-accent) 0%, rgba(176,125,63,0.3) 60%, transparent 100%);
     
 }
 .lux-map-header {
   padding: 24px 28px 22px;
-  border-bottom: 1px solid var(--lux-ink-12);
+  border-bottom: 1px solid var(--color-ink-12);
     
 }
 .lux-map-title {
-  font-family: var(--lux-font-display);
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 300;
   letter-spacing: -0.015em;
-  color: var(--lux-ink);
+  color: var(--color-ink);
   margin: 0 0 4px 0;
   line-height: 1.1;
     
 }
 .lux-map-desc {
-  font-family: var(--lux-font-body);
+  font-family: var(--font-body);
   font-size: 0.8125rem;
   font-weight: 300;
-  color: var(--lux-muted);
+  color: var(--color-ink-60);
   margin: 0;
   line-height: 1.5;
     

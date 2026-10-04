@@ -6,8 +6,6 @@ module.exports = {
         extend: {
           fontFamily: {
             sans:    ['Montserrat','system-ui','sans-serif'],
-            display: ['Abril Fatface','Georgia','serif'],
-            brand:   ['Montserrat','sans-serif'],
             serif:   ['Libre Baskerville','Georgia','serif'],
           },
           colors: {

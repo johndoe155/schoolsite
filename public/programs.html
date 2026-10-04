@@ -77,9 +77,9 @@
         Three pathways. Each pairs rigorous coursework with real-world projects, mentorship, and a capstone to launch your future.
       </p>
       <div class="hero__actions">
-        <a class="btn btn-gold" href="#programs-overview">View programs</a>
-        <a class="btn btn-ghost" href="#apply">Contact Admissions</a>
-        <span style="font-size:13px; color:rgba(200,190,170,.5); letter-spacing:.03em;">bicbis95@gmail.com</span>
+        <a class="btn-secondary" href="#programs-overview">View programs</a>
+        <a class="btn-ghost" href="#apply">Contact Admissions</a>
+        <span class="hero__email">bicbis95@gmail.com</span>
       </div>
     </div>
     <div class="hero__scroll" aria-hidden="true">
@@ -105,8 +105,8 @@
 
         <!-- Sciences -->
         <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-sci"
-                 style="transition-delay:.05s">
-          <div class="prog-card__img" style="background-image:url('/assets/img/science1.jpg');" aria-hidden="true"></div>
+                 style="--delay:50ms">
+          <div class="prog-card__img prog-card__img--science" aria-hidden="true"></div>
           <div class="prog-card__gradient" aria-hidden="true"></div>
           <div class="prog-card__arrow" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -126,8 +126,8 @@
 
         <!-- Arts -->
         <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-arts"
-                 style="transition-delay:.15s">
-          <div class="prog-card__img" style="background-image:url('/assets/img/arts1.jpg');" aria-hidden="true"></div>
+                 style="--delay:150ms">
+          <div class="prog-card__img prog-card__img--arts" aria-hidden="true"></div>
           <div class="prog-card__gradient" aria-hidden="true"></div>
           <div class="prog-card__arrow" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -147,8 +147,8 @@
 
         <!-- Commerce -->
         <article class="prog-card reveal" tabindex="0" role="listitem" aria-labelledby="prog-comm"
-                 style="transition-delay:.25s">
-          <div class="prog-card__img" style="background-image:url('/assets/img/comm1.jpg');" aria-hidden="true"></div>
+                 style="--delay:250ms">
+          <div class="prog-card__img prog-card__img--comm" aria-hidden="true"></div>
           <div class="prog-card__gradient" aria-hidden="true"></div>
           <div class="prog-card__arrow" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -275,7 +275,7 @@
           </article>
 
           <!-- ── ARTS & HUMANITIES ── -->
-          <article class="program-section reveal" id="arts" aria-labelledby="arts-title" style="transition-delay:.1s">
+          <article class="program-section reveal" id="arts" aria-labelledby="arts-title" style="--delay:100ms">
             <header class="program-section__header">
               <span class="program-tag">Arts &amp; Humanities</span>
               <h2 class="program-title" id="arts-title">Creative inquiry across culture &amp; expression</h2>
@@ -367,7 +367,7 @@
           </article>
 
           <!-- ── BUSINESS & ECONOMICS ── -->
-          <article class="program-section reveal" id="business" aria-labelledby="biz-title" style="transition-delay:.2s">
+          <article class="program-section reveal" id="business" aria-labelledby="biz-title" style="--delay:200ms">
             <header class="program-section__header">
               <span class="program-tag">Business &amp; Economics</span>
               <h2 class="program-title" id="biz-title">Practical business education for the real economy</h2>
@@ -464,7 +464,7 @@
         <aside class="sidebar" aria-label="Admissions information">
 
           <!-- Contact Form Card -->
-          <div class="sidebar-card reveal" style="transition-delay:.3s">
+          <div class="sidebar-card reveal" style="--delay:300ms">
             <div class="sidebar-card__header">
               <h3 class="sidebar-card__title">Admissions help</h3>
               <p class="sidebar-card__sub">Schedule a call, request a brochure, or ask about scholarships.</p>
@@ -488,13 +488,13 @@
                   </select>
                 </div>
                 <button type="submit" class="form-submit">Request information</button>
-                <div id="contact-msg" aria-live="polite" style="display:none"></div>
+                <div id="contact-msg" aria-live="polite"></div>
               </form>
             </div>
           </div>
 
           <!-- Quick Info -->
-          <div class="info-strip reveal" style="transition-delay:.45s">
+          <div class="info-strip reveal" style="--delay:450ms">
             <div class="info-row">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
               <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a>
@@ -518,7 +518,7 @@
   <!-- ====================================================
        APPLY CTA
        ==================================================== -->
-  <div style="padding: 0 0 clamp(48px, 8vh, 96px);" class="bg-parchment">
+  <div class="bg-parchment cta-band">
     <div class="cta-section" id="apply" aria-labelledby="apply-title">
       <div aria-hidden="true" class="cta-bg-text">BIC</div>
 
@@ -528,15 +528,15 @@
         <p class="cta-sub">Apply to a program or contact Admissions for guidance and scholarship details.</p>
       </div>
 
-      <div class="cta-actions reveal" style="transition-delay:.15s">
-        <a class="btn btn-gold contact-btn"
+      <div class="cta-actions reveal" style="--delay:150ms">
+        <a class="btn-secondary contact-btn"
            href="/contact.html"
            id="contactBtn"
            aria-controls="contactPanel"
            aria-expanded="false">
           Contact us
         </a>
-        <a class="btn btn-ghost" href="mailto:bicbis95@gmail.com">
+        <a class="btn-ghost" href="mailto:bicbis95@gmail.com">
           Email directly
         </a>
       </div>
@@ -548,7 +548,7 @@
           <p><strong>Admissions Office</strong></p>
           <p>Email: <a href="mailto:bicbis95@gmail.com">bicbis95@gmail.com</a></p>
           <p>Phone: <a href="tel:+2348166061632">+234 816 606 1632</a></p>
-          <p style="margin-bottom:0">Office hours: Mon – Fri, 08:00 – 16:00</p>
+          <p class="cta-note">Office hours: Mon – Fri, 08:00 – 16:00</p>
         </div>
       </div>
       <div id="contactAnnouncer" class="sr-only" aria-live="polite"></div>

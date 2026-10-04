@@ -109,6 +109,8 @@ module.exports = {
     }
   },
   "content": [
-    "./public/index.html"
+    "./public/index.html",
+    "./public/assets/js/main.js",
+    "./public/assets/js/home.js"
   ]
 };

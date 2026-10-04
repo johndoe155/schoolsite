@@ -1,10 +1,6 @@
-:root {
-  --accent-red: #8B0000;
-  --muted-purple: rgba(180,180,210,0.35);
-}
 .showreel-cta {  display:flex;align-items:center;gap:12px;margin-top:18px;margin-left:2px;
 }
-.cta-chevron {  width:18px;height:18px;color:var(--accent-red);flex:0 0 auto;
+.cta-chevron {  width:18px;height:18px;color:var(--color-danger);flex:0 0 auto;
 }
 .cta-text {  color:#fff;font-weight:700;text-decoration:none;font-size:16px;letter-spacing:.2px;
 }
@@ -91,16 +87,6 @@
   100% {  transform: scale(1);
   }
 }
-.btn-submit {
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  
-}
-.btn-submit:active {
-  transform: scale(0.95);
-  
-}
 .success-state {
   background-color: #10b981 !important;
   transform: scale(1.05) !important;
@@ -154,10 +140,6 @@
       
   }
 }
-:root {
-  --brand-indigo: #05014a;
-  --brand-yellow: #FACC15;
-}
 html {
   scroll-behavior: smooth;
 }
@@ -204,12 +186,12 @@ body {
   animation: spin 2s linear infinite;
 }
 .loader::before {
-  border-top-color: var(--brand-indigo);
+  border-top-color: var(--color-brand);
   animation-duration: 2s;
 }
 .loader::after {
   inset: 10px;
-  border-bottom-color: var(--brand-yellow);
+  border-bottom-color: var(--color-brand-yellow);
   animation-duration: 1.5s;
   animation-direction: reverse;
 }
@@ -221,7 +203,7 @@ body {
   justify-content: center;
   color: white;
   font-size: 3rem;
-  font-family: 'Libre Baskerville', serif;
+  font-family: var(--font-display);
   font-weight: 400;
   letter-spacing: 0.1em;
   animation: pulse 2s ease-in-out infinite;
@@ -254,8 +236,8 @@ body {
   transition: box-shadow 160ms ease, outline-color 160ms ease;
 }
 .field-error {
-  font-family: Montserrat;
-  color: var(--g-100);
+  font-family: var(--font-ui);
+  color: var(--color-danger);
   font-size: 0.95rem;
   margin-top: 0.35rem;
 }
@@ -263,22 +245,58 @@ body {
   transform: translateY(0);
   opacity: 0.95;
 }
-.form-message--error {  font-family: Montserrat; color: #E53935;
+.form-message--error {  font-family: var(--font-ui); color: var(--color-danger);
 }
-.form-message--success {  font-family: Montserrat; color: #038C6A; font-weight: 600;
+.form-message--success {  font-family: var(--font-ui); color: var(--color-success); font-weight: 600;
 }
-.btn-primary {
-  color: var(--color-foreground, #BDBDBD);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
-  border: 1px solid rgba(189,189,189,0.12);
-  box-shadow: 0 6px 18px rgba(187,238,221,0.06);
-  backdrop-filter: blur(4px);
-  font-family: Montserrat;
+/* ── Home hero CTA pair ──────────────────────────────────────
+   The designed hero buttons — yellow pill + glass ghost — used to live in
+   an inline <style type="text/tailwindcss"> block that stopped being
+   compiled when the Tailwind Play CDN was replaced by the build-time
+   stylesheet, so the hero silently fell back to the shared button styles
+   (and the bare .btn-primary override here turned every button on the page,
+   including the enquiry form's submit, into a washed-out glass ghost).
+   Scoped to the hero: everything else keeps the components.css treatment. */
+#home .btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-brand-yellow);
+  color: var(--color-brand);
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 18px 40px rgba(250, 204, 21, 0.22);
 }
-.btn-primary:hover {  transform: translateY(-2px);
+#home .btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -120%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg);
+  transition: left 700ms var(--ease-out);
+  pointer-events: none;
 }
-.btn-primary:active {  transform: translateY(0);
+#home .btn-primary:hover {
+  background: var(--color-brand-yellow);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 24px 52px rgba(250, 204, 21, 0.32);
 }
+#home .btn-primary:hover::before { left: 220%; }
+#home .btn-primary:active { transform: scale(0.96); }
+#home .btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+#home .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(255, 255, 255, 0.06);
+}
+#home .btn-secondary:active { transform: scale(0.96); }
 .btn--sending {  pointer-events: none; opacity: 0.94; transform: translateY(0);
 }
 .sr-only {
@@ -293,7 +311,7 @@ body {
 }
 footer {
   margin-top:28px;
-  color:var(--muted);
+  color: var(--color-ink-60);
   text-align:center;
   font-size:13px;
   padding-bottom:40px;
@@ -311,19 +329,10 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   opacity: 1;
   transform: translateY(0);
 }
-:root {
-  --navy:   #05014a;
-  --gold:   #FACC15;
-  --cream:  #FAF6EF;
-  --stone:  #D6D3D1;
-  --ink:    #0f172a;
-  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 .bic-reveal {
   opacity: 0;
   transform: translateY(36px);
-  transition: opacity 0.75s var(--ease-spring), transform 0.75s var(--ease-spring);
+  transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
   transition-delay: var(--delay, 0ms);
 }
 .bic-reveal.from-left {  transform: translateX(-36px);
@@ -350,7 +359,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   opacity: 0.3;
 }
 #bic-heritage {
-  background-color: var(--navy);
+  background-color: var(--color-brand);
   background-image:
   radial-gradient(ellipse 60% 50% at 10% 20%, rgba(250,204,21,0.06) 0%, transparent 60%),
   radial-gradient(ellipse 50% 40% at 90% 80%, rgba(250,204,21,0.04) 0%, transparent 60%),
@@ -364,7 +373,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   background: linear-gradient(to bottom, transparent, rgba(250,204,21,0.6) 10%, rgba(250,204,21,0.6) 90%, transparent);
   transform-origin: top center;
 }
-.timeline-line.is-visible {  animation: drawLine 1.4s var(--ease-spring) both;
+.timeline-line.is-visible {  animation: drawLine 1.4s var(--ease-out) both;
 }
 @keyframes drawLine {
   from {  transform: scaleY(0);
@@ -375,7 +384,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
 .timeline-dot {
   width: 14px; height: 14px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--color-brand-yellow);
   box-shadow: 0 0 0 4px rgba(250,204,21,0.2), 0 0 0 8px rgba(250,204,21,0.06);
   position: absolute;
   left: 50%;
@@ -402,20 +411,20 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   transform: translateY(-2px);
 }
 .timeline-year {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-ui);
   font-weight: 700;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--color-brand-yellow);
   margin-bottom: 6px;
 }
 #bic-message {
-  background-color: var(--cream);
+  background-color: var(--color-surface);
   background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2305014a' fill-opacity='0.025'%3E%3Cpath fill-rule='evenodd' d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm4 0L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0l28-28v2L54 40h-2zm4 0l24-24v2L58 40h-2zm4 0l20-20v2L62 40h-2zm4 0l16-16v2L66 40h-2zm4 0l12-12v2L70 40h-2zm4 0l8-8v2l-6 6h-2zm4 0l4-4v2l-2 2h-2z'/%3E%3C/g%3E%3C/svg%3E");
 }
 .quote-glyph {
-  font-family: 'Libre Baskerville', serif;
+  font-family: var(--font-display);
   font-size: 14rem;
   font-weight: 300;
   font-style: italic;
@@ -450,15 +459,15 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   gap: 16px;
 }
 .admin-initials {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-ui);
   font-size: 4rem;
   font-weight: 600;
-  color: var(--gold);
+  color: var(--color-brand-yellow);
   opacity: 0.8;
   letter-spacing: 0.1em;
 }
 .admin-title-badge {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-ui);
   font-size: 0.65rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -467,7 +476,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
 .gold-rule {
   height: 2px;
   width: 60px;
-  background: linear-gradient(90deg, var(--gold), #f59e0b, var(--gold));
+  background: linear-gradient(90deg, var(--color-brand-yellow), #f59e0b, var(--color-brand-yellow));
   background-size: 200% auto;
   border: none;
   border-radius: 2px;
@@ -494,12 +503,12 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   position: relative;
   border-radius: 24px;
   overflow: hidden;
-  transition: transform 0.45s var(--ease-spring), box-shadow 0.45s ease;
+  transition: transform 0.45s var(--ease-out), box-shadow 0.45s ease;
 }
 .mv-card:hover {  transform: translateY(-6px);
 }
 .mv-card-mission {
-  background: var(--navy);
+  background: var(--color-brand);
   box-shadow: 0 20px 60px rgba(5,1,74,0.3);
 }
 .mv-card-mission:hover {
@@ -545,7 +554,7 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
 .mv-icon-vision {  background: rgba(250,204,21,0.1);  border: 1px solid rgba(250,204,21,0.25);
 }
 .section-eyebrow {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-ui);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.28em;
@@ -635,30 +644,30 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
   }
 }
 @media (min-width: 1024px) {
-  .btn-primary {
+  #home .btn-primary {
     transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     
   }
-  .btn-primary:hover {
+  #home .btn-primary:hover {
     transform: translateY(-3px) scale(1.015);
     box-shadow: 0 16px 32px rgba(250, 204, 21, 0.25);
     
   }
-  .btn-primary:active {
+  #home .btn-primary:active {
     transform: translateY(-1px) scale(0.98);
     
   }
-  .btn-secondary {
+  #home .btn-secondary {
     transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     
   }
-  .btn-secondary:hover {
+  #home .btn-secondary:hover {
     transform: translateY(-3px) scale(1.015);
     box-shadow: 0 12px 24px rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.15);
     
   }
-  .btn-secondary:active {
+  #home .btn-secondary:active {
     transform: translateY(-1px) scale(0.98);
     
   }
@@ -795,3 +804,19 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
 
 /* ── Phase 10: anchor targets clear the fixed unified nav ── */
 #about, #academics, #gallery, #contact { scroll-margin-top: 76px; }
+
+/* ── Home page: inline styles moved into the stylesheet ─────────
+   Kept out of the markup so arbitrary values stay in one place and the
+   tokens remain the only source of colour. */
+#heroMedia { isolation: isolate; }
+#about { background-color: var(--color-paper); }
+.about-veil {
+  background: linear-gradient(135deg, transparent 0%, var(--color-brand) 100%);
+  opacity: 0.03;
+}
+.about-em { font-weight: 300; color: var(--color-brand); opacity: 0.72; }
+.about-watermark { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.about-watermark svg { opacity: 0.06; }
+.about-quote { font-style: italic; line-height: 1.55; }
+.about-quote cite { font-size: 1rem; }
+.consent-check { accent-color: var(--color-brand); }

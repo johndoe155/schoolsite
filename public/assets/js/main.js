@@ -309,94 +309,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // (Assuming mobile menu logic is handled by inline scripts or already present)
 
   // --- 5. Gallery Lightbox ---
-  const lightbox = document.getElementById('lightbox');
-  if (lightbox) {
-      const lbImg = document.getElementById('lbImg');
-      const lbTitle = document.getElementById('lbTitle');
-      const lbCounter = document.getElementById('lbCounter');
-      const lbLoader = document.getElementById('lbLoader');
-      let currentArchive = [];
-      let currentIndex = 0;
-
-      const openLightbox = (archive, index, title) => {
-        currentArchive = archive;
-        currentIndex = index;
-        lightbox.classList.remove('hidden');
-        setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
-        lightbox.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        updateLightboxImage(title);
-        const closeBtn = document.getElementById('lbClose');
-        if (closeBtn) closeBtn.focus();
-      };
-
-      const closeLightbox = () => {
-        lightbox.classList.add('opacity-0');
-        setTimeout(() => {
-          lightbox.classList.add('hidden');
-          lightbox.setAttribute('aria-hidden', 'true');
-          if (lbImg) lbImg.src = "";
-        }, 300);
-        document.body.style.overflow = '';
-      };
-
-      const updateLightboxImage = (overrideTitle) => {
-        if (!lbImg) return;
-        const src = currentArchive[currentIndex];
-        if (lbLoader) lbLoader.style.opacity = '1';
-        lbImg.style.opacity = '0.5';
-
-        const imgObj = new Image();
-        imgObj.onload = () => {
-          lbImg.src = src;
-          lbImg.style.opacity = '1';
-          if (lbLoader) lbLoader.style.opacity = '0';
-        };
-        imgObj.src = src;
-
-        if (overrideTitle && lbTitle) lbTitle.textContent = overrideTitle;
-        if (lbCounter) lbCounter.textContent = `${currentIndex + 1} / ${currentArchive.length}`;
-      };
-
-      document.querySelectorAll('.gallery-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-          const rawArchive = item.dataset.archive;
-          const title = item.dataset.title;
-          let archive = [];
-          try { archive = JSON.parse(rawArchive); } catch(e) { archive = [item.dataset.src]; }
-          openLightbox(archive, 0, title);
-        });
-      });
-
-      const nextBtn = document.getElementById('lbNext');
-      const prevBtn = document.getElementById('lbPrev');
-      const closeBtn = document.getElementById('lbClose');
-
-      if (nextBtn) nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % currentArchive.length;
-        updateLightboxImage();
-      });
-      if (prevBtn) prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + currentArchive.length) % currentArchive.length;
-        updateLightboxImage();
-      });
-      if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
-      
-      lightbox.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') {
-            currentIndex = (currentIndex + 1) % currentArchive.length;
-            updateLightboxImage();
-        }
-        if (e.key === 'ArrowLeft') {
-            currentIndex = (currentIndex - 1 + currentArchive.length) % currentArchive.length;
-            updateLightboxImage();
-        }
-        if (e.key === 'Escape') closeLightbox();
-      });
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-      });
-  }
+  // Owned by home.js on this page. A second implementation used to live
+  // here as well, and since index.html loads both files, every click
+  // advanced two independent sets of state at once — the counter and the
+  // visible image drifted apart, and a single failed preload latched the
+  // spinner visible (this block set the loader opacity inline, and
+  // nothing else could override an inline style).
 
 
   // --- 8. Footer Year ---

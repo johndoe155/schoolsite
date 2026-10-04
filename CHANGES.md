@@ -644,3 +644,76 @@ Verified: the rule is in the served stylesheet, `tokens:check` in sync,
 `audit:site` unchanged. Browser confirmation still outstanding (no
 browser in this environment); the layering itself is arithmetic —
 950 clears the nav's 900.
+
+## Visual-refinement polish: audited item by item, gaps closed
+
+**Root cause.** `VISUAL-REFINEMENT-PLAN.md` §3 lists nineteen polish items;
+several had been implemented only as far as *remapping* — page-local token
+sets were aliased to the central tokens but never deleted, so every page still
+carried a second vocabulary (`--lux-*` on contact, `--ink/--parchment/--gold`
+on programs, a 23-value shim on news, three hardcoded `:root` blocks on home).
+Three items were genuinely unfinished: the hero CTA pair still fell back to a
+shared-button look because its designed styles lived in the dead inline
+`text/tailwindcss` block, the programs page still ran its own button system,
+and the library's JS-rendered cards used utility classes the build never
+compiled. The audit also turned up visitor-visible defects the polish list
+never mentioned — a duplicated gallery lightbox, eleven orphaned reveal
+elements, and five CSS variables that no file ever defined.
+
+**Fixes**
+- **Hero CTAs (index).** The blue-block `.btn-primary` override in `home.css`
+  is replaced by the designed pair scoped to `#home`: gold pill with a shine
+  sweep, glass ghost secondary. Because it is scoped, the enquiry form's
+  submit button keeps the shared brand-indigo pill instead of inheriting the
+  hero treatment. The unscoped `≥1024px` primary/secondary rules that leaked
+  the hero's yellow hover shadow onto that button are scoped too.
+- **Gallery lightbox de-duplicated.** `main.js` carried a second 89-line
+  implementation of the same dialog that `home.js` already drives. Both are
+  loaded on index.html, so each click advanced two independent states (counter
+  drift), two preloaders raced for the spinner, and an inline `opacity` set on
+  the loader could latch it visible. `home.js` is now the sole owner.
+- **Orphaned reveals (index).** Eleven elements — including the “Life at BIC”
+  heading, the contact heading and the enquiry submit button — carried
+  `reveal opacity-0`, but `.reveal` is defined only in the contact, news and
+  programs sheets, and index's observers drive `.bic-reveal`. Converted to
+  `.bic-reveal`; contact/news/programs were checked the same way and are sound.
+- **Card standard (§3.4).** `.project-card` and `.sidebar-card` now use
+  surface + border token + radius-lg + shadow-1 → shadow-2 on hover;
+  `.hero-card` takes the materials but keeps its deliberate shadow-3 elevation.
+- **Buttons (§3.3).** Programs' `.btn` / `.btn-gold` / `.btn-outline-dark` and
+  home's dead `.btn-submit` are retired in favour of the shared trio, with the
+  dark-context `.btn-ghost` kept as a page-scoped re-theme. `.btn-close` on
+  news remains, documented as a dialog control rather than a CTA.
+- **Token hygiene (§3.11–12, 15, 17).** contact's `--lux-*` block, programs'
+  two local `:root` blocks and news' 23-value shim are deleted; ~320 references
+  now read the central tokens directly. `home.css`'s three hardcoded `:root`
+  blocks (including `#D6D3D1`, the arbitrary value §3.7 named) are gone.
+- **Void variables fixed.** `--lux-surface-hover` (library card hover),
+  `--radius-xl` (news hero panel + article media), `--menu-accent-soft`
+  (mobile toggle hover), `--g-100` (form error colour) and `--muted`
+  (homepage footer text) were referenced but never defined. A per-page sweep
+  now reports zero unresolved custom properties.
+- **Library content was uncompiled.** The Tailwind build scanned only
+  `library.html`, so the resource grid, skeleton and empty state injected by
+  `library.js` had no CSS (`bg-lux-surface`, `border-lux-border`,
+  `animate-fade-up`, `aspect-[3/4]`, …). `build.mjs` now scans each page's own
+  scripts; the reader's six arbitrary dark hexes became `lux.reader-*` palette
+  entries.
+- **Type and admin (§3.18, Amendment 1).** 58 hardcoded `font-family` strings
+  in news, home and admin CSS are family tokens; the unused `display`/`brand`
+  families are purged from the admin build config.
+- **Inline styles (§3.5, 14) and library padding (§3.17).** index 48 → 6 and
+  programs 15 → 8; every remaining inline `style` on both pages is a `--delay`
+  stagger token. The library main container's utility padding and its inline
+  `calc(68px + 2rem)` nav offset are `.lib-main` with `--space-*` and
+  `--nav-height` (identical pixels).
+- **New check.** `npm run verify:polish` (`scripts/verify-polish.mjs`) — a
+  jsdom harness asserting the cascade outcomes above across the seven styled
+  pages, plus the per-page custom-property integrity sweep.
+
+Verified: `verify:polish` 7 pages / 0 failures (23 assertions), `tokens:check`
+in sync, `audit:site` unchanged (same six unfixable advisories), `node --check`
+clean on every touched script, HTTP 200 on all ten pages, and the served CSS
+carries the new rules. `build:tailwind` is deterministic (a rebuild on the
+untouched tree produced no diff). No browser exists in this environment, so the
+visual pass over hero, form, cards and reader remains outstanding.

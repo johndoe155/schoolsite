@@ -24,13 +24,24 @@ const root = join(here, '..', '..');
 
 const PAGES = ['index', 'admin', 'library'];
 
+// Markup injected by a page's own scripts (the admin editor, the library
+// resource grid) carries utility classes that never appear in the HTML file,
+// so a sheet built from the HTML alone leaves them unstyled — the library's
+// JS-rendered cards had no surface, no border and no entrance animation.
+// Scan each page's scripts alongside its HTML.
+const SOURCES = {
+  index:   ['./public/index.html',   './public/assets/js/main.js', './public/assets/js/home.js'],
+  admin:   ['./public/admin.html',   './public/assets/js/admin.js'],
+  library: ['./public/library.html', './public/assets/js/library.js'],
+};
+
 for (const page of PAGES) {
   // The extracted configs carry the theme but not `content`; scope each build
   // to its own page so one sheet cannot pull in another page's classes.
   const theme = (await import(join(here, `${page}.config.js`))).default
     ?? (await import(join(here, `${page}.config.js`)));
   const runtime = join(here, `${page}.runtime.js`);
-  writeFileSync(runtime, `module.exports = ${JSON.stringify({ ...theme, content: [`./public/${page}.html`] }, null, 2)};\n`);
+  writeFileSync(runtime, `module.exports = ${JSON.stringify({ ...theme, content: SOURCES[page] }, null, 2)};\n`);
 
   const out = `public/assets/css/tw-${page}.css`;
   execFileSync('npx', [
