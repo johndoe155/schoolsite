@@ -257,7 +257,7 @@ Recorded on the commit that implements the overhaul, from the repository itself.
 | Command | Result |
 | --- | --- |
 | `npx tsc --noEmit -p tsconfig.json` | clean |
-| `npm run build` (`next build`) | ✓ exit 0 — 45 routes compiled, all dynamic (the root layout reads the theme cookie) |
+| `npm run build` (`next build`) | ✓ exit 0 — 48 routes (incl. `/_not-found`) compiled, all dynamic (the root layout reads the theme cookie) |
 | `node scripts/check-contrast.mjs` | ✓ 19/19 pairs meet WCAG 2.1 AA (table below) |
 
 **Contrast, read from the shipped CSS** (`app/tokens.css` for light, the palette
@@ -296,6 +296,8 @@ no browser was available in this environment):
   “Reset password · School Portal”, “Choose a new password · School Portal”,
   “Terms of use · School Portal” (root-layout template + per-page `metadata.title`).
 - `/portal/student` without a session → 307 to `/portal/login`.
+- `metadata.title` covers 45 of the portal's 47 pages; the two exceptions are
+  deliberate and named in deviations 4 and 5 above.
 
 `npm run smoke -w @portal/web` was **not** runnable here: it imports
 `apps/api/dist/…`, and the API has not been built in this checkout (it also
