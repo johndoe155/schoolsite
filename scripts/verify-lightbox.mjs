@@ -234,6 +234,8 @@ const cardFor = (doc, title) =>
     /normalizeIndex\(/.test(homeCode) && !/\(currentIndex \+ 1\) % currentArchive\.length/.test(homeCode));
   tOk('the page cache-busts the scripts that carried the old viewer',
     /main\.js\?v=\d/.test(html) && /home\.js\?v=\d/.test(html));
+  tOk('the changed sheets are cache-busted too',
+    ['tw-index.css?v=', 'components.css?v=', 'home.css?v='].every((sheet) => html.includes(sheet)));
 }
 
 /* ── 6. layering: nothing can cover the close button ────────────────────── */

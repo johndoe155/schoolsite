@@ -777,8 +777,13 @@ Design items, all in the same pass:
   `.btn-primary` happens to be: `.btn-send` owns a solid brand surface, a
   hairline border, a shadow, and hover/pressed/focus/busy states.
 
+Because the static handler serves CSS with a 24-hour `max-age`, the three sheets
+this pass touched are now requested as `?v=2` from the homepage (and
+`verify:lightbox` fails if they stop being versioned) — otherwise a plain reload
+would keep showing the old design and the fixes would read as "not done".
+
 Verified: `npm run verify:polish` 7 pages / 0 failures, `npm run
-verify:lightbox` 54/54 assertions (including the hung-request reproduction and
+verify:lightbox` 55/55 assertions (including the hung-request reproduction and
 the NaN guards), `node --check` clean on every script, `build:tailwind`
 regenerated `tw-index.css` with the new utilities before the pages changed
 classes, and the server returns 200 on all eight pages with the gallery API

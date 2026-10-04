@@ -78,8 +78,10 @@ function references(files) {
 for (const { page, sheets } of PAGES) {
   const htmlPath = PUB(page);
   const html = read(htmlPath);
-  const linked = [...html.matchAll(/href="\/assets\/(css\/[^"]+)"/g)].map(m => PUB('assets', m[1]));
-  const scripts = [...html.matchAll(/src="\/(assets\/js\/[^"]+)"/g)].map(m => PUB(m[1]));
+  // Strip cache-busting queries: `/assets/css/home.css?v=2` is the file on
+  // disk, and a page may now version any sheet it changed.
+  const linked = [...html.matchAll(/href="\/assets\/(css\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => PUB('assets', m[1]));
+  const scripts = [...html.matchAll(/src="\/(assets\/js\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => PUB(m[1]));
   const scope = [htmlPath, ...linked];
   const defined = definedNames(scope);
   const bad = references([...scope, ...scripts]).filter(

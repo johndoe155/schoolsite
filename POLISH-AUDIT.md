@@ -213,7 +213,8 @@ and where the fix now lives.
 
 ### Verification
 
-- `npm run verify:lightbox` — **54/54 assertions** (new harness, `scripts/verify-lightbox.mjs`). It drives the shipped `home.js` in jsdom against the real 7-category gallery data, including a request that never resolves, and checks the nine items above by name.
+- `npm run verify:lightbox` — **55/55 assertions** (new harness, `scripts/verify-lightbox.mjs`). It drives the shipped `home.js` in jsdom against the real 7-category gallery data, including a request that never resolves, and checks the nine items above by name.
+- **Delivery, not just code.** `express.static` serves CSS with `max-age=86400`, so a normal reload can keep showing a day-old stylesheet — with the JS cache-busted but the CSS not, repairs to the hero and the gallery could stay invisible on the owner's screen. The homepage now versions the three sheets this pass changed (`tw-index.css`, `components.css`, `home.css` at `?v=2`), and the harness fails if that stops happening. `scripts/verify-polish.mjs` resolves versioned asset URLs so its per-page sheet checks keep working.
 - `npm run verify:polish` — **7 pages / 0 failures**, unchanged by this pass.
 - `node --check` clean on every touched script; `build:tailwind` regenerated `tw-index.css` with the new utilities; `server.js` returns 200 on all eight pages; `/api/gallery` serves 7 categories / 131 images, all present on disk.
 
