@@ -131,3 +131,13 @@ p { line-height: var(--lh-body); }
   border: 0;
   border-top: 1px solid var(--color-border);
 }
+
+/* ── Dialog layers clear the fixed unified nav ──────────────
+   Both visitor dialogs share this page idiom: the homepage gallery
+   lightbox ships `z-[60]` and the library reader `z-50`, but the unified
+   nav is `z-index: 900` (nav.css) — so the bar painted over the top strip
+   of each dialog, which is exactly where its close control sits, and
+   swallowed the click. Raise the dialog layer above the nav, staying under
+   the menu overlays (mask 1000 / panel 1100), the page-transition cover
+   (9000) and the loading overlay (9999). */
+#lightbox { z-index: 950; }

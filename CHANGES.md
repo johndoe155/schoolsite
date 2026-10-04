@@ -620,3 +620,27 @@ book with no picture of their own. Noted in §1.10 for replacement.
 Verified: all eight CDN URLs resolve; both pages serve 200 with the new
 sources and the widened CSP; no `images.unsplash.com` reference remains
 in `public/`.
+
+## Gallery and library dialogs sat under the fixed nav
+
+**Root cause.** Both visitor dialogs ship a low Tailwind z-index — the
+homepage gallery lightbox `z-[60]`, the library reader `z-50` — while the
+unified nav is `z-index: 900` (nav.css). The nav therefore painted over
+the top strip of each dialog, precisely where its close control sits
+(`#lbClose` at `top-6 right-6`; the library's `#lightbox-close` in the
+top toolbar), and swallowed the click. This is the reported "can't close
+the gallery viewer" symptom: a layering bug, not a script bug.
+
+**Fix**
+- `components.css` (shared by every page): `#lightbox { z-index: 950 }` —
+  above the nav (900), below the menu overlays (mask 1000 / panel 1100),
+  the page-transition cover (9000) and the loading overlay (9999). No
+  Tailwind rebuild needed; an id selector outranks the utility.
+- Staff surfaces with the same latent shape were left alone and are
+  reported separately: the gallery admin drawer (`.admin-drawer` 800,
+  scrim 799) and the library admin modal (`.admin-modal` 60).
+
+Verified: the rule is in the served stylesheet, `tokens:check` in sync,
+`audit:site` unchanged. Browser confirmation still outstanding (no
+browser in this environment); the layering itself is arithmetic —
+950 clears the nav's 900.
