@@ -11,6 +11,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* The translucent rectangle the browser paints over whatever was just
+   tapped. It is not a focus state, it is not ours, and on a dark plate it
+   is the single cheapest-looking thing on the page. */
+html { -webkit-tap-highlight-color: transparent; }
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   line-height: var(--lh-heading);
@@ -343,32 +348,36 @@ html:not(.luxe-gsap) .btn-primary:active,
 html:not(.luxe-gsap) .btn-secondary:active,
 html:not(.luxe-gsap) .btn-ghost:active { transform: translateY(1px) scale(var(--sc-press)); }
 
-/* ── Focus: one ring, everywhere ─────────────────────────────────────────
-   Replaces the browser default on every clickable thing that does not
-   define its own. `:where()` keeps the specificity at zero so any page
-   rule that *does* define a ring still wins.
-   The ring is drawn with `outline` (never `box-shadow`) so it cannot
-   clobber a control's elevation, and the glow is a `filter` for the same
-   reason. Both fade in, and the offset grows from 1px to 3px, so focus
-   arrives rather than appears. */
-:where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
+/* ── Focus: one hairline, and nothing on a click ─────────────────────────
+   Three rules, in this order, and the order is the whole design:
+
+   1. A pointer that lands on something draws nothing. Not a ring, not a
+      glow, not Firefox's inner dotted line. `:focus` is a state the mouse
+      puts elements in constantly and it is not news to anyone.
+   2. A keyboard that reaches something draws a single 1px hairline, held
+      2px clear of the plate — the same hairline the plates are drawn with,
+      in the same gold. There is no halo: a 2px ring with a blurred glow
+      around it is the browser default wearing a suit, and it was reading
+      as a cheap blue outline on every click.
+   3. `:where()` keeps the specificity at zero, so any page rule that
+      genuinely needs its own focus treatment still wins.
+
+   Contrast: the hairline is `--color-accent-bright`, 4.6:1 on the
+   parchment background and 5.6:1 on ebony — a 1px line needs more contrast
+   than a 2px one, and it has it. */
+:where(a, button, summary, [tabindex], [role="button"], input, select, textarea):focus {
+  outline: none;
+}
+/* Firefox's `:-moz-focusring` (restored by the Tailwind preflight) paints its
+   own ring on a mouse click; we draw our own, on the keyboard's terms only. */
+:-moz-focusring { outline: none; }
+
+:where(a, button, summary, [tabindex], [role="button"], input, select, textarea):focus-visible {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: var(--ring-offset);
-  transition: outline-offset 220ms var(--ease-out-lux),
-              outline-color 220ms var(--ease-out-lux),
-              filter 260ms var(--ease-out-lux);
+  transition: outline-color 180ms var(--ease-out-lux),
+              outline-offset 180ms var(--ease-out-lux);
 }
-/* The soft glow is for surfaces — plates, chips, icon buttons and fields.
-   A bare text link gets the offset ring on its own: a halo around running
-   text reads as a blur, not as focus. */
-.btn:focus-visible,
-.chip:focus-visible,
-.pg-btn:focus-visible,
-.thumbnail-btn:focus-visible,
-:where(input, select, textarea, [role="button"]):focus-visible {
-  filter: drop-shadow(var(--ring-glow));
-}
-:where(input, select, textarea):focus-visible { outline-offset: 1px; }
 
 /* Dark sections: gold one step brighter, so the ring keeps its contrast
    against ebony. */
@@ -376,6 +385,162 @@ html:not(.luxe-gsap) .btn-ghost:active { transform: translateY(1px) scale(var(--
 .bic-footer,
 .adm-topbar,
 .lux-info-panel { --ring-color: var(--color-accent-bright); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE HERO CTA — depth without box-shadow
+   The two hero plates are the only controls on this site that sit on a
+   photograph, and they are the first thing anyone sees. They therefore get
+   their own material, and that material is built the way metal is:
+
+     · a three-stop tonal gradient, never a flat fill;
+     · a 1px translucent inner border at white 10% (the brief's "physical
+       edge" — the line that says the plate has an inside);
+     · a warm hairline at the very rim, so the outermost pixel is the metal's
+       own shade rather than a generic grey `--ctl-bd`;
+     · a single specular glint along the top edge, 1px, bright;
+     · a sheen that crosses the plate on hover — once, slowly, like light
+       moving across a polished surface rather than the plate changing colour;
+     · and, at rest, ONE 2px-low-alpha contact line. No bloom, no halo.
+
+   Motion: hover at `--dur-hover` (320ms) on `--ease-out-lux` — the silky
+   long tail — and press faster, at `--dur-press`, so the plate sinks
+   immediately and recovers slowly. That asymmetry is what makes a thing feel
+   weighty but responsive.
+
+   The class is a material, not a variant: it composes with `.btn` for the
+   geometry and with `[data-magnet]` for the pointer physics.
+   ══════════════════════════════════════════════════════════════════════════ */
+.btn-hero {
+  --ctl-h: var(--ctl-h-lg);
+  --ctl-px: 36px;
+  --lift: -2px;              /* the hero pair travels one step further */
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  font-weight: var(--weight-semibold);
+  transform: translateZ(0);   /* keeps the sheen on the GPU, off the video */
+}
+
+/* The specular sweep. As a pseudo-element it costs no markup and cannot be
+   seen by a screen reader; `pointer-events: none` keeps it out of the hit
+   path. It is the same gesture at rest, hover and press — a press holds it
+   rather than restarting it, which is what the old `group-active` class was
+   for. */
+.btn-hero::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -25%; bottom: -25%;
+  left: -55%;
+  width: 32%;
+  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.40) 50%, transparent 100%);
+  transform: translateX(-140%) skewX(-14deg);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--dur-sheen) var(--ease-out-lux),
+              opacity var(--dur-hover) var(--ease-out-lux);
+}
+.btn-hero:hover::after,
+.btn-hero:focus-visible::after {
+  opacity: 1;
+  transform: translateX(460%) skewX(-14deg);
+}
+.btn-hero:active::after { opacity: .65; }
+
+/* ── Champagne. The hue the brief asked for: still in the yellow family, two
+   steps toward gold, so it reads as metal rather than as a highlighter. ── */
+.btn-hero--gold {
+  --ctl-bg: var(--color-champagne);
+  --ctl-bg-hover: var(--color-champagne);
+  --ctl-fg: var(--color-brand);
+  --ctl-fg-hover: var(--color-brand);
+  --ctl-bd: rgba(122,86,28,.30);
+  --ctl-bd-hover: rgba(122,86,28,.38);
+  background-color: var(--color-champagne);
+  background-image: linear-gradient(180deg,
+      var(--color-champagne-hi) 0%,
+      var(--color-champagne) 44%,
+      var(--color-champagne-lo) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55),   /* the glint */
+              inset 0 0 0 1px rgba(122,86,28,.20),    /* the metal's rim */
+              inset 0 0 0 2px rgba(255,255,255,.10),  /* the 1px inner border */
+              0 1px 2px rgba(5,1,74,.10);             /* the contact line */
+}
+.btn-hero--gold:hover,
+.btn-hero--gold:focus-visible {
+  /* The light comes up; the plate does not change colour. */
+  background-color: var(--color-champagne);
+  background-image: linear-gradient(180deg,
+      #F5E3B0 0%,
+      var(--color-champagne) 40%,
+      var(--color-champagne-lo) 100%);
+  border-color: var(--ctl-bd-hover);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72),
+              inset 0 0 0 1px rgba(122,86,28,.24),
+              inset 0 0 0 2px rgba(255,255,255,.16),
+              0 1px 2px rgba(5,1,74,.10);
+}
+.btn-hero--gold:active {
+  background-image: linear-gradient(180deg,
+      var(--color-champagne-lo) 0%,
+      #C49540 100%);
+  box-shadow: inset 0 2px 6px rgba(122,86,28,.30),
+              inset 0 0 0 1px rgba(122,86,28,.34),
+              inset 0 1px 0 rgba(255,255,255,.16);
+  transition-duration: var(--dur-press);
+}
+
+/* ── Glass. The same construction over the footage: two tonal steps instead
+   of three (glass has no underside), the same 1px inner border, and a
+   brighter glint, because the light it is catching is the sky. ── */
+.btn-hero--glass {
+  --ctl-bg: rgba(255,255,255,.055);
+  --ctl-bg-hover: rgba(255,255,255,.09);
+  --ctl-fg: #FFFFFF;
+  --ctl-fg-hover: #FFFFFF;
+  --ctl-bd: rgba(255,255,255,.22);
+  --ctl-bd-hover: rgba(255,255,255,.40);
+  background-color: rgba(255,255,255,.055);
+  background-image: linear-gradient(180deg,
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,.04) 52%,
+      rgba(255,255,255,.015) 100%);
+  color: #FFFFFF;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.42),   /* the glint */
+              inset 0 0 0 1px rgba(255,255,255,.10),  /* the 1px inner border */
+              0 0 0 1px rgba(255,255,255,.05);        /* the rim, 1px */
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+.btn-hero--glass:hover,
+.btn-hero--glass:focus-visible {
+  background-color: rgba(255,255,255,.09);
+  background-image: linear-gradient(180deg,
+      rgba(255,255,255,.17) 0%,
+      rgba(255,255,255,.06) 56%,
+      rgba(255,255,255,.02) 100%);
+  border-color: var(--ctl-bd-hover);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.58),
+              inset 0 0 0 1px rgba(255,255,255,.18),
+              0 0 0 1px rgba(255,255,255,.08);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+}
+/* Pressed, the glass darkens under the finger and the glint goes out: the
+   surface has moved away from the light. */
+.btn-hero--glass:active {
+  background-image: linear-gradient(180deg,
+      rgba(255,255,255,.05) 0%,
+      rgba(255,255,255,.11) 100%);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,.32),
+              inset 0 0 0 1px rgba(255,255,255,.14);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  transition-duration: var(--dur-press);
+}
+/* The backdrop sample is re-asserted on press: a transformed element can lose
+   it mid-press and the glass would appear to vanish exactly as it is pressed. */
+html.luxe-gsap .btn-hero--glass { backdrop-filter: blur(14px) saturate(1.15); }
 
 /* ── Text boxes ──────────────────────────────────────────────────────────
    Zero specificity again: this is the baseline for any field a page has not
@@ -399,12 +564,20 @@ html:not(.luxe-gsap) .btn-ghost:active { transform: translateY(1px) scale(var(--
 :where(input, textarea, select):where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"])):hover:not(:focus) {
   border-color: var(--color-ink-30);
 }
+/* A field is a typing context, so `:focus-visible` matches it on a plain
+   click — which is why clicking into a text box used to produce the ring the
+   rest of this section is about. Fields therefore never draw one. They light
+   from *inside*: the resting hairline steps to gold and a second 1px gold
+   hairline appears just within it. Same affordance, no halo, and it survives
+   a background made of glass or a photograph because the gold sits on the
+   plate rather than around it. */
 :where(input, textarea, select):focus {
   border-color: var(--color-accent);
   background: var(--color-white);
-  box-shadow: var(--edge-inset), 0 0 0 4px rgba(176,125,63,.16);
+  box-shadow: inset 0 0 0 1px var(--color-accent), inset 0 1px 2px rgba(24,20,15,.05);
   outline: none;
 }
+:where(input, textarea, select):focus-visible { outline: none; }
 :where(input, textarea, select)::placeholder { color: var(--color-placeholder); }
 [data-surface="dark"] :where(input, textarea, select)::placeholder,
 .bic-footer :where(input, textarea, select)::placeholder { color: var(--color-placeholder-dark); }
@@ -467,9 +640,9 @@ html:not(.luxe-gsap) .btn-ghost:active { transform: translateY(1px) scale(var(--
 
 /* ── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .btn,
+  .btn, .btn-hero, .btn-hero::after,
   .btn-primary, .btn-secondary, .btn-ghost,
-  :where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
+  :where(a, button, summary, [tabindex], [role="button"], input, select, textarea):focus-visible {
     transition-duration: 1ms !important;
   }
   html:not(.luxe-gsap) .btn:hover,
@@ -485,12 +658,15 @@ html:not(.luxe-gsap) .btn-ghost:active { transform: translateY(1px) scale(var(--
    Custom shadows and the ring disappear under forced colours; the ring in
    particular must survive, because it is the only focus affordance left. */
 @media (forced-colors: active) {
-  .btn { border: 1px solid ButtonBorder; box-shadow: none; }
-  :where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
-    outline: 2px solid Highlight;
+  .btn, .btn-hero { border: 1px solid ButtonBorder; box-shadow: none; }
+  :where(a, button, summary, [tabindex], [role="button"], input, select, textarea):focus-visible {
+    outline: 2px solid Highlight;   /* the system's own width, not ours */
     outline-offset: 2px;
     filter: none;
   }
+  /* The inner hairline of a focused field is a painted shadow, which forced
+     colours discard — the border change is what carries focus there. */
+  :where(input, textarea, select):focus { border-color: Highlight; }
 }
 
 /* ── Cards & containers ──────────────────────────────────── */
@@ -645,7 +821,10 @@ html.lb-open .bic-menu {
   color: #FFFFFF;
 }
 .lb__btn:active { transform: scale(0.96); }
-.lb__btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.lb__btn:focus-visible {
+  outline: var(--ring-w) solid var(--ring-color);
+  outline-offset: var(--ring-offset);
+}
 .lb__btn--close { flex: 0 0 auto; }
 .lb__btn--nav { position: absolute; top: 50%; transform: translateY(-50%); }
 .lb__btn--prev { left: clamp(6px, 1.5vw, 20px); }

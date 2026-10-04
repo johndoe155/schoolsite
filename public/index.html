@@ -40,7 +40,7 @@
   <!-- Built by `npm run build:tailwind` from build/tailwind/index.config.js.
        Was the Tailwind Play CDN, which compiles in the browser and is
        explicitly not for production use. -->
-  <link rel="stylesheet" href="/assets/css/tw-index.css?v=3">
+  <link rel="stylesheet" href="/assets/css/tw-index.css?v=4">
 
   <style type="text/tailwindcss">
     @layer components {
@@ -61,11 +61,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&family=Great+Vibes&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/tokens.css?v=3">
-  <link rel="stylesheet" href="/assets/css/components.css?v=3">
-  <link rel="stylesheet" href="/assets/css/footer.css?v=3">
-  <link rel="stylesheet" href="/assets/css/home.css?v=3">
-  <link rel="stylesheet" href="/assets/css/nav.css?v=3">
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=4">
+  <link rel="stylesheet" href="/assets/css/components.css?v=4">
+  <link rel="stylesheet" href="/assets/css/footer.css?v=4">
+  <link rel="stylesheet" href="/assets/css/home.css?v=4">
+  <link rel="stylesheet" href="/assets/css/nav.css?v=4">
 </head>
 <body class="antialiased bg-slate-50 text-slate-800">
 
@@ -149,13 +149,16 @@
           </p>
 
           <div class="flex flex-wrap gap-4 opacity-0 translate-y-8" id="heroButtons">
-            <a id="ctaPrimary" href="/programs.html" class="btn-primary group" data-magnet>
-              <span class="relative z-10">Explore Programs</span>
-              <!-- group-active keeps the sheen while the button is held down; without it the
-                 sweep retracts on press, which reads as the effect disappearing. -->
-              <div class="absolute inset-0 bg-white/25 scale-x-0 group-hover:scale-x-100 group-active:scale-x-100 transition-transform origin-left"></div>
+            <!-- The hero pair carries the `.btn-hero` material (components.css):
+                 a tonal champagne/glass gradient, a 1px translucent inner
+                 border, a top-edge specular glint, and a sheen that crosses
+                 the plate on hover. Depth is tonal — the only box-shadow left
+                 is a 2px contact line. The sheen is a pseudo-element now, so
+                 the markup is just a label. -->
+            <a id="ctaPrimary" href="/programs.html" class="btn btn-hero btn-hero--gold" data-magnet>
+              <span>Explore Programs</span>
             </a>
-            <a id="ctaSecondary" href="#contact" class="btn-secondary group" data-magnet>
+            <a id="ctaSecondary" href="#contact" class="btn btn-hero btn-hero--glass" data-magnet>
               <span>Contact Admissions</span>
             </a>
           </div>

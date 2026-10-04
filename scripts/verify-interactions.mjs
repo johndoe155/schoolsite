@@ -245,16 +245,31 @@ const calcPx = (v) => {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   4. Focus — offset ring with a soft glow, honouring reduced motion
+   4. Focus — a 1px hairline for the keyboard, and nothing for the mouse
    ══════════════════════════════════════════════════════════════════════════ */
 {
-  assert('4.1 one shared focus ring for every clickable thing',
-    /:where\(a, button, summary, \[tabindex\], input, select, textarea\):focus-visible \{\s*outline: var\(--ring-w\) solid var\(--ring-color\);/.test(COMPONENTS),
+  const sheetsExceptComponents = () => fs.readdirSync(PUB('assets', 'css'))
+    .filter((f) => f.endsWith('.css') && !f.startsWith('tw-') && f !== 'components.css')
+    .map((f) => [f, read(PUB('assets', 'css', f))]);
+  assert('4.1 one shared focus hairline, for keyboard users only',
+    /:where\(a, button, summary, \[tabindex\], \[role="button"\], input, select, textarea\):focus-visible \{\s*outline: var\(--ring-w\) solid var\(--ring-color\);/.test(COMPONENTS),
     'the shared :focus-visible rule is missing or was rewritten');
-  assert('4.2 the ring is offset, and the offset animates',
-    /outline-offset: var\(--ring-offset\)/.test(COMPONENTS) && /outline-offset 220ms var\(--ease-out-lux\)/.test(COMPONENTS));
-  assert('4.3 the glow is a filter, so it cannot clobber elevation',
-    /filter: drop-shadow\(var\(--ring-glow\)\)/.test(COMPONENTS));
+  assert('4.2 the hairline is offset, and the offset animates',
+    /outline-offset: var\(--ring-offset\)/.test(COMPONENTS) && /outline-offset 180ms var\(--ease-out-lux\)/.test(COMPONENTS));
+  assert('4.2b the ring is a 1px hairline, not a 2px outline',
+    VARS.get('--ring-w') === '1px' && VARS.get('--ring-offset') === '2px',
+    `ring is ${VARS.get('--ring-w')} at ${VARS.get('--ring-offset')} — the directive is a hairline`);
+  assert('4.3 a plain click draws nothing at all',
+    /:where\(a, button, summary, \[tabindex\], \[role="button"\], input, select, textarea\):focus \{\s*outline: none;\s*\}/.test(COMPONENTS),
+    'without a `:focus { outline: none }` a mouse click still paints the browser ring on some engines');
+  assert('4.3b Firefox’s inner focus ring is off, since we draw our own',
+    /:-moz-focusring \{ outline: none; \}/.test(COMPONENTS));
+  assert('4.3c the glow is gone — no token, no filter, no page rule',
+    !/ring-glow/.test(COMPONENTS) &&
+    !sheetsExceptComponents().some(([f, css]) => /ring-glow/.test(css)),
+    'the blurred halo was the “cheap ring” the directive is about');
+  assert('4.3d the tap flash is off at the root',
+    /html \{ -webkit-tap-highlight-color: transparent; \}/.test(COMPONENTS));
   check('4.4 the ring colour is the brand accent', VARS.get('--ring-color'), 'var(--color-accent-bright)');
   assert('4.5 zero specificity, so no page rule is overridden',
     /^:where\(a, button, summary/m.test(COMPONENTS), 'the ring must not raise specificity');
@@ -279,8 +294,10 @@ const calcPx = (v) => {
     /--color-placeholder-dark: rgba\(255,255,255,\.58\)/.test(TOKENS) &&
     /:where\(input, textarea, select\)::placeholder \{ color: var\(--color-placeholder\); \}/.test(COMPONENTS),
     'a placeholder is text and must meet AA like any other label');
-  assert('5.5 focus warms the border and adds a soft bloom',
-    /:where\(input, textarea, select\):focus \{[\s\S]{0,300}0 0 0 4px rgba\(176,125,63,\.16\)/.test(COMPONENTS));
+  assert('5.5 a focused field lights from within and never draws a ring',
+    /:where\(input, textarea, select\):focus \{[\s\S]{0,320}inset 0 0 0 1px var\(--color-accent\)/.test(COMPONENTS) &&
+    /:where\(input, textarea, select\):focus-visible \{ outline: none; \}/.test(COMPONENTS),
+    'a field is a typing context: :focus-visible would match it on a plain click');
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -541,8 +558,8 @@ const calcPx = (v) => {
     magnetised.filter((p) => (read(PUB(p)).match(/data-magnet/g) || []).length > 5).join(', '));
 
   for (const [file, needle] of [
-    ['home.css', '--ctl-bg: var(--color-brand-yellow)'],
-    ['home.css', '--ctl-bg: var(--color-brand);'],
+    ['components.css', '--ctl-bg: var(--color-champagne)'],
+    ['components.css', '--ctl-bg: rgba(255,255,255,.055)'],
     ['programs.css', '--ctl-bg: var(--color-ink)'],
     ['contact.css', '--ctl-bg: var(--color-ink)'],
     ['news.css', '--ctl-bg: var(--color-brand)'],
@@ -581,8 +598,8 @@ const calcPx = (v) => {
   assert('10.3 no page draws a single-layer shadow heavier than 20% alpha',
     singleShadow.length === 0, singleShadow.join(', '));
 
-  assert('10.4 the library and news pages still had their own rings — now tokens',
-    /outline: var\(--ring-w\) solid var\(--ring-color\);\n  outline-offset: var\(--ring-offset\);\n  box-shadow: var\(--ring-glow\);/.test(read(PUB('assets', 'css', 'news.css'))));
+  assert('10.4 the library and news pages borrow the shared hairline',
+    /outline: var\(--ring-w\) solid var\(--ring-color\);\n  outline-offset: var\(--ring-offset\);/.test(read(PUB('assets', 'css', 'news.css'))));
 
   /* compact plates: small visual size, 44px target */
   for (const [file, sel] of [
@@ -604,8 +621,9 @@ const calcPx = (v) => {
     assert(`10.6 ${sel} is tuned by the shared motion`, i > -1 && admin.slice(i, i + 900).includes('var(--dur-hover)'),
       'a plate with its own timing is a plate off the system');
   }
-  assert('10.7 the staff plates restate the shared glow they would otherwise shadow out',
-    /\.adm-btn:focus-visible[\s\S]{0,320}var\(--ring-glow\)/.test(admin));
+  assert('10.7 the staff plates add nothing on focus — the hairline is an outline',
+    !/\.adm-(btn|logout-btn|submit|login-submit|dz-remove)[^{]*:focus-visible/.test(admin),
+    'a focus rule that restates box-shadow cannot survive the hairline-only ring');
 
   const gsapPages = fs.readdirSync(PUB()).filter((f) => f.endsWith('.html'));
   const unversioned = gsapPages.filter((p) => /href="\/assets\/css\/[a-z0-9-]+\.css"/.test(read(PUB(p))));
@@ -613,6 +631,137 @@ const calcPx = (v) => {
     unversioned.length === 0, unversioned.join(', '));
   const luxeUnversioned = gsapPages.filter((p) => /src="\/assets\/js\/luxe\.js"/.test(read(PUB(p))));
   assert('10.9 the physics script is cache-busted too', luxeUnversioned.length === 0, luxeUnversioned.join(', '));
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   11. The hero CTA — a material built without box-shadow
+   The two plates on the landing hero are the only controls on the site that
+   sit on a photograph. Depth there comes from tonal steps, 1px hairlines and
+   a top-edge specular glint; the only cast shadow left is a contact line.
+   ══════════════════════════════════════════════════════════════════════════ */
+{
+  const HOME = read(PUB('assets', 'css', 'home.css'));
+  const INDEX = read(PUB('index.html'));
+  const gold = COMPONENTS.slice(COMPONENTS.indexOf('.btn-hero--gold {'), COMPONENTS.indexOf('.btn-hero--glass {'));
+  const glass = COMPONENTS.slice(COMPONENTS.indexOf('.btn-hero--glass {'), COMPONENTS.indexOf('.btn-hero--glass:active'));
+  const hero = COMPONENTS.slice(COMPONENTS.indexOf('.btn-hero {'), COMPONENTS.indexOf('.btn-hero--gold {'));
+
+  assert('11.1 the material exists and both plates wear it',
+    /class="btn btn-hero btn-hero--gold"/.test(INDEX) && /class="btn btn-hero btn-hero--glass"/.test(INDEX),
+    'the hero pair must compose `.btn` geometry with the `.btn-hero` material');
+
+  /* the hue: still yellow-family, two steps toward gold */
+  assert('11.2 the CTA hue is champagne, not highlighter yellow',
+    VARS.get('--color-champagne') === '#E3BE67' &&
+    VARS.get('--color-champagne-hi') === '#EFD79B' &&
+    VARS.get('--color-champagne-lo') === '#CFA447',
+    `champagne stops are ${VARS.get('--color-champagne')}/${VARS.get('--color-champagne-hi')}/${VARS.get('--color-champagne-lo')}`);
+  assert('11.2b the old #FACC15 is off the hero but kept for the rest of the site',
+    VARS.get('--color-brand-yellow') === '#FACC15' && !/brand-yellow/.test(gold + glass),
+    'the hero must not fall back to the flat brand yellow');
+  const ink = parseColor('#05014A');
+  for (const [stop, hex] of [['lo', '#CFA447'], ['mid', '#E3BE67'], ['hi', '#EFD79B']]) {
+    const r = contrast(ink, parseColor(hex), { r: 5, g: 1, b: 74, a: 1 });
+    assert(`11.3 ink on the ${stop} stop — ${(Math.round(r * 100) / 100)}:1 ≥ 4.5:1`, r >= 4.5, `only ${r.toFixed(2)}:1`);
+  }
+
+  /* the construction */
+  assert('11.4 the plate is a tonal gradient, not a flat fill',
+    /background-image: linear-gradient\(180deg,[\s\S]{0,220}var\(--color-champagne-lo\) 100%\)/.test(gold) &&
+    /background-image: linear-gradient\(180deg,[\s\S]{0,220}rgba\(255,255,255,\.015\) 100%\)/.test(glass));
+  assert('11.5 a 1px translucent inner border, white at 10%',
+    /inset 0 0 0 2px rgba\(255,255,255,\.10\)/.test(gold) && /inset 0 0 0 1px rgba\(255,255,255,\.10\)/.test(glass),
+    'the brief asks for the inner hairline explicitly');
+  assert('11.6 a specular glint along the top edge',
+    /inset 0 1px 0 rgba\(255,255,255,\.55\)/.test(gold) && /inset 0 1px 0 rgba\(255,255,255,\.42\)/.test(glass));
+  const bloom = [...gold.matchAll(/(?:^|[,\s])(\d+)px (\d+)px (\d+)px ([^,;)]+)/g)]
+    .filter(([, , , blur]) => Number(blur) > 16);
+  assert('11.7 depth is tonal — no blurred bloom in the resting state',
+    bloom.length === 0, `${bloom.length} shadow layer(s) with a blur wider than 16px`);
+  assert('11.8 the only cast shadow is a contact line',
+    /0 1px 2px rgba\(5,1,74,\.10\);/.test(gold) && !/0 \d+px \d+px rgba\(0,0,0/.test(gold + glass),
+    'glass keeps a 1px outer rim, not a drop shadow');
+  assert('11.9 the glass keeps its backdrop sample through the press',
+    (glass.match(/backdrop-filter/g) || []).length >= 3,
+    'a transformed element can lose the sample mid-press and the effect vanishes');
+
+  /* the motion */
+  assert('11.10 hover is the 320ms lux easing, press is the 130ms one',
+    /--ctl-h: var\(--ctl-h-lg\)/.test(hero) && /--lift: -2px/.test(hero) &&
+    /transition-duration: var\(--dur-press\);/.test(gold + glass),
+    'weighty but responsive means a slow hover and a fast press');
+  assert('11.11 the sheen is a pseudo-element that crosses once, slowly',
+    /\.btn-hero::after \{[\s\S]{0,420}opacity: 0;/.test(hero) &&
+    /\.btn-hero:hover::after,[\s\S]{0,160}translateX\(4[0-9]{2}%\)/.test(hero) &&
+    /\.btn-hero:active::after \{ opacity: \.65; \}/.test(hero) &&
+    VARS.get('--dur-sheen') === '1100ms',
+    'a press holds the sheen rather than restarting it');
+  assert('11.12 the sheen can never eat a click',
+    /pointer-events: none;/.test(hero) && /isolation: isolate;/.test(hero));
+
+  /* the page sheet let go */
+  assert('11.13 home.css no longer restates the pair at higher specificity',
+    !/#home \.btn-(primary|secondary)\s*\{/.test(HOME),
+    'a #home .btn-* rule out-ranks the material and silently restores the old plates');
+  assert('11.14 the full-bleed switch-shadow is gone from the markup',
+    !/scale-x-0|group-hover:scale-x-100|bg-white\/25/.test(INDEX),
+    'the white bar sweeping across the plate was the “standard” look being replaced');
+  assert('11.15 both plates keep the pointer physics',
+    (INDEX.match(/data-magnet/g) || []).length >= 2);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   12. No click may ever paint a ring — swept across every sheet
+   The reported defect was a thick, low-opacity ring appearing when things are
+   *clicked*. `:focus` fires on click; so does `:focus-within`. A block keyed on
+   either of them that draws a halo is therefore banned outright, and the two
+   legacy rules that caused it are named here so they cannot return unnoticed.
+   ══════════════════════════════════════════════════════════════════════════ */
+{
+  const sheets = fs.readdirSync(PUB('assets', 'css'))
+    .filter((f) => f.endsWith('.css') && !f.startsWith('tw-'))
+    .map((f) => [f, read(PUB('assets', 'css', f)).replace(/\/\*[\s\S]*?\*\//g, '')]);
+
+  /* Any `0 0 0 Npx` ring with N ≥ 2, or an outline ≥ 2px, inside a block whose
+     selector matches on a plain click. 1px spread rings (`inset 0 0 0 1px`) and
+     1px outlines are the hairline and are what we want. */
+  const HALO = /(?:box-shadow\s*:[^;]*\b0 0 0 ([2-9]|\d\d)px)|(?:outline\s*:\s*([2-9])px)/;
+  const offenders = [];
+  for (const [file, css] of sheets) {
+    const blocks = css.matchAll(/([^{}]+)\{([^{}]*)\}/g);
+    for (const [, selector, body] of blocks) {
+      const clickFiring =
+        /:focus(?!-visible|-withins?)/.test(selector) ||
+        (/:focus-within/.test(selector) && !/:has\(\s*:focus-visible\s*\)/.test(selector));
+      if (!clickFiring) continue;
+      const m = HALO.exec(body);
+      if (m) offenders.push(`${file}: ${selector.trim().slice(0, 70)} → ${m[0].slice(0, 40)}`);
+    }
+  }
+  assert('12.1 no sheet draws a halo on a click-firing selector',
+    offenders.length === 0, offenders.join('\n    '));
+
+  const HOME = read(PUB('assets', 'css', 'home.css'));
+  assert('12.2 the two legacy element-wide `:focus` outlines are gone for good',
+    !/(^|\n)\s*:focus\s*\{[^}]*outline/.test(HOME) && !/(^|\n)\s*a:focus\s*\{[^}]*outline/.test(HOME),
+    'a bare :focus rule (3px indigo at 12%, amber at 18% for links) fires on every click and out-ranks the zero-specificity reset');
+  assert('12.3 the contact group ring is keyboard-only',
+    /\.lux-field-group:has\(:focus-visible\)/.test(read(PUB('assets', 'css', 'contact.css'))),
+    ':focus-within cannot tell a click from the Tab key — :has(:focus-visible) can');
+  assert('12.4 the search row keeps a hairline, not a 3px ring',
+    /\.search-row:has\(:focus-visible\) \{[\s\S]{0,140}0 0 0 1px/.test(read(PUB('assets', 'css', 'news.css'))));
+  for (const [file, needle] of [
+    ['admin.css', '#searchBar:focus'],
+    ['admin.css', '.field:focus'],
+    ['library.css', '.admin-input:focus'],
+  ]) {
+    const css = read(PUB('assets', 'css', file));
+    const i = css.indexOf(needle);
+    const body = css.slice(i, css.indexOf('}', i));
+    assert(`12.5 ${file} ${needle} lights from within`,
+      i > -1 && /inset 0 0 0 1px/.test(body) && !/0 0 0 4px/.test(body),
+      'the 4px halo that fired on a click is the ring this pass exists to remove');
+  }
 }
 
 /* ── report ─────────────────────────────────────────────────────────────── */

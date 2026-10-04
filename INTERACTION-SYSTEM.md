@@ -150,33 +150,99 @@ followed by `luxe.js`.
   fallback transitions — scoped `html:not(.luxe-gsap)` so they never fight the
   library — still give hover lift and press compression.
 
-### 2.4 Focus — one ring for everything
+### 2.4 Focus — a pointer draws nothing, the keyboard gets a hairline
 
 ```css
-:where(a, button, summary, [tabindex], input, select, textarea):focus-visible {
-  outline: var(--ring-w) solid var(--ring-color);
-  outline-offset: var(--ring-offset);
-  transition: outline-offset 220ms, outline-color 220ms, filter 260ms;
+/* 1. a click paints nothing */
+:where(a, button, summary, [tabindex], [role="button"], input, select, textarea):focus {
+  outline: none;
+}
+:-moz-focusring { outline: none; }          /* Firefox paints its own on click */
+
+/* 2. the keyboard gets one 1px hairline, held 2px clear of the plate */
+:where(a, button, summary, [tabindex], [role="button"], input, select, textarea):focus-visible {
+  outline: var(--ring-w) solid var(--ring-color);   /* 1px */
+  outline-offset: var(--ring-offset);               /* 2px */
+  transition: outline-color 180ms var(--ease-out-lux),
+              outline-offset 180ms var(--ease-out-lux);
 }
 ```
 
-Three deliberate choices: `:where()` keeps specificity at **zero**, so no page
-rule is overridden and the layer cannot break an existing style; the ring is
-drawn with `outline` and never `box-shadow`, so it cannot clobber a control's
-elevation; and the offset grows from 1px to 3px while the glow fades in, so
-focus *arrives* rather than appears. The glow is scoped to surfaces (plates,
-chips, icon buttons, fields) — a halo around running text reads as blur, not
-as focus.
+This replaced a **2px ring with a 12px blurred halo at 38% alpha**, which is
+what a "thick, low-opacity ring" is: the browser default wearing our colours.
+What changed, and why:
+
+* **Nothing on a click.** `:focus` is something the mouse puts elements into
+  constantly — after clicking a button, a gallery card or a chip, it is not
+  news to anyone, and it was the thing cheapening every interaction. Only
+  `:focus-visible` (keyboard, and the browser's own judgement for text entry)
+  draws anything.
+* **A hairline, not a ring.** `--ring-w: 1px`, `--ring-offset: 2px`, in the
+  same gold as the plates' own hairlines. A 1px line needs more contrast than
+  a 2px one: `--color-accent-bright` is **4.6:1** on parchment and **5.6:1**
+  on ebony, so it qualifies as a non-text contrast pair.
+* **No glow at all.** The blurred halo was the "cheap" part; it is deleted
+  everywhere, including the three page sheets that had restated it.
+* **`:where()` keeps specificity at zero**, so no page rule is overridden and
+  any page that genuinely needs its own focus treatment still wins.
+* **The tap flash is off** at the root (`-webkit-tap-highlight-color`), because
+  a translucent rectangle painted over a plate on touch is not a focus state,
+  it is a rendering artefact.
+* Fields are the exception that proves the rule, and they do not draw a ring
+  at all — see §2.5.
+
+**Why the first pass did not fix what was being reported.** The rules above
+were already in place, and the ring was still there — because a *zero*
+specificity reset loses to everything, and `home.css` carried two legacy rules
+that no one had looked at:
+
+```css
+:focus     { outline: 3px solid rgba(99,102,241,0.12); }   /* fires on click */
+a:focus    { outline: 3px solid rgba(252,211,77,0.18); }   /* fires on click */
+```
+
+A bare `:focus` has no keyboard condition, so those two painted a 3px
+low-opacity outline on **every click** — on links, on gallery cards, on the
+programme chips and on the enquiry fields — and at 0,1,0 and 0,1,1 they
+out-ranked the reset. Deleted. The same sweep found seven more halos hiding
+behind `:focus` / `:focus-within` in `contact.css`, `programs.css`,
+`library.css`, `admin.css` and `news.css`; every one of them is either gone or
+converted to the inner-hairline treatment, and §12 of the harness now fails the
+build if a click-firing selector anywhere in any sheet draws a halo at all.
+
+Two group-level rings needed a different tool, because `:focus-within` cannot
+tell a click from the Tab key: `.lux-field-group` (contact) and `.search-row`
+(news) now use `:has(:focus-visible)`, so the *animated line and the label
+colour* remain the click affordance while the ring is reserved for the
+keyboard. Where `:has()` is unsupported the ring is simply absent and the line
+and label still carry focus — the colour change is driven by `:focus-within`,
+which every engine in support has.
 
 ### 2.5 Text boxes
 
 A zero-specificity baseline for any field a page has not styled:
 `min-height: 48px`, a hairline border, `--edge-inset` (a resting inset, so the
 field reads as recessed), a hover that warms the border, and a focus that
-switches the border to gold and adds `0 0 0 4px rgba(176,125,63,.16)`. Pages
-that own their identity keep it: `contact.html` still uses an animated
-underline (`.lux-field-line`) and suppresses the box ring on the input itself,
-moving it to the field group — one visible affordance, not two competing ones.
+**lights from within**:
+
+```css
+:where(input, textarea, select):focus {
+  border-color: var(--color-accent);
+  background: var(--color-white);
+  box-shadow: inset 0 0 0 1px var(--color-accent), inset 0 1px 2px rgba(24,20,15,.05);
+  outline: none;
+}
+:where(input, textarea, select):focus-visible { outline: none; }
+```
+
+A field is a typing context, so `:focus-visible` matches it on a plain click —
+which is exactly why clicking into a text box used to produce the ring this
+page is about. The second 1px gold hairline sits *on* the plate rather than
+around it, so the affordance survives a background made of glass or a
+photograph, and the surface never animates under a cursor that is trying to
+type. Pages that own their identity keep it: `contact.html` still uses an
+animated underline (`.lux-field-line`) and moves its state to the field group —
+one visible affordance, not two competing ones.
 
 **Placeholders are text.** At `--color-ink-40` they measured **3.1:1** on the
 paper background, an AA failure and, worse, on the first thing anyone reads in
@@ -184,7 +250,45 @@ an empty form. `--color-placeholder` is `rgba(24,20,15,.70)` — **6.4:1** — a
 still reads as a hint because filled-in text is 100% ink. Dark surfaces use
 `--color-placeholder-dark` (6.6:1 on the admin panel).
 
-### 2.6 The 44px hit floor
+### 2.6 The hero CTA — depth without box-shadow
+
+The pair on the landing hero is the only control on the site standing on a
+photograph, so it gets a material of its own (`.btn-hero--gold` /
+`.btn-hero--glass` in `components.css`), built the way metal is:
+
+| Layer | Champagne | Glass |
+| --- | --- | --- |
+| body | 3-stop tonal gradient `#EFD79B → #E3BE67 → #CFA447` | 3-step white `10% → 4% → 1.5%` over `blur(14px) saturate(1.15)` |
+| rim | `1px rgba(122,86,28,.30)` — the metal's own shade, not a grey border | `1px rgba(255,255,255,.22)` |
+| inner hairline | `inset 0 0 0 2px rgba(255,255,255,.10)` — the 1px translucent inner border | `inset 0 0 0 1px rgba(255,255,255,.10)` |
+| specular glint | `inset 0 1px 0 rgba(255,255,255,.55)` along the top edge | `inset 0 1px 0 rgba(255,255,255,.42)` |
+| cast shadow | one 2px contact line at 10% | none — only a 1px outer rim |
+
+The stacking is the point: because an inset spread paints *inside* the rim and
+the earlier shadow layers paint on top, the champagne plate reads as
+`warm rim → 1px translucent white → glint`, which is a machined bevel rather
+than a coloured rectangle. **There is no bloom anywhere** — no layer with a
+blur wider than 16px — and that is enforced, not just intended (§11.7).
+
+* **Hover** is not a colour swap: the tonal gradient's top stop lifts, the
+  rim warms, and the glint brightens — the *light* on the plate changes.
+* **The sheen** is a `::after` pseudo-element, a skewed 32%-wide band at 40%
+  white, that crosses the plate once over `--dur-sheen` (1100ms) on hover, at
+  `--ease-out-lux`. On press it does not retract (`opacity: .65`), because a
+  press that makes the effect disappear reads as a bug.
+* **Motion weight**: hover at `--dur-hover` (320ms), press at `--dur-press`
+  (130ms). Slow in, fast down, elastic back out — weighty but responsive.
+* **The press keeps the glass**: `backdrop-filter` is re-asserted on
+  `:active`, because a transformed element can lose its backdrop sample and
+  the effect would vanish exactly when someone is looking at it.
+* **Champagne, not yellow.** `#FACC15` is a 96%-saturation highlighter yellow;
+  the hero is now `#E3BE67` with `#EFD79B` catching the top, and the ink label
+  measures **8.2:1** on the darkest stop and **13.4:1** on the lightest, so the
+  whole gradient clears AAA. The flat yellow is kept as
+  `--color-brand-yellow` for the badges, timeline and admin chrome that were
+  designed around it; the hero no longer references it.
+
+### 2.7 The 44px hit floor
 
 Controls whose *visual* size is legitimately smaller than the touch floor —
 filter chips, pagination, admin row actions, thumbnail pickers, compact
@@ -210,7 +314,7 @@ Everything else is genuinely 44px or taller: `.btn` (44/48/56 by size),
 `.lux-social-link` (44, up from 38 and 42), `.pg-btn` and `.btn-close` (44),
 `.thumbnail-btn` (44), `.lb__btn` (44).
 
-### 2.7 What a page sheet may not do
+### 2.8 What a page sheet may not do
 
 A page sheet may still style its own controls — a footer link should read as a
 link — but four things now belong to the system alone, and
@@ -220,6 +324,9 @@ link — but four things now belong to the system alone, and
 | --- | --- |
 | `transition: all` | it animates properties nobody asked it to, layout included |
 | a hardcoded focus ring (`outline: 2px solid …`) | the ring is one definition, in `components.css` |
+| a focus glow (`filter: drop-shadow(…)`, `--ring-glow`) | the halo is retired everywhere; the hairline is the whole affordance |
+| a halo on a click-firing selector (`:focus`, `:focus-within`) | it appears on every mouse click — the defect this pass exists to remove |
+| a `#home .btn-*` restatement of the hero pair | at that specificity it out-ranks `.btn-hero` and restores the old plates |
 | a single-layer shadow above 20% alpha | it reads as a drawn edge, not diffused light |
 | a sub-44px target with no overlay | the visual size may be small; the target may not |
 
@@ -230,11 +337,11 @@ success halo and the yellow timeline halos), and it moved the staff panel's
 plates — staff login, log out, row actions, the drop zone, the newsletter
 actions — onto the same tokens as everything else.
 
-Stylesheets and `luxe.js` are requested with `?v=3`: they are served
-`max-age=86400`, so a versioned URL is the only thing that makes a deployment
-visible on the first reload.
+Stylesheets are requested with `?v=4` (`luxe.js`, unchanged in this pass, stays
+at `?v=3`): they are served `max-age=86400`, so a versioned URL is the only
+thing that makes a deployment visible on the first reload.
 
-### 2.8 Contrast
+### 2.9 Contrast
 
 The gold plate's label was **white on `#B07D3F` = 3.6:1** — an AA failure for
 a 14px label, and present in both the site and the portal. The label is now
@@ -286,7 +393,7 @@ enhancement, and deleting it degrades rather than breaks.
 
 | Gate | Command | Result |
 | --- | --- | --- |
-| Site interactive layer | `npm run verify:interactions` | **113/113** |
+| Site interactive layer | `npm run verify:interactions` | **142/142** |
 | Site cascade (existing) | `npm run verify:polish` | 7 pages / 0 failures |
 | Gallery viewer (existing) | `npm run verify:lightbox` | 55/55 |
 | Design tokens in sync | `npm run tokens:check` | in sync |
@@ -297,6 +404,8 @@ enhancement, and deleting it degrades rather than breaks.
 
 `verify:interactions` is new and asserts, in jsdom against the real
 stylesheets: the geometry is on the grid and every height is a multiple of 4;
+the hero material is built from tones and hairlines with **no bloom**, and both
+plates are ink-on-champagne at AAA across the gradient (§11);
 every elevation is a 3-layer stack under 12% alpha; the edges are 1px
 translucent; hover is ≥300ms ease-out and press is faster than release; the
 fallback is scoped away once GSAP is live; the ring is offset, animated,
@@ -333,6 +442,16 @@ property), and it normalises colours and evaluates leftover `calc()`.
 * **No browser exists in this environment.** Every claim above is structural —
   computed styles, source invariants, behaviour in jsdom. The *look* of the
   new plates, shadows and springs has not been seen.
+* **`:has()` carries two rings on its own.** The contact field group and the
+  admin search row rely on `:has(:focus-visible)` to keep their ring
+  keyboard-only. That is Baseline since December 2023; on an engine without it
+  the ring does not draw and the line/label/border change is the focus cue —
+  degraded, not broken.
+* **`-webkit-tap-highlight-color` cannot be verified here.** jsdom drops the
+  property entirely, so the harness asserts the declaration is present and
+  inherited from the root rather than measuring it. It is a standard,
+  universally supported declaration; the mobile browsers that paint the flash
+  all honour it, but that is a claim from documentation, not from a test.
 * **Two systems, not one.** `academies.html` is a self-contained page with its
   own inline styles and does not load `components.css`; it keeps its own
   palette (it still gains the pointer physics, since those do not depend on the

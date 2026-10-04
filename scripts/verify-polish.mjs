@@ -271,8 +271,11 @@ function computed(win, selector, prop) {
 {
   const win = render(PAGES[0]);
   const val = (sel, prop) => computed(win, sel, prop);
-  check('index hero primary CTA is the gold pill', val('#ctaPrimary', 'backgroundColor'), 'rgb(250, 204, 21)');
-  check('index hero secondary CTA is the glass ghost', val('#ctaSecondary', 'backgroundColor'), 'rgba(255, 255, 255, 0.05)');
+  /* The hero pair are champagne and glass since the luxury pass: the plate is
+     a tonal gradient (`background-image`) over a matching `background-color`
+     so it degrades to a solid if gradients are unavailable. */
+  check('index hero primary CTA is the champagne plate', val('#ctaPrimary', 'backgroundColor'), 'rgb(227, 190, 103)');
+  check('index hero secondary CTA is the glass plate', val('#ctaSecondary', 'backgroundColor'), 'rgba(255, 255, 255, 0.055)');
   check('index enquiry submit keeps the brand pill', val('#submitBtn', 'backgroundColor'), 'rgb(5, 1, 74)');
   check('index reveal elements start hidden', val('.bic-reveal', 'opacity'), '0');
   check('index carries no orphaned .reveal elements', win.document.querySelectorAll('.reveal').length, 0);

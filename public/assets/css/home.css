@@ -240,98 +240,18 @@ body {
 .form-message--success {  font-family: var(--font-ui); color: var(--color-success); font-weight: 600;
 }
 /* ── Home hero CTA pair ──────────────────────────────────────
-   The designed hero buttons — yellow pill + glass ghost — used to live in
-   an inline <style type="text/tailwindcss"> block that stopped being
-   compiled when the Tailwind Play CDN was replaced by the build-time
-   stylesheet, so the hero silently fell back to the shared button styles
-   (and the bare .btn-primary override here turned every button on the page,
-   including the enquiry form's submit, into a washed-out glass ghost).
-   Scoped to the hero: everything else keeps the components.css treatment. */
-#home .btn-primary {
-  --ctl-bg: var(--color-brand-yellow);
-  --ctl-bg-hover: var(--color-brand-yellow);
-  --ctl-fg: var(--color-brand);
-  --ctl-bd: rgba(5, 1, 74, .10);
-  /* Warm edge instead of the generic white one: on a yellow plate a white
-     hairline reads as a seam, a lighter yellow reads as light catching the
-     bevel. */
-  --ctl-edge: inset 0 1px 0 rgba(255,255,255,.55), inset 0 0 0 1px rgba(255,255,255,.18);
-  --ctl-shadow: 0 1px 2px rgba(5,1,74,.06), 0 6px 16px rgba(250, 204, 21, .16), 0 18px 40px rgba(250, 204, 21, .18);
-  --ctl-shadow-hover: 0 2px 4px rgba(5,1,74,.07), 0 12px 28px rgba(250, 204, 21, .24), 0 30px 64px rgba(250, 204, 21, .26);
-
-  position: relative;
-  overflow: hidden;
-  font-weight: 700;
-  line-height: 1;
-  /* Optical: a bold uppercase label on a round plate sits a touch high, so
-     the plate gives back 1px at the top. */
-  padding-top: 1px;
-}
-#home .btn-primary::before {
-  content: "";
-  position: absolute;
-  top: 0; left: -120%;
-  width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-  transform: skewX(-20deg);
-  transition: left 700ms var(--ease-out);
-  pointer-events: none;
-}
-#home .btn-primary:hover {
-  background: var(--color-brand-yellow);
-  box-shadow: var(--ctl-edge), var(--ctl-shadow-hover);
-}
-#home .btn-primary:hover::before { left: 220%; }
-/* Transform is owned by GSAP when it is loaded (see luxe.js); the fallback
-   below is for the no-library case, which is also the no-JS case. */
-html:not(.luxe-gsap) #home .btn-primary:hover { transform: translateY(-2px) scale(1.02); }
-/* Pressed: the surface, the sweep and the backdrop all stay exactly as they
-   were — a scale() would shrink the shine out of view and, on the glass CTA
-   below, make the browser drop the backdrop sample mid-press (the effect
-   visibly "disappears when clicked"). Travel of 1px plus an inset ring reads
-   as a press without any of that. */
-#home .btn-primary:active {
-  background: var(--color-brand-yellow);
-  box-shadow: var(--ctl-edge),
-              inset 0 2px 6px rgba(5,1,74,.20),
-              0 1px 2px rgba(5,1,74,.05);
-}
-#home .btn-primary:active::before { left: 220%; }
-html:not(.luxe-gsap) #home .btn-primary:active { transform: translateY(1px) scale(var(--sc-press)); }
-#home .btn-secondary {
-  --ctl-bg: rgba(255, 255, 255, 0.05);
-  --ctl-bg-hover: rgba(255, 255, 255, 0.11);
-  --ctl-fg: #FFFFFF;
-  --ctl-fg-hover: #FFFFFF;
-  --ctl-bd: rgba(255, 255, 255, 0.20);
-  --ctl-bd-hover: rgba(255, 255, 255, 0.50);
-  /* Glass on dark: the edge is the light catching the rim, the elevation is
-     black rather than warm — a warm shadow under glass reads as dirt. */
-  --ctl-edge: inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.07);
-  --ctl-shadow: 0 1px 2px rgba(0,0,0,.10), 0 8px 24px rgba(0,0,0,.16);
-  --ctl-shadow-hover: 0 2px 4px rgba(0,0,0,.12), 0 14px 34px rgba(0,0,0,.22), 0 30px 60px rgba(0,0,0,.20);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-#home .btn-secondary:hover {
-  box-shadow: var(--ctl-edge), var(--ctl-shadow-hover);
-  backdrop-filter: blur(16px) saturate(1.35);
-  -webkit-backdrop-filter: blur(16px) saturate(1.35);
-}
-/* Pressed keeps the glass: the backdrop sample is re-asserted, because a
-   transformed element can lose it mid-press and the effect would appear to
-   vanish exactly when the user is looking at it. */
-#home .btn-secondary:active {
-  box-shadow: var(--ctl-edge),
-              inset 0 2px 6px rgba(0,0,0,.28),
-              inset 0 0 0 1px rgba(255,255,255,.16);
-  background: rgba(255, 255, 255, 0.13);
-  border-color: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(16px) saturate(1.35);
-  -webkit-backdrop-filter: blur(16px) saturate(1.35);
-}
-html:not(.luxe-gsap) #home .btn-secondary:hover { transform: translateY(-2px); }
-html:not(.luxe-gsap) #home .btn-secondary:active { transform: translateY(1px); }
+   The pair is now built from the `.btn-hero` material in components.css
+   (tonal champagne / glass gradients, 1px translucent inner borders, a
+   specular top glint and a crossing sheen), so this file no longer restates
+   the plates, their shadows or their sweeps. What is left here is the one
+   thing a page sheet legitimately owns: where the pair *sits* in the hero. */
+#home #heroButtons { --ctl-gap: var(--space-3); }
+/* The hero pair used to be restated here: a `#home .btn-primary` block with
+   its own yellow, its own shadows and a full-bleed white switch-shadow
+   sweeping across the whole label, plus a matching glass block for the
+   secondary. All of it is now the `.btn-hero` material in components.css, and
+   none of it may come back — at `#home .btn-*` specificity those rules would
+   out-rank the material and quietly restore the flat yellow and the sweep. */
 .btn--sending {  pointer-events: none; opacity: 0.94; transform: translateY(0);
 }
 .sr-only {
@@ -351,10 +271,13 @@ footer {
   font-size:13px;
   padding-bottom:40px;
 }
-:focus {  outline: 3px solid rgba(99,102,241,0.12); outline-offset: 2px;
-}
-a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
-}
+/* Two legacy rules used to sit here — a bare `:focus` with a 3px indigo
+   outline at 12% alpha, and `a:focus` with a 3px amber at 18%. Both fired on
+   every *mouse click* (a bare `:focus` has no keyboard condition) and both
+   out-ranked the shared `:where(...) { outline: none }` reset, because a
+   zero-specificity rule loses to everything. They were the ring people were
+   seeing on gallery cards and text boxes. Removed: focus is components.css's
+   business, and it is a 1px hairline for the keyboard only. */
 .scroll-fade {
   opacity: 0;
   transform: translateY(20px);
@@ -732,12 +655,10 @@ a:focus {  outline: 3px solid rgba(252,211,77,0.18); outline-offset: 2px;
    asked it to. The shared layer already sets one transition and one easing
    for every control; the only thing a large viewport needs is a little more
    travel, so that is all this block now says. */
-@media (min-width: 1024px) {
-  #home .btn-primary { --lift: -2px; }
-  #home .btn-secondary { --lift: -2px; }
-  html:not(.luxe-gsap) #home .btn-primary:hover,
-  html:not(.luxe-gsap) #home .btn-secondary:hover { transform: translateY(-2px) scale(1.02); }
-}
+/* The desktop block that used to raise the hero pair's travel by 1px is gone:
+   `.btn-hero` sets `--lift: -2px` for the whole pair at every viewport, so the
+   desktop rule was only ever re-stating it and adding a `scale(1.02)` the
+   material does not want. */
 @media (min-width: 1024px) {
   .mv-card {
     transition: transform var(--dur-hover) var(--ease-out-lux),

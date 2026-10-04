@@ -15,7 +15,6 @@ body {
 :focus-visible {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: var(--ring-offset);
-  box-shadow: var(--ring-glow);
 }
 ::-webkit-scrollbar {  width: 8px; height: 8px;
 }
@@ -153,9 +152,10 @@ input[type="file"].sr-only-upload {
   outline: none;
 }
 .admin-input:focus {
-  border-color: rgba(197, 155, 83, 0.7);
+  border-color: var(--color-accent-bright);
   background: rgba(255,255,255,0.08);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 0 0 4px rgba(197,155,83,.18);
+  box-shadow: inset 0 0 0 1px var(--color-accent-bright);
+  outline: none;
 }
 .admin-input::placeholder {  color: var(--color-placeholder-dark);
 }

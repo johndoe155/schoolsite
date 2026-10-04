@@ -68,10 +68,13 @@ check("press is faster than the hover transition",
   /transition-duration: 130ms/.test(CSS) && /--dur: var\(--dur-fast\)/.test(CSS));
 
 /* ── 4. focus ──────────────────────────────────────────────────────────── */
-check("one shared focus ring for every interactive element",
-  /:where\(a, button, \[tabindex\], input, select, textarea\):focus-visible \{\n\s*outline: 2px solid var\(--accent\);/.test(CSS));
-check("the ring is offset", /outline-offset: 3px/.test(CSS));
-check("the ring carries a soft glow", /filter: drop-shadow\(0 0 12px 2px rgba\(176, 125, 63, \.38\)\)/.test(CSS));
+check("one shared focus hairline for every interactive element",
+  /:where\(a, button, \[tabindex\], \[role="button"\], input, select, textarea\):focus-visible \{\n\s*outline: 1px solid var\(--accent\);/.test(CSS));
+check("the hairline is offset", /outline-offset: 2px;/.test(CSS));
+check("a pointer click draws nothing", /:where\(a, button, \[tabindex\], \[role="button"\], input, select, textarea\):focus \{\n\s*outline: none;/.test(CSS));
+check("the glow is gone", !/drop-shadow\(0 0 12px 2px rgba\(176, 125, 63, \.38\)\)/.test(CSS));
+check("the tap flash is off", /-webkit-tap-highlight-color: transparent/.test(CSS));
+check("a field never draws a ring", /:where\(input, select, textarea\):focus-visible \{ outline: none; \}/.test(CSS));
 
 /* ── 5. reduced motion and forced colours ──────────────────────────────── */
 check("reduced motion keeps the states and drops the travel",

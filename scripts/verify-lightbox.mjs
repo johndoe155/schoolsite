@@ -280,10 +280,16 @@ const cardFor = (doc, title) =>
     /id="heroEyebrow"[^>]*bg-white\/10[^>]*backdrop-blur-xl/.test(html) && !/heroEyebrow[^>]*bg-brand-yellow/.test(html));
   tOk('1b. and gets its lower opacity from translucent fills, not `opacity`',
     !/id="heroEyebrow"[^>]*[^-]opacity-(?:4|5|6|7|8|9)0/.test(html));
+  /* The sheen moved from a full-bleed white div (whose `group-active` class held
+     it open on press) to the `.btn-hero` pseudo-element, which is held by a
+     plain `:active` rule instead. Same behaviour, none of the markup. */
   tOk('2. the primary CTA keeps its sheen while pressed',
-    /group-active:scale-x-100/.test(html));
+    /\.btn-hero:active::after \{ opacity: \.65; \}/.test(componentsCss) &&
+    /class="btn btn-hero btn-hero--gold"/.test(html));
   tOk('2b. pressed states keep their glass instead of scaling it away',
-    /#home \.btn-secondary:active \{[^}]*backdrop-filter/.test(homeCss) && !/#home \.btn-secondary:active \{[^}]*scale\(/.test(homeCss));
+    /\.btn-hero--glass:active \{[\s\S]{0,260}backdrop-filter/.test(componentsCss) &&
+    !/\.btn-hero--glass:active \{[\s\S]{0,260}scale\(/.test(componentsCss) &&
+    !/#home \.btn-secondary:active \{[^}]*scale\(/.test(homeCss));
   tOk('3. the bouncing arrow is replaced by a rail + bead + chevron',
     /class="hero-scroll"/.test(html) && /hero-scroll__bead/.test(homeCss) && !/animate-bounce/.test(html));
   tOk('3b. and it honours prefers-reduced-motion', /prefers-reduced-motion[\s\S]*hero-scroll__bead/.test(homeCss));

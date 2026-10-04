@@ -323,7 +323,11 @@ body {
   outline: none;
   box-shadow: none;
 }
-.lux-field-group:focus-within {
+/* The accent line and the label step are the *click* affordance on this page
+   (they are what a person sees while typing). The ring is for the keyboard,
+   and `:focus-within` cannot tell the two apart — `:has(:focus-visible)` can.
+   The 6px offset is kept: the group is the control here, not the input. */
+.lux-field-group:has(:focus-visible) {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: 6px;
   border-radius: 2px;
@@ -428,7 +432,7 @@ html:not(.luxe-gsap) .lux-btn-send:active { transform: translateY(1px) scale(.98
 .lux-btn-send:focus-visible {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: var(--ring-offset);
-  box-shadow: var(--ctl-edge), var(--ring-glow);
+  box-shadow: var(--ctl-edge), var(--ctl-shadow);
 }
 .lux-btn-send > * {  position: relative; z-index: 1;
 }
@@ -651,7 +655,6 @@ html:not(.luxe-gsap) .lux-btn-send:active { transform: translateY(1px) scale(.98
 .lux-social-link:focus-visible {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: var(--ring-offset);
-  box-shadow: var(--ring-glow);
 }
 .lux-map-surface {
   background: var(--color-white);

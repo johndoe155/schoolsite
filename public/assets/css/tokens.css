@@ -37,7 +37,18 @@
   --color-brand:        #05014A;            /* indigo — brand + primary UI */
   --color-brand-strong: #0F1F6A;            /* hover */
   --color-brand-tint:   rgba(5,1,74,.08);
-  --color-brand-yellow: #FACC15;            /* home hero CTA/highlight */
+  --color-brand-yellow: #FACC15;            /* highlight: badges, timeline, admin */
+
+  /* ── The premium CTA — champagne, not yellow ────────────
+     The hero plate used to be #FACC15: a 96%-saturation Tailwind yellow,
+     the hue of a highlighter or a warning label. This is the same family
+     taken two steps toward gold, as three tonal stops rather than a flat
+     fill — which is what makes a metal read as metal instead of as paint.
+     The ink label measures 8.2:1 on the darkest stop and 13.4:1 on the
+     lightest, so it clears AAA at every point along the gradient. */
+  --color-champagne:      #E3BE67;          /* the plate, mid tone */
+  --color-champagne-hi:   #EFD79B;          /* light catching the top */
+  --color-champagne-lo:   #CFA447;          /* the shadowed underside */
 
   /* ── Accent ──────────────────────────────────────────── */
   --color-accent:         #B07D3F;          /* antique gold */
@@ -145,14 +156,16 @@
   --edge-gold:     inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.12);
   --edge-inset:    inset 0 1px 2px rgba(24,20,15,.05), inset 0 0 0 1px rgba(24,20,15,.04);
 
-  /* ── Focus ring — offset ring + soft glow ───────────────
-     --ring-gap is the colour of the surface the control sits on; it is
-     what makes the ring read as *offset* rather than as a border. Dark
-     sections re-point it (see `[data-surface="dark"]` in components.css). */
-  --ring-w: 2px;
-  --ring-offset: 3px;
+  /* ── Focus — a 1px hairline, and nothing else ───────────
+     This was 2px plus a 12px blurred halo at 38% alpha, which around a
+     button or a field reads as exactly what it is: the browser's default
+     ring, dressed up. The ring is now a single 1px hairline held 2px off
+     the plate — the same hairline the plates are drawn with — and there is
+     no glow at all. Dark sections re-point the colour (see
+     `[data-surface="dark"]` in components.css). */
+  --ring-w: 1px;
+  --ring-offset: 2px;
   --ring-color: var(--color-accent-bright);
-  --ring-glow: 0 0 12px 2px rgba(176,125,63,.38);
 
   /* ── Control geometry — strict 4pt grid ─────────────────
      Heights are multiples of 4; the touch minimum (44) is the smallest
@@ -183,6 +196,7 @@
   --dur-hover: 320ms;
   --dur-press: 130ms;
   --dur-release: 460ms;
+  --dur-sheen: 1100ms;      /* the specular sweep across metal — decorative */
   --ease-out: cubic-bezier(.22,.9,.37,1);
   --ease-out-lux: cubic-bezier(.16,1,.3,1);     /* long silky deceleration */
   --ease-spring: cubic-bezier(.34,1.46,.64,1);  /* overshoot on release */

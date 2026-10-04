@@ -900,3 +900,63 @@ plate sat 13px off its own position — and the press did nothing.
   to match the palette.
 * Stylesheets and `luxe.js` now carry `?v=3` (they are served `max-age=86400`),
   applied uniformly across all ten pages.
+
+### The premium hero, and the end of the click ring
+
+Two directives, both structural.
+
+**The hero pair is a material now** (`components.css` → `.btn-hero--gold` /
+`.btn-hero--glass`). Depth comes from a three-stop tonal gradient, a 1px
+translucent inner border at white 10%, a warm hairline at the rim and a
+specular glint along the top edge — with **one 2px contact line** and no bloom
+anywhere. Hover is not a colour swap: the gradient's top stop lifts, the rim
+warms and the glint brightens, so the light on the plate changes rather than
+the pigment. The full-bleed white switch-shadow that used to sweep across the
+label is gone; a `::after` sheen crosses the plate once over 1100ms instead,
+and holds on press rather than retracting. Hover is 320ms on
+`cubic-bezier(.16,1,.3,1)`, press is 130ms — slow in, fast down.
+
+**The plate is champagne, not highlighter yellow.** `#FACC15` (96%
+saturation) is replaced on the hero by `#E3BE67`, with `#EFD79B` catching the
+light and `#CFA447` under it. The ink label measures **8.2:1 → 13.4:1** across
+the gradient, so the button clears AAA at every point. The flat yellow stays
+available as `--color-brand-yellow` for the badges, timeline and admin chrome
+that were designed around it; the hero no longer touches it.
+
+**The click ring is abolished.** Focus was a 2px outline plus a 12px blurred
+halo at 38% alpha — the browser default in our colours, visible on every click,
+on buttons, cards and text boxes alike. Now:
+
+* a **pointer click paints nothing** (`:focus { outline: none }`, plus
+  `:-moz-focusring` for Firefox, which restores the preflight's ring);
+* the **keyboard gets a single 1px hairline**, held 2px clear of the plate, in
+  the plates' own gold (4.6:1 on parchment, 5.6:1 on ebony);
+* the **glow is deleted everywhere** — the token, the `filter`, and the three
+  page sheets that had restated it;
+* **text boxes never draw a ring at all**: a field is a typing context, so
+  `:focus-visible` matches it on a plain click. Focus lights *within* the
+  field — the border steps to gold and a second 1px gold hairline appears just
+  inside it;
+* the **tap flash is off** at the root (`-webkit-tap-highlight-color`).
+
+The reason the previous pass did not fix the reported ring: a zero-specificity
+reset loses to everything, and `home.css` still carried a bare
+`:focus { outline: 3px solid rgba(99,102,241,.12) }` and an
+`a:focus { … rgba(252,211,77,.18) }`. Neither has a keyboard condition, so both
+painted a 3px low-opacity outline on **every click**, and at 0,1,0 and 0,1,1
+they beat the reset. Seven more halos were hiding behind `:focus` /
+`:focus-within` in `contact.css`, `programs.css`, `library.css`, `admin.css`
+and `news.css`. All are gone or converted to the inner-hairline treatment, the
+two group rings (contact field group, admin search row) are now
+`:has(:focus-visible)` so they stay keyboard-only, and `verify:interactions`
+§12 fails the build if a click-firing selector anywhere in any stylesheet draws
+a halo above 1px.
+
+The portal's control layer carried the same 2px ring and glow; it now draws the
+same hairline, and `check:controls` grew three checks for the new discipline
+(29 total).
+
+Verified: `verify:interactions` **142/142** (new §11 measures the hero material,
+new §12 sweeps every sheet for click-firing halos), `verify:polish` 7 pages / 0 failures,
+`verify:lightbox` 55/55, `tokens:check` in sync, portal `check:controls` 29/29,
+`check:contrast` all pairs AA, `tsc` clean, `next build` compiled.

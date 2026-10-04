@@ -377,22 +377,29 @@ body.portal-root .btn.danger {
 }
 body.portal-root .btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
 body.portal-root .btn:disabled:hover { transform: none; }
-/* Focus: the offset ring and the soft glow, matching the public pages. */
-body.portal-root .btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  filter: drop-shadow(0 0 12px 2px rgba(176, 125, 63, .38));
-}
-body.portal-root :where(a, button, [tabindex], input, select, textarea):focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  transition: outline-offset 220ms var(--ease), outline-color 220ms var(--ease);
-}
-body.portal-root :where(input, select, textarea):focus {
-  border-color: var(--accent);
-  box-shadow: inset 0 1px 2px rgba(24, 20, 15, .05), 0 0 0 4px rgba(176, 125, 63, .16);
+/* Focus, matching the public pages: a pointer draws nothing, the keyboard gets
+   a single 1px hairline held 2px off the plate. The 2px ring with a blurred
+   glow that used to be here was the same “cheap ring” the marketing site has
+   now retired — and it was visible on every click. */
+body.portal-root :where(a, button, [tabindex], [role="button"], input, select, textarea):focus {
   outline: none;
 }
+body.portal-root :-moz-focusring { outline: none; }
+body.portal-root :where(a, button, [tabindex], [role="button"], input, select, textarea):focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+  transition: outline-color 180ms var(--ease), outline-offset 180ms var(--ease);
+}
+body.portal-root .btn:focus-visible { filter: none; }
+/* A field never draws a ring — it lights from within, on the plate. */
+body.portal-root :where(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent), inset 0 1px 2px rgba(24, 20, 15, .05);
+  outline: none;
+}
+body.portal-root :where(input, select, textarea):focus-visible { outline: none; }
+/* The tap flash, off at the root — scoped like everything else in this file. */
+body.portal-root { -webkit-tap-highlight-color: transparent; }
 
 body.portal-root input, body.portal-root select, body.portal-root textarea {
   min-height: 44px;
@@ -472,7 +479,7 @@ body.portal-root .skip { position: absolute; left: -9999px; }
 body.portal-root .skip:focus { left: var(--space-2); top: var(--space-2); z-index: 100; background: var(--card); padding: var(--space-2); }
 
 body.portal-root :focus-visible {
-  outline: 3px solid var(--color-focus);
+  outline: 1px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -598,7 +605,7 @@ body.portal-root .receipt__head {
    nothing here invents a colour, a radius or a duration.
    ══════════════════════════════════════════════════════════════════════════ */
 
-body.portal-root :focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+body.portal-root :focus-visible { outline: 1px solid var(--focus-ring); outline-offset: 2px; }
 
 /* ── Screen-reader-only + status ──────────────────────────────────────────── */
 body.portal-root .sr-only {

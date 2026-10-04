@@ -23,7 +23,6 @@ img {  display: block; max-width: 100%; height: auto;
 :focus-visible {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: var(--ring-offset);
-  box-shadow: var(--ring-glow);
 }
 :focus:not(:focus-visible) {  outline: none;
 }
@@ -136,8 +135,12 @@ img {  display: block; max-width: 100%; height: auto;
 }
 .search-row:focus-within {
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px var(--color-ink-04), var(--shadow-2);
-    
+  box-shadow: var(--shadow-2);
+}
+/* The 3px low-opacity ring that used to be here fired on a click into the
+   search box. The border change carries it; the keyboard gets the hairline. */
+.search-row:has(:focus-visible) {
+  box-shadow: var(--shadow-2), 0 0 0 1px var(--color-accent-bright);
 }
 .search-icon-wrap {
   display: flex;
@@ -211,7 +214,6 @@ img {  display: block; max-width: 100%; height: auto;
 .chip:focus-visible {
   outline: var(--ring-w) solid var(--ring-color);
   outline-offset: var(--ring-offset);
-  box-shadow: var(--ring-glow);
 }
 .hero-aside {
   display: flex;
@@ -1225,7 +1227,7 @@ aside.panel {
 }
 .adm-dropzone:focus-visible {
   border-color: var(--color-accent);
-  box-shadow: var(--edge-inset), 0 0 0 4px rgba(176,125,63,.16);
+  box-shadow: inset 0 0 0 1px var(--color-accent), var(--edge-inset);
 }
 .adm-dropzone.adm-dz-over {
   border-color: var(--color-brand-yellow);
@@ -1383,13 +1385,6 @@ aside.panel {
   font-family: var(--font-ui); font-size: 12px; color: #6b6b78;
 }
 
-/* The plates above declare their own `box-shadow`, and a page rule of equal
-   specificity that comes later in the cascade wins — which would silently eat
-   the shared ring's glow. The offset ring itself is an `outline` and is never
-   shadowed, so only the glow needs restating, once, for the staff controls. */
-.adm-btn:focus-visible, .adm-logout-btn:focus-visible, .adm-submit:focus-visible,
-.adm-login-submit:focus-visible, .adm-dz-remove:focus-visible,
-.adm-newsletter-test:focus-visible, .adm-newsletter-preview:focus-visible,
-.adm-staff-trigger:focus-visible, .adm-back-link:focus-visible {
-  box-shadow: var(--edge-light), var(--ring-glow);
-}
+/* The staff plates declare their own `box-shadow`, so on focus they keep their
+   edges and gain nothing else. The ring is the shared 1px hairline and it is
+   drawn with `outline`, which no `box-shadow` can shadow out. */
