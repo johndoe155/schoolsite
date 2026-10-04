@@ -585,3 +585,38 @@ current model stays; the glitches had a different cause (above).
 
 Verified: new 18-assertion scroll-lock guard probe (both pages, real
 lock/unlock with simulated clamp) + 202 + 20 suites green.
+
+## Stock photography — relevant images on Programs and Academies
+
+The Programs page's six "Capstone Examples" cards and the two Academies
+photographs carried generic stock imagery that had nothing to do with
+their captions (a circuit board, laptops for a water monitor, a
+bookshelf, an office meeting). Each slot now shows its own subject.
+
+**Changed**
+- Programs capstone cards: a robotics workbench (Autonomous Field
+  Drone), stream water sampling (Smart Water Monitor), a painted
+  community mural, students reading in a library (Student Literary
+  Magazine), a student team at a whiteboard (Start-up Launch), and a
+  finance/management workshop (Financial Literacy Workshops).
+- Academies: the hero background is now an athletics track; the BIMA
+  panel shows a film crew setting up a studio shoot.
+- All eight are free-license Pexels photographs (commercial use, no
+  attribution required). The photographer is credited in a comment
+  beside each image, and the slots are listed in
+  FEATURE-INVENTORY-AND-SCHOOL-REQUIREMENTS.md §1.10, with B9 asking the
+  school to swap in real BIC photographs of the same subjects.
+- `server.js`: the CSP `img-src` now also allows
+  `https://images.pexels.com` (unsplash stays for the two server-side
+  fallbacks below).
+
+**Deliberately left alone:** `bifa.jpg` and the three programme header
+images are real school photographs, not stock.
+
+**Still generic, in the server rather than the pages:** the automatic
+image substituted when staff publish a news post or upload a library
+book with no picture of their own. Noted in §1.10 for replacement.
+
+Verified: all eight CDN URLs resolve; both pages serve 200 with the new
+sources and the widened CSP; no `images.unsplash.com` reference remains
+in `public/`.

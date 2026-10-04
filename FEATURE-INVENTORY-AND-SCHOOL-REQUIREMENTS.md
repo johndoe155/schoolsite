@@ -140,6 +140,25 @@ The school can now collect email addresses **and write to them** — previously 
 - Rate limits on every password prompt and every public form.
 - In production, **the server refuses to start** if any of the default passwords are still in place or the session secret is missing or weak.
 
+## 1.10 Photography on the pages, and where it comes from
+
+Most pictures on the site are the school's own — the gallery's seven albums, the programme header images and the logo. **Eight images are free-license stock photographs**, used where the school has not yet supplied a picture of that subject. They are licensed for commercial use without attribution (Pexels License); the credit is recorded here and as a comment beside each image in the page source, so each slot is easy to find and swap.
+
+| Page | Where it appears | What the photograph shows | Credit |
+| --- | --- | --- | --- |
+| Programs | Capstone example — *Autonomous Field Drone* | Students building and testing a robotics project at a workbench | Vanessa Loring / Pexels |
+| Programs | Capstone example — *Smart Water Monitor* | A student taking a water sample from a stream for field analysis | jubersahel / Pexels |
+| Programs | Capstone example — *Community Mural* | A large painted mural covering a community building wall | keat007 / Pexels |
+| Programs | Capstone example — *Student Literary Magazine* | Students reading books together in a library | Ron Lach / Pexels |
+| Programs | Capstone example — *Start-up Launch* | A student team discussing their venture at a whiteboard | Gabby K / Pexels |
+| Programs | Capstone example — *Financial Literacy Workshops* | Students taking part in a finance and management workshop | Mba Classroom / Pexels |
+| Academies | Hero background | An athletics running track | Mikhail Nilov / Pexels |
+| Academies | BIMA panel (“BIMA Studio”) | A film crew setting up cameras and lighting for a studio shoot | Ron Lach / Pexels |
+
+- The eight are served from `images.pexels.com`, which the site's Content Security Policy explicitly allows (`img-src`, §1.9).
+- **Recommendation:** replace each one with a real BIC photograph of the same subject as soon as the school has one — the subject and credit comment in the source marks each slot.
+- Two further fallbacks live in the server rather than the pages: when staff publish a news article or upload a library book **without** a picture of their own, the site substitutes an older stock image (a classroom, and a stack of books). Also worth replacing if the school wants no stock photography anywhere.
+
 ---
 
 # Part 2 — The school portal
@@ -472,6 +491,7 @@ This is the answer to "what is needed to be fully ready". It is grouped by kind,
 | B6 | **Photographs of staff, facilities and pupils** | Some are in place. Any additional photos needed for the pages in B3. **Note:** published photographs of pupils require the school's own consent process | School |
 | B7 | **The official school logo** | In place, but used as the browser tab icon at full size (see C7/H3) | School (high-resolution original if it exists) |
 | B8 | **Policies the site should publish** | Safeguarding / child protection, anti-bullying, uniform, attendance — these are normal and expected on a school website | School + board |
+| B9 | **Real photographs for the eight stock-image slots** — six programme project cards and two Academies images, listed in §1.10 | Currently free-license Pexels stock, credited in the page source. Photographs of the same subjects taken at BIC would make those pages unambiguously the school's own | School |
 
 ## C. Accounts, credentials and access
 

@@ -1211,7 +1211,7 @@ const SITE_CSP = [
      inline script is. The Tailwind CDN no longer needs a style-src entry. */
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "img-src 'self' data: blob: https://images.unsplash.com",
+  "img-src 'self' data: blob: https://images.unsplash.com https://images.pexels.com",
   "connect-src 'self' https://esm.sh",
   "frame-src https://www.google.com",            // the contact/home map embeds
   "object-src 'none'",
