@@ -788,3 +788,18 @@ the NaN guards), `node --check` clean on every script, `build:tailwind`
 regenerated `tw-index.css` with the new utilities before the pages changed
 classes, and the server returns 200 on all eight pages with the gallery API
 serving 7 categories / 131 images (all present on disk).
+
+### Preview hosting and the headers that blocked it
+
+The site sent `frame-ancestors 'self'` and `X-Frame-Options: SAMEORIGIN`, which
+is right for production and wrong for any host that embeds the pages in an
+iframe on another origin — including the sandbox preview used to review this
+work, where the effect was that the fixes could not be looked at at all. Both
+headers are now driven by one optional environment variable:
+`PREVIEW_FRAME_ANCESTORS` (a CSP source list; `*` covers a preview host whose
+parent origin is not known in advance). Unset — the default, and what
+production runs with — keeps `'self'` and SAMEORIGIN exactly as before; when it
+is set, X-Frame-Options is dropped as well, because a legacy browser obeys the
+stricter of the two and SAMEORIGIN cannot express a list. Measured both ways:
+with the variable, `frame-ancestors *` and no X-Frame-Options; without it, the
+original pair.

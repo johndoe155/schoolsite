@@ -283,10 +283,14 @@ app.use((req, res, next) => {
   /* The portal sets its own CSP, XFO and HSTS (apps/web/proxy.ts). Leave those
      responses alone — a default CSP from the site would only fight them. */
   if (req.path.startsWith('/portal')) return next();
-  res.setHeader('Content-Security-Policy', SITE_CSP.replace('%NONCE%', ''));
+  res.setHeader('Content-Security-Policy', cspFor(null));
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  /* X-Frame-Options cannot express "these ancestors": it is SAMEORIGIN or
+     nothing. A preview host is a mismatch, and a legacy browser obeys the
+     stricter of the two headers, so it is dropped only when the operator has
+     explicitly opened frame-ancestors. */
+  if (!PREVIEW_FRAME_ANCESTORS) res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   /* HSTS only over TLS. A browser that is told to remember an https:// upgrade
      for a site it reached over http:// will refuse to connect — so this is
@@ -1192,6 +1196,15 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
    What this policy does buy: script can now only come from 'self' and the
    three CDNs the site actually uses, so an injected payload cannot fetch a
    loader from an attacker's host. */
+/* Preview hosting (e.g. a sandbox that embeds the site in an iframe on another
+   origin) cannot work while `frame-ancestors 'self'` and
+   X-Frame-Options: SAMEORIGIN are in force. Set PREVIEW_FRAME_ANCESTORS to a
+   CSP source list — `*` is enough for a preview host whose parent origin is
+   not known in advance — to allow it. Unset, which is what production runs
+   with, keeps the strict anti-clickjacking policy untouched. */
+const PREVIEW_FRAME_ANCESTORS = (process.env.PREVIEW_FRAME_ANCESTORS || '').trim();
+const FRAME_ANCESTORS = PREVIEW_FRAME_ANCESTORS || "'self'";
+
 const SITE_CSP = [
   "default-src 'self'",
   /* No 'unsafe-inline': every inline block carries a per-request nonce (see
@@ -1217,8 +1230,15 @@ const SITE_CSP = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'self'",
+  "frame-ancestors %FRAME_ANCESTORS%",
 ].join('; ');
+
+/** The policy with its two placeholders filled in for one response. */
+function cspFor(nonce) {
+  return SITE_CSP
+    .replace('%NONCE%', nonce ? `'nonce-${nonce}'` : '')
+    .replace('%FRAME_ANCESTORS%', FRAME_ANCESTORS);
+}
 
 /* ── Per-request CSP nonces ───────────────────────────────────────────────────
    The pages are static files, and express.static streams them untouched, so the
@@ -1245,7 +1265,7 @@ function injectNonces(html, nonce) {
 app.use((req, res, next) => {
   const nonce = crypto.randomBytes(16).toString('base64');
   res.locals.cspNonce = nonce;
-  res.setHeader('Content-Security-Policy', SITE_CSP.replace('%NONCE%', `'nonce-${nonce}'`));
+  res.setHeader('Content-Security-Policy', cspFor(nonce));
 
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
   let rel;
