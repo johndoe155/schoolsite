@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { SkeletonRows } from "@/components/skeleton";
 import InviteForm from "./invite-form";
 
 /** review-4 #1: per-request CSP nonce requires per-request rendering —
@@ -6,7 +7,7 @@ import InviteForm from "./invite-form";
  * hydration script would be blocked by the live CSP header. */
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Accept your invite — School Portal" };
+export const metadata = { title: "Accept invitation" };
 
 export default function InvitePage() {
   return (
@@ -16,7 +17,7 @@ export default function InvitePage() {
         Choose your password to activate your account. Minimum 12 characters
         with upper-case, lower-case and digits.
       </p>
-      <Suspense fallback={<div className="card muted">Loading…</div>}>
+      <Suspense fallback={<div className="card"><SkeletonRows label="Loading form…" count={3} /></div>}>
         <InviteForm />
       </Suspense>
     </div>

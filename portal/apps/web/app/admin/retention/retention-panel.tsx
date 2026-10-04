@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { SkeletonRows } from "@/components/skeleton";
 import { api } from "@/lib/client";
 
 interface Windows {
@@ -78,7 +79,7 @@ export default function RetentionPanel() {
 
   if (!st) {
     return <div className="card"><h2 style={{ marginTop: 0 }}>Retention schedule</h2>
-      <div className="muted">{err || "Loading…"}</div></div>;
+      {err ? <div className="alert err" role="alert">{err}</div> : <SkeletonRows label="Loading retention schedule…" count={4} />}</div>;
   }
 
   return (

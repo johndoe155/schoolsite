@@ -50,6 +50,83 @@
   --ease: var(--ease-out);
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Dark theme
+
+   The theme is decided twice, deliberately: `prefers-color-scheme` handles
+   the first visit with no cookie and no inline script (an inline script
+   would be blocked by the portal's nonce CSP, and a wrong-theme flash is
+   worse than no dark mode at all), and the cookie makes the server render
+   the chosen theme from the next request onward — see app/layout.tsx.
+   Only the portal aliases are overridden; every rule in this file already
+   consumes them, so nothing else has to know about the theme.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+body.portal-root,
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--color-paper);
+  --card: var(--color-surface);
+  --card-2: var(--color-surface-2);
+  --ink: var(--color-ink);
+  --muted: var(--color-ink-60);
+  --line: var(--color-border);
+  --brand: var(--color-brand);
+  --brand-strong: var(--color-brand-strong);
+  --brand-ink: var(--color-cream);
+  --field-bg: var(--color-white);
+  --hover: var(--color-brand-tint);
+  --ok: var(--color-success);
+  --warn: var(--color-warning);
+  --bad: var(--color-danger);
+  --info: var(--color-brand-strong);
+}
+
+html[data-theme="dark"] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) { html:not([data-theme]) { color-scheme: dark; } }
+
+html[data-theme="dark"] {
+    --bg: #111014;
+    --card: #1A191D;
+    --card-2: #222026;
+    --ink: #F2EFE9;
+    --muted: rgba(242, 239, 233, .68);
+    --line: #332F39;
+    --brand: #A9B4FF;
+    --brand-strong: #C6CDFF;
+    --brand-ink: #10121F;
+    --field-bg: #242229;
+    --hover: rgba(169, 180, 255, .12);
+    --accent: #D3A860;
+    --ok: #6FD39A;
+    --warn: #E6B25C;
+    --bad: #F59A9A;
+    --info: #A9B4FF;
+}
+
+/* Same palette for a first visit that has not chosen yet. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    --bg: #111014;
+    --card: #1A191D;
+    --card-2: #222026;
+    --ink: #F2EFE9;
+    --muted: rgba(242, 239, 233, .68);
+    --line: #332F39;
+    --brand: #A9B4FF;
+    --brand-strong: #C6CDFF;
+    --brand-ink: #10121F;
+    --field-bg: #242229;
+    --hover: rgba(169, 180, 255, .12);
+    --accent: #D3A860;
+    --ok: #6FD39A;
+    --warn: #E6B25C;
+    --bad: #F59A9A;
+    --info: #A9B4FF;
+  }
+}
+
 /* ── Base ─────────────────────────────────────────────────── */
 
 *, body.portal-root * { box-sizing: border-box; }
@@ -57,10 +134,23 @@
 html, body { margin: 0; padding: 0; }
 
 body.portal-root {
+  /* Typography — the portal's CSP is `font-src 'self'` on pages that hold
+     pupil data, so no webfont may load. That makes the *stack* the design:
+     name the best face on each OS instead of falling through to
+     Trebuchet/Verdana. Roles are unchanged — display serif for headings and
+     documents, UI sans for controls and tables, mono only for figures. */
+  --portal-font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --portal-font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --portal-font-num: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, monospace;
+  --font-ui: var(--portal-font-ui);
+  --font-display: var(--portal-font-display);
+  --font-body: var(--portal-font-ui);
+
   background: var(--bg);
   color: var(--ink);
   font: var(--fs-body)/var(--lh-body) var(--font-body);
   -webkit-font-smoothing: antialiased;
+  accent-color: var(--brand);
 }
 
 body.portal-root a { color: var(--brand); text-decoration: none; }
@@ -83,6 +173,9 @@ body.portal-root .container {
   margin: 0 auto;
   padding: 0 var(--space-3) 90px;
 }
+@media (min-width: 1200px) {
+  body.portal-root .container { max-width: 1120px; }
+}
 
 body.portal-root .topbar {
   position: sticky; top: 0; z-index: 5;
@@ -98,6 +191,16 @@ body.portal-root .topbar .brand {
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-heading);
   font-size: var(--fs-h5);
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body.portal-root .topbar .brand:hover { text-decoration: none; color: var(--brand-strong); }
+body.portal-root .topbar { gap: var(--space-2); }
+body.portal-root .topbar .search-btn { white-space: nowrap; }
+body.portal-root .menu__head { padding: 6px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+body.portal-root .menu__name { display: block; font-weight: var(--weight-semibold); }
+body.portal-root .menu__mail { display: block; color: var(--muted); font-size: var(--fs-caption); overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 640px) {
+  body.portal-root .topbar .search-btn .search-label { display: none; }
 }
 body.portal-root .topbar .spacer { flex: 1; }
 body.portal-root .topbar .who { color: var(--muted); font-size: var(--fs-small); }
@@ -130,7 +233,8 @@ body.portal-root .tabbar a {
   font: var(--weight-medium) var(--fs-caption)/var(--lh-ui) var(--font-ui);
   min-height: 44px;
 }
-body.portal-root .tabbar a.on { color: var(--brand); font-weight: var(--weight-bold); }
+body.portal-root .tabbar a.on,
+body.portal-root .tabbar a[aria-current="page"] { color: var(--brand); font-weight: var(--weight-bold); }
 
 @media (min-width: 768px) {
   body.portal-root .tabbar {
@@ -144,7 +248,8 @@ body.portal-root .tabbar a.on { color: var(--brand); font-weight: var(--weight-b
     background: var(--card);
     border: 1px solid var(--line);
   }
-  body.portal-root .tabbar a.on { border-color: var(--accent); }
+  body.portal-root .tabbar a.on,
+  body.portal-root .tabbar a[aria-current="page"] { border-color: var(--accent); }
   body.portal-root .container { padding-bottom: var(--space-6); }
 }
 
@@ -202,15 +307,25 @@ body.portal-root .btn.ghost:hover { border-color: var(--accent); background: var
 body.portal-root .btn.danger { background: var(--bad); border-color: var(--bad); color: var(--color-white); }
 body.portal-root .btn:disabled { opacity: .5; cursor: not-allowed; }
 
-body.portal-root input, body.portal-root select {
+body.portal-root input, body.portal-root select, body.portal-root textarea {
   min-height: 44px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: 0 var(--space-3);
   font: inherit;
-  background: var(--color-white);
+  color: var(--ink);
+  background: var(--field-bg);
   width: 100%;
 }
+body.portal-root textarea { padding: var(--space-2) var(--space-3); }
+/* Error state travels with the attribute, so a field is red because it is
+   invalid, not because a class was remembered. */
+body.portal-root [aria-invalid="true"] {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 1px var(--bad);
+}
+body.portal-root .err-text { color: var(--bad); font-size: var(--fs-small); margin-top: 4px; }
+body.portal-root .hint { color: var(--muted); font-size: var(--fs-micro); margin-top: 4px; }
 body.portal-root label {
   font: var(--weight-medium) var(--fs-small)/var(--lh-ui) var(--font-ui);
   color: var(--muted);
@@ -244,10 +359,10 @@ body.portal-root .chip {
   cursor: pointer;
   font: var(--weight-medium) var(--fs-small)/1 var(--font-ui);
 }
-body.portal-root .chip.on-present { background: color-mix(in srgb, var(--ok) 10%, white);   border-color: var(--ok);   color: var(--ok);   font-weight: var(--weight-bold); }
-body.portal-root .chip.on-late    { background: color-mix(in srgb, var(--warn) 12%, white); border-color: var(--warn); color: var(--warn); font-weight: var(--weight-bold); }
-body.portal-root .chip.on-absent  { background: color-mix(in srgb, var(--bad) 10%, white);  border-color: var(--bad);  color: var(--bad);  font-weight: var(--weight-bold); }
-body.portal-root .chip.on-excused { background: color-mix(in srgb, var(--info) 10%, white); border-color: var(--info); color: var(--info); font-weight: var(--weight-bold); }
+body.portal-root .chip.on-present { background: color-mix(in srgb, var(--ok) 12%, var(--card));   border-color: var(--ok);   color: var(--ok);   font-weight: var(--weight-bold); }
+body.portal-root .chip.on-late    { background: color-mix(in srgb, var(--warn) 14%, var(--card)); border-color: var(--warn); color: var(--warn); font-weight: var(--weight-bold); }
+body.portal-root .chip.on-absent  { background: color-mix(in srgb, var(--bad) 12%, var(--card));  border-color: var(--bad);  color: var(--bad);  font-weight: var(--weight-bold); }
+body.portal-root .chip.on-excused { background: color-mix(in srgb, var(--info) 12%, var(--card)); border-color: var(--info); color: var(--info); font-weight: var(--weight-bold); }
 
 /* ── Feedback ─────────────────────────────────────────────── */
 
@@ -258,9 +373,9 @@ body.portal-root .alert {
   font-size: var(--fs-small);
   border: 1px solid transparent;
 }
-body.portal-root .alert.err  { background: color-mix(in srgb, var(--bad)  8%, white); color: var(--bad);  border-color: var(--bad); }
-body.portal-root .alert.ok   { background: color-mix(in srgb, var(--ok)   8%, white); color: var(--ok);   border-color: var(--ok); }
-body.portal-root .alert.warn { background: color-mix(in srgb, var(--warn) 10%, white); color: #92400e;    border-color: var(--warn); }
+body.portal-root .alert:is(.err, .error) { background: color-mix(in srgb, var(--bad) 10%, var(--card)); color: var(--bad); border-color: var(--bad); }
+body.portal-root .alert.ok   { background: color-mix(in srgb, var(--ok)   10%, var(--card)); color: var(--ok);   border-color: var(--ok); }
+body.portal-root .alert.warn { background: color-mix(in srgb, var(--warn) 12%, var(--card)); color: #92400e;    border-color: var(--warn); }
 
 body.portal-root .skip { position: absolute; left: -9999px; }
 body.portal-root .skip:focus { left: var(--space-2); top: var(--space-2); z-index: 100; background: var(--card); padding: var(--space-2); }
@@ -383,3 +498,294 @@ body.portal-root .receipt__head {
      edge of the sheet. */
   @page { size: A4; margin: 14mm; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Design system v2 — PORTAL-UX-AUDIT.md Phase 2
+
+   Every rule stays scoped `body.portal-root` so the portal and the marketing
+   site can never leak into each other. Values come from the token scale;
+   nothing here invents a colour, a radius or a duration.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+body.portal-root { --focus-ring: var(--color-focus); }
+html[data-theme="dark"] { --focus-ring: #A9B4FF; }
+@media (prefers-color-scheme: dark) { html:not([data-theme]) { --focus-ring: #A9B4FF; } }
+
+body.portal-root :focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+/* ── Screen-reader-only + status ──────────────────────────────────────────── */
+body.portal-root .sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ── Type: rhythm of a page is always the same ────────────────────────────── */
+body.portal-root h3 {
+  font: var(--weight-semibold) var(--fs-h6)/var(--lh-heading) var(--font-display);
+  margin: var(--space-3) 0 var(--space-1);
+}
+body.portal-root h4 {
+  font: var(--weight-semibold) var(--fs-small)/var(--lh-ui) var(--font-ui);
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted);
+  margin: var(--space-3) 0 var(--space-1);
+}
+body.portal-root h1, body.portal-root h2, body.portal-root h3 { text-wrap: balance; }
+body.portal-root p { text-wrap: pretty; }
+body.portal-root .num, body.portal-root td.num, body.portal-root .stat .n,
+body.portal-root .chip, body.portal-root .badge, body.portal-root time {
+  font-variant-numeric: tabular-nums;
+}
+body.portal-root .num, body.portal-root td.num {
+  font-family: var(--portal-font-num);
+  letter-spacing: -0.01em;
+}
+
+body.portal-root .page-head { margin: var(--space-4) 0 var(--space-3); }
+body.portal-root .page-head h1 { margin: 0 0 4px; font-size: var(--fs-h3); }
+body.portal-root .page-head .lede { margin: 0; max-width: 68ch; }
+body.portal-root .eyebrow {
+  display: block; margin-bottom: 6px;
+  font: var(--weight-semibold) var(--fs-micro)/1.2 var(--font-ui);
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted);
+}
+body.portal-root .lede { color: var(--muted); max-width: 68ch; }
+
+/* A card's first heading should not need an inline style to sit flush. */
+body.portal-root .card > h2:first-child,
+body.portal-root .card > h3:first-child { margin-top: 0; }
+
+/* ── Spacing helpers ──────────────────────────────────────────────────────── */
+body.portal-root .stack { display: grid; gap: var(--space-4); align-content: start; }
+body.portal-root .stack.tight { gap: var(--space-2); }
+body.portal-root .grid.cards { grid-template-columns: 1fr; }
+@media (min-width: 620px) {
+  body.portal-root .grid.cards { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+}
+
+/* ── Toolbar (sticky action row above a list) ─────────────────────────────── */
+body.portal-root .toolbar {
+  position: sticky; top: calc(var(--nav-height) + 4px); z-index: 4;
+  display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap;
+  padding: var(--space-2);
+  margin: var(--space-3) 0;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+}
+body.portal-root .toolbar .spacer { flex: 1; }
+
+/* ── Buttons: three weights, complete states ──────────────────────────────── */
+body.portal-root .btn.small { min-height: 36px; padding: 4px 12px; font-size: var(--fs-caption); }
+body.portal-root .btn.quiet {
+  background: transparent; border-color: transparent; color: var(--brand);
+}
+body.portal-root .btn.quiet:hover { background: var(--hover); text-decoration: none; }
+body.portal-root .btn:active { transform: translateY(1px); }
+body.portal-root .btn[aria-busy="true"] { cursor: progress; opacity: .8; }
+body.portal-root .btn[aria-busy="true"]::after {
+  content: ""; width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid currentColor; border-top-color: transparent;
+  animation: portal-spin 700ms linear infinite;
+}
+@keyframes portal-spin { to { transform: rotate(360deg); } }
+
+/* ── Badges (non-interactive status, unlike .chip) ────────────────────────── */
+body.portal-root .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: var(--r-pill); padding: 3px 10px;
+  font: var(--weight-semibold) var(--fs-caption)/1.4 var(--font-ui);
+  border: 1px solid var(--line); background: var(--card-2); color: var(--ink);
+}
+body.portal-root .badge.ok   { background: color-mix(in srgb, var(--ok) 12%, var(--card));   border-color: var(--ok);   color: var(--ok); }
+body.portal-root .badge.warn { background: color-mix(in srgb, var(--warn) 14%, var(--card)); border-color: var(--warn); color: var(--warn); }
+body.portal-root .badge.bad  { background: color-mix(in srgb, var(--bad) 12%, var(--card));  border-color: var(--bad);  color: var(--bad); }
+body.portal-root .badge.info { background: color-mix(in srgb, var(--info) 12%, var(--card)); border-color: var(--info); color: var(--info); }
+
+/* ── Empty states: never a bare "No X" ────────────────────────────────────── */
+body.portal-root .empty {
+  display: grid; justify-items: center; gap: var(--space-2);
+  text-align: center; padding: var(--space-6) var(--space-4);
+  background: var(--card-2); border: 1px dashed var(--line);
+  border-radius: var(--radius-md); color: var(--muted);
+}
+body.portal-root .empty__icon {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 50%; background: var(--card); border: 1px solid var(--line);
+  color: var(--brand); font-size: var(--fs-h5);
+}
+body.portal-root .empty__title { color: var(--ink); font-weight: var(--weight-semibold); }
+body.portal-root .empty p { margin: 0; max-width: 46ch; }
+
+/* ── Skeletons: shaped like the content they stand in for ─────────────────── */
+body.portal-root .skeleton { display: grid; gap: var(--space-2); padding: var(--space-3) 0; }
+body.portal-root .skeleton__row {
+  height: 14px; border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--card-2) 25%, color-mix(in srgb, var(--card-2) 60%, var(--line)) 50%, var(--card-2) 75%);
+  background-size: 200% 100%;
+  animation: portal-shimmer 1.4s ease-in-out infinite;
+}
+body.portal-root .skeleton__row.w-60 { width: 60%; }
+body.portal-root .skeleton__row.w-40 { width: 40%; }
+body.portal-root .skeleton__row.tall { height: 72px; border-radius: var(--radius-sm); }
+@keyframes portal-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* ── Topbar: one glass surface, and only one ──────────────────────────────── */
+body.portal-root .topbar {
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+body.portal-root .topbar .search-btn { flex: 0 0 auto; }
+body.portal-root .topbar .kbd {
+  font: var(--weight-medium) var(--fs-micro)/1 var(--font-ui);
+  border: 1px solid var(--line); border-radius: 6px; padding: 3px 5px; color: var(--muted);
+}
+body.portal-root .role-switch select { width: auto; min-height: 36px; }
+@media (max-width: 640px) {
+  body.portal-root .topbar .menu__label { display: none; }
+  body.portal-root .topbar .role-switch .role-label { display: none; }
+  body.portal-root .topbar .brand { font-size: var(--fs-body); }
+  body.portal-root .topbar .site-link { display: none; }
+}
+
+/* ── Account menu (native <details>, so it works without JavaScript) ─────── */
+body.portal-root .menu { position: relative; }
+body.portal-root .menu > summary {
+  list-style: none; cursor: pointer; user-select: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 36px; padding: 4px 12px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  font: var(--weight-semibold) var(--fs-small)/1 var(--font-ui);
+  color: var(--brand); background: transparent;
+}
+body.portal-root .menu > summary::-webkit-details-marker { display: none; }
+body.portal-root .menu > summary:hover { border-color: var(--accent); }
+body.portal-root .menu[open] > summary { border-color: var(--accent); }
+body.portal-root .menu__panel {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 30;
+  min-width: 232px; padding: var(--space-2);
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-3);
+  display: grid; gap: 2px;
+}
+body.portal-root .menu__item {
+  display: flex; align-items: center; gap: var(--space-2);
+  min-height: 44px; padding: 8px 10px; border-radius: var(--radius-sm);
+  color: var(--ink); font: var(--weight-medium) var(--fs-small)/var(--lh-ui) var(--font-ui);
+  background: transparent; border: 0; width: 100%; text-align: left; cursor: pointer;
+  text-decoration: none;
+}
+body.portal-root .menu__item:hover { background: var(--hover); text-decoration: none; }
+body.portal-root .menu__sep { height: 1px; background: var(--line); margin: 4px 2px; }
+
+/* ── Bottom bar: thumb-first on phones, pills on desktop ─────────────────── */
+@media (max-width: 767px) {
+  body.portal-root .tabbar .tab-wide { display: none; }
+}
+body.portal-root .tabbar .tab-more { display: none; }
+@media (max-width: 767px) {
+  body.portal-root .tabbar .tab-more {
+    display: block; flex: 1; text-align: center;
+    background: transparent; border: 0; cursor: pointer;
+    padding: 10px var(--space-1) 12px; min-height: 44px;
+    color: var(--muted); font: var(--weight-medium) var(--fs-caption)/var(--lh-ui) var(--font-ui);
+  }
+}
+
+/* ── Command palette ──────────────────────────────────────────────────────── */
+body.portal-root .palette-scrim {
+  position: fixed; inset: 0; z-index: 60;
+  background: color-mix(in srgb, #0B0A10 55%, transparent);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  display: grid; place-items: start center; padding: 10vh var(--space-3) var(--space-3);
+}
+body.portal-root .palette {
+  width: min(600px, 100%); max-height: 76vh; display: flex; flex-direction: column;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-4); overflow: hidden;
+}
+body.portal-root .palette__row { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line); }
+body.portal-root .palette__row input { border: 0; background: transparent; padding: 0; min-height: 44px; font-size: var(--fs-body-lg); }
+body.portal-root .palette__row input:focus-visible { outline: none; }
+body.portal-root .palette__close {
+  border: 1px solid var(--line); background: transparent; color: var(--muted);
+  border-radius: 6px; min-height: 32px; padding: 2px 8px; cursor: pointer; font: inherit;
+}
+body.portal-root .palette__list { list-style: none; margin: 0; padding: var(--space-1); overflow-y: auto; }
+body.portal-root .palette__group {
+  font: var(--weight-semibold) var(--fs-micro)/1.2 var(--font-ui);
+  letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--muted);
+  padding: var(--space-2) var(--space-2) 4px;
+}
+body.portal-root .palette__opt {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: 10px var(--space-2); border-radius: var(--radius-sm); cursor: pointer;
+}
+body.portal-root .palette__opt[aria-selected="true"] { background: var(--hover); }
+body.portal-root .palette__opt .hint { margin: 0 0 0 auto; color: var(--muted); font-size: var(--fs-caption); }
+body.portal-root .palette__empty { padding: var(--space-5) var(--space-3); text-align: center; color: var(--muted); }
+body.portal-root .palette__foot { padding: 8px var(--space-3); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-caption); }
+@media (max-width: 640px) {
+  body.portal-root .palette-scrim { padding: 0; place-items: stretch; }
+  body.portal-root .palette { width: 100%; max-height: 100dvh; height: 100dvh; border-radius: 0; border: 0; }
+}
+
+/* ── "Next" strip on dashboards ───────────────────────────────────────────── */
+body.portal-root .today {
+  display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md); background: var(--card); box-shadow: var(--e1);
+  margin: var(--space-3) 0;
+}
+body.portal-root .today__date { font: var(--weight-semibold) var(--fs-small)/var(--lh-ui) var(--font-ui); }
+body.portal-root .today .spacer { flex: 1; }
+
+/* ── Tables reflow instead of squashing ────────────────────────────────────
+   Wrapping 47 tables in scroll containers by hand would be 47 chances to
+   miss one; :has() lets the card that holds a table become its scroller, so
+   the pattern applies wherever a table is written from now on. Table
+   semantics are untouched — the display mode never changes, only the
+   overflow of the box around it (WCAG 1.4.10). */
+body.portal-root .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 700px) {
+  body.portal-root :is(.card, .table-scroll):has(> table) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  body.portal-root :is(.card, .table-scroll):has(> table) > table { min-width: 560px; }
+}
+
+/* ── Coarse pointers get full-size targets ───────────────────────────────── */
+@media (pointer: coarse) {
+  body.portal-root .chip { min-height: 44px; }
+  body.portal-root .menu__item { min-height: 48px; }
+  body.portal-root .palette__opt { min-height: 48px; }
+}
+
+/* ── Motion: nothing animates for anybody who asked it not to ────────────── */
+@media (prefers-reduced-motion: reduce) {
+  body.portal-root *, body.portal-root *::before, body.portal-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── "Next" strip, login card, small helpers ─────────────────────────────── */
+body.portal-root .today__list {
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4);
+  list-style: none; margin: 0; padding: 0;
+}
+body.portal-root .today__item { font-size: var(--fs-small); color: var(--muted); }
+body.portal-root .today__item strong { color: var(--ink); font-weight: var(--weight-semibold); }
+body.portal-root .narrow { max-width: 420px; margin: 0 auto; }
+body.portal-root .login-logo { height: 56px; width: auto; margin-bottom: var(--space-1); }
+body.portal-root .login-help { margin-top: var(--space-3); }
+body.portal-root .stat .n.text { font: var(--weight-semibold) var(--fs-h6)/1.3 var(--font-ui); letter-spacing: 0; }
+body.portal-root .verification-note { margin-top: 8px; color: var(--warn); }
+body.portal-root .card.link-card { display: block; color: inherit; }
+body.portal-root .card.link-card:hover { border-color: var(--accent); text-decoration: none; }
+body.portal-root .card-note { margin-top: 8px; }
+body.portal-root .login-shell { padding-top: var(--space-6); }
+body.portal-root .field-label { display: block; font-size: var(--fs-micro); color: var(--muted); margin-bottom: 4px; }
+body.portal-root .verify-note { margin: 10px 0 0; }
+body.portal-root .verify-note.ok { color: var(--ok); }
+body.portal-root .verify-note.bad { color: var(--bad); }

@@ -32,3 +32,6 @@ export default async function TeacherClasswork({ params }: { params: Promise<{ s
     </Shell>
   );
 }
+
+/* Browser tab + document title. The root layout owns the "%s · <school>" template. */
+export const metadata = { title: "Classwork" };

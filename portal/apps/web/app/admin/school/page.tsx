@@ -13,3 +13,6 @@ export default async function AdminSchool() {
     </Shell>
   );
 }
+
+/* Browser tab + document title. The root layout owns the "%s · <school>" template. */
+export const metadata = { title: "School settings" };

@@ -18,7 +18,7 @@ import type { Pupil } from "@/components/report-card-sheet";
  * pupil for themselves. Office staff already have the ledger screen.
  */
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Fee statement — School Portal" };
+export const metadata: Metadata = { title: "Fee statement" };
 
 interface Invoice { id: string; label: string; amountKobo: number; status: string; dueDate: string | null; termId: string }
 interface Payment {

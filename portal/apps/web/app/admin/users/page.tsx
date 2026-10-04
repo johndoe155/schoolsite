@@ -50,3 +50,6 @@ export default async function AdminUsers({ searchParams }: { searchParams: Promi
     </Shell>
   );
 }
+
+/* Browser tab + document title. The root layout owns the "%s · <school>" template. */
+export const metadata = { title: "Users" };

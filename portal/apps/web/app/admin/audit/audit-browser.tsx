@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import EmptyState from "@/components/empty-state";
 import { api } from "@/lib/client";
 import { API_BASE } from "@/lib/base-path";
 
@@ -113,9 +114,11 @@ export default function AuditBrowser() {
   return (
     <>
       <div className="card">
-        <div className="row" style={{ flexWrap: "wrap", gap: 8, alignItems: "flex-end" }}>
+        {/* .toolbar = the portal's sticky filter row: one surface, real labels,
+            and it keeps the controls reachable while the log scrolls. */}
+        <div className="toolbar">
           <label>
-            <span className="muted" style={{ fontSize: ".8rem", display: "block" }}>Action</span>
+            <span className="field-label">Action</span>
             <select value={fAction} onChange={(e) => setFAction(e.target.value)}>
               <option value="">All actions</option>
               {actions.map((a) => (
@@ -124,15 +127,15 @@ export default function AuditBrowser() {
             </select>
           </label>
           <label>
-            <span className="muted" style={{ fontSize: ".8rem", display: "block" }}>From</span>
+            <span className="field-label">From</span>
             <input type="date" value={fFrom} onChange={(e) => setFFrom(e.target.value)} />
           </label>
           <label>
-            <span className="muted" style={{ fontSize: ".8rem", display: "block" }}>To</span>
+            <span className="field-label">To</span>
             <input type="date" value={fTo} onChange={(e) => setFTo(e.target.value)} />
           </label>
           <label>
-            <span className="muted" style={{ fontSize: ".8rem", display: "block" }}>Search action</span>
+            <span className="field-label">Search action</span>
             <input value={fQ} onChange={(e) => setFQ(e.target.value)} placeholder="e.g. guardian" />
           </label>
           {(fAction || fFrom || fTo || fQ) && (
@@ -147,10 +150,7 @@ export default function AuditBrowser() {
         </div>
 
         {verify && (
-          <p style={{
-            marginTop: 10, marginBottom: 0,
-            color: verify.ok ? "var(--ok, #067647)" : "var(--danger, #b42318)",
-          }}>
+          <p className={`verify-note ${verify.ok ? "ok" : "bad"}`}>
             {verify.ok
               ? `✅ ${verify.checked} entries checked, all intact.`
               : `⚠️ ${verify.mismatched.length} of ${verify.checked} entries no longer match their recorded fingerprint. ${verify.detail}`}
@@ -158,11 +158,13 @@ export default function AuditBrowser() {
         )}
       </div>
 
-      {err && <p style={{ color: "var(--danger, #b42318)" }}>{err}</p>}
+      {err && <p className="alert err" role="alert">{err}</p>}
 
       <div className="card">
         {rows.length === 0 && !loading ? (
-          <div className="muted">No activity matches these filters.</div>
+          <EmptyState icon="⌕" title="No activity matches these filters">
+            Widen the dates or clear the search to see the whole log.
+          </EmptyState>
         ) : (
           <table>
             <thead>

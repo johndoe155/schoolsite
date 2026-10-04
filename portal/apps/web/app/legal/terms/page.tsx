@@ -7,7 +7,7 @@ import DpoContact from "@/components/dpo-contact";
  * hydration script would be blocked by the live CSP header. */
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { title: "Terms of Service — School Portal" };
+export const metadata: Metadata = { title: "Terms of use" };
 
 export default async function TermsOfService() {
   const school = await publicSchool();

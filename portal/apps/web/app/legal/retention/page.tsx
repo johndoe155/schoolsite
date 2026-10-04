@@ -8,7 +8,7 @@ import DpiaStatement from "@/components/dpia-statement";
  * hydration script would be blocked by the live CSP header. */
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { title: "Data Retention Policy — School Portal" };
+export const metadata: Metadata = { title: "Retention schedule" };
 
 export default async function DataRetention() {
   const school = await publicSchool();

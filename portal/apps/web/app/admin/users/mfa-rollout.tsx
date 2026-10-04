@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { SkeletonRows } from "@/components/skeleton";
 import { api } from "@/lib/client";
 
 interface Staff {
@@ -54,7 +55,7 @@ export default function MfaRollout() {
 
   if (!cov) {
     return <div className="card"><h2 style={{ marginTop: 0 }}>Two-factor rollout</h2>
-      <div className="muted">{err || "Loading…"}</div></div>;
+      {err ? <div className="alert err" role="alert">{err}</div> : <SkeletonRows label="Loading rollout coverage…" count={3} />}</div>;
   }
 
   const done = cov.outstanding === 0;

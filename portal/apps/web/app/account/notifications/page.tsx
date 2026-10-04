@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { checkSession, ROLE_HOME } from "@/lib/session";
 import NotificationPrefsForm from "./notification-prefs-form";
 
-export const metadata = { title: "Email preferences — School Portal" };
+export const metadata = { title: "Email preferences" };
 
 /**
  * The page every bulk email has been promising.

@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { SkeletonRows } from "@/components/skeleton";
 import { api } from "@/lib/client";
 
 interface Preview {
@@ -79,7 +80,7 @@ export default function OffboardPanel({ userId }: { userId: string }) {
     return (
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Account access</h2>
-        <div className="muted">{err || "Loading…"}</div>
+        {err ? <div className="alert err" role="alert">{err}</div> : <SkeletonRows label="Loading account access…" count={3} />}
       </div>
     );
   }

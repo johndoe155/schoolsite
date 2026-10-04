@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { checkSession, ROLE_HOME } from "@/lib/session";
 import ChangePasswordForm from "./change-password-form";
 
-export const metadata = { title: "Change password — School Portal" };
+export const metadata = { title: "Password" };
 
 export default async function ChangePasswordPage() {
   const check = await checkSession();

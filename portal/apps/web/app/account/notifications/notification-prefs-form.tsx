@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { SkeletonRows } from "@/components/skeleton";
 import { api } from "@/lib/client";
 
 interface Pref { kind: string; label: string; detail: string; enabled: boolean }
@@ -46,7 +47,7 @@ export default function NotificationPrefsForm({ home }: { home: string }) {
   }
 
   if (!prefs) {
-    return <div className="card">{err ? <div className="alert err" role="alert">{err}</div> : <p className="muted">Loading…</p>}</div>;
+    return <div className="card">{err ? <div className="alert err" role="alert">{err}</div> : <SkeletonRows label="Loading preferences…" count={3} />}</div>;
   }
 
   return (

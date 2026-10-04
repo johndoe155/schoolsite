@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { SkeletonTable } from "@/components/skeleton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api, ApiError } from "@/lib/client";
@@ -206,7 +207,7 @@ export default function ClassworkPanel({ sectionId, sectionName, assignments, ma
             </div>
             {openSheet === a.id && (
               <div style={{ marginTop: 8 }}>
-                {sheet === null ? <div className="muted">Loading…</div> : (
+                {sheet === null ? <SkeletonTable label="Loading submissions…" rows={3} /> : (
                   <table>
                     <thead><tr><th>Pupil</th><th>Handed in</th><th>Work</th></tr></thead>
                     <tbody>

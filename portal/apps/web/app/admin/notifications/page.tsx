@@ -54,3 +54,6 @@ export default async function AdminNotifications({
     </Shell>
   );
 }
+
+/* Browser tab + document title. The root layout owns the "%s · <school>" template. */
+export const metadata = { title: "Email" };

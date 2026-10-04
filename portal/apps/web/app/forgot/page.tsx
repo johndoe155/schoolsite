@@ -5,7 +5,7 @@ import ForgotForm from "./forgot-form";
  * hydration script would be blocked by the live CSP header. */
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Forgot password — School Portal" };
+export const metadata = { title: "Reset password" };
 
 export default function ForgotPage() {
   return (

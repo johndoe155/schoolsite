@@ -23,3 +23,6 @@ export default async function GradebookPage({ params }: { params: Promise<{ sect
     </Shell>
   );
 }
+
+/* Browser tab + document title. The root layout owns the "%s · <school>" template. */
+export const metadata = { title: "Gradebook" };

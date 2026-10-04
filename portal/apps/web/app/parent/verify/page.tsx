@@ -3,7 +3,7 @@ import { checkSession } from "@/lib/session";
 import Shell from "@/components/shell";
 import VerifyForm from "./verify-form";
 
-export const metadata = { title: "Verify guardian link" };
+export const metadata = { title: "Verify your account" };
 
 /** phase 6: landing page for emailed guardian verification links (/parent/verify?token=…). */
 export default async function ParentVerify({ searchParams }: { searchParams: Promise<{ token?: string }> }) {

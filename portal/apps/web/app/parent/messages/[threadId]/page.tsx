@@ -19,3 +19,6 @@ export default async function ParentThread({ params }: { params: Promise<{ threa
     </Shell>
   );
 }
+
+/* Browser tab + document title. The root layout owns the "%s · <school>" template. */
+export const metadata = { title: "Message" };

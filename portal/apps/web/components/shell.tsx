@@ -1,12 +1,16 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SessionView } from "@/lib/session";
 import { api } from "@/lib/client";
 import { clearDeviceData, listQueuedRegisters } from "@/lib/offline";
 import { API_BASE } from "@/lib/base-path";
 import { ROLE_HOME } from "@/lib/roles";
+import { TITLES, normalizePath } from "@/lib/nav";
+import CommandPalette, { type PaletteItem } from "./command-palette";
+import RouteAnnouncer from "./route-announcer";
+import { ThemeToggleButton, toggleTheme } from "./theme-controls";
 
 /** "school_admin" → "School admin" — the raw codes read like config keys. */
 function roleLabel(role: string): string {
@@ -65,21 +69,35 @@ const TABS: Record<string, Tab[]> = {
   parent: [{ href: "/parent", label: "Children" }, { href: "/parent/messages", label: "Messages" }],
 };
 
+/**
+ * The phone bottom bar holds four thumb targets plus "More". Which four is a
+ * product decision, not an alphabetical one: the admin console repeats 14
+ * links into a `flex:1` bar and each one collapsed to about 25px wide at a
+ * 360px viewport — technically present, practically unusable. Everything not
+ * here stays reachable on a phone through "More" → the command palette, which
+ * lists every permitted destination with its full name.
+ */
+const MOBILE_PRIMARY: Record<string, string[]> = {
+  admin: ["/admin", "/admin/students", "/admin/fees", "/admin/timetable", "/admin/academics", "/admin/reports"],
+  teacher: ["/teacher", "/teacher/timetable", "/teacher/messages"],
+  student: ["/student", "/student/timetable", "/student/classwork", "/student/grades"],
+  parent: ["/parent", "/parent/messages"],
+};
+
 export default function Shell({ session, children }: { session: SessionView; children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const area = ROLE_AREA[session.activeRole] ?? "student";
   const perms = new Set(session.permissions ?? []);
   const tabs = (TABS[area] ?? []).filter((t) => !t.perm || perms.has(t.perm));
-  /* ── Role switching ───────────────────────────────────────────────────────
-     POST /auth/role/switch has existed on the API since the RBAC work and was
-     never reachable from the UI. The only consequence was visible in the
-     topbar: a registrar who is also a teacher saw "Registrar" with no way to
-     become the teacher, so a dual-role account silently lost half its access.
-     Rendered only when there is something to switch to. */
+  const mobilePrimary = new Set((MOBILE_PRIMARY[area] ?? []).slice(0, 4));
   const otherRoles = session.roles.filter((r) => r !== session.activeRole);
   const [switching, setSwitching] = useState(false);
   const [switchError, setSwitchError] = useState("");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const here = normalizePath(pathname ?? "/");
+
   async function switchRole(role: string) {
     if (switching || role === session.activeRole) return;
     setSwitching(true); setSwitchError("");
@@ -103,7 +121,10 @@ export default function Shell({ session, children }: { session: SessionView; chi
     // INTEGRATION: API_BASE carries the /portal basePath (see lib/base-path.ts).
     fetch(`${API_BASE}/school`).then((r) => r.ok ? r.json() : null)
       .then((s) => { if (s?.name) setBrand(s.name); }).catch(() => {});
+    // The server-rendered title already carries the school name; this keeps the
+    // client-side announcer in step when the fetch lands after hydration.
   }, []);
+
   async function logout() {
     try { await api("/auth/logout", { method: "POST" }); }
     finally {
@@ -116,24 +137,81 @@ export default function Shell({ session, children }: { session: SessionView; chi
       router.push("/login"); router.refresh();
     }
   }
+
+  /* Native <details> gives an accessible disclosure for free; these two
+     listeners add the two behaviours it lacks — click-away and Escape. */
+  useEffect(() => {
+    function onPointerDown(e: PointerEvent) {
+      const el = menuRef.current;
+      if (el?.open && !el.contains(e.target as Node)) el.open = false;
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
+
+  function closeMenu(e: React.MouseEvent | React.KeyboardEvent) {
+    const el = (e.currentTarget as HTMLElement).closest("details");
+    if (el) el.open = false;
+  }
+
+  /* ── Command palette inventory ────────────────────────────────────────────
+     Every destination the account may reach, the account pages that
+     previously existed only as URLs, and the actions that otherwise require
+     hunting through the topbar. */
+  const items: PaletteItem[] = [
+    ...tabs.map((t) => ({
+      id: `go-${t.href}`,
+      label: TITLES[t.href] ?? t.label,
+      group: "Go to",
+      keywords: `${t.label} ${area}`,
+      href: t.href,
+    })),
+    { id: "account-emails", label: "Email preferences", group: "Account", hint: "notices", keywords: "notifications unsubscribe", href: "/account/notifications" },
+    { id: "account-password", label: "Password", group: "Account", keywords: "security change", href: "/account/password" },
+    { id: "mfa", label: "Two-factor sign-in", group: "Account", keywords: "mfa 2fa authenticator", href: "/mfa" },
+    ...otherRoles.map((r) => ({
+      id: `role-${r}`,
+      label: `Switch to ${roleLabel(r)}`,
+      group: "Account",
+      keywords: `role ${r}`,
+      run: () => switchRole(r),
+    })),
+    { id: "action-theme", label: "Toggle dark theme", group: "Actions", keywords: "light dark appearance night", run: () => { toggleTheme(); } },
+    { id: "action-website", label: "Open the school website", group: "Actions", keywords: "public marketing home", run: () => { window.location.href = "/"; } },
+    { id: "action-signout", label: "Sign out", group: "Actions", keywords: "log out exit", run: () => { void logout(); } },
+  ];
+
+  const firstName = (session.displayName ?? "").split(" ")[0] || "Account";
+
   return (
     <>
       <header className="topbar">
         {/* INTEGRATION: plain <a>, not next/link — the marketing site sits
             OUTSIDE basePath, so <Link> would wrongly prefix it to /portal/. */}
         <a className="site-link" href="/">← Website</a>
-        <span className="brand">{brand}</span>
+        <Link className="brand" href={ROLE_HOME[session.activeRole] ?? "/"}>{brand}</Link>
+        <span className="spacer" />
+        <button
+          type="button"
+          className="btn ghost search-btn"
+          onClick={() => setPaletteOpen(true)}
+          aria-haspopup="dialog"
+          aria-keyshortcuts="Meta+K Control+K"
+        >
+          <span aria-hidden="true">⌕</span>
+          <span className="search-label">Search</span>
+          <span className="kbd" aria-hidden="true">⌘K</span>
+        </button>
         {otherRoles.length === 0 ? (
-          <span className="muted">{roleLabel(session.activeRole)}</span>
+          <span className="muted role-label">{roleLabel(session.activeRole)}</span>
         ) : (
-          <label className="role-switch" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <span className="muted">Role</span>
+          <label className="role-switch">
+            <span className="muted role-label">Role</span>
             <select
               value={session.activeRole}
               disabled={switching}
               onChange={(e) => switchRole(e.target.value)}
               aria-label="Switch role"
-              style={{ minHeight: 32, padding: "2px 8px" }}
             >
               {session.roles.map((r) => (
                 <option key={r} value={r}>{roleLabel(r)}</option>
@@ -141,16 +219,41 @@ export default function Shell({ session, children }: { session: SessionView; chi
             </select>
           </label>
         )}
-        <span className="spacer" />
-        <span className="who">{session.displayName}</span>
-        {/* Account self-service. Both pages existed only as URLs before — the
-            email-preferences page in particular was linked from the
-            List-Unsubscribe header of every bulk message we send. */}
-        <Link className="btn ghost" href="/account/notifications"
-              style={{ minHeight: 36, padding: "4px 12px" }}>Emails</Link>
-        <Link className="btn ghost" href="/account/password"
-              style={{ minHeight: 36, padding: "4px 12px" }}>Password</Link>
-        <button className="btn ghost" onClick={logout} style={{ minHeight: 36, padding: "4px 12px" }}>Sign out</button>
+        {/* Account menu. Native <details> so it works with a keyboard and
+            without JavaScript; the panel holds what used to be three separate
+            buttons in the topbar. */}
+        <details
+          className="menu"
+          ref={menuRef}
+          onKeyDown={(e) => { if (e.key === "Escape") { closeMenu(e); (e.currentTarget.querySelector("summary") as HTMLElement | null)?.focus(); } }}
+        >
+          <summary aria-label={`Account menu for ${session.displayName}`}>
+            <span aria-hidden="true">◍</span>
+            <span className="menu__label">{firstName}</span>
+            <span aria-hidden="true">▾</span>
+          </summary>
+          <div className="menu__panel">
+            <div className="menu__head">
+              <span className="menu__name">{session.displayName}</span>
+              <span className="menu__mail">{session.email}</span>
+              <span className="menu__mail">{roleLabel(session.activeRole)}</span>
+            </div>
+            {/* Account self-service. Both pages existed only as URLs before —
+                the email-preferences page in particular was linked from the
+                List-Unsubscribe header of every bulk message we send. */}
+            <Link className="menu__item" href="/account/notifications" onClick={closeMenu}>
+              <span aria-hidden="true">✉</span> Email preferences
+            </Link>
+            <Link className="menu__item" href="/account/password" onClick={closeMenu}>
+              <span aria-hidden="true">⚿</span> Password
+            </Link>
+            <ThemeToggleButton />
+            <div className="menu__sep" />
+            <button className="menu__item" type="button" onClick={(e) => { closeMenu(e); void logout(); }}>
+              <span aria-hidden="true">↪</span> Sign out
+            </button>
+          </div>
+        </details>
       </header>
       <div className="container">
         {session.mfaGraceUntil && (
@@ -166,17 +269,32 @@ export default function Shell({ session, children }: { session: SessionView; chi
           </div>
         )}
         <nav className="tabbar" aria-label="Primary">
-          {tabs.map((t) => (
-            <Link key={t.href} href={t.href} className={pathname === t.href || pathname.startsWith(t.href + "/") ? "on" : ""}>
-              {t.label}
-            </Link>
-          ))}
+          {tabs.map((t) => {
+            const current = here === t.href || here.startsWith(t.href + "/");
+            return (
+              <Link
+                key={t.href}
+                href={t.href}
+                className={[current ? "on" : "", mobilePrimary.has(t.href) ? "" : "tab-wide"].filter(Boolean).join(" ")}
+                aria-current={current ? "page" : undefined}
+              >
+                {t.label}
+              </Link>
+            );
+          })}
+          {/* The phone-only escape hatch: four tabs can never cover an admin
+              console, so the fifth target opens the palette with the rest. */}
+          <button type="button" className="tab-more" onClick={() => setPaletteOpen(true)} aria-haspopup="dialog">
+            More
+          </button>
         </nav>
         {switchError && (
-          <div className="alert error" role="alert" style={{ marginTop: 12 }}>{switchError}</div>
+          <div className="alert err" role="alert" style={{ marginTop: 12 }}>{switchError}</div>
         )}
         {children}
       </div>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} items={items} />
+      <RouteAnnouncer schoolName={brand} />
     </>
   );
 }

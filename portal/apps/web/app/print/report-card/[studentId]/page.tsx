@@ -17,7 +17,7 @@ import ReportCardSheet, { type ReportCardSnapshot, type Pupil } from "@/componen
  * used to look up a name the caller could not otherwise see.
  */
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Report card — School Portal" };
+export const metadata: Metadata = { title: "Report card" };
 
 interface ReportCard { id: string; snapshot: ReportCardSnapshot }
 interface Child { studentUserId: string; admissionNo: string; gradeLevel: number; displayName: string; verified: string | null }

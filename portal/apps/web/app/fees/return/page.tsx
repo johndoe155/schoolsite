@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { checkSession, ROLE_HOME } from "@/lib/session";
 import PaymentReturn from "./payment-return";
 
-export const metadata = { title: "Payment — School Portal" };
+export const metadata = { title: "Payment result" };
 
 /**
  * Where Paystack sends the payer back to.
